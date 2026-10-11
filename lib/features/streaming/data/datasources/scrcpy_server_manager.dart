@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:wifi_desk/core/constants/socket_config.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
@@ -80,7 +82,21 @@ class ScrcpyServerManager {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) return false;
 
-    // First setup port forward
+    // Ensure remote scrcpy-server.jar exists
+    try {
+      final localJar = File('assets/scrcpy-server.jar');
+      if (await localJar.exists()) {
+        await _executor.run(adb, [
+          '-s',
+          deviceSerial,
+          'push',
+          localJar.path,
+          remoteServerPath,
+        ], timeout: const Duration(seconds: 4));
+      }
+    } catch (_) {}
+
+    // Setup port forward
     await setupPortForward(deviceSerial: deviceSerial, localPort: port);
 
     try {

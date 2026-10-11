@@ -65,6 +65,7 @@ class AdbService {
   /// Known macOS fallback paths where ADB is frequently installed.
   static final List<String> _knownAdbPaths = [
     'adb',
+    '/Users/trannamlong/Library/Android/sdk/platform-tools/adb',
     '${Platform.environment['HOME']}/Library/Android/sdk/platform-tools/adb',
     '/opt/homebrew/bin/adb',
     '/usr/local/bin/adb',
@@ -75,6 +76,17 @@ class AdbService {
     if (_cachedAdbPath != null) {
       return _cachedAdbPath;
     }
+
+    // Try finding via /usr/bin/which
+    try {
+      final whichResult = await _executor.run('/usr/bin/which', ['adb']);
+      if (whichResult.exitCode == 0 &&
+          whichResult.stdout.toString().trim().isNotEmpty) {
+        final path = whichResult.stdout.toString().trim();
+        _cachedAdbPath = path;
+        return path;
+      }
+    } catch (_) {}
 
     for (final candidate in _knownAdbPaths) {
       try {
