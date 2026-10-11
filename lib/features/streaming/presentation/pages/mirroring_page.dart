@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
+import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
+import 'package:wifi_desk/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
@@ -18,8 +20,13 @@ class MirroringPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<StreamingCubit>(
-      create: (_) => sl<StreamingCubit>()..startSession(device),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<StreamingCubit>(
+          create: (_) => sl<StreamingCubit>()..startSession(device),
+        ),
+        BlocProvider<ControlBloc>(create: (_) => sl<ControlBloc>()),
+      ],
       child: _MirroringView(device: device),
     );
   }
@@ -107,15 +114,18 @@ class _MirroringView extends StatelessWidget {
             return Stack(
               fit: StackFit.expand,
               children: [
-                // Video Frame Viewport
+                // Video Frame Viewport with Interactive Remote Input Overlay
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24.0,
                     vertical: 60.0,
                   ),
-                  child: VideoDisplayViewport(
-                    session: state.session,
-                    rotationDegrees: state.rotationDegrees,
+                  child: InputGestureViewportOverlay(
+                    deviceSerial: device.serial,
+                    child: VideoDisplayViewport(
+                      session: state.session,
+                      rotationDegrees: state.rotationDegrees,
+                    ),
                   ),
                 ),
 

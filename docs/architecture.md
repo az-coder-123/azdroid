@@ -53,7 +53,9 @@ flowchart TD
 lib/
 ├── core/                                   # Shared kernel & infrastructure
 │   ├── constants/                          # Zero-hardcoding constants
+│   │   ├── android_key_codes.dart          # Android KeyEvent codes & Flutter key mapper
 │   │   ├── app_constants.dart              # App metadata, dimensions
+│   │   ├── control_constants.dart          # Pointer, swipe, and scroll parameters
 │   │   └── socket_config.dart              # Network ports, timeouts
 │   ├── di/                                 # Dependency Injection container
 │   │   └── injection.dart                  # Service locator configuration (GetIt)
@@ -99,7 +101,19 @@ lib/
 │   │       ├── widgets/video_display_viewport.dart
 │   │       └── pages/mirroring_page.dart
 │   ├── control/                            # Input normalization & pointer injection
-│   │   └── domain/entities/input_event_entity.dart
+│   │   ├── domain/
+│   │   │   ├── entities/input_event_entity.dart
+│   │   │   └── repositories/control_repository.dart
+│   │   ├── data/
+│   │   │   ├── datasources/control_datasource.dart
+│   │   │   └── repositories/control_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── bloc/control_bloc.dart
+│   │       ├── bloc/control_event.dart
+│   │       ├── bloc/control_state.dart
+│   │       ├── widgets/input_gesture_viewport_overlay.dart
+│   │       ├── widgets/quick_text_input_dialog.dart
+│   │       └── widgets/touch_indicator_overlay.dart
 │   └── settings/                           # User preferences & stream quality
 │       └── domain/entities/app_settings_entity.dart
 └── main.dart                               # Entrypoint with DI & MultiBlocProvider

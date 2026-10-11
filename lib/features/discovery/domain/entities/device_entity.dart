@@ -22,6 +22,9 @@ class DeviceEntity extends Equatable {
   /// Unique hardware identifier or ADB serial.
   final String id;
 
+  /// Convenience alias for [id] matching ADB serial convention.
+  String get serial => id;
+
   /// User-friendly device name (e.g., "Google Pixel 8 Pro").
   final String name;
 

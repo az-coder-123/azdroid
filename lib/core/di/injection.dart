@@ -1,6 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:wifi_desk/features/control/data/datasources/control_datasource.dart';
+import 'package:wifi_desk/features/control/data/repositories/control_repository_impl.dart';
+import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
+import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/device_discovery_datasource.dart';
 import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_repository_impl.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
@@ -56,7 +60,19 @@ Future<void> initDependencies() async {
     ),
   );
 
-  // Cubits (Factory registrations so each consumer receives a fresh instance)
+  // Control data sources & repositories
+  sl.registerLazySingleton<ControlDatasource>(
+    () => ControlDatasourceImpl(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ControlRepository>(
+    () => ControlRepositoryImpl(datasource: sl<ControlDatasource>()),
+  );
+
+  // Cubits & Blocs (Factory registrations so each consumer receives a fresh instance)
   sl.registerFactory<DiscoveryCubit>(
     () => DiscoveryCubit(repository: sl<DeviceDiscoveryRepository>()),
   );
@@ -67,5 +83,9 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<StreamingCubit>(
     () => StreamingCubit(repository: sl<StreamingRepository>()),
+  );
+
+  sl.registerFactory<ControlBloc>(
+    () => ControlBloc(repository: sl<ControlRepository>()),
   );
 }
