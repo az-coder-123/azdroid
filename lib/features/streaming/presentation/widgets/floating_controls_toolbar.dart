@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 
-/// Floating HUD toolbar providing quick access to Android navigation and stream controls.
+/// Floating HUD toolbar providing quick access to Android navigation, stream controls,
+/// text injection, and clipboard synchronization.
 class FloatingControlsToolbar extends StatelessWidget {
   const FloatingControlsToolbar({
     super.key,
@@ -13,6 +15,8 @@ class FloatingControlsToolbar extends StatelessWidget {
     required this.onRotate,
     required this.onToggleScreenOff,
     required this.onSelectBitrate,
+    this.onTextInject,
+    this.deviceSerial,
   });
 
   final StreamSessionEntity session;
@@ -22,6 +26,8 @@ class FloatingControlsToolbar extends StatelessWidget {
   final VoidCallback onRotate;
   final VoidCallback onToggleScreenOff;
   final ValueChanged<int> onSelectBitrate;
+  final VoidCallback? onTextInject;
+  final String? deviceSerial;
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +117,23 @@ class FloatingControlsToolbar extends StatelessWidget {
               ),
             ],
           ),
+
+          // Productivity Controls (Text & Clipboard)
+          if (onTextInject != null || deviceSerial != null) ...[
+            const SizedBox(width: 12),
+            _buildDivider(),
+            const SizedBox(width: 12),
+            if (onTextInject != null)
+              _buildToolButton(
+                icon: Icons.keyboard_alt_outlined,
+                tooltip: 'Inject Text (Cmd+K)',
+                onPressed: onTextInject!,
+              ),
+            if (deviceSerial != null) ...[
+              const SizedBox(width: 4),
+              ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
+            ],
+          ],
         ],
       ),
     );

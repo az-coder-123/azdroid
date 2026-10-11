@@ -56,6 +56,7 @@ lib/
 │   │   ├── android_key_codes.dart          # Android KeyEvent codes & Flutter key mapper
 │   │   ├── app_constants.dart              # App metadata, dimensions
 │   │   ├── control_constants.dart          # Pointer, swipe, and scroll parameters
+│   │   ├── productivity_constants.dart     # Clipboard sync & file transfer parameters
 │   │   └── socket_config.dart              # Network ports, timeouts
 │   ├── di/                                 # Dependency Injection container
 │   │   └── injection.dart                  # Service locator configuration (GetIt)
@@ -114,6 +115,25 @@ lib/
 │   │       ├── widgets/input_gesture_viewport_overlay.dart
 │   │       ├── widgets/quick_text_input_dialog.dart
 │   │       └── widgets/touch_indicator_overlay.dart
+│   ├── productivity/                       # Clipboard sync & drag-and-drop transfers
+│   │   ├── domain/
+│   │   │   ├── entities/clipboard_item_entity.dart
+│   │   │   ├── entities/file_transfer_entity.dart
+│   │   │   ├── repositories/clipboard_repository.dart
+│   │   │   └── repositories/file_transfer_repository.dart
+│   │   ├── data/
+│   │   │   ├── datasources/clipboard_datasource.dart
+│   │   │   ├── datasources/file_transfer_datasource.dart
+│   │   │   ├── repositories/clipboard_repository_impl.dart
+│   │   │   └── repositories/file_transfer_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── cubit/clipboard_cubit.dart
+│   │       ├── cubit/clipboard_state.dart
+│   │       ├── cubit/file_transfer_cubit.dart
+│   │       ├── cubit/file_transfer_state.dart
+│   │       ├── widgets/clipboard_sync_menu_button.dart
+│   │       ├── widgets/file_drop_target_overlay.dart
+│   │       └── widgets/transfer_status_banner.dart
 │   └── settings/                           # User preferences & stream quality
 │       └── domain/entities/app_settings_entity.dart
 └── main.dart                               # Entrypoint with DI & MultiBlocProvider

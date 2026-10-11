@@ -6,6 +6,10 @@ import 'package:wifi_desk/core/theme/app_theme.dart';
 import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
@@ -15,9 +19,16 @@ class MockStreamingRepository extends Mock implements StreamingRepository {}
 
 class MockControlRepository extends Mock implements ControlRepository {}
 
+class MockClipboardRepository extends Mock implements ClipboardRepository {}
+
+class MockFileTransferRepository extends Mock
+    implements FileTransferRepository {}
+
 void main() {
   late MockStreamingRepository mockRepository;
   late MockControlRepository mockControlRepository;
+  late MockClipboardRepository mockClipboardRepository;
+  late MockFileTransferRepository mockFileTransferRepository;
 
   const testDevice = DeviceEntity(
     id: '192.168.1.100:5555',
@@ -42,6 +53,8 @@ void main() {
     await sl.reset();
     mockRepository = MockStreamingRepository();
     mockControlRepository = MockControlRepository();
+    mockClipboardRepository = MockClipboardRepository();
+    mockFileTransferRepository = MockFileTransferRepository();
 
     when(() => mockRepository.startSession(testDevice))
         .thenAnswer((_) async => testSession);
@@ -57,6 +70,20 @@ void main() {
     sl.registerLazySingleton<ControlRepository>(() => mockControlRepository);
     sl.registerFactory<ControlBloc>(
       () => ControlBloc(repository: sl<ControlRepository>()),
+    );
+
+    sl.registerLazySingleton<ClipboardRepository>(
+      () => mockClipboardRepository,
+    );
+    sl.registerFactory<ClipboardCubit>(
+      () => ClipboardCubit(repository: sl<ClipboardRepository>()),
+    );
+
+    sl.registerLazySingleton<FileTransferRepository>(
+      () => mockFileTransferRepository,
+    );
+    sl.registerFactory<FileTransferCubit>(
+      () => FileTransferCubit(repository: sl<FileTransferRepository>()),
     );
   });
 

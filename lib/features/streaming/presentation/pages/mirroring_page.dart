@@ -5,14 +5,20 @@ import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
+import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/transfer_status_banner.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/stream_telemetry_header.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/video_display_viewport.dart';
 
-/// Full-window macOS mirroring page hosting the low-latency display viewport.
+/// Full-window macOS mirroring page hosting the low-latency display viewport,
+/// remote input translation, Finder drag-and-drop, and clipboard sync.
 class MirroringPage extends StatelessWidget {
   const MirroringPage({super.key, required this.device});
 
@@ -26,6 +32,10 @@ class MirroringPage extends StatelessWidget {
           create: (_) => sl<StreamingCubit>()..startSession(device),
         ),
         BlocProvider<ControlBloc>(create: (_) => sl<ControlBloc>()),
+        BlocProvider<ClipboardCubit>(
+          create: (_) => sl<ClipboardCubit>()..startPeriodicSync(device.serial),
+        ),
+        BlocProvider<FileTransferCubit>(create: (_) => sl<FileTransferCubit>()),
       ],
       child: _MirroringView(device: device),
     );
@@ -114,17 +124,20 @@ class _MirroringView extends StatelessWidget {
             return Stack(
               fit: StackFit.expand,
               children: [
-                // Video Frame Viewport with Interactive Remote Input Overlay
+                // Video Frame Viewport with Drag-and-Drop and Remote Input
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24.0,
                     vertical: 60.0,
                   ),
-                  child: InputGestureViewportOverlay(
+                  child: FileDropTargetOverlay(
                     deviceSerial: device.serial,
-                    child: VideoDisplayViewport(
-                      session: state.session,
-                      rotationDegrees: state.rotationDegrees,
+                    child: InputGestureViewportOverlay(
+                      deviceSerial: device.serial,
+                      child: VideoDisplayViewport(
+                        session: state.session,
+                        rotationDegrees: state.rotationDegrees,
+                      ),
                     ),
                   ),
                 ),
@@ -144,6 +157,13 @@ class _MirroringView extends StatelessWidget {
                   ),
                 ),
 
+                // Top-Right Transfer Notification Banner
+                const Positioned(
+                  top: 16,
+                  right: 16,
+                  child: TransferStatusBanner(),
+                ),
+
                 // Bottom Floating Controls Toolbar
                 Positioned(
                   bottom: 16,
@@ -152,6 +172,7 @@ class _MirroringView extends StatelessWidget {
                   child: Center(
                     child: FloatingControlsToolbar(
                       session: state.session,
+                      deviceSerial: device.serial,
                       onBack: () => context.read<StreamingCubit>().sendBack(),
                       onHome: () => context.read<StreamingCubit>().sendHome(),
                       onAppSwitch: () =>
@@ -162,6 +183,8 @@ class _MirroringView extends StatelessWidget {
                           context.read<StreamingCubit>().toggleScreenOff(),
                       onSelectBitrate: (bitrate) =>
                           context.read<StreamingCubit>().updateBitrate(bitrate),
+                      onTextInject: () =>
+                          QuickTextInputDialog.show(context, device.serial),
                     ),
                   ),
                 ),

@@ -10,6 +10,14 @@ import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:wifi_desk/features/productivity/data/datasources/clipboard_datasource.dart';
+import 'package:wifi_desk/features/productivity/data/datasources/file_transfer_datasource.dart';
+import 'package:wifi_desk/features/productivity/data/repositories/clipboard_repository_impl.dart';
+import 'package:wifi_desk/features/productivity/data/repositories/file_transfer_repository_impl.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/streaming_socket_datasource.dart';
 import 'package:wifi_desk/features/streaming/data/repositories/streaming_repository_impl.dart';
@@ -72,6 +80,29 @@ Future<void> initDependencies() async {
     () => ControlRepositoryImpl(datasource: sl<ControlDatasource>()),
   );
 
+  // Productivity data sources & repositories
+  sl.registerLazySingleton<ClipboardDatasource>(
+    () => ClipboardDatasourceImpl(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ClipboardRepository>(
+    () => ClipboardRepositoryImpl(datasource: sl<ClipboardDatasource>()),
+  );
+
+  sl.registerLazySingleton<FileTransferDatasource>(
+    () => FileTransferDatasourceImpl(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<FileTransferRepository>(
+    () => FileTransferRepositoryImpl(datasource: sl<FileTransferDatasource>()),
+  );
+
   // Cubits & Blocs (Factory registrations so each consumer receives a fresh instance)
   sl.registerFactory<DiscoveryCubit>(
     () => DiscoveryCubit(repository: sl<DeviceDiscoveryRepository>()),
@@ -87,5 +118,13 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<ControlBloc>(
     () => ControlBloc(repository: sl<ControlRepository>()),
+  );
+
+  sl.registerFactory<ClipboardCubit>(
+    () => ClipboardCubit(repository: sl<ClipboardRepository>()),
+  );
+
+  sl.registerFactory<FileTransferCubit>(
+    () => FileTransferCubit(repository: sl<FileTransferRepository>()),
   );
 }
