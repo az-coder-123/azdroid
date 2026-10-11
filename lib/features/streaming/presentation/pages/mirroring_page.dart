@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
+import 'package:wifi_desk/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
@@ -18,7 +20,7 @@ import 'package:wifi_desk/features/streaming/presentation/widgets/stream_telemet
 import 'package:wifi_desk/features/streaming/presentation/widgets/video_display_viewport.dart';
 
 /// Full-window macOS mirroring page hosting the low-latency display viewport,
-/// remote input translation, Finder drag-and-drop, and clipboard sync.
+/// remote input translation, Finder drag-and-drop, audio forwarding, and clipboard sync.
 class MirroringPage extends StatelessWidget {
   const MirroringPage({super.key, required this.device});
 
@@ -36,6 +38,9 @@ class MirroringPage extends StatelessWidget {
           create: (_) => sl<ClipboardCubit>()..startPeriodicSync(device.serial),
         ),
         BlocProvider<FileTransferCubit>(create: (_) => sl<FileTransferCubit>()),
+        BlocProvider<AudioCubit>(
+          create: (_) => sl<AudioCubit>()..startAudio(device.serial),
+        ),
       ],
       child: _MirroringView(device: device),
     );
@@ -53,7 +58,14 @@ class _MirroringView extends StatelessWidget {
       backgroundColor: Colors.black,
       body: BlocConsumer<StreamingCubit, StreamingState>(
         listener: (context, state) {
-          if (state is StreamingInitial) {
+          if (state is StreamingActive) {
+            sl<MenuBarCubit>().updateActiveSession(
+              deviceName: state.session.deviceName,
+              latencyMs: state.session.latencyMs,
+              fps: state.session.fps,
+            );
+          } else if (state is StreamingInitial) {
+            sl<MenuBarCubit>().clearActiveSession();
             Navigator.of(context).maybePop();
           }
         },

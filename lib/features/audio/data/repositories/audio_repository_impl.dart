@@ -1,0 +1,68 @@
+import 'package:wifi_desk/core/constants/audio_constants.dart';
+import 'package:wifi_desk/core/constants/socket_config.dart';
+import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
+import 'package:wifi_desk/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
+import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
+
+/// Concrete implementation of [AudioRepository] managing audio tunnels and playback controls.
+class AudioRepositoryImpl implements AudioRepository {
+  AudioRepositoryImpl({
+    ScrcpyServerManager? serverManager,
+    AudioSocketDatasource? socketDatasource,
+  }) : _serverManager = serverManager ?? ScrcpyServerManager(),
+       _socketDatasource = socketDatasource ?? AudioSocketDatasourceImpl();
+
+  final ScrcpyServerManager _serverManager;
+  final AudioSocketDatasource _socketDatasource;
+
+  double _volume = AudioConstants.defaultVolume;
+  bool _isMuted = false;
+
+  @override
+  Future<AudioStreamEntity> startAudioStream(
+    String deviceSerial, {
+    int? sampleRate,
+    int? channels,
+    String? codec,
+  }) async {
+    // 1. Establish ADB port forwarding for the audio socket tunnel
+    await _serverManager.setupPortForward(
+      deviceSerial: deviceSerial,
+      localPort: SocketConfig.defaultAudioStreamPort,
+    );
+
+    // 2. Connect local TCP socket
+    await _socketDatasource.connect(port: SocketConfig.defaultAudioStreamPort);
+
+    return AudioStreamEntity(
+      deviceId: deviceSerial,
+      isEnabled: true,
+      isMuted: _isMuted,
+      volume: _volume,
+      sampleRate: sampleRate ?? AudioConstants.defaultSampleRate,
+      channels: channels ?? AudioConstants.defaultChannels,
+      codec: codec ?? AudioConstants.defaultAudioCodec,
+    );
+  }
+
+  @override
+  Future<void> stopAudioStream(String deviceSerial) async {
+    await _socketDatasource.disconnect();
+    await _serverManager.removePortForward(
+      deviceSerial: deviceSerial,
+      localPort: SocketConfig.defaultAudioStreamPort,
+    );
+  }
+
+  @override
+  Future<void> setVolume(double volume) async {
+    _volume = volume.clamp(AudioConstants.minVolume, AudioConstants.maxVolume);
+  }
+
+  @override
+  Future<bool> toggleMute() async {
+    _isMuted = !_isMuted;
+    return _isMuted;
+  }
+}

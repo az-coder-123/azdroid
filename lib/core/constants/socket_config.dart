@@ -14,6 +14,9 @@ class SocketConfig {
   /// Default port for high-frequency input and control packet transmission.
   static const int defaultControlStreamPort = 27184;
 
+  /// Default port for low-latency audio stream transmission.
+  static const int defaultAudioStreamPort = 27185;
+
   /// Socket connection timeout duration in milliseconds.
   static const Duration connectionTimeout = Duration(seconds: 5);
 

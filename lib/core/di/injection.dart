@@ -1,6 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
+import 'package:wifi_desk/features/audio/data/repositories/audio_repository_impl.dart';
+import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
+import 'package:wifi_desk/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:wifi_desk/features/control/data/datasources/control_datasource.dart';
 import 'package:wifi_desk/features/control/data/repositories/control_repository_impl.dart';
 import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
@@ -10,6 +14,7 @@ import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/data/datasources/clipboard_datasource.dart';
 import 'package:wifi_desk/features/productivity/data/datasources/file_transfer_datasource.dart';
 import 'package:wifi_desk/features/productivity/data/repositories/clipboard_repository_impl.dart';
@@ -103,6 +108,21 @@ Future<void> initDependencies() async {
     () => FileTransferRepositoryImpl(datasource: sl<FileTransferDatasource>()),
   );
 
+  // Audio data sources & repositories
+  sl.registerLazySingleton<AudioSocketDatasource>(
+    () => AudioSocketDatasourceImpl(),
+  );
+
+  sl.registerLazySingleton<AudioRepository>(
+    () => AudioRepositoryImpl(
+      serverManager: sl<ScrcpyServerManager>(),
+      socketDatasource: sl<AudioSocketDatasource>(),
+    ),
+  );
+
+  // Menu Bar companion service
+  sl.registerLazySingleton<MenuBarCubit>(() => MenuBarCubit());
+
   // Cubits & Blocs (Factory registrations so each consumer receives a fresh instance)
   sl.registerFactory<DiscoveryCubit>(
     () => DiscoveryCubit(repository: sl<DeviceDiscoveryRepository>()),
@@ -126,5 +146,9 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<FileTransferCubit>(
     () => FileTransferCubit(repository: sl<FileTransferRepository>()),
+  );
+
+  sl.registerFactory<AudioCubit>(
+    () => AudioCubit(repository: sl<AudioRepository>()),
   );
 }

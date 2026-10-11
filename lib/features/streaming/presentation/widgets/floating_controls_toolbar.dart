@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:wifi_desk/features/audio/presentation/widgets/audio_controls_widget.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 
@@ -87,6 +88,8 @@ class FloatingControlsToolbar extends StatelessWidget {
             color: session.isScreenOff ? AppColors.statusWarning : null,
             onPressed: onToggleScreenOff,
           ),
+          const SizedBox(width: 8),
+          const AudioControlsWidget(),
           const SizedBox(width: 8),
           PopupMenuButton<int>(
             tooltip: 'Streaming Bitrate & Quality',

@@ -3,9 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/core/theme/app_theme.dart';
+import 'package:wifi_desk/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
+import 'package:wifi_desk/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
@@ -24,11 +28,14 @@ class MockClipboardRepository extends Mock implements ClipboardRepository {}
 class MockFileTransferRepository extends Mock
     implements FileTransferRepository {}
 
+class MockAudioRepository extends Mock implements AudioRepository {}
+
 void main() {
   late MockStreamingRepository mockRepository;
   late MockControlRepository mockControlRepository;
   late MockClipboardRepository mockClipboardRepository;
   late MockFileTransferRepository mockFileTransferRepository;
+  late MockAudioRepository mockAudioRepository;
 
   const testDevice = DeviceEntity(
     id: '192.168.1.100:5555',
@@ -49,18 +56,31 @@ void main() {
     latencyMs: 18,
   );
 
+  const testAudioStream = AudioStreamEntity(
+    deviceId: '192.168.1.100:5555',
+    volume: 0.8,
+    isMuted: false,
+  );
+
   setUp(() async {
     await sl.reset();
     mockRepository = MockStreamingRepository();
     mockControlRepository = MockControlRepository();
     mockClipboardRepository = MockClipboardRepository();
     mockFileTransferRepository = MockFileTransferRepository();
+    mockAudioRepository = MockAudioRepository();
 
     when(() => mockRepository.startSession(testDevice))
         .thenAnswer((_) async => testSession);
     when(() => mockRepository.stopSession(any())).thenAnswer((_) async {});
     when(() => mockRepository.sendNavigationKey(any(), any()))
         .thenAnswer((_) async {});
+    when(() => mockAudioRepository.startAudioStream(any()))
+        .thenAnswer((_) async => testAudioStream);
+    when(() => mockAudioRepository.stopAudioStream(any()))
+        .thenAnswer((_) async {});
+    when(() => mockAudioRepository.setVolume(any())).thenAnswer((_) async {});
+    when(() => mockAudioRepository.toggleMute()).thenAnswer((_) async => true);
 
     sl.registerLazySingleton<StreamingRepository>(() => mockRepository);
     sl.registerFactory<StreamingCubit>(
@@ -85,6 +105,13 @@ void main() {
     sl.registerFactory<FileTransferCubit>(
       () => FileTransferCubit(repository: sl<FileTransferRepository>()),
     );
+
+    sl.registerLazySingleton<AudioRepository>(() => mockAudioRepository);
+    sl.registerFactory<AudioCubit>(
+      () => AudioCubit(repository: sl<AudioRepository>()),
+    );
+
+    sl.registerLazySingleton<MenuBarCubit>(() => MenuBarCubit());
   });
 
   tearDown(() async {

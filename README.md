@@ -120,7 +120,7 @@ flutter run -d macos
 - [x] Integrate low-latency H.264 video pipeline via `scrcpy-server` and Flutter Texture
 - [x] Build mouse and keyboard input translation layer
 - [x] Implement bidirectional clipboard synchronization and drag-and-drop transfers
-- [ ] Implement macOS Menu Bar companion and audio forwarding
+- [x] Implement macOS Menu Bar companion and audio forwarding
 
 ---
 

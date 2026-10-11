@@ -55,6 +55,7 @@ lib/
 │   ├── constants/                          # Zero-hardcoding constants
 │   │   ├── android_key_codes.dart          # Android KeyEvent codes & Flutter key mapper
 │   │   ├── app_constants.dart              # App metadata, dimensions
+│   │   ├── audio_constants.dart            # Audio sample rate, channels, codec defaults
 │   │   ├── control_constants.dart          # Pointer, swipe, and scroll parameters
 │   │   ├── productivity_constants.dart     # Clipboard sync & file transfer parameters
 │   │   └── socket_config.dart              # Network ports, timeouts
@@ -134,6 +135,24 @@ lib/
 │   │       ├── widgets/clipboard_sync_menu_button.dart
 │   │       ├── widgets/file_drop_target_overlay.dart
 │   │       └── widgets/transfer_status_banner.dart
+│   ├── audio/                              # Low-latency raw Opus/PCM audio forwarding
+│   │   ├── domain/
+│   │   │   ├── entities/audio_stream_entity.dart
+│   │   │   └── repositories/audio_repository.dart
+│   │   ├── data/
+│   │   │   ├── datasources/audio_socket_datasource.dart
+│   │   │   └── repositories/audio_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── cubit/audio_cubit.dart
+│   │       ├── cubit/audio_state.dart
+│   │       └── widgets/audio_controls_widget.dart
+│   ├── menubar/                            # macOS Menu Bar companion & system status
+│   │   ├── domain/
+│   │   │   └── entities/menu_bar_status_entity.dart
+│   │   └── presentation/
+│   │       ├── cubit/menu_bar_cubit.dart
+│   │       ├── cubit/menu_bar_state.dart
+│   │       └── widgets/menu_bar_companion_popover.dart
 │   └── settings/                           # User preferences & stream quality
 │       └── domain/entities/app_settings_entity.dart
 └── main.dart                               # Entrypoint with DI & MultiBlocProvider
