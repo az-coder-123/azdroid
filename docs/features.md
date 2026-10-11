@@ -1,99 +1,109 @@
-# WifiDesk Features & Technical Specifications
+# WifiDesk — Technical Specifications & Feature Documentation
 
-> Chi tiết các tính năng và thông số kỹ thuật của dự án mã nguồn mở **WifiDesk** — giải pháp trình chiếu và điều khiển thiết bị Android qua mạng Wi-Fi cục bộ trên macOS.
-
----
-
-## 📑 Mục lục
-1. [Kết nối không dây & Tự động nhận diện thiết bị (Wireless Discovery)](#1-kết-nối-không-dây--tự-động-nhận-diện-thiết-bị)
-2. [Hiển thị & Giải mã thời gian thực (Ultra-Low Latency Display)](#2-hiển-thị--giải-mã-thời-gian-thực)
-3. [Điều khiển từ xa toàn diện (Full Remote Control)](#3-điều-khiển-từ-xa-toàn-diện)
-4. [Tính năng nâng cao Mac-First (Mac Productivity)](#4-tính-năng-nâng-cao-mac-first)
-5. [Bảo mật & Quyền riêng tư (Privacy & Security)](#5-bảo-mật--quyền-riêng-tư)
-6. [Lộ trình phát triển tính năng (Roadmap)](#6-lộ-trình-phát-triển-tính-năng)
+> Comprehensive specification and architectural breakdown of the **WifiDesk** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS over local Wi-Fi.
 
 ---
 
-## 1. Kết nối không dây & Tự động nhận diện thiết bị
-
-- **Zero-Config Discovery (mDNS / Bonjour):**
-  - Tự động dò tìm các thiết bị Android đã bật *Wireless Debugging* trong cùng mạng Wi-Fi nội bộ.
-  - Người dùng không cần phải gõ thủ công địa chỉ IP (ví dụ `192.168.1.xxx:5555`).
-- **Ghép nối 1 chạm qua mã QR / PIN (Pairing Assistant):**
-  - Hỗ trợ chuẩn ghép nối bảo mật từ Android 11+ (`adb pair`).
-  - Giao diện hướng dẫn từng bước trực quan cho người dùng mới.
-- **Tự động kết nối lại (Auto Reconnect):**
-  - Tự phát hiện và khôi phục kết nối ngay khi thiết bị quay trở lại cùng vùng phủ sóng Wi-Fi.
-- **Hỗ trợ cắm cáp USB dự phòng:**
-  - Tự động chuyển đổi mượt mà giữa USB và Wi-Fi mà không làm gián đoạn phiên làm việc.
+## 📑 Table of Contents
+1. [Wireless Connectivity & Device Discovery](#1-wireless-connectivity--device-discovery)
+2. [Ultra-Low Latency Display Engine](#2-ultra-low-latency-display-engine)
+3. [Comprehensive Remote Control & Input Injection](#3-comprehensive-remote-control--input-injection)
+4. [Mac-First Productivity Features](#4-mac-first-productivity-features)
+5. [Security & Privacy Architecture](#5-security--privacy-architecture)
+6. [Feature Roadmap](#6-feature-roadmap)
 
 ---
 
-## 2. Hiển thị & Giải mã thời gian thực
+## 1. Wireless Connectivity & Device Discovery
 
-- **Độ trễ siêu thấp (Zero-Latency Stream < 30ms):**
-  - Tận dụng `scrcpy-server` tầng thấp để thu thập khung hình trực tiếp từ `SurfaceControl` của Android.
-  - Truyền tải luồng H.264/H.265 NAL units thô qua Socket TCP nội mạng.
-- **Tốc độ khung hình mượt mà (Up to 60/120 FPS):**
-  - Hỗ trợ màn hình tần số quét cao (90Hz / 120Hz) trên các dòng máy Android đời mới.
-- **Tối ưu hiển thị cho màn hình Apple Retina:**
-  - Tự động xử lý tỉ lệ hiển thị (HiDPI / Scaling) để hình ảnh sắc nét, không bị răng cưa hay vỡ hạt.
-- **Tùy chỉnh linh hoạt Bitrate & Độ phân giải:**
-  - Cho phép người dùng tùy chọn độ phân giải từ 720p, 1080p đến 2K/4K.
-  - Tự điều chỉnh bitrate (2 Mbps - 16 Mbps) theo chất lượng sóng Wi-Fi.
+### 1.1 Zero-Configuration Discovery (mDNS / Bonjour)
+- **Local Service Broadcasting:** Automatically discovers Android devices on the same Wi-Fi subnet with active Wireless Debugging enabled via multicast DNS (`_adb-tls-connect._tcp` / `_adb._tcp`).
+- **Elimination of Manual Configuration:** Eliminates the need for users to manually inspect phone settings or enter IP addresses and ports (e.g., `192.168.1.100:5555`).
 
----
+### 1.2 Interactive Pairing Assistant (Android 11+)
+- **Wi-Fi Pairing Protocol:** Native integration with Android's secure pairing workflow (`adb pair <ip>:<port> <pairing-code>`).
+- **QR Code & PIN Onboarding:** Provides a clean graphical guide for one-time PIN verification and pairing code confirmation.
 
-## 3. Điều khiển từ xa toàn diện
+### 1.3 Automatic Session Recovery
+- **Heartbeat & Keep-Alive:** Monitors TCP socket connectivity in real time.
+- **Instant Reconnection:** Seamlessly detects when a device drops from the Wi-Fi network and automatically re-establishes the streaming session upon rejoining.
 
-- **Mô phỏng chuột & Cảm ứng đa điểm (Touch & Mouse Simulation):**
-  - Chuột trái: Chạm (Tap) / Nhấn giữ (Long press) / Kéo (Drag).
-  - Chuột phải: Phím **Back** của Android.
-  - Cuộn chuột: Cuộn danh sách mượt mà (Smooth scrolling).
-  - Phím chuột giữa / Cmd + H: Phím **Home** của Android.
-  - Cmd + S: Mở màn hình đa nhiệm (App Switcher).
-- **Gõ bàn phím tiếng Việt & Ký tự đặc biệt:**
-  - Nhập liệu trực tiếp từ bàn phím macOS sang Android thông qua inject text hoặc IME đồng bộ.
-  - Hỗ trợ đầy đủ bộ gõ tiếng Việt (Telex/VNI) từ Mac.
-- **Ánh xạ phím tùy biến (Key Mapping):**
-  - Cho phép gán các phím cứng trên Mac để kích hoạt các hành động cụ thể trên Android.
+### 1.4 Dynamic Transport Fallback
+- **USB & Wi-Fi Hot-Swapping:** Allows uninterrupted switching between tethered USB and wireless Wi-Fi connections without terminating active tasks or restarting the server daemon.
 
 ---
 
-## 4. Tính năng nâng cao Mac-First
+## 2. Ultra-Low Latency Display Engine
 
-- **Đồng bộ hóa Clipboard hai chiều (Shared Clipboard):**
-  - Copy một đoạn văn bản hoặc link trên macOS (`Cmd + C`), lập tức dán được trên Android (`Paste`) và ngược lại.
-- **Kéo & Thả tập tin (Drag & Drop File Transfer):**
-  - Kéo file ảnh, video, tài liệu từ Finder trên macOS thả thẳng vào cửa sổ WifiDesk để chuyển file sang Android.
-  - Kéo file `.apk` vào để tự động cài đặt ứng dụng lên điện thoại.
-- **Tắt màn hình điện thoại khi stream (Screen-off Streaming):**
-  - Màn hình điện thoại vật lý tự động tắt đen trong khi vẫn hiển thị và điều khiển bình thường trên Mac.
-  - Giúp điện thoại không bị nóng, không chai pin và bảo vệ sự riêng tư ở nơi công cộng.
-- **Tích hợp Menu Bar macOS (Status Bar Companion):**
-  - Ứng dụng có thể thu nhỏ thành một biểu tượng tinh tế trên thanh Menu Bar của Mac.
-  - Bấm vào biểu tượng để bật/tắt nhanh cửa sổ điện thoại hoặc kiểm tra pin, trạng thái kết nối.
-- **Chuyển tiếp âm thanh (Audio Forwarding):**
-  - Hỗ trợ truyền âm thanh từ Android sang loa của Mac (hỗ trợ Android 10+ với SNDCPY hoặc Android 12+ native audio forwarding).
+### 2.1 Hardware-Accelerated Video Pipeline
+- **Direct Frame Capture:** Interacts directly with Android's internal `SurfaceControl` API to bypass UI toolkit overhead.
+- **On-Device Hardware Encoding:** Encodes raw video frames directly via the device's GPU/VPU using `MediaCodec` (H.264 Baseline/High Profile and optional H.265/HEVC).
+- **Sub-30ms Glass-to-Glass Latency:** Streams raw NAL units over raw TCP sockets directly into native hardware decoders on macOS (Apple VideoToolbox / Metal).
 
----
+### 2.2 High Refresh Rate & Fluid Rendering
+- **High Frame Rates (60 / 90 / 120 FPS):** Fully supports modern Android high-refresh-rate displays for butter-smooth animations and responsiveness.
+- **Dynamic Bitrate Scaling:** Automatically throttles bitrate (ranging from 2 Mbps to 20 Mbps) based on Wi-Fi packet jitter, dropped frames, and network congestion.
 
-## 5. Bảo mật & Quyền riêng tư
-
-- **100% P2P trong mạng LAN:**
-  - Không truyền bất kỳ luồng video hay dữ liệu nào qua máy chủ trung gian trên Internet.
-  - Hoạt động ngay cả khi ngắt kết nối Internet (chỉ cần router Wi-Fi nội bộ).
-- **Không yêu cầu tài khoản đám mây:**
-  - Người dùng không cần đăng ký tài khoản, không lo bị rò rỉ dữ liệu cá nhân.
-- **Mã nguồn mở (Open Source):**
-  - Toàn bộ mã nguồn minh bạch, cho phép cộng đồng kiểm tra và đóng góp.
+### 2.3 Apple Retina & HiDPI Optimization
+- **Pixel-Perfect Scaling:** Adapts to Apple Retina displays with automatic pixel density compensation (HiDPI integer/fractional scaling), eliminating blurriness and visual artifacts.
+- **Configurable Resolutions:** Presets available for 720p, 1080p, 2K, and native device resolution.
 
 ---
 
-## 6. Lộ trình phát triển tính năng
+## 3. Comprehensive Remote Control & Input Injection
+
+### 3.1 Advanced Mouse & Multi-Touch Emulation
+- **Pointer Event Normalization:** Normalizes cursor coordinates ($0.0 \to 1.0$) to guarantee precision across differing display aspect ratios and resolutions.
+- **Primary Actions:**
+  - **Left Click:** Touch down, drag, and touch up.
+  - **Right Click:** Android system **Back** action (`KEYCODE_BACK`).
+  - **Middle Click / Command + H:** Android system **Home** action (`KEYCODE_HOME`).
+  - **Command + Tab / Command + S:** Android **Recent Apps / App Switcher** (`KEYCODE_APP_SWITCH`).
+- **Smooth Inertial Scrolling:** Converts macOS trackpad and mouse wheel scroll events into natural Android gesture scroll velocity.
+
+### 3.2 Keyboard & International Text Input
+- **Direct Keystroke Forwarding:** Maps macOS hardware keys to Android standard Linux/Android keycodes.
+- **IME & Unicode Text Synchronization:** Injects complex international characters and multi-byte input (e.g., Vietnamese Telex/VNI, Japanese, Chinese) directly into the active Android text field without character loss.
+
+---
+
+## 4. Mac-First Productivity Features
+
+### 4.1 Bidirectional Clipboard Synchronization
+- **Real-Time Clipboard Sync:** Automatically synchronizes text copies between the macOS Pasteboard and the Android System Clipboard (`Cmd + C` on Mac $\to$ `Paste` on Android, and vice versa).
+
+### 4.2 Drag & Drop File Sharing
+- **File Transfer:** Drag images, documents, and videos from macOS Finder directly onto the device viewport to store them in the Android `Downloads` directory.
+- **APK Sideloading:** Drag `.apk` packages onto the window to trigger automatic background installation.
+
+### 4.3 Screen-Off Mirroring (Energy & Privacy Optimization)
+- **Host Display Power Management:** Automatically blanks the physical Android display during an active mirroring session (`--turn-screen-off` flag).
+- **Thermal & Battery Protection:** Dramatically reduces device heat dissipation and battery consumption while safeguarding user privacy in public settings.
+
+### 4.4 macOS Menu Bar Companion
+- **System Tray Integration:** Runs discretely in the macOS Menu Bar. Users can quickly toggle device windows, check Wi-Fi connection quality, and monitor device battery levels with a single click.
+
+### 4.5 Audio Forwarding
+- **Synchronized Audio Stream:** Low-latency PCM/AAC audio streaming directly to macOS audio output devices (via Android 10+ internal audio capture API).
+
+---
+
+## 5. Security & Privacy Architecture
+
+### 5.1 Local Peer-to-Peer Protocol
+- **Strictly LAN-Bound:** Audio, video, and input streams travel strictly across the local wireless network. No external relay servers, STUN/TURN traversal, or cloud proxies are utilized.
+- **Offline Reliability:** Fully operational in air-gapped environments without an active Internet uplink.
+
+### 5.2 Zero Telemetry & Open Source
+- **No Account Required:** Completely functional without user registration, subscriptions, or telemetry gathering.
+- **Auditable Security:** Built entirely from transparent, verifiable open-source code under the MIT license.
+
+---
+
+## 6. Feature Roadmap
 
 ```mermaid
 flowchart LR
-    A["Giai đoạn 1: Core MVP\n- Kết nối ADB Wi-Fi\n- Stream 60 FPS\n- Chuột & Bàn phím cơ bản"] --> B["Giai đoạn 2: Trải nghiệm Mac\n- Auto Discovery mDNS\n- Shared Clipboard\n- Kéo thả file\n- Tắt màn hình điện thoại"]
-    B --> C["Giai đoạn 3: Tính năng Pro\n- Audio Forwarding\n- Menu Bar integration\n- Quản lý nhiều thiết bị\n- Phím tắt chơi game"]
+    A["Phase 1: Core MVP\n• Wireless ADB Connect\n• 60 FPS Hardware Stream\n• Basic Mouse & Keyboard"] --> B["Phase 2: Mac Polish\n• mDNS Auto-Discovery\n• Shared Clipboard\n• Drag-and-Drop Files\n• Screen-Off Streaming"]
+    B --> C["Phase 3: Power Features\n• Audio Forwarding\n• macOS Menu Bar Agent\n• Multi-Device Dashboard\n• Low-Latency Game Mapping"]
 ```
