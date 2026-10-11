@@ -27,6 +27,6 @@ class AppColors {
   // Status & Telemetry Indicators
   static const Color statusSuccess = Color(0xFF34C759); // Green
   static const Color statusWarning = Color(0xFFFF9500); // Orange
-  static const Color statusError = Color(0xFFFF3B30);   // Red
-  static const Color statusInfo = Color(0xFF5AC8FA);    // Light Blue
+  static const Color statusError = Color(0xFFFF3B30); // Red
+  static const Color statusInfo = Color(0xFF5AC8FA); // Light Blue
 }

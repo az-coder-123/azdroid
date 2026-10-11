@@ -30,7 +30,32 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
   @override
   Future<bool> disconnectDevice(String deviceId) async {
     try {
-      return await datasource.disconnect(deviceId, 5555);
+      return await datasource.disconnect(deviceId);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> pairDevice({
+    required String ipAddress,
+    required int port,
+    required String pairingCode,
+  }) async {
+    try {
+      return await datasource.pair(ipAddress, port, pairingCode);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> manualConnect({
+    required String ipAddress,
+    required int port,
+  }) async {
+    try {
+      return await datasource.connect(ipAddress, port);
     } catch (_) {
       return false;
     }

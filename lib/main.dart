@@ -23,9 +23,7 @@ class WifiDeskApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<DiscoveryCubit>(
-          create: (_) => sl<DiscoveryCubit>(),
-        ),
+        BlocProvider<DiscoveryCubit>(create: (_) => sl<DiscoveryCubit>()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,

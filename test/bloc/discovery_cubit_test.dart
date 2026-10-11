@@ -63,7 +63,8 @@ void main() {
       expect: () => [
         const DiscoveryLoading(),
         const DiscoveryError(
-            message: 'Failed to scan for devices: Exception: Scan failed'),
+          message: 'Failed to scan for devices: Exception: Scan failed',
+        ),
       ],
       verify: (_) {
         verify(() => mockRepository.discoverDevices()).called(1);
@@ -88,6 +89,56 @@ void main() {
         verify(() => mockRepository.connectDevice(testDevice)).called(1);
         verify(() => mockRepository.discoverDevices()).called(1);
       },
+    );
+
+    blocTest<DiscoveryCubit, DiscoveryState>(
+      'manualConnect succeeds and refreshes list',
+      build: () {
+        when(
+          () => mockRepository.manualConnect(
+            ipAddress: '192.168.1.50',
+            port: 5555,
+          ),
+        ).thenAnswer((_) async => true);
+        when(() => mockRepository.discoverDevices())
+            .thenAnswer((_) async => [testDevice]);
+        return discoveryCubit;
+      },
+      act: (cubit) =>
+          cubit.manualConnect(ipAddress: '192.168.1.50', port: 5555),
+      expect: () => [
+        const DiscoveryLoading(),
+        const DiscoveryLoaded(devices: [testDevice]),
+      ],
+      verify: (_) {
+        verify(
+          () => mockRepository.manualConnect(
+            ipAddress: '192.168.1.50',
+            port: 5555,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<DiscoveryCubit, DiscoveryState>(
+      'manualConnect emits DiscoveryError when connect fails',
+      build: () {
+        when(
+          () => mockRepository.manualConnect(
+            ipAddress: '192.168.1.50',
+            port: 5555,
+          ),
+        ).thenAnswer((_) async => false);
+        return discoveryCubit;
+      },
+      act: (cubit) =>
+          cubit.manualConnect(ipAddress: '192.168.1.50', port: 5555),
+      expect: () => [
+        const DiscoveryLoading(),
+        const DiscoveryError(
+          message: 'Failed to connect to 192.168.1.50:5555. Ensure Wireless Debugging is on.',
+        ),
+      ],
     );
   });
 }

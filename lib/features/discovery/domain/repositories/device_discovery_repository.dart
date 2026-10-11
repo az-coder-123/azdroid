@@ -1,8 +1,8 @@
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 
-/// Contract defining the device discovery and connectivity operations.
+/// Contract defining the device discovery, connectivity, and pairing operations.
 abstract class DeviceDiscoveryRepository {
-  /// Scans the local network subnet and USB ports for available Android devices.
+  /// Scans the local network subnet and USB ports for available Android devices and mDNS services.
   Future<List<DeviceEntity>> discoverDevices();
 
   /// Initiates a connection session to the specified [device].
@@ -10,4 +10,14 @@ abstract class DeviceDiscoveryRepository {
 
   /// Terminates an active connection session with the device identified by [deviceId].
   Future<bool> disconnectDevice(String deviceId);
+
+  /// Pairs an Android 11+ device using wireless debugging pairing credentials.
+  Future<bool> pairDevice({
+    required String ipAddress,
+    required int port,
+    required String pairingCode,
+  });
+
+  /// Connects directly to an Android device via explicit IP and port.
+  Future<bool> manualConnect({required String ipAddress, required int port});
 }

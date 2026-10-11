@@ -21,12 +21,13 @@ final class DiscoveryLoading extends DiscoveryState {
 
 /// State emitted when device discovery finishes with a list of found devices.
 final class DiscoveryLoaded extends DiscoveryState {
-  const DiscoveryLoaded({required this.devices});
+  const DiscoveryLoaded({required this.devices, this.isAutoScanning = false});
 
   final List<DeviceEntity> devices;
+  final bool isAutoScanning;
 
   @override
-  List<Object?> get props => [devices];
+  List<Object?> get props => [devices, isAutoScanning];
 }
 
 /// State emitted when an error occurs during discovery or connection.

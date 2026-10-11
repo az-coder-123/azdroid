@@ -9,6 +9,9 @@ class DeviceModel extends DeviceEntity {
     required super.port,
     required super.connectionType,
     super.isConnected = false,
+    super.isUnauthorized = false,
+    super.requiresPairing = false,
+    super.pairingPort,
     super.batteryLevel,
     super.model,
   });
@@ -24,6 +27,9 @@ class DeviceModel extends DeviceEntity {
           ? DeviceConnectionType.usb
           : DeviceConnectionType.wireless,
       isConnected: json['isConnected'] as bool? ?? false,
+      isUnauthorized: json['isUnauthorized'] as bool? ?? false,
+      requiresPairing: json['requiresPairing'] as bool? ?? false,
+      pairingPort: json['pairingPort'] as int?,
       batteryLevel: json['batteryLevel'] as int?,
       model: json['model'] as String?,
     );
@@ -36,9 +42,13 @@ class DeviceModel extends DeviceEntity {
       'name': name,
       'ipAddress': ipAddress,
       'port': port,
-      'connectionType':
-          connectionType == DeviceConnectionType.usb ? 'usb' : 'wireless',
+      'connectionType': connectionType == DeviceConnectionType.usb
+          ? 'usb'
+          : 'wireless',
       'isConnected': isConnected,
+      'isUnauthorized': isUnauthorized,
+      'requiresPairing': requiresPairing,
+      'pairingPort': pairingPort,
       'batteryLevel': batteryLevel,
       'model': model,
     };
@@ -53,6 +63,9 @@ class DeviceModel extends DeviceEntity {
       port: entity.port,
       connectionType: entity.connectionType,
       isConnected: entity.isConnected,
+      isUnauthorized: entity.isUnauthorized,
+      requiresPairing: entity.requiresPairing,
+      pairingPort: entity.pairingPort,
       batteryLevel: entity.batteryLevel,
       model: entity.model,
     );

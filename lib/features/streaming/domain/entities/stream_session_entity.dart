@@ -39,13 +39,13 @@ class StreamSessionEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        sessionId,
-        deviceId,
-        width,
-        height,
-        fps,
-        bitrateMbps,
-        textureId,
-        isAudioEnabled,
-      ];
+    sessionId,
+    deviceId,
+    width,
+    height,
+    fps,
+    bitrateMbps,
+    textureId,
+    isAudioEnabled,
+  ];
 }

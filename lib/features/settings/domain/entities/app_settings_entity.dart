@@ -49,11 +49,11 @@ class AppSettingsEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        maxFps,
-        bitrateMbps,
-        turnScreenOff,
-        stayAwake,
-        autoReconnect,
-        audioForwarding,
-      ];
+    maxFps,
+    bitrateMbps,
+    turnScreenOff,
+    stayAwake,
+    autoReconnect,
+    audioForwarding,
+  ];
 }

@@ -57,6 +57,9 @@ lib/
 │   │   └── socket_config.dart              # Network ports, timeouts
 │   ├── di/                                 # Dependency Injection container
 │   │   └── injection.dart                  # Service locator configuration (GetIt)
+│   ├── services/                           # System process & native bridge services
+│   │   ├── adb_service.dart                # ADB CLI & mDNS daemon controller
+│   │   └── process_executor.dart           # Testable process runner abstraction
 │   └── theme/                              # Apple-native design system tokens
 │       ├── app_colors.dart                 # macOS Dark Mode color palette
 │       ├── app_typography.dart             # Apple system font styles
@@ -73,8 +76,12 @@ lib/
 │   │   └── presentation/
 │   │       ├── cubit/discovery_cubit.dart
 │   │       ├── cubit/discovery_state.dart
+│   │       ├── cubit/pairing_cubit.dart
+│   │       ├── cubit/pairing_state.dart
 │   │       ├── widgets/device_card.dart
 │   │       ├── widgets/empty_state_view.dart
+│   │       ├── widgets/manual_connect_dialog.dart
+│   │       ├── widgets/pairing_dialog.dart
 │   │       └── pages/discovery_page.dart
 │   ├── streaming/                          # Low-latency H.264 video pipeline
 │   │   └── domain/entities/stream_session_entity.dart

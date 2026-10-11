@@ -116,7 +116,7 @@ flutter run -d macos
 - [x] Integrated Cubit state management with `flutter_bloc`
 - [x] Established Apple-native design tokens & theme system
 - [x] Built comprehensive automated test suite (Unit, BLoC, Widget tests)
-- [ ] Implement mDNS device discovery daemon and pairing assistant
+- [x] Implement mDNS device discovery daemon and pairing assistant
 - [ ] Integrate low-latency H.264 video pipeline via `scrcpy-server` and Flutter Texture
 - [ ] Build mouse and keyboard input translation layer
 - [ ] Implement bidirectional clipboard synchronization and drag-and-drop transfers

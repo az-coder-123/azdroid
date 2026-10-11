@@ -60,7 +60,9 @@ class EmptyStateView extends StatelessWidget {
                       ),
                     )
                   : const Icon(Icons.refresh_rounded, size: 18),
-              label: Text(isScanning ? 'Scanning Network...' : 'Scan for Devices'),
+              label: Text(
+                isScanning ? 'Scanning Network...' : 'Scan for Devices',
+              ),
             ),
           ],
         ),

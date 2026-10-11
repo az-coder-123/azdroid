@@ -45,12 +45,12 @@ class InputEventEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        type,
-        normalizedX,
-        normalizedY,
-        keyCode,
-        button,
-        scrollDeltaX,
-        scrollDeltaY,
-      ];
+    type,
+    normalizedX,
+    normalizedY,
+    keyCode,
+    button,
+    scrollDeltaX,
+    scrollDeltaY,
+  ];
 }

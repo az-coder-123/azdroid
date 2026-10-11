@@ -1,10 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Connection medium between the Mac host and the Android target.
-enum DeviceConnectionType {
-  wireless,
-  usb,
-}
+enum DeviceConnectionType { wireless, usb }
 
 /// Core domain entity representing an Android device.
 class DeviceEntity extends Equatable {
@@ -15,6 +12,9 @@ class DeviceEntity extends Equatable {
     required this.port,
     required this.connectionType,
     this.isConnected = false,
+    this.isUnauthorized = false,
+    this.requiresPairing = false,
+    this.pairingPort,
     this.batteryLevel,
     this.model,
   });
@@ -37,6 +37,15 @@ class DeviceEntity extends Equatable {
   /// Active connection status.
   final bool isConnected;
 
+  /// Whether the device is in unauthorized state (requires user to accept prompt on phone).
+  final bool isUnauthorized;
+
+  /// Whether this device was discovered via mDNS pairing service and needs PIN pairing.
+  final bool requiresPairing;
+
+  /// Optional mDNS pairing port (different from connect port).
+  final int? pairingPort;
+
   /// Current battery percentage (0-100), if available.
   final int? batteryLevel;
 
@@ -50,6 +59,9 @@ class DeviceEntity extends Equatable {
     int? port,
     DeviceConnectionType? connectionType,
     bool? isConnected,
+    bool? isUnauthorized,
+    bool? requiresPairing,
+    int? pairingPort,
     int? batteryLevel,
     String? model,
   }) {
@@ -60,6 +72,9 @@ class DeviceEntity extends Equatable {
       port: port ?? this.port,
       connectionType: connectionType ?? this.connectionType,
       isConnected: isConnected ?? this.isConnected,
+      isUnauthorized: isUnauthorized ?? this.isUnauthorized,
+      requiresPairing: requiresPairing ?? this.requiresPairing,
+      pairingPort: pairingPort ?? this.pairingPort,
       batteryLevel: batteryLevel ?? this.batteryLevel,
       model: model ?? this.model,
     );
@@ -67,13 +82,16 @@ class DeviceEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        ipAddress,
-        port,
-        connectionType,
-        isConnected,
-        batteryLevel,
-        model,
-      ];
+    id,
+    name,
+    ipAddress,
+    port,
+    connectionType,
+    isConnected,
+    isUnauthorized,
+    requiresPairing,
+    pairingPort,
+    batteryLevel,
+    model,
+  ];
 }
