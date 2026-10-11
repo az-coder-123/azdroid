@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/constants/socket_config.dart';
+import 'package:wifi_desk/core/di/injection.dart';
+import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
 
@@ -29,6 +31,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
   late final TextEditingController _ipController;
   late final TextEditingController _portController;
   String? _errorMessage;
+  String? _hostMacIp;
 
   @override
   void initState() {
@@ -37,6 +40,16 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
     _portController = TextEditingController(
       text: SocketConfig.defaultAdbWirelessPort.toString(),
     );
+    _loadHostIp();
+  }
+
+  Future<void> _loadHostIp() async {
+    try {
+      final ip = await sl<NetworkInfoService>().getLocalIpAddress();
+      if (mounted && ip != null) {
+        setState(() => _hostMacIp = ip);
+      }
+    } catch (_) {}
   }
 
   @override
@@ -51,7 +64,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
     final port = int.tryParse(_portController.text.trim());
 
     if (ip.isEmpty) {
-      setState(() => _errorMessage = 'Please provide an IP address.');
+      setState(() => _errorMessage = 'Please provide the phone IP address.');
       return;
     }
 
@@ -69,11 +82,11 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
     return Dialog(
       backgroundColor: AppColors.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14.0),
+        borderRadius: BorderRadius.circular(16.0),
         side: const BorderSide(color: AppColors.border),
       ),
       child: Container(
-        width: 420,
+        width: 440,
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -113,19 +126,64 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
+
+            // Mac Subnet Indicator Banner
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.borderSubtle),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.wifi_rounded,
+                    size: 16,
+                    color: AppColors.statusSuccess,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _hostMacIp != null
+                          ? 'Mac Wi-Fi IP: $_hostMacIp'
+                          : 'Detecting Mac Wi-Fi IP...',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Must match Phone Wi-Fi',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 3,
                   child: TextField(
                     controller: _ipController,
                     autofocus: true,
-                    decoration: const InputDecoration(
-                      labelText: 'IP Address',
-                      hintText: '192.168.1.100',
+                    decoration: InputDecoration(
+                      labelText: 'Phone IP (IP Điện thoại)',
+                      hintText: _hostMacIp != null
+                          ? 'e.g. ${_hostMacIp!.substring(0, _hostMacIp!.lastIndexOf('.') + 1)}xxx'
+                          : '192.168.1.100',
+                      helperText: 'View in phone Wi-Fi settings',
                       isDense: true,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     onSubmitted: (_) => _submit(),
                   ),
@@ -137,8 +195,9 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                     controller: _portController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: 'Port',
+                      labelText: 'Port (Cổng)',
                       hintText: '5555',
+                      helperText: 'Default 5555',
                       isDense: true,
                       border: OutlineInputBorder(),
                     ),
@@ -156,7 +215,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                 ),
               ),
             ],
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -167,7 +226,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                 const SizedBox(width: 12),
                 ElevatedButton.icon(
                   onPressed: _submit,
-                  icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                  icon: const Icon(Icons.arrow_forward_rounded, size: 16),
                   label: const Text('Connect'),
                 ),
               ],

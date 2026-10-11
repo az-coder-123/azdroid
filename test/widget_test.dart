@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:wifi_desk/core/di/injection.dart';
+import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
@@ -11,14 +12,21 @@ import 'package:wifi_desk/main.dart';
 class MockDeviceDiscoveryRepository extends Mock
     implements DeviceDiscoveryRepository {}
 
+class MockNetworkInfoService extends Mock implements NetworkInfoService {}
+
 void main() {
   late MockDeviceDiscoveryRepository mockRepository;
+  late MockNetworkInfoService mockNetworkInfoService;
 
   setUp(() async {
     await sl.reset();
     mockRepository = MockDeviceDiscoveryRepository();
+    mockNetworkInfoService = MockNetworkInfoService();
     when(() => mockRepository.discoverDevices()).thenAnswer((_) async => []);
+    when(() => mockNetworkInfoService.getLocalIpAddress())
+        .thenAnswer((_) async => '192.168.1.12');
 
+    sl.registerLazySingleton<NetworkInfoService>(() => mockNetworkInfoService);
     sl.registerLazySingleton<DeviceDiscoveryRepository>(() => mockRepository);
     sl.registerFactory<DiscoveryCubit>(
       () => DiscoveryCubit(repository: sl<DeviceDiscoveryRepository>()),
@@ -46,6 +54,7 @@ void main() {
 
       expect(find.text('No Devices Discovered'), findsOneWidget);
       expect(find.text('Scan for Devices'), findsOneWidget);
+      expect(find.text('Pair with QR Code'), findsOneWidget);
       expect(find.text('Pair Device'), findsOneWidget);
       expect(find.text('Direct IP'), findsOneWidget);
 

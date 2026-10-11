@@ -218,6 +218,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
           return EmptyStateView(
             isScanning: false,
             onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
+            onPairWithQrPressed: () => _openPairingDialog(),
           );
         },
       ),

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
 import 'package:wifi_desk/features/audio/data/repositories/audio_repository_impl.dart';
@@ -38,6 +39,8 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<ProcessExecutor>(
     () => const DefaultProcessExecutor(),
   );
+
+  sl.registerLazySingleton<NetworkInfoService>(() => NetworkInfoServiceImpl());
 
   sl.registerLazySingleton<AdbService>(
     () => AdbService(processExecutor: sl<ProcessExecutor>()),
