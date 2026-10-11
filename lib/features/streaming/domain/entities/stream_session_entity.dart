@@ -5,12 +5,16 @@ class StreamSessionEntity extends Equatable {
   const StreamSessionEntity({
     required this.sessionId,
     required this.deviceId,
+    this.deviceName = 'Android Device',
     required this.width,
     required this.height,
     required this.fps,
     required this.bitrateMbps,
     this.textureId,
     this.isAudioEnabled = false,
+    this.isConnected = true,
+    this.isScreenOff = false,
+    this.latencyMs = 20,
   });
 
   /// Unique session identifier.
@@ -18,6 +22,9 @@ class StreamSessionEntity extends Equatable {
 
   /// Target Android device identifier.
   final String deviceId;
+
+  /// Human-readable device display name.
+  final String deviceName;
 
   /// Stream frame width in pixels.
   final int width;
@@ -37,15 +44,61 @@ class StreamSessionEntity extends Equatable {
   /// Whether audio forwarding is active for this session.
   final bool isAudioEnabled;
 
+  /// Active connection status flag.
+  final bool isConnected;
+
+  /// Whether the physical phone screen is powered off during streaming.
+  final bool isScreenOff;
+
+  /// Estimated glass-to-glass latency in milliseconds.
+  final int latencyMs;
+
+  /// Aspect ratio calculated from width and height.
+  double get aspectRatio => height > 0 ? width / height : 9 / 19.5;
+
+  StreamSessionEntity copyWith({
+    String? sessionId,
+    String? deviceId,
+    String? deviceName,
+    int? width,
+    int? height,
+    int? fps,
+    int? bitrateMbps,
+    int? textureId,
+    bool? isAudioEnabled,
+    bool? isConnected,
+    bool? isScreenOff,
+    int? latencyMs,
+  }) {
+    return StreamSessionEntity(
+      sessionId: sessionId ?? this.sessionId,
+      deviceId: deviceId ?? this.deviceId,
+      deviceName: deviceName ?? this.deviceName,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      fps: fps ?? this.fps,
+      bitrateMbps: bitrateMbps ?? this.bitrateMbps,
+      textureId: textureId ?? this.textureId,
+      isAudioEnabled: isAudioEnabled ?? this.isAudioEnabled,
+      isConnected: isConnected ?? this.isConnected,
+      isScreenOff: isScreenOff ?? this.isScreenOff,
+      latencyMs: latencyMs ?? this.latencyMs,
+    );
+  }
+
   @override
   List<Object?> get props => [
     sessionId,
     deviceId,
+    deviceName,
     width,
     height,
     fps,
     bitrateMbps,
     textureId,
     isAudioEnabled,
+    isConnected,
+    isScreenOff,
+    latencyMs,
   ];
 }

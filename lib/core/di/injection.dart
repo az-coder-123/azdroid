@@ -6,6 +6,11 @@ import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:wifi_desk/features/streaming/data/datasources/streaming_socket_datasource.dart';
+import 'package:wifi_desk/features/streaming/data/repositories/streaming_repository_impl.dart';
+import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
+import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 
 /// Global service locator instance.
 final GetIt sl = GetIt.instance;
@@ -21,15 +26,33 @@ Future<void> initDependencies() async {
     () => AdbService(processExecutor: sl<ProcessExecutor>()),
   );
 
-  // Data sources
+  // Discovery data sources & repositories
   sl.registerLazySingleton<DeviceDiscoveryDatasource>(
     () => DeviceDiscoveryDatasourceImpl(adbService: sl<AdbService>()),
   );
 
-  // Repositories
   sl.registerLazySingleton<DeviceDiscoveryRepository>(
     () => DeviceDiscoveryRepositoryImpl(
       datasource: sl<DeviceDiscoveryDatasource>(),
+    ),
+  );
+
+  // Streaming data sources & repositories
+  sl.registerLazySingleton<ScrcpyServerManager>(
+    () => ScrcpyServerManager(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<StreamingSocketDatasource>(
+    () => StreamingSocketDatasourceImpl(),
+  );
+
+  sl.registerLazySingleton<StreamingRepository>(
+    () => StreamingRepositoryImpl(
+      serverManager: sl<ScrcpyServerManager>(),
+      socketDatasource: sl<StreamingSocketDatasource>(),
     ),
   );
 
@@ -40,5 +63,9 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<PairingCubit>(
     () => PairingCubit(repository: sl<DeviceDiscoveryRepository>()),
+  );
+
+  sl.registerFactory<StreamingCubit>(
+    () => StreamingCubit(repository: sl<StreamingRepository>()),
   );
 }

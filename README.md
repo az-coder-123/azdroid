@@ -117,7 +117,7 @@ flutter run -d macos
 - [x] Established Apple-native design tokens & theme system
 - [x] Built comprehensive automated test suite (Unit, BLoC, Widget tests)
 - [x] Implement mDNS device discovery daemon and pairing assistant
-- [ ] Integrate low-latency H.264 video pipeline via `scrcpy-server` and Flutter Texture
+- [x] Integrate low-latency H.264 video pipeline via `scrcpy-server` and Flutter Texture
 - [ ] Build mouse and keyboard input translation layer
 - [ ] Implement bidirectional clipboard synchronization and drag-and-drop transfers
 - [ ] Implement macOS Menu Bar companion and audio forwarding

@@ -11,12 +11,14 @@ class DeviceCard extends StatelessWidget {
     required this.onConnect,
     required this.onDisconnect,
     this.onPair,
+    this.onMirror,
   });
 
   final DeviceEntity device;
   final ValueChanged<DeviceEntity> onConnect;
   final ValueChanged<String> onDisconnect;
   final ValueChanged<DeviceEntity>? onPair;
+  final ValueChanged<DeviceEntity>? onMirror;
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +113,25 @@ class DeviceCard extends StatelessWidget {
 
   Widget _buildActionButton() {
     if (device.isConnected) {
-      return OutlinedButton.icon(
-        onPressed: () => onDisconnect(device.id),
-        icon: const Icon(Icons.link_off_rounded, size: 16),
-        label: const Text('Disconnect'),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.statusError,
-          side: const BorderSide(color: AppColors.statusError),
-        ),
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton.icon(
+            onPressed: () => onMirror?.call(device),
+            icon: const Icon(Icons.screen_share_rounded, size: 16),
+            label: const Text('Mirror'),
+          ),
+          const SizedBox(width: 8),
+          OutlinedButton.icon(
+            onPressed: () => onDisconnect(device.id),
+            icon: const Icon(Icons.link_off_rounded, size: 16),
+            label: const Text('Disconnect'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.statusError,
+              side: const BorderSide(color: AppColors.statusError),
+            ),
+          ),
+        ],
       );
     }
 

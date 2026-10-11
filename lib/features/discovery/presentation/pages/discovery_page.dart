@@ -10,6 +10,7 @@ import 'package:wifi_desk/features/discovery/presentation/widgets/device_card.da
 import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state_view.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/manual_connect_dialog.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing_dialog.dart';
+import 'package:wifi_desk/features/streaming/presentation/pages/mirroring_page.dart';
 
 /// Main landing page of WifiDesk hosting the device discovery and pairing dashboard.
 class DiscoveryPage extends StatefulWidget {
@@ -51,6 +52,12 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
         ipAddress: ip,
         port: port,
       ),
+    );
+  }
+
+  void _startMirroring(DeviceEntity device) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => MirroringPage(device: device)),
     );
   }
 
@@ -188,11 +195,16 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                         final device = state.devices[index];
                         return DeviceCard(
                           device: device,
-                          onConnect: (d) =>
-                              context.read<DiscoveryCubit>().connect(d),
+                          onConnect: (d) async {
+                            await context.read<DiscoveryCubit>().connect(d);
+                            if (context.mounted) {
+                              _startMirroring(d);
+                            }
+                          },
                           onDisconnect: (id) =>
                               context.read<DiscoveryCubit>().disconnect(id),
                           onPair: (d) => _openPairingDialog(d),
+                          onMirror: (d) => _startMirroring(d),
                         );
                       },
                     ),

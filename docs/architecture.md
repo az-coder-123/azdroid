@@ -84,7 +84,20 @@ lib/
 │   │       ├── widgets/pairing_dialog.dart
 │   │       └── pages/discovery_page.dart
 │   ├── streaming/                          # Low-latency H.264 video pipeline
-│   │   └── domain/entities/stream_session_entity.dart
+│   │   ├── domain/
+│   │   │   ├── entities/stream_session_entity.dart
+│   │   │   └── repositories/streaming_repository.dart
+│   │   ├── data/
+│   │   │   ├── datasources/scrcpy_server_manager.dart
+│   │   │   ├── datasources/streaming_socket_datasource.dart
+│   │   │   └── repositories/streaming_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── cubit/streaming_cubit.dart
+│   │       ├── cubit/streaming_state.dart
+│   │       ├── widgets/floating_controls_toolbar.dart
+│   │       ├── widgets/stream_telemetry_header.dart
+│   │       ├── widgets/video_display_viewport.dart
+│   │       └── pages/mirroring_page.dart
 │   ├── control/                            # Input normalization & pointer injection
 │   │   └── domain/entities/input_event_entity.dart
 │   └── settings/                           # User preferences & stream quality
