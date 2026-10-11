@@ -1,13 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/main.dart';
 
 void main() {
-  testWidgets('WifiDesk initial smoke test', (WidgetTester tester) async {
-    // Build the WifiDesk application and trigger a frame.
+  setUp(() async {
+    await sl.reset();
+    await initDependencies();
+  });
+
+  tearDown(() async {
+    await sl.reset();
+  });
+
+  testWidgets('WifiDeskApp renders DiscoveryPage with title and empty state',
+      (WidgetTester tester) async {
     await tester.pumpWidget(const WifiDeskApp());
 
-    // Verify that the title and scan button are rendered.
     expect(find.text('WifiDesk'), findsOneWidget);
+    expect(find.text('No Devices Discovered'), findsOneWidget);
     expect(find.text('Scan for Devices'), findsOneWidget);
   });
 }

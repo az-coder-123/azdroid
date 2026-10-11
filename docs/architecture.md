@@ -1,0 +1,104 @@
+# WifiDesk — Modular Architecture Documentation
+
+> Technical blueprint and design patterns implemented in **WifiDesk** adhering to Clean Architecture, SOLID principles, and strict modular feature boundaries.
+
+---
+
+## 🏛️ High-Level Architectural Pattern
+
+WifiDesk follows a **Feature-Driven Clean Architecture** powered by the **BLoC / Cubit** reactive state management pattern.
+
+```mermaid
+flowchart TD
+    subgraph Presentation ["Presentation Layer"]
+        UI["Widgets / Pages (Stateless / Pure Declarative)"]
+        Cubit["Cubits / Blocs (State Management)"]
+        State["Immutable States (Equatable)"]
+        UI -->|Dispatches Actions| Cubit
+        Cubit -->|Emits New States| State
+        State -->|Rebuilds View| UI
+    end
+
+    subgraph Domain ["Domain Layer (Pure Business Logic)"]
+        Entities["Entities (Business Objects)"]
+        RepoContract["Repository Interfaces (Contracts)"]
+        Cubit -->|Invokes| RepoContract
+        RepoContract -.->|Returns| Entities
+    end
+
+    subgraph Data ["Data Layer (Infrastructure & I/O)"]
+        RepoImpl["Repository Implementations"]
+        DataSources["Data Sources (ADB, Sockets, Discovery)"]
+        Models["Data Transfer Objects (DTOs / Models)"]
+        RepoContract <|.. RepoImpl
+        RepoImpl --> DataSources
+        DataSources --> Models
+    end
+
+    subgraph Core ["Core Foundation"]
+        DI["Service Locator (GetIt)"]
+        Constants["AppConstants & SocketConfig"]
+        Theme["Design Tokens (Colors, Typography, Themes)"]
+    end
+
+    DI -.->|Injects Dependencies| Presentation
+    DI -.->|Injects Dependencies| Data
+```
+
+---
+
+## 📁 Directory Structure Breakdown
+
+```text
+lib/
+├── core/                                   # Shared kernel & infrastructure
+│   ├── constants/                          # Zero-hardcoding constants
+│   │   ├── app_constants.dart              # App metadata, dimensions
+│   │   └── socket_config.dart              # Network ports, timeouts
+│   ├── di/                                 # Dependency Injection container
+│   │   └── injection.dart                  # Service locator configuration (GetIt)
+│   └── theme/                              # Apple-native design system tokens
+│       ├── app_colors.dart                 # macOS Dark Mode color palette
+│       ├── app_typography.dart             # Apple system font styles
+│       └── app_theme.dart                  # Material3 ThemeData for macOS
+├── features/                               # Modular domain features
+│   ├── discovery/                          # Device discovery & wireless pairing
+│   │   ├── domain/
+│   │   │   ├── entities/device_entity.dart
+│   │   │   └── repositories/device_discovery_repository.dart
+│   │   ├── data/
+│   │   │   ├── models/device_model.dart
+│   │   │   ├── datasources/device_discovery_datasource.dart
+│   │   │   └── repositories/device_discovery_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── cubit/discovery_cubit.dart
+│   │       ├── cubit/discovery_state.dart
+│   │       ├── widgets/device_card.dart
+│   │       ├── widgets/empty_state_view.dart
+│   │       └── pages/discovery_page.dart
+│   ├── streaming/                          # Low-latency H.264 video pipeline
+│   │   └── domain/entities/stream_session_entity.dart
+│   ├── control/                            # Input normalization & pointer injection
+│   │   └── domain/entities/input_event_entity.dart
+│   └── settings/                           # User preferences & stream quality
+│       └── domain/entities/app_settings_entity.dart
+└── main.dart                               # Entrypoint with DI & MultiBlocProvider
+```
+
+---
+
+## ⚙️ Key Engineering Tenets
+
+1. **Strict Separation of Concerns (SRP):**
+   - Widgets contain **zero business logic**; they only render states emitted by Cubits.
+   - Domain layer has **zero Flutter UI dependencies**, ensuring pure testability.
+2. **Predictable State Management:**
+   - Every state transition is explicit and modeled with sealed classes (`DiscoveryInitial`, `DiscoveryLoading`, `DiscoveryLoaded`, `DiscoveryError`).
+   - States are immutable and compared using `Equatable`.
+3. **Dependency Inversion (DIP):**
+   - High-level modules (Cubits) depend on domain abstractions (`DeviceDiscoveryRepository`), not low-level concrete implementations.
+   - All components are registered through the `GetIt` service locator in `lib/core/di/injection.dart`.
+4. **Comprehensive Automated Testing:**
+   - **Unit Tests:** Data serialization and model mapping in `test/unit/`.
+   - **BLoC Tests:** Cubit state transitions verified with `bloc_test` in `test/bloc/`.
+   - **Widget Tests:** UI layout, button interactions, and state rendering in `test/widget_test.dart`.

@@ -66,11 +66,15 @@ flowchart LR
     M2 === C_SOCKET ===> A3
 ```
 
+👉 *For the full modular blueprint and design patterns, see [docs/architecture.md](docs/architecture.md).*
+
 ---
 
 ## 🛠️ Technology Stack
 
 - **User Interface (Frontend):** [Flutter Desktop](https://flutter.dev) (Dart) for macOS.
+- **State Management:** [flutter_bloc](https://pub.dev/packages/flutter_bloc) (Cubit & BLoC).
+- **Dependency Injection:** [get_it](https://pub.dev/packages/get_it) Service Locator.
 - **Streaming & Control Core:** `scrcpy-server` (Java / C++ running under ADB Shell).
 - **Networking:** Native TCP/UDP Sockets, mDNS / Bonjour for service discovery.
 - **Video Decoding:** Hardware-accelerated video decoding via macOS VideoToolbox and Flutter Texture Registry.
@@ -108,8 +112,11 @@ flutter run -d macos
 ## 🗺️ Roadmap
 
 - [x] Initialized Flutter macOS Desktop project foundation
-- [x] Published architecture and technical specifications
-- [ ] Implement mDNS device discovery and wireless pairing assistant
+- [x] Implemented modular Clean Architecture (Core, Discovery, Streaming, Control, Settings)
+- [x] Integrated Cubit state management with `flutter_bloc`
+- [x] Established Apple-native design tokens & theme system
+- [x] Built comprehensive automated test suite (Unit, BLoC, Widget tests)
+- [ ] Implement mDNS device discovery daemon and pairing assistant
 - [ ] Integrate low-latency H.264 video pipeline via `scrcpy-server` and Flutter Texture
 - [ ] Build mouse and keyboard input translation layer
 - [ ] Implement bidirectional clipboard synchronization and drag-and-drop transfers
