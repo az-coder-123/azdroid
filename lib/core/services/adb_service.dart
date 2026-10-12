@@ -1,65 +1,28 @@
 import 'dart:io';
 
+import 'package:wifi_desk/core/models/adb_command_result.dart';
+import 'package:wifi_desk/core/models/adb_device.dart';
+import 'package:wifi_desk/core/models/adb_mdns_service.dart';
+import 'package:wifi_desk/core/services/adb_output_parser.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 
-/// Represents a raw device entry parsed from `adb devices -l`.
-class AdbDevice {
-  const AdbDevice({
-    required this.serial,
-    required this.state,
-    this.product,
-    this.model,
-    this.device,
-    this.transportId,
-  });
-
-  final String serial;
-  final String state;
-  final String? product;
-  final String? model;
-  final String? device;
-  final String? transportId;
-
-  bool get isUsb => !serial.contains(':');
-  bool get isAuthorized => state == 'device';
-  bool get isUnauthorized => state == 'unauthorized';
-}
-
-/// Represents an mDNS service entry discovered via `adb mdns services`.
-class AdbMdnsService {
-  const AdbMdnsService({
-    required this.serviceName,
-    required this.serviceType,
-    required this.ipAddress,
-    required this.port,
-  });
-
-  final String serviceName;
-  final String serviceType;
-  final String ipAddress;
-  final int port;
-
-  bool get isPairingService => serviceType.contains('_adb-tls-pairing');
-  bool get isConnectService =>
-      serviceType.contains('_adb-tls-connect') ||
-      serviceType.contains('_adb._tcp');
-}
-
-/// Result of an ADB command execution.
-class AdbCommandResult {
-  const AdbCommandResult({required this.isSuccess, required this.message});
-
-  final bool isSuccess;
-  final String message;
-}
+export 'package:wifi_desk/core/models/adb_command_result.dart';
+export 'package:wifi_desk/core/models/adb_device.dart';
+export 'package:wifi_desk/core/models/adb_mdns_service.dart';
+export 'package:wifi_desk/core/services/adb_output_parser.dart';
 
 /// Service managing ADB interaction, mDNS queries, and device pairing.
 class AdbService {
-  AdbService({ProcessExecutor? processExecutor, String? explicitAdbPath})
-    : _executor = processExecutor ?? const DefaultProcessExecutor(),
-      _cachedAdbPath = explicitAdbPath;
+  AdbService({
+    ProcessExecutor? processExecutor,
+    String? explicitAdbPath,
+    AdbOutputParser? parser,
+  }) : _executor = processExecutor ?? const DefaultProcessExecutor(),
+       _cachedAdbPath = explicitAdbPath,
+       _parser = parser ?? const AdbOutputParser();
 
   final ProcessExecutor _executor;
+  final AdbOutputParser _parser;
   String? _cachedAdbPath;
 
   /// Known macOS fallback paths where ADB is frequently installed.
@@ -122,61 +85,15 @@ class AdbService {
       ], timeout: const Duration(seconds: 5));
 
       if (result.exitCode != 0) return [];
-      return parseDevicesOutput(result.stdout.toString());
+      return _parser.parseDevices(result.stdout.toString());
     } catch (_) {
       return [];
     }
   }
 
-  /// Parses the stdout text from `adb devices -l`.
-  List<AdbDevice> parseDevicesOutput(String stdout) {
-    final devices = <AdbDevice>[];
-    final lines = stdout.split('\n');
-
-    for (final rawLine in lines) {
-      final line = rawLine.trim();
-      if (line.isEmpty || line.startsWith('List of devices attached')) {
-        continue;
-      }
-
-      final tokens = line.split(RegExp(r'\s+'));
-      if (tokens.length < 2) continue;
-
-      final serial = tokens[0];
-      final state = tokens[1];
-
-      String? product;
-      String? model;
-      String? device;
-      String? transportId;
-
-      for (int i = 2; i < tokens.length; i++) {
-        final pair = tokens[i];
-        if (pair.startsWith('product:')) {
-          product = pair.substring(8);
-        } else if (pair.startsWith('model:')) {
-          model = pair.substring(6).replaceAll('_', ' ');
-        } else if (pair.startsWith('device:')) {
-          device = pair.substring(7);
-        } else if (pair.startsWith('transport_id:')) {
-          transportId = pair.substring(13);
-        }
-      }
-
-      devices.add(
-        AdbDevice(
-          serial: serial,
-          state: state,
-          product: product,
-          model: model,
-          device: device,
-          transportId: transportId,
-        ),
-      );
-    }
-
-    return devices;
-  }
+  /// Parses stdout output from `adb devices -l`.
+  List<AdbDevice> parseDevicesOutput(String stdout) =>
+      _parser.parseDevices(stdout);
 
   /// Lists discovered mDNS services via `adb mdns services`.
   Future<List<AdbMdnsService>> getMdnsServices() async {
@@ -190,68 +107,15 @@ class AdbService {
       ], timeout: const Duration(seconds: 5));
 
       if (result.exitCode != 0) return [];
-      return parseMdnsServicesOutput(result.stdout.toString());
+      return _parser.parseMdnsServices(result.stdout.toString());
     } catch (_) {
       return [];
     }
   }
 
   /// Parses stdout output from `adb mdns services`.
-  List<AdbMdnsService> parseMdnsServicesOutput(String stdout) {
-    final services = <AdbMdnsService>[];
-    final lines = stdout.split('\n');
-
-    for (final rawLine in lines) {
-      final line = rawLine.trim();
-      if (line.isEmpty || line.startsWith('List of discovered mdns services')) {
-        continue;
-      }
-
-      // Format can be:
-      // <name>\t<regType>\t<ip>:<port> OR <name>.<regType> <ip>:<port>
-      final tokens = line.split(RegExp(r'\s+'));
-      if (tokens.length >= 2) {
-        String serviceName = tokens[0];
-        String serviceType = '';
-        String endpoint = tokens.last;
-
-        if (tokens.length >= 3) {
-          serviceType = tokens[1];
-          endpoint = tokens[2];
-        } else {
-          // Tokens: [name._type, endpoint]
-          if (serviceName.contains('._adb-tls-connect')) {
-            serviceType = '_adb-tls-connect._tcp';
-            serviceName = serviceName.split('._adb-tls-connect').first;
-          } else if (serviceName.contains('._adb-tls-pairing')) {
-            serviceType = '_adb-tls-pairing._tcp';
-            serviceName = serviceName.split('._adb-tls-pairing').first;
-          } else if (serviceName.contains('._adb.')) {
-            serviceType = '_adb._tcp';
-            serviceName = serviceName.split('._adb.').first;
-          }
-        }
-
-        final endpointParts = endpoint.split(':');
-        if (endpointParts.length == 2) {
-          final ip = endpointParts[0].trim();
-          final port = int.tryParse(endpointParts[1].trim());
-          if (port != null && ip.isNotEmpty) {
-            services.add(
-              AdbMdnsService(
-                serviceName: serviceName,
-                serviceType: serviceType,
-                ipAddress: ip,
-                port: port,
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    return services;
-  }
+  List<AdbMdnsService> parseMdnsServicesOutput(String stdout) =>
+      _parser.parseMdnsServices(stdout);
 
   /// Connects to a wireless target via `adb connect <ip>:<port>`.
   Future<AdbCommandResult> connect(String ipAddress, int port) async {
