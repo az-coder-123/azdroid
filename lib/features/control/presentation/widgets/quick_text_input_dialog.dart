@@ -66,121 +66,122 @@ class _QuickTextInputDialogState extends State<QuickTextInputDialog> {
         constraints: const BoxConstraints(maxWidth: 440),
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.accent.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.keyboard_outlined,
-                      color: AppColors.accent,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Remote Text Injection',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Send Unicode, IME or pasteboard text to Android',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                autofocus: true,
-                maxLines: 3,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 13,
-                ),
-                decoration: InputDecoration(
-                  hintText:
-                      'Type or paste text (e.g. Vietnamese, Japanese, URL)...',
-                  hintStyle: const TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: 13,
-                  ),
-                  filled: true,
-                  fillColor: AppColors.surface,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: AppColors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: AppColors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: AppColors.accent),
-                  ),
-                ),
-                onSubmitted: (_) => _submitText(),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.textSecondary,
-                    ),
-                    child: const Text('Cancel'),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed: _submitText,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.accent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 10,
+                      child: const Icon(
+                        Icons.keyboard_outlined,
+                        color: AppColors.accent,
+                        size: 20,
                       ),
                     ),
-                    icon: const Icon(Icons.send_rounded, size: 14),
-                    label: const Text(
-                      'Inject Text',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Remote Text Injection',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Send Unicode, IME or pasteboard text to Android',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  autofocus: true,
+                  maxLines: 3,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Type or paste text (e.g. Vietnamese, Japanese, URL)...',
+                    hintStyle: const TextStyle(
+                      color: AppColors.textTertiary,
+                      fontSize: 13,
+                    ),
+                    filled: true,
+                    fillColor: AppColors.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.accent),
                     ),
                   ),
-                ],
-              ),
-            ],
+                  onSubmitted: (_) => _submitText(),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _submitText,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.accent,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                      ),
+                      icon: const Icon(Icons.send_rounded, size: 14),
+                      label: const Text(
+                        'Inject Text',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/discovery/presentation/widgets/device_status_badge.dart';
 
 /// Card widget rendering an individual Android device item with connect/disconnect actions.
 class DeviceCard extends StatelessWidget {
@@ -26,83 +27,131 @@ class DeviceCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            // Status Icon Container
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: _getStatusBgColor(),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(_getStatusIcon(), color: _getStatusColor(), size: 24),
-            ),
-            const SizedBox(width: 16),
-
-            // Device Information Column
-            Expanded(
-              child: Column(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxWidth < 480;
+            if (isCompact) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Flexible(
-                        child: Text(
-                          device.name,
-                          style: AppTypography.title.copyWith(fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: _getStatusBgColor(),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _getStatusIcon(),
+                          color: _getStatusColor(),
+                          size: 22,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      _buildStatusBadge(),
+                      const SizedBox(width: 12),
+                      Expanded(child: _buildDeviceDetails()),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 2,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        device.connectionType == DeviceConnectionType.usb
-                            ? 'USB (${device.id})'
-                            : '${device.ipAddress}:${device.port}',
-                        style: AppTypography.caption,
-                      ),
-                      if (device.model != null)
-                        Text('• ${device.model}', style: AppTypography.caption),
-                      if (device.requiresPairing && device.pairingPort != null)
-                        Text(
-                          '• Pairing port: ${device.pairingPort}',
-                          style: AppTypography.caption.copyWith(
-                            color: AppColors.statusWarning,
-                          ),
-                        ),
-                    ],
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: _buildActionButton(),
                   ),
                 ],
-              ),
-            ),
-            const SizedBox(width: 12),
+              );
+            }
 
-            // Action Buttons
-            _buildActionButton(),
-          ],
+            return Row(
+              children: [
+                // Status Icon Container
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: _getStatusBgColor(),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    _getStatusIcon(),
+                    color: _getStatusColor(),
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(child: _buildDeviceDetails()),
+                const SizedBox(width: 12),
+                _buildActionButton(),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
+  Widget _buildDeviceDetails() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Flexible(
+              child: Text(
+                device.name,
+                style: AppTypography.title.copyWith(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            _buildStatusBadge(),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Wrap(
+          spacing: 8,
+          runSpacing: 2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(
+              device.connectionType == DeviceConnectionType.usb
+                  ? 'USB (${device.id})'
+                  : '${device.ipAddress}:${device.port}',
+              style: AppTypography.caption,
+            ),
+            if (device.model != null)
+              Text('• ${device.model}', style: AppTypography.caption),
+            if (device.requiresPairing && device.pairingPort != null)
+              Text(
+                '• Pairing port: ${device.pairingPort}',
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.statusWarning,
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _buildStatusBadge() {
     if (device.isConnected) {
-      return _Badge(label: 'Connected', color: AppColors.statusSuccess);
+      return const DeviceStatusBadge(
+        label: 'Connected',
+        color: AppColors.statusSuccess,
+      );
     } else if (device.isUnauthorized) {
-      return _Badge(label: 'Unauthorized', color: AppColors.statusError);
+      return const DeviceStatusBadge(
+        label: 'Unauthorized',
+        color: AppColors.statusError,
+      );
     } else if (device.requiresPairing) {
-      return _Badge(label: 'Pairing Ready', color: AppColors.statusWarning);
+      return const DeviceStatusBadge(
+        label: 'Pairing Ready',
+        color: AppColors.statusWarning,
+      );
     } else {
-      return _Badge(
+      return DeviceStatusBadge(
         label: device.connectionType == DeviceConnectionType.usb
             ? 'USB'
             : 'Discovered',
@@ -185,32 +234,5 @@ class DeviceCard extends StatelessWidget {
 
   Color _getStatusBgColor() {
     return _getStatusColor().withValues(alpha: 0.15);
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withValues(alpha: 0.4), width: 0.8),
-      ),
-      child: Text(
-        label,
-        style: AppTypography.caption.copyWith(
-          color: color,
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
   }
 }

@@ -84,6 +84,8 @@ lib/
 │   │       ├── cubit/pairing_cubit.dart
 │   │       ├── cubit/pairing_state.dart
 │   │       ├── widgets/device_card.dart
+│   │       ├── widgets/device_status_badge.dart
+│   │       ├── widgets/discovery_app_bar_actions.dart
 │   │       ├── widgets/empty_state_view.dart
 │   │       ├── widgets/manual_connect_dialog.dart
 │   │       ├── widgets/pairing_dialog.dart
@@ -197,3 +199,6 @@ lib/
    - **Unit Tests:** Data serialization and model mapping in `test/unit/`.
    - **BLoC Tests:** Cubit state transitions verified with `bloc_test` in `test/bloc/`.
    - **Widget Tests:** UI layout, button interactions, and state rendering in `test/widget_test.dart`.
+5. **Universal UI Responsiveness & Zero-Overflow Policy:**
+   - All desktop viewports, modal dialogs, overlays, and sidebars defensively adapt to arbitrary window resizing, compact laptop screens, and 4K/5K displays using `LayoutBuilder`, `FittedBox`, scrollable containers, and bounded constraint envelopes with zero `RenderFlex` overflows.
+

@@ -17,29 +17,37 @@ class VideoDisplayViewport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final turns = (rotationDegrees ~/ 90) % 4;
+    final streamWidth = session.width > 0 ? session.width.toDouble() : 1080.0;
+    final streamHeight = session.height > 0
+        ? session.height.toDouble()
+        : 2400.0;
 
     return Center(
-      child: RotatedBox(
-        quarterTurns: turns,
-        child: AspectRatio(
-          aspectRatio: session.aspectRatio,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(16.0),
-              border: Border.all(color: AppColors.border, width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: RotatedBox(
+          quarterTurns: turns,
+          child: SizedBox(
+            width: streamWidth,
+            height: streamHeight,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(16.0),
+                border: Border.all(color: AppColors.border, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: session.textureId != null
+                  ? Texture(textureId: session.textureId!)
+                  : _buildSimulatedViewport(context),
             ),
-            clipBehavior: Clip.antiAlias,
-            child: session.textureId != null
-                ? Texture(textureId: session.textureId!)
-                : _buildSimulatedViewport(context),
           ),
         ),
       ),

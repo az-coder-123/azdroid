@@ -7,6 +7,7 @@ import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart'
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_state.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/device_card.dart';
+import 'package:wifi_desk/features/discovery/presentation/widgets/discovery_app_bar_actions.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state_view.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/manual_connect_dialog.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing_dialog.dart';
@@ -104,32 +105,12 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
           },
         ),
         actions: [
-          TextButton.icon(
-            icon: const Icon(Icons.phonelink_setup_rounded, size: 16),
-            label: const Text('Pair Device'),
-            style: TextButton.styleFrom(foregroundColor: AppColors.accent),
-            onPressed: () => _openPairingDialog(),
+          DiscoveryAppBarActions(
+            onPairDevice: _openPairingDialog,
+            onDirectIp: _openManualConnectDialog,
+            onUserGuide: () => UserGuideDialog.show(context),
+            onRescan: () => context.read<DiscoveryCubit>().scanDevices(),
           ),
-          const SizedBox(width: 4),
-          TextButton.icon(
-            icon: const Icon(Icons.add_link_rounded, size: 16),
-            label: const Text('Direct IP'),
-            style: TextButton.styleFrom(foregroundColor: AppColors.textPrimary),
-            onPressed: _openManualConnectDialog,
-          ),
-          const SizedBox(width: 4),
-          IconButton(
-            tooltip: 'User Guide',
-            icon: const Icon(Icons.menu_book_rounded, size: 20),
-            onPressed: () => UserGuideDialog.show(context),
-          ),
-          const SizedBox(width: 4),
-          IconButton(
-            tooltip: 'Rescan Network',
-            icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => context.read<DiscoveryCubit>().scanDevices(),
-          ),
-          const SizedBox(width: 8),
         ],
       ),
       body: BlocBuilder<DiscoveryCubit, DiscoveryState>(
@@ -188,17 +169,25 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Discovered Devices (${state.devices.length})',
-                        style: AppTypography.title,
+                      Flexible(
+                        child: Text(
+                          'Discovered Devices (${state.devices.length})',
+                          style: AppTypography.title,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      if (state.isAutoScanning)
-                        Text(
-                          'Updating in background...',
-                          style: AppTypography.caption.copyWith(
-                            color: AppColors.accentLight,
+                      if (state.isAutoScanning) ...[
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'Updating...',
+                            style: AppTypography.caption.copyWith(
+                              color: AppColors.accentLight,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                      ],
                     ],
                   ),
                   const SizedBox(height: 12),

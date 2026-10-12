@@ -136,7 +136,7 @@ class _PairingDialogState extends State<PairingDialog> {
               side: const BorderSide(color: AppColors.border),
             ),
             child: Container(
-              width: 500,
+              constraints: const BoxConstraints(maxWidth: 500),
               padding: const EdgeInsets.all(24.0),
               child: SingleChildScrollView(
                 child: Column(

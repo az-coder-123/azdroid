@@ -31,7 +31,7 @@ class MenuBarCompanionPopover extends StatelessWidget {
         final isMirroring = status.activeDeviceName != null;
 
         return Container(
-          width: 320,
+          constraints: const BoxConstraints(maxWidth: 320),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: AppColors.surfaceCard.withValues(alpha: 0.96),
@@ -45,53 +45,55 @@ class MenuBarCompanionPopover extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              MenuBarHeader(isMirroring: isMirroring),
-              const SizedBox(height: 12),
-              const Divider(height: 1, color: AppColors.borderSubtle),
-              const SizedBox(height: 12),
-              if (isMirroring) ...[
-                MenuBarSessionCard(status: status),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                MenuBarHeader(isMirroring: isMirroring),
                 const SizedBox(height: 12),
-              ] else ...[
-                MenuBarIdleCard(
-                  discoveredDeviceCount: status.discoveredDeviceCount,
-                ),
+                const Divider(height: 1, color: AppColors.borderSubtle),
                 const SizedBox(height: 12),
-              ],
-              MenuBarActionButton(
-                icon: status.isWindowVisible
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                title: status.isWindowVisible
-                    ? 'Hide Mirroring Window'
-                    : 'Show Mirroring Window',
-                onTap: () {
-                  context.read<MenuBarCubit>().toggleWindowVisibility();
-                  onToggleWindow?.call();
-                },
-              ),
-              if (onOpenGuide != null) ...[
-                const SizedBox(height: 6),
+                if (isMirroring) ...[
+                  MenuBarSessionCard(status: status),
+                  const SizedBox(height: 12),
+                ] else ...[
+                  MenuBarIdleCard(
+                    discoveredDeviceCount: status.discoveredDeviceCount,
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 MenuBarActionButton(
-                  icon: Icons.menu_book_rounded,
-                  title: 'User Guide & Shortcuts',
-                  onTap: onOpenGuide!,
+                  icon: status.isWindowVisible
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  title: status.isWindowVisible
+                      ? 'Hide Mirroring Window'
+                      : 'Show Mirroring Window',
+                  onTap: () {
+                    context.read<MenuBarCubit>().toggleWindowVisibility();
+                    onToggleWindow?.call();
+                  },
                 ),
+                if (onOpenGuide != null) ...[
+                  const SizedBox(height: 6),
+                  MenuBarActionButton(
+                    icon: Icons.menu_book_rounded,
+                    title: 'User Guide & Shortcuts',
+                    onTap: onOpenGuide!,
+                  ),
+                ],
+                if (isMirroring && onDisconnect != null) ...[
+                  const SizedBox(height: 6),
+                  MenuBarActionButton(
+                    icon: Icons.power_settings_new_rounded,
+                    title: 'Disconnect Stream',
+                    color: AppColors.statusError,
+                    onTap: onDisconnect!,
+                  ),
+                ],
               ],
-              if (isMirroring && onDisconnect != null) ...[
-                const SizedBox(height: 6),
-                MenuBarActionButton(
-                  icon: Icons.power_settings_new_rounded,
-                  title: 'Disconnect Stream',
-                  color: AppColors.statusError,
-                  onTap: onDisconnect!,
-                ),
-              ],
-            ],
+            ),
           ),
         );
       },

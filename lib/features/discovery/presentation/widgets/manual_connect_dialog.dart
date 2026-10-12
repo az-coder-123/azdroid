@@ -5,6 +5,7 @@ import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
+import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
 
 /// Simple modal dialog allowing manual IP and port input for direct connection.
 class ManualConnectDialog extends StatefulWidget {
@@ -93,152 +94,117 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
         side: const BorderSide(color: AppColors.border),
       ),
       child: Container(
-        width: 440,
+        constraints: const BoxConstraints(maxWidth: 440),
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.link_rounded,
-                    color: AppColors.accent,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Direct IP Connect', style: AppTypography.title),
-                      SizedBox(height: 2),
-                      Text(
-                        'Connect via local Wi-Fi endpoint',
-                        style: AppTypography.caption,
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 20),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Mac Subnet Indicator Banner
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.borderSubtle),
-              ),
-              child: Row(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  const Icon(
-                    Icons.wifi_rounded,
-                    size: 16,
-                    color: AppColors.statusSuccess,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _hostMacIp != null
-                          ? 'Mac Wi-Fi IP: $_hostMacIp'
-                          : 'Detecting Mac Wi-Fi IP...',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.link_rounded,
+                      color: AppColors.accent,
+                      size: 22,
                     ),
                   ),
-                  Text(
-                    'Must match Phone Wi-Fi',
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Direct IP Connect', style: AppTypography.title),
+                        SizedBox(height: 2),
+                        Text(
+                          'Connect via local Wi-Fi endpoint',
+                          style: AppTypography.caption,
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              PairingHostIpBanner(hostMacIp: _hostMacIp),
+              const SizedBox(height: 16),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: TextField(
+                      controller: _ipController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Phone IP (IP Điện thoại)',
+                        hintText: _hostMacIp != null
+                            ? 'e.g. ${_hostMacIp!.substring(0, _hostMacIp!.lastIndexOf('.') + 1)}xxx'
+                            : '192.168.1.100',
+                        helperText: 'View in phone Wi-Fi settings',
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                      ),
+                      onSubmitted: (_) => _submit(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      controller: _portController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Port (Cổng)',
+                        hintText: '5555',
+                        helperText: 'Default 5555',
+                        isDense: true,
+                        border: OutlineInputBorder(),
+                      ),
+                      onSubmitted: (_) => _submit(),
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: TextField(
-                    controller: _ipController,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'Phone IP (IP Điện thoại)',
-                      hintText: _hostMacIp != null
-                          ? 'e.g. ${_hostMacIp!.substring(0, _hostMacIp!.lastIndexOf('.') + 1)}xxx'
-                          : '192.168.1.100',
-                      helperText: 'View in phone Wi-Fi settings',
-                      isDense: true,
-                      border: const OutlineInputBorder(),
-                    ),
-                    onSubmitted: (_) => _submit(),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: _portController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Port (Cổng)',
-                      hintText: '5555',
-                      helperText: 'Default 5555',
-                      isDense: true,
-                      border: OutlineInputBorder(),
-                    ),
-                    onSubmitted: (_) => _submit(),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  _errorMessage!,
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.statusError,
                   ),
                 ),
               ],
-            ),
-            if (_errorMessage != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                _errorMessage!,
-                style: AppTypography.caption.copyWith(
-                  color: AppColors.statusError,
-                ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton.icon(
+                    onPressed: _submit,
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                    label: const Text('Connect'),
+                  ),
+                ],
               ),
             ],
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
-                const SizedBox(width: 12),
-                ElevatedButton.icon(
-                  onPressed: _submit,
-                  icon: const Icon(Icons.arrow_forward_rounded, size: 16),
-                  label: const Text('Connect'),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );

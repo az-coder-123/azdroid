@@ -46,98 +46,101 @@ class FloatingControlsToolbar extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Android System Navigation Keys
-          _buildToolButton(
-            icon: Icons.arrow_back_rounded,
-            tooltip: 'Back (Right Click)',
-            onPressed: onBack,
-          ),
-          const SizedBox(width: 8),
-          _buildToolButton(
-            icon: Icons.circle_outlined,
-            tooltip: 'Home (Cmd+H / Middle Click)',
-            onPressed: onHome,
-          ),
-          const SizedBox(width: 8),
-          _buildToolButton(
-            icon: Icons.crop_square_rounded,
-            tooltip: 'App Switcher (Cmd+Tab)',
-            onPressed: onAppSwitch,
-          ),
-          const SizedBox(width: 12),
-          _buildDivider(),
-          const SizedBox(width: 12),
-
-          // Display & Stream Controls
-          _buildToolButton(
-            icon: Icons.rotate_right_rounded,
-            tooltip: 'Rotate Display',
-            onPressed: onRotate,
-          ),
-          const SizedBox(width: 8),
-          _buildToolButton(
-            icon: session.isScreenOff
-                ? Icons.screen_lock_portrait_rounded
-                : Icons.stay_current_portrait_rounded,
-            tooltip: session.isScreenOff
-                ? 'Turn Phone Screen On'
-                : 'Turn Phone Screen Off (--turn-screen-off)',
-            color: session.isScreenOff ? AppColors.statusWarning : null,
-            onPressed: onToggleScreenOff,
-          ),
-          const SizedBox(width: 8),
-          const AudioControlsWidget(),
-          const SizedBox(width: 8),
-          PopupMenuButton<int>(
-            tooltip: 'Streaming Bitrate & Quality',
-            icon: const Icon(
-              Icons.tune_rounded,
-              size: 20,
-              color: AppColors.textPrimary,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Android System Navigation Keys
+            _buildToolButton(
+              icon: Icons.arrow_back_rounded,
+              tooltip: 'Back (Right Click)',
+              onPressed: onBack,
             ),
-            color: AppColors.surfaceElevated,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              side: const BorderSide(color: AppColors.border),
+            const SizedBox(width: 8),
+            _buildToolButton(
+              icon: Icons.circle_outlined,
+              tooltip: 'Home (Cmd+H / Middle Click)',
+              onPressed: onHome,
             ),
-            initialValue: session.bitrateMbps,
-            onSelected: onSelectBitrate,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 4,
-                child: Text('4 Mbps (Eco / Weak Wi-Fi)'),
-              ),
-              const PopupMenuItem(
-                value: 8,
-                child: Text('8 Mbps (Standard 1080p)'),
-              ),
-              const PopupMenuItem(
-                value: 16,
-                child: Text('16 Mbps (Ultra / 60+ FPS)'),
-              ),
-            ],
-          ),
-
-          // Productivity Controls (Text & Clipboard)
-          if (onTextInject != null || deviceSerial != null) ...[
+            const SizedBox(width: 8),
+            _buildToolButton(
+              icon: Icons.crop_square_rounded,
+              tooltip: 'App Switcher (Cmd+Tab)',
+              onPressed: onAppSwitch,
+            ),
             const SizedBox(width: 12),
             _buildDivider(),
             const SizedBox(width: 12),
-            if (onTextInject != null)
-              _buildToolButton(
-                icon: Icons.keyboard_alt_outlined,
-                tooltip: 'Inject Text (Cmd+K)',
-                onPressed: onTextInject!,
+
+            // Display & Stream Controls
+            _buildToolButton(
+              icon: Icons.rotate_right_rounded,
+              tooltip: 'Rotate Display',
+              onPressed: onRotate,
+            ),
+            const SizedBox(width: 8),
+            _buildToolButton(
+              icon: session.isScreenOff
+                  ? Icons.screen_lock_portrait_rounded
+                  : Icons.stay_current_portrait_rounded,
+              tooltip: session.isScreenOff
+                  ? 'Turn Phone Screen On'
+                  : 'Turn Phone Screen Off (--turn-screen-off)',
+              color: session.isScreenOff ? AppColors.statusWarning : null,
+              onPressed: onToggleScreenOff,
+            ),
+            const SizedBox(width: 8),
+            const AudioControlsWidget(),
+            const SizedBox(width: 8),
+            PopupMenuButton<int>(
+              tooltip: 'Streaming Bitrate & Quality',
+              icon: const Icon(
+                Icons.tune_rounded,
+                size: 20,
+                color: AppColors.textPrimary,
               ),
-            if (deviceSerial != null) ...[
-              const SizedBox(width: 4),
-              ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
+              color: AppColors.surfaceElevated,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                side: const BorderSide(color: AppColors.border),
+              ),
+              initialValue: session.bitrateMbps,
+              onSelected: onSelectBitrate,
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 4,
+                  child: Text('4 Mbps (Eco / Weak Wi-Fi)'),
+                ),
+                const PopupMenuItem(
+                  value: 8,
+                  child: Text('8 Mbps (Standard 1080p)'),
+                ),
+                const PopupMenuItem(
+                  value: 16,
+                  child: Text('16 Mbps (Ultra / 60+ FPS)'),
+                ),
+              ],
+            ),
+
+            // Productivity Controls (Text & Clipboard)
+            if (onTextInject != null || deviceSerial != null) ...[
+              const SizedBox(width: 12),
+              _buildDivider(),
+              const SizedBox(width: 12),
+              if (onTextInject != null)
+                _buildToolButton(
+                  icon: Icons.keyboard_alt_outlined,
+                  tooltip: 'Inject Text (Cmd+K)',
+                  onPressed: onTextInject!,
+                ),
+              if (deviceSerial != null) ...[
+                const SizedBox(width: 4),
+                ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
+              ],
             ],
           ],
-        ],
+        ),
       ),
     );
   }

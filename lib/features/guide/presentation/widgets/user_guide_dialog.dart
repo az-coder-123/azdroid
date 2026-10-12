@@ -82,19 +82,20 @@ class _UserGuideDialogState extends State<UserGuideDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final dialogWidth = (size.width * 0.9).clamp(320.0, 780.0);
+    final dialogHeight = (size.height * 0.85).clamp(360.0, 600.0);
+    final isCompact = dialogWidth < 580;
+
     return Dialog(
       backgroundColor: AppColors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
         side: const BorderSide(color: AppColors.border),
       ),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 760,
-          maxHeight: 580,
-          minWidth: 640,
-          minHeight: 480,
-        ),
+      child: SizedBox(
+        width: dialogWidth,
+        height: dialogHeight,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
           child: Column(
@@ -157,6 +158,7 @@ class _UserGuideDialogState extends State<UserGuideDialog> {
                     GuideSidebar(
                       categories: _categories,
                       selectedIndex: _selectedCategoryIndex,
+                      isCompact: isCompact,
                       onSelectCategory: (index) {
                         setState(() => _selectedCategoryIndex = index);
                       },
@@ -165,7 +167,7 @@ class _UserGuideDialogState extends State<UserGuideDialog> {
                       child: Container(
                         color: AppColors.surface,
                         child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(24),
+                          padding: EdgeInsets.all(isCompact ? 16 : 24),
                           child: _buildDetailContent(),
                         ),
                       ),

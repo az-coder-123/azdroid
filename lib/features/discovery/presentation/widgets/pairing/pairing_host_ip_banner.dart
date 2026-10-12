@@ -37,11 +37,14 @@ class PairingHostIpBanner extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            'Must match Phone Wi-Fi',
-            style: AppTypography.caption.copyWith(
-              color: AppColors.textSecondary,
-              fontSize: 11,
+          Flexible(
+            child: Text(
+              'Must match Phone Wi-Fi',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+                fontSize: 11,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
