@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
 import 'package:wifi_desk/features/audio/presentation/cubit/audio_state.dart';
 
@@ -28,7 +29,13 @@ class AudioCubit extends Cubit<AudioState> {
   Future<void> stopAudio(String deviceSerial) async {
     try {
       await repository.stopAudioStream(deviceSerial);
-    } catch (_) {}
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to stop audio stream for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
+    }
 
     if (!isClosed) {
       emit(const AudioInitial());

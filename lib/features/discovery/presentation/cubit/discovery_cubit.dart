@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_state.dart';
@@ -27,7 +28,12 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
     try {
       final devices = await repository.discoverDevices();
       emit(DiscoveryLoaded(devices: devices, isAutoScanning: false));
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to scan for devices',
+        error: e,
+        stackTrace: stack,
+      );
       emit(DiscoveryError(message: 'Failed to scan for devices: $e'));
     }
   }
@@ -45,7 +51,12 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Connection error to device ${device.id}',
+        error: e,
+        stackTrace: stack,
+      );
       emit(DiscoveryError(message: 'Connection error: $e'));
     }
   }
@@ -55,7 +66,12 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
     try {
       await repository.disconnectDevice(deviceId);
       await scanDevices();
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Disconnect error for device $deviceId',
+        error: e,
+        stackTrace: stack,
+      );
       emit(DiscoveryError(message: 'Disconnect error: $e'));
     }
   }
@@ -81,7 +97,12 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Manual connection error to $ipAddress:$port',
+        error: e,
+        stackTrace: stack,
+      );
       emit(DiscoveryError(message: 'Manual connection error: $e'));
     }
   }

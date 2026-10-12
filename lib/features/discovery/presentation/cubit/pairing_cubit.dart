@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_state.dart';
 
@@ -50,7 +51,12 @@ class PairingCubit extends Cubit<PairingState> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Pairing failed for $cleanIp:$port',
+        error: e,
+        stackTrace: stack,
+      );
       emit(PairingFailure(error: 'Pairing exception: $e'));
     }
   }

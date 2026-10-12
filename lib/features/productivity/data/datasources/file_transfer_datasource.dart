@@ -1,5 +1,6 @@
 import 'package:wifi_desk/core/constants/productivity_constants.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 
 /// Abstract datasource contract for ADB file push and APK installation.
@@ -45,7 +46,12 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       );
 
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to push file $localPath to $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -66,7 +72,12 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
 
       final combined = '${result.stdout} ${result.stderr}'.toLowerCase();
       return result.exitCode == 0 || combined.contains('success');
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to install APK $apkPath on $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

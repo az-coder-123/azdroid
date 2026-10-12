@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/di/injection.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
@@ -82,7 +83,13 @@ class _PairingDialogState extends State<PairingDialog> {
       if (mounted && ip != null) {
         setState(() => _hostMacIp = ip);
       }
-    } catch (_) {}
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to load host Mac IP for pairing dialog',
+        error: e,
+        stackTrace: stack,
+      );
+    }
   }
 
   @override

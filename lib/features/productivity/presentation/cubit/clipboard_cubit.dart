@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/constants/productivity_constants.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/clipboard_item_entity.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_state.dart';
@@ -69,8 +70,8 @@ class ClipboardCubit extends Cubit<ClipboardState> {
           );
         }
       }
-    } catch (_) {
-      // Background poll silently continues
+    } catch (e) {
+      AppLogger.debug('Clipboard background sync poll tick error: $e');
     }
   }
 
@@ -125,7 +126,12 @@ class ClipboardCubit extends Cubit<ClipboardState> {
           );
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to sync host to device clipboard',
+        error: e,
+        stackTrace: stack,
+      );
       if (!isClosed) {
         emit(
           ClipboardError(
@@ -175,7 +181,12 @@ class ClipboardCubit extends Cubit<ClipboardState> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to sync device to host clipboard',
+        error: e,
+        stackTrace: stack,
+      );
       if (!isClosed) {
         emit(
           ClipboardError(

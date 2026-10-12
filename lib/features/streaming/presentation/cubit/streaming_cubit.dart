@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
@@ -37,8 +38,12 @@ class StreamingCubit extends Cubit<StreamingState> {
     if (currentState is StreamingActive) {
       try {
         await repository.stopSession(currentState.session.sessionId);
-      } catch (_) {
-        // Disregard stop session error
+      } catch (e, stack) {
+        AppLogger.warning(
+          'Error while stopping streaming session',
+          error: e,
+          stackTrace: stack,
+        );
       }
     }
     if (!isClosed) {
@@ -52,8 +57,12 @@ class StreamingCubit extends Cubit<StreamingState> {
     if (currentState is StreamingActive) {
       try {
         await repository.stopSession(currentState.session.sessionId);
-      } catch (_) {
-        // Disregard stop session error
+      } catch (e, stack) {
+        AppLogger.warning(
+          'Error while cleaning up streaming session on close',
+          error: e,
+          stackTrace: stack,
+        );
       }
     }
     return super.close();

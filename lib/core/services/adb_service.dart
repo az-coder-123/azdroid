@@ -4,6 +4,7 @@ import 'package:wifi_desk/core/models/adb_command_result.dart';
 import 'package:wifi_desk/core/models/adb_device.dart';
 import 'package:wifi_desk/core/models/adb_mdns_service.dart';
 import 'package:wifi_desk/core/services/adb_output_parser.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 
 export 'package:wifi_desk/core/models/adb_command_result.dart';
@@ -49,7 +50,9 @@ class AdbService {
         _cachedAdbPath = path;
         return path;
       }
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.debug('which adb resolution failed: $e');
+    }
 
     for (final candidate in _knownAdbPaths) {
       try {
@@ -60,8 +63,8 @@ class AdbService {
           _cachedAdbPath = candidate;
           return candidate;
         }
-      } catch (_) {
-        // Try next candidate path
+      } catch (e) {
+        AppLogger.debug('ADB candidate $candidate check failed: $e');
       }
     }
     return null;
@@ -86,7 +89,12 @@ class AdbService {
 
       if (result.exitCode != 0) return [];
       return _parser.parseDevices(result.stdout.toString());
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to list attached ADB devices',
+        error: e,
+        stackTrace: stack,
+      );
       return [];
     }
   }
@@ -108,7 +116,12 @@ class AdbService {
 
       if (result.exitCode != 0) return [];
       return _parser.parseMdnsServices(result.stdout.toString());
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to list mDNS services from ADB',
+        error: e,
+        stackTrace: stack,
+      );
       return [];
     }
   }

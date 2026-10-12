@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:wifi_desk/core/constants/socket_config.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 
 /// Manages scrcpy-server deployment, daemon execution, and socket tunnel configuration.
@@ -44,7 +45,12 @@ class ScrcpyServerManager {
         'localabstract:scrcpy',
       ], timeout: const Duration(seconds: 5));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to setup port forward for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -66,7 +72,12 @@ class ScrcpyServerManager {
         'tcp:$localPort',
       ], timeout: const Duration(seconds: 3));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to remove port forward for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -94,7 +105,9 @@ class ScrcpyServerManager {
           remoteServerPath,
         ], timeout: const Duration(seconds: 4));
       }
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.debug('scrcpy-server.jar push skipped or failed: $e');
+    }
 
     // Setup port forward
     await setupPortForward(deviceSerial: deviceSerial, localPort: port);
@@ -127,7 +140,12 @@ class ScrcpyServerManager {
 
       // Even if command times out or is in background, port forward is ready
       return result.exitCode == 0 || result.exitCode == -1;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to start scrcpy server daemon on $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -150,7 +168,12 @@ class ScrcpyServerManager {
         keyCode.toString(),
       ], timeout: const Duration(seconds: 3));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to send keyevent $keyCode to $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

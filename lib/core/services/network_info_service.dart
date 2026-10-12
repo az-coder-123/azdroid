@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:wifi_desk/core/services/app_logger.dart';
+
 /// Abstract service providing host machine local network information.
 abstract class NetworkInfoService {
   /// Resolves the primary local IPv4 address of the host machine (e.g. Wi-Fi).
@@ -35,8 +37,12 @@ class NetworkInfoServiceImpl implements NetworkInfoService {
           }
         }
       }
-    } catch (_) {
-      // In constrained environments or test sandboxes, return null gracefully.
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to list network interfaces for host IP',
+        error: e,
+        stackTrace: stack,
+      );
     }
     return null;
   }

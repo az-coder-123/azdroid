@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:wifi_desk/core/constants/socket_config.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 
 /// Abstract datasource for connecting to the scrcpy audio streaming TCP socket.
 abstract class AudioSocketDatasource {
@@ -58,13 +59,21 @@ class AudioSocketDatasourceImpl implements AudioSocketDatasource {
             _streamController!.add(data);
           }
         },
-        onError: (_) => disconnect(),
+        onError: (e) {
+          AppLogger.warning('Audio socket error received: $e');
+          disconnect();
+        },
         onDone: () => disconnect(),
         cancelOnError: true,
       );
 
       return true;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Audio socket connection to $host:$port failed',
+        error: e,
+        stackTrace: stack,
+      );
       _connected = false;
       return false;
     }
@@ -75,7 +84,9 @@ class AudioSocketDatasourceImpl implements AudioSocketDatasource {
     _connected = false;
     try {
       await _socket?.close();
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.debug('Audio socket close error: $e');
+    }
     _socket?.destroy();
     _socket = null;
   }

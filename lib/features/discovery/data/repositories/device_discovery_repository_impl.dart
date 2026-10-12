@@ -1,3 +1,4 @@
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/device_discovery_datasource.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
@@ -13,7 +14,12 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
     try {
       final models = await datasource.scanDevices();
       return models;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to discover devices',
+        error: e,
+        stackTrace: stack,
+      );
       return const [];
     }
   }
@@ -22,7 +28,12 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
   Future<bool> connectDevice(DeviceEntity device) async {
     try {
       return await datasource.connect(device.ipAddress, device.port);
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to connect device ${device.id}',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -31,7 +42,12 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
   Future<bool> disconnectDevice(String deviceId) async {
     try {
       return await datasource.disconnect(deviceId);
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to disconnect device $deviceId',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -44,7 +60,12 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
   }) async {
     try {
       return await datasource.pair(ipAddress, port, pairingCode);
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to pair device at $ipAddress:$port',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -56,7 +77,12 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
   }) async {
     try {
       return await datasource.connect(ipAddress, port);
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to manually connect to $ipAddress:$port',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

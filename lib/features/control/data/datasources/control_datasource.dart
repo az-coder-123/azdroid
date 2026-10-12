@@ -1,4 +1,5 @@
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 
 /// Abstract datasource contract for injecting native input events into an Android device.
@@ -50,7 +51,12 @@ class ControlDatasourceImpl implements ControlDatasource {
         y.toString(),
       ], timeout: const Duration(seconds: 3));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to inject tap at ($x, $y) for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -81,7 +87,12 @@ class ControlDatasourceImpl implements ControlDatasource {
         durationMs.toString(),
       ], timeout: const Duration(seconds: 4));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to inject swipe for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -101,7 +112,12 @@ class ControlDatasourceImpl implements ControlDatasource {
         keyCode.toString(),
       ], timeout: const Duration(seconds: 3));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to inject keyevent $keyCode for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -126,7 +142,12 @@ class ControlDatasourceImpl implements ControlDatasource {
         formattedText,
       ], timeout: const Duration(seconds: 4));
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to inject text for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

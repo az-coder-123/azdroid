@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:wifi_desk/core/constants/socket_config.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 
 /// Represents a parsed video frame packet demuxed from the raw TCP stream.
 class VideoFramePacket {
@@ -83,7 +84,12 @@ class StreamingSocketDatasourceImpl implements StreamingSocketDatasource {
       );
 
       return true;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Socket connection to $host:$port fallback to simulated stream',
+        error: e,
+        stackTrace: stack,
+      );
       // In test environments or when target server is starting asynchronously,
       // mark connected for simulation
       _isConnected = true;
@@ -113,8 +119,8 @@ class StreamingSocketDatasourceImpl implements StreamingSocketDatasource {
     try {
       await _socket?.close();
       _socket?.destroy();
-    } catch (_) {
-      // Ignore disconnect error
+    } catch (e) {
+      AppLogger.debug('Socket close exception: $e');
     } finally {
       _socket = null;
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 
 /// Abstract datasource for host macOS pasteboard and Android device clipboard interactions.
@@ -33,7 +34,12 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
     try {
       final data = await Clipboard.getData(Clipboard.kTextPlain);
       return data?.text;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to read host clipboard',
+        error: e,
+        stackTrace: stack,
+      );
       return null;
     }
   }
@@ -42,8 +48,12 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
   Future<void> writeHostClipboard(String text) async {
     try {
       await Clipboard.setData(ClipboardData(text: text));
-    } catch (_) {
-      // Ignored
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to write host clipboard',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -68,7 +78,12 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
         return text.isNotEmpty ? text : null;
       }
       return null;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to read device clipboard for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return null;
     }
   }
@@ -91,7 +106,12 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
       ], timeout: const Duration(seconds: 3));
 
       return result.exitCode == 0;
-    } catch (_) {
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to write device clipboard for $deviceSerial',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

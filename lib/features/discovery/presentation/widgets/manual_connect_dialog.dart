@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/constants/socket_config.dart';
 import 'package:wifi_desk/core/di/injection.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
@@ -49,7 +50,13 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
       if (mounted && ip != null) {
         setState(() => _hostMacIp = ip);
       }
-    } catch (_) {}
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to load host Mac IP for manual connect dialog',
+        error: e,
+        stackTrace: stack,
+      );
+    }
   }
 
   @override
