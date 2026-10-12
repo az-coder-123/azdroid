@@ -34,7 +34,7 @@ class _UserGuideDialogState extends State<UserGuideDialog> {
     GuideCategory(
       id: 'quick_start',
       title: 'Quick Start & Pairing',
-      subtitle: '3 connection methods: QR, USB, Direct IP',
+      subtitle: '3 connection methods: 1-Click USB, 6-Digit PIN, Direct IP',
       icon: Icons.rocket_launch_rounded,
     ),
     GuideCategory(

@@ -22,14 +22,16 @@
 
 ### 1.2 Interactive Pairing Assistant (Android 11+)
 - **Wi-Fi Pairing Protocol:** Native integration with Android's secure pairing workflow (`adb pair <ip>:<port> <pairing-code>`).
-- **QR Code & PIN Onboarding:** Provides a clean graphical guide for one-time PIN verification and pairing code confirmation.
+- **Authentic 6-Digit PIN Pairing:** Provides a clean graphical guide for one-time 6-digit PIN verification and pairing port entry without relying on fake or non-functional QR pairing mechanisms.
+- **Recent Device Persistence:** Persists previously connected devices locally in `history.json` for instant 1-click reconnecting from the dashboard.
 
 ### 1.3 Automatic Session Recovery
 - **Heartbeat & Keep-Alive:** Monitors TCP socket connectivity in real time.
 - **Instant Reconnection:** Seamlessly detects when a device drops from the Wi-Fi network and automatically re-establishes the streaming session upon rejoining.
 
-### 1.4 Dynamic Transport Fallback
-- **USB & Wi-Fi Hot-Swapping:** Allows uninterrupted switching between tethered USB and wireless Wi-Fi connections without terminating active tasks or restarting the server daemon.
+### 1.4 1-Click USB-to-Wi-Fi Mode Switch (`adb tcpip 5555`)
+- **Automated Network Query:** Automatically interrogates the connected device via `adb shell ip` to extract internal Wi-Fi IP address.
+- **Zero-Terminal Activation:** Runs `adb tcpip 5555` and establishes wireless connection in 1 click, allowing users to unplug the USB cable immediately.
 
 ---
 

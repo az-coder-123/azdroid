@@ -83,6 +83,18 @@ class DeviceEntity extends Equatable {
     );
   }
 
+  /// Whether this device is identified as a Xiaomi, Redmi, or POCO device.
+  bool get isXiaomi {
+    final lowerName = name.toLowerCase();
+    final lowerModel = (model ?? '').toLowerCase();
+    return lowerName.contains('xiaomi') ||
+        lowerName.contains('redmi') ||
+        lowerName.contains('poco') ||
+        lowerModel.contains('xiaomi') ||
+        lowerModel.contains('redmi') ||
+        lowerModel.contains('poco');
+  }
+
   @override
   List<Object?> get props => [
     id,

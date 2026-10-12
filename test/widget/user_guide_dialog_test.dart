@@ -41,14 +41,10 @@ void main() {
       // Initial section: Quick Start
       expect(find.text('Quick Start & 3 Connection Modes'), findsOneWidget);
       expect(
-        find.text('Method 1: Scan QR Code (100% Wireless)'),
+        find.text('Method 1: 1-Click USB to Wi-Fi Switch (Easiest)'),
         findsOneWidget,
       );
-      expect(
-        find.text('Method 2: One-Time USB Activation (adb tcpip 5555)'),
-        findsOneWidget,
-      );
-      expect(find.text('adb tcpip 5555'), findsOneWidget);
+      expect(find.text('Method 2: 6-Digit Wi-Fi Pairing Code'), findsOneWidget);
     },
   );
 

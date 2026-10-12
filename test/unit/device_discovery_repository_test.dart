@@ -79,5 +79,16 @@ void main() {
         verify(() => mockDatasource.connect('10.0.0.5', 5555)).called(1);
       },
     );
+
+    test('switchUsbToWifi delegates to datasource.switchUsbToWifi', () async {
+      when(() => mockDatasource.switchUsbToWifi('serial123', port: 5555))
+          .thenAnswer((_) async => true);
+
+      final result = await repository.switchUsbToWifi('serial123', port: 5555);
+
+      expect(result, isTrue);
+      verify(() => mockDatasource.switchUsbToWifi('serial123', port: 5555))
+          .called(1);
+    });
   });
 }

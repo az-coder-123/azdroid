@@ -86,4 +86,18 @@ class DeviceDiscoveryRepositoryImpl implements DeviceDiscoveryRepository {
       return false;
     }
   }
+
+  @override
+  Future<bool> switchUsbToWifi(String serial, {int port = 5555}) async {
+    try {
+      return await datasource.switchUsbToWifi(serial, port: port);
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to switch USB device $serial to Wi-Fi mode',
+        error: e,
+        stackTrace: stack,
+      );
+      return false;
+    }
+  }
 }

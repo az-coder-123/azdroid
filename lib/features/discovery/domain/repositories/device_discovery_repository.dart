@@ -20,4 +20,7 @@ abstract class DeviceDiscoveryRepository {
 
   /// Connects directly to an Android device via explicit IP and port.
   Future<bool> manualConnect({required String ipAddress, required int port});
+
+  /// Switches an attached USB device to wireless TCP/IP mode on [port] (default 5555).
+  Future<bool> switchUsbToWifi(String serial, {int port = 5555});
 }

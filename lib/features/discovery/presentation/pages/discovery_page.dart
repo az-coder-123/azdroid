@@ -43,23 +43,36 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     PairingDialog.show(
       context,
       initialDevice: device,
-      onPairingSuccess: () => context.read<DiscoveryCubit>().scanDevices(),
+      onPairingSuccess: _cubit.scanDevices,
     );
   }
 
   void _openManualConnectDialog() {
     ManualConnectDialog.show(
       context,
-      onConnect: (ip, port) => context.read<DiscoveryCubit>().manualConnect(
-        ipAddress: ip,
-        port: port,
-      ),
+      onConnect: (ip, port) => _cubit.manualConnect(ipAddress: ip, port: port),
     );
   }
 
   void _startMirroring(DeviceEntity device) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => MirroringPage(device: device)),
+    );
+  }
+
+  Future<void> _switchUsbToWifi(DeviceEntity device) async {
+    final scaffold = ScaffoldMessenger.of(context);
+    final ok = await context.read<DiscoveryCubit>().switchUsbToWifi(device);
+    if (!mounted) return;
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(
+          ok
+              ? 'Switched ${device.name} to Wi-Fi mode!'
+              : 'Failed to switch ${device.name} to Wi-Fi mode.',
+        ),
+        backgroundColor: ok ? AppColors.statusSuccess : AppColors.statusError,
+      ),
     );
   }
 
@@ -126,7 +139,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             return EmptyStateView(
               isScanning: true,
               onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
-              onPairWithQrPressed: () => _openPairingDialog(),
+              onPairPressed: () => _openPairingDialog(),
               onGuidePressed: () => UserGuideDialog.show(context),
             );
           }
@@ -200,14 +213,13 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                           device: device,
                           onConnect: (d) async {
                             await context.read<DiscoveryCubit>().connect(d);
-                            if (context.mounted) {
-                              _startMirroring(d);
-                            }
+                            if (context.mounted) _startMirroring(d);
                           },
                           onDisconnect: (id) =>
                               context.read<DiscoveryCubit>().disconnect(id),
                           onPair: (d) => _openPairingDialog(d),
                           onMirror: (d) => _startMirroring(d),
+                          onSwitchToWifi: (d) => _switchUsbToWifi(d),
                         );
                       },
                     ),
@@ -221,8 +233,12 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
           return EmptyStateView(
             isScanning: false,
             onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
-            onPairWithQrPressed: () => _openPairingDialog(),
+            onPairPressed: () => _openPairingDialog(),
             onGuidePressed: () => UserGuideDialog.show(context),
+            onRecentSelected: (d) async {
+              await context.read<DiscoveryCubit>().connect(d);
+              if (context.mounted) _startMirroring(d);
+            },
           );
         },
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/theme/app_theme.dart';
@@ -46,7 +45,7 @@ void main() {
   }
 
   testWidgets(
-    'PairingDialog renders title, QR code tab by default, and switches to manual PIN tab',
+    'PairingDialog renders title, Mac Wi-Fi IP, and authentic 6-digit pairing form',
     (WidgetTester tester) async {
       const testDevice = DeviceEntity(
         id: '192.168.1.150:5555',
@@ -65,15 +64,7 @@ void main() {
       expect(find.text('Pair Wireless Device'), findsOneWidget);
       expect(find.text('Mac Wi-Fi IP: 192.168.1.12'), findsOneWidget);
 
-      // Default tab: QR Code
-      expect(find.text('Scan QR Code'), findsOneWidget);
-      expect(find.byType(QrImageView), findsOneWidget);
-      expect(find.text('How to pair using QR code:'), findsOneWidget);
-
-      // Switch to Manual PIN tab
-      await tester.tap(find.text('Manual 6-Digit PIN'));
-      await tester.pumpAndSettle();
-
+      // Manual 6-digit PIN Guide & Fields directly rendered
       expect(find.text('Manual PIN Entry Guide:'), findsOneWidget);
       expect(find.text('192.168.1.150'), findsOneWidget);
       expect(find.text('39123'), findsOneWidget);
@@ -82,13 +73,9 @@ void main() {
   );
 
   testWidgets(
-    'PairingDialog displays error when invalid pairing code submitted in manual tab',
+    'PairingDialog displays error when invalid pairing code submitted',
     (WidgetTester tester) async {
       await tester.pumpWidget(createSubject());
-      await tester.pumpAndSettle();
-
-      // Switch to Manual tab first
-      await tester.tap(find.text('Manual 6-Digit PIN'));
       await tester.pumpAndSettle();
 
       // Enter short code

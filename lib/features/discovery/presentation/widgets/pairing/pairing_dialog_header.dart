@@ -24,7 +24,7 @@ class PairingDialogHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: const Icon(
-            Icons.qr_code_scanner_rounded,
+            Icons.phonelink_lock_rounded,
             color: AppColors.accent,
             size: 22,
           ),

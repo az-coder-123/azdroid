@@ -2,105 +2,101 @@ import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
 import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_card.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_command_snippet.dart';
 import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_section_header.dart';
 import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_step_row.dart';
 
-/// Quick start guide explaining 3 wireless connection modes (QR, USB activation, Direct IP).
+/// Quick start guide explaining 3 realistic connection modes (1-Click USB switch, 6-Digit PIN, Direct IP).
 class QuickStartSection extends StatelessWidget {
   const QuickStartSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const GuideSectionHeader(
+        GuideSectionHeader(
           title: 'Quick Start & 3 Connection Modes',
-          description: 'Choose the setup method best suited for your Android version and network configuration.',
+          description: 'Choose the setup method best suited for your Android device and network setup.',
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
-        const GuideCard(
-          badgeText: 'RECOMMENDED • ANDROID 11+',
+        GuideCard(
+          badgeText: 'RECOMMENDED • 1-CLICK WIRELESS SETUP',
           badgeColor: AppColors.statusSuccess,
-          title: 'Method 1: Scan QR Code (100% Wireless)',
+          title: 'Method 1: 1-Click USB to Wi-Fi Switch (Easiest)',
           children: [
             Text(
-              'Android 11+ supports native wireless pairing without ever touching a USB cable.',
+              'Convert any USB connection into wireless mode instantly without touching Terminal:',
               style: AppTypography.body,
             ),
             SizedBox(height: 10),
             GuideStepRow(
               number: '1',
-              text: 'On Phone: Go to Settings ➔ Developer Options ➔ Wireless Debugging.',
+              text: 'Plug your phone into Mac via USB cable and allow USB debugging when prompted.',
             ),
             GuideStepRow(
               number: '2',
-              text: 'Select "Pair device with QR code" (Ghép nối bằng mã QR).',
+              text: 'WifiDesk will detect your USB device and display a "Wi-Fi Mode" button.',
             ),
             GuideStepRow(
               number: '3',
-              text: 'On WifiDesk: Click "Pair Device" on the top bar and scan the displayed QR code with your phone camera.',
+              text: 'Click "Wi-Fi Mode". WifiDesk automatically retrieves the phone Wi-Fi IP, activates port 5555, and connects.',
             ),
             GuideStepRow(
               number: '4',
-              text: 'The phone pairs immediately and appears in the Discovered Devices list!',
+              text: 'Unplug the USB cable! Your phone remains connected wirelessly.',
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
-        const GuideCard(
-          badgeText: 'BEST FOR ANDROID 10 & OLDER • XIAOMI / REDMI',
+        GuideCard(
+          badgeText: 'ANDROID 11+ • CABLE-FREE PAIRING',
           badgeColor: AppColors.accent,
-          title: 'Method 2: One-Time USB Activation (adb tcpip 5555)',
+          title: 'Method 2: 6-Digit Wi-Fi Pairing Code',
           children: [
             Text(
-              'For Android 10 or phones without a Wireless Debugging menu, activate wireless mode in 5 seconds via USB:',
+              'Android 11+ native wireless pairing without any USB cable:',
               style: AppTypography.body,
             ),
             SizedBox(height: 10),
             GuideStepRow(
               number: '1',
-              text: 'Plug your phone into Mac via USB cable, and enable USB Debugging on the phone.',
+              text: 'On Phone: Settings ➔ Developer Options ➔ Wireless Debugging.',
             ),
             GuideStepRow(
               number: '2',
-              text: 'Open Terminal on Mac and run the following command:',
+              text: 'Tap "Pair device with pairing code" (Ghép nối bằng mã ghép nối).',
             ),
-            SizedBox(height: 6),
-            GuideCommandSnippet(command: 'adb tcpip 5555'),
-            SizedBox(height: 8),
             GuideStepRow(
               number: '3',
-              text: 'Unplug the USB cable. Your phone is now listening over local Wi-Fi port 5555!',
+              text: 'On WifiDesk: Click "Pair with Wi-Fi Code" on top bar, then enter the IP, pairing port, and 6-digit code shown on screen.',
             ),
             GuideStepRow(
               number: '4',
-              text: 'On WifiDesk: Click "Direct IP", enter your phone IP (e.g. 192.168.1.3:5555) and connect.',
+              text: 'Click "Pair & Connect" — phone is paired and ready to mirror.',
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
-        const GuideCard(
-          badgeText: 'DIRECT CONNECTION',
+        GuideCard(
+          badgeText: 'INSTANT RECONNECT',
           badgeColor: AppColors.statusInfo,
-          title: 'Method 3: Direct IP Connection',
+          title: 'Method 3: Direct IP Connection & Recent Devices',
           children: [
             Text(
-              'Connect directly to any device already on your local Wi-Fi with an open ADB port.',
+              'Connect directly to any device already listening on your Wi-Fi network:',
               style: AppTypography.body,
             ),
             SizedBox(height: 10),
             GuideStepRow(
               number: '1',
-              text: 'Find your phone IP address in Phone Settings ➔ Wi-Fi ➔ Current Network (e.g. 192.168.1.3).',
+              text: 'If you connected before, simply tap the device under "Recent Devices" to reconnect in 1 click.',
             ),
             GuideStepRow(
               number: '2',
-              text: 'Click "Direct IP" on WifiDesk, enter the IP and port (default 5555), and click Connect.',
+              text: 'Or click "Direct IP" on WifiDesk, enter your phone Wi-Fi IP (e.g. 192.168.1.100:5555), and click Connect.',
             ),
           ],
         ),

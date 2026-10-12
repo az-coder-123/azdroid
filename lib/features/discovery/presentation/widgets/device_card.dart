@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/core/theme/app_typography.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/discovery/presentation/widgets/device_card_actions.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/device_status_badge.dart';
 
 /// Card widget rendering an individual Android device item with connect/disconnect actions.
@@ -13,6 +14,7 @@ class DeviceCard extends StatelessWidget {
     required this.onDisconnect,
     this.onPair,
     this.onMirror,
+    this.onSwitchToWifi,
   });
 
   final DeviceEntity device;
@@ -20,6 +22,7 @@ class DeviceCard extends StatelessWidget {
   final ValueChanged<String> onDisconnect;
   final ValueChanged<DeviceEntity>? onPair;
   final ValueChanged<DeviceEntity>? onMirror;
+  final ValueChanged<DeviceEntity>? onSwitchToWifi;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +33,15 @@ class DeviceCard extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isCompact = constraints.maxWidth < 480;
+            final actions = DeviceCardActions(
+              device: device,
+              onConnect: onConnect,
+              onDisconnect: onDisconnect,
+              onPair: onPair,
+              onMirror: onMirror,
+              onSwitchToWifi: onSwitchToWifi,
+            );
+
             if (isCompact) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,17 +66,13 @@ class DeviceCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: _buildActionButton(),
-                  ),
+                  Align(alignment: Alignment.centerRight, child: actions),
                 ],
               );
             }
 
             return Row(
               children: [
-                // Status Icon Container
                 Container(
                   width: 48,
                   height: 48,
@@ -81,7 +89,7 @@ class DeviceCard extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(child: _buildDeviceDetails()),
                 const SizedBox(width: 12),
-                _buildActionButton(),
+                actions,
               ],
             );
           },
@@ -128,9 +136,45 @@ class DeviceCard extends StatelessWidget {
                   color: AppColors.statusWarning,
                 ),
               ),
+            if (device.isXiaomi) _buildXiaomiBadge(),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildXiaomiBadge() {
+    return Tooltip(
+      message: 'Xiaomi/HyperOS: Enable "USB debugging (Security settings)" for input control.',
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: AppColors.statusWarning.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: AppColors.statusWarning.withValues(alpha: 0.4),
+          ),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.info_outline_rounded,
+              size: 11,
+              color: AppColors.statusWarning,
+            ),
+            SizedBox(width: 3),
+            Text(
+              'MIUI/HyperOS Tip',
+              style: TextStyle(
+                fontSize: 10,
+                color: AppColors.statusWarning,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -160,59 +204,10 @@ class DeviceCard extends StatelessWidget {
     }
   }
 
-  Widget _buildActionButton() {
-    if (device.isConnected) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ElevatedButton.icon(
-            onPressed: () => onMirror?.call(device),
-            icon: const Icon(Icons.screen_share_rounded, size: 16),
-            label: const Text('Mirror'),
-          ),
-          const SizedBox(width: 8),
-          OutlinedButton.icon(
-            onPressed: () => onDisconnect(device.id),
-            icon: const Icon(Icons.link_off_rounded, size: 16),
-            label: const Text('Disconnect'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.statusError,
-              side: const BorderSide(color: AppColors.statusError),
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (device.requiresPairing) {
-      return ElevatedButton.icon(
-        onPressed: () => onPair?.call(device),
-        icon: const Icon(Icons.phonelink_lock_rounded, size: 16),
-        label: const Text('Pair Device'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.statusWarning,
-          foregroundColor: Colors.black,
-        ),
-      );
-    }
-
-    return ElevatedButton.icon(
-      onPressed: () => onConnect(device),
-      icon: const Icon(Icons.play_arrow_rounded, size: 18),
-      label: const Text('Connect'),
-    );
-  }
-
   IconData _getStatusIcon() {
-    if (device.isConnected) {
-      return Icons.check_circle_rounded;
-    }
-    if (device.isUnauthorized) {
-      return Icons.lock_outline_rounded;
-    }
-    if (device.requiresPairing) {
-      return Icons.phonelink_lock_rounded;
-    }
+    if (device.isConnected) return Icons.check_circle_rounded;
+    if (device.isUnauthorized) return Icons.lock_outline_rounded;
+    if (device.requiresPairing) return Icons.phonelink_lock_rounded;
     if (device.connectionType == DeviceConnectionType.usb) {
       return Icons.usb_rounded;
     }
@@ -220,19 +215,11 @@ class DeviceCard extends StatelessWidget {
   }
 
   Color _getStatusColor() {
-    if (device.isConnected) {
-      return AppColors.statusSuccess;
-    }
-    if (device.isUnauthorized) {
-      return AppColors.statusError;
-    }
-    if (device.requiresPairing) {
-      return AppColors.statusWarning;
-    }
+    if (device.isConnected) return AppColors.statusSuccess;
+    if (device.isUnauthorized) return AppColors.statusError;
+    if (device.requiresPairing) return AppColors.statusWarning;
     return AppColors.accent;
   }
 
-  Color _getStatusBgColor() {
-    return _getStatusColor().withValues(alpha: 0.15);
-  }
+  Color _getStatusBgColor() => _getStatusColor().withValues(alpha: 0.15);
 }

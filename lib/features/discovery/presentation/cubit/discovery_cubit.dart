@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:wifi_desk/core/services/device_history_service.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_state.dart';
 
 /// Cubit managing the device scanning, auto-discovery daemon, and connection state.
 class DiscoveryCubit extends Cubit<DiscoveryState> {
-  DiscoveryCubit({required this.repository}) : super(const DiscoveryInitial());
+  DiscoveryCubit({required this.repository, this.historyService})
+    : super(const DiscoveryInitial());
 
   final DeviceDiscoveryRepository repository;
+  final DeviceHistoryService? historyService;
   Timer? _autoScanTimer;
 
   /// Scans for available devices and updates the state.
@@ -43,6 +46,15 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
     try {
       final success = await repository.connectDevice(device);
       if (success) {
+        historyService?.saveRecentDevice(
+          RecentDevice(
+            id: device.id,
+            name: device.name,
+            ipAddress: device.ipAddress,
+            port: device.port,
+            lastConnected: DateTime.now(),
+          ),
+        );
         await scanDevices();
       } else {
         emit(
@@ -88,6 +100,15 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
         port: port,
       );
       if (success) {
+        historyService?.saveRecentDevice(
+          RecentDevice(
+            id: '$ipAddress:$port',
+            name: 'Android Device',
+            ipAddress: ipAddress,
+            port: port,
+            lastConnected: DateTime.now(),
+          ),
+        );
         await scanDevices();
       } else {
         emit(
@@ -104,6 +125,35 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
         stackTrace: stack,
       );
       emit(DiscoveryError(message: 'Manual connection error: $e'));
+    }
+  }
+
+  /// Switches an attached USB device to wireless Wi-Fi mode using ADB TCP/IP.
+  Future<bool> switchUsbToWifi(DeviceEntity device, {int port = 5555}) async {
+    emit(const DiscoveryLoading());
+    try {
+      final success = await repository.switchUsbToWifi(device.id, port: port);
+      if (success) {
+        historyService?.saveRecentDevice(
+          RecentDevice(
+            id: '${device.ipAddress}:$port',
+            name: device.name,
+            ipAddress: device.ipAddress,
+            port: port,
+            lastConnected: DateTime.now(),
+          ),
+        );
+      }
+      await scanDevices();
+      return success;
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to switch USB device to Wi-Fi: ${device.id}',
+        error: e,
+        stackTrace: stack,
+      );
+      emit(DiscoveryError(message: 'Failed to switch to Wi-Fi: $e'));
+      return false;
     }
   }
 

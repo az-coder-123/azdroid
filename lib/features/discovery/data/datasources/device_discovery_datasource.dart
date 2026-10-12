@@ -1,4 +1,5 @@
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
 import 'package:wifi_desk/features/discovery/data/models/device_model.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 
@@ -15,15 +16,21 @@ abstract class DeviceDiscoveryDatasource {
 
   /// Pairs with an Android 11+ device using wireless debugging pairing code.
   Future<bool> pair(String ipAddress, int port, String pairingCode);
+
+  /// Switches a USB device to wireless mode on [port] (default 5555).
+  Future<bool> switchUsbToWifi(String serial, {int port = 5555});
 }
 
 /// Production implementation leveraging [AdbService] to scan attached and mDNS devices.
 class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
-  const DeviceDiscoveryDatasourceImpl({this.adbService});
+  const DeviceDiscoveryDatasourceImpl({this.adbService, this.adbTcpipService});
 
   final AdbService? adbService;
+  final AdbTcpipService? adbTcpipService;
 
   AdbService get _service => adbService ?? AdbService();
+  AdbTcpipService get _tcpipService =>
+      adbTcpipService ?? AdbTcpipService(adbService: _service);
 
   @override
   Future<List<DeviceModel>> scanDevices() async {
@@ -146,6 +153,12 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
   @override
   Future<bool> pair(String ipAddress, int port, String pairingCode) async {
     final result = await _service.pair(ipAddress, port, pairingCode);
+    return result.isSuccess;
+  }
+
+  @override
+  Future<bool> switchUsbToWifi(String serial, {int port = 5555}) async {
+    final result = await _tcpipService.switchUsbToWifi(serial, port: port);
     return result.isSuccess;
   }
 }

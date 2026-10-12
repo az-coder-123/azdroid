@@ -140,5 +140,28 @@ void main() {
         ),
       ],
     );
+
+    test(
+      'switchUsbToWifi delegates to repository and returns result',
+      () async {
+        const usbDev = DeviceEntity(
+          id: 'usb123',
+          name: 'USB Phone',
+          ipAddress: '127.0.0.1',
+          port: 5555,
+          connectionType: DeviceConnectionType.usb,
+        );
+
+        when(() => mockRepository.switchUsbToWifi('usb123', port: 5555))
+            .thenAnswer((_) async => true);
+        when(() => mockRepository.discoverDevices())
+            .thenAnswer((_) async => []);
+
+        final result = await discoveryCubit.switchUsbToWifi(usbDev);
+        expect(result, isTrue);
+        verify(() => mockRepository.switchUsbToWifi('usb123', port: 5555))
+            .called(1);
+      },
+    );
   });
 }

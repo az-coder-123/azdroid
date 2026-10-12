@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
+import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
+import 'package:wifi_desk/core/services/device_history_service.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
@@ -46,9 +48,23 @@ Future<void> initDependencies() async {
     () => AdbService(processExecutor: sl<ProcessExecutor>()),
   );
 
+  sl.registerLazySingleton<AdbTcpipService>(
+    () => AdbTcpipService(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<DeviceHistoryService>(
+    () => DeviceHistoryServiceImpl(),
+  );
+
   // Discovery data sources & repositories
   sl.registerLazySingleton<DeviceDiscoveryDatasource>(
-    () => DeviceDiscoveryDatasourceImpl(adbService: sl<AdbService>()),
+    () => DeviceDiscoveryDatasourceImpl(
+      adbService: sl<AdbService>(),
+      adbTcpipService: sl<AdbTcpipService>(),
+    ),
   );
 
   sl.registerLazySingleton<DeviceDiscoveryRepository>(
@@ -128,7 +144,10 @@ Future<void> initDependencies() async {
 
   // Cubits & Blocs (Factory registrations so each consumer receives a fresh instance)
   sl.registerFactory<DiscoveryCubit>(
-    () => DiscoveryCubit(repository: sl<DeviceDiscoveryRepository>()),
+    () => DiscoveryCubit(
+      repository: sl<DeviceDiscoveryRepository>(),
+      historyService: sl<DeviceHistoryService>(),
+    ),
   );
 
   sl.registerFactory<PairingCubit>(

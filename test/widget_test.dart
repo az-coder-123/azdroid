@@ -54,7 +54,7 @@ void main() {
 
       expect(find.text('No Devices Discovered'), findsOneWidget);
       expect(find.text('Scan for Devices'), findsOneWidget);
-      expect(find.text('Pair with QR Code'), findsOneWidget);
+      expect(find.text('Pair with Wi-Fi Code'), findsOneWidget);
       expect(find.text('Pair Device'), findsOneWidget);
       expect(find.text('Direct IP'), findsOneWidget);
 

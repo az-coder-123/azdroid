@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/di/injection.dart';
@@ -12,12 +10,10 @@ import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_state.da
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_dialog_header.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_manual_code_tab.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_qr_code_tab.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_status_banner.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_tab_switcher.dart';
 
 /// Modal dialog providing interactive step-by-step wireless pairing for Android 11+
-/// supporting both automated QR Code scanning and manual 6-digit PIN entry.
+/// using authentic 6-digit Wi-Fi pairing code and port entry.
 class PairingDialog extends StatefulWidget {
   const PairingDialog({super.key, this.initialDevice, this.onPairingSuccess});
 
@@ -45,11 +41,7 @@ class PairingDialog extends StatefulWidget {
 }
 
 class _PairingDialogState extends State<PairingDialog> {
-  int _selectedTabIndex = 0; // 0: QR Code, 1: Manual PIN
   String? _hostMacIp;
-  late String _qrPairingCode;
-  static const String _qrServiceName = 'wifidesk';
-
   late final TextEditingController _ipController;
   late final TextEditingController _portController;
   late final TextEditingController _codeController;
@@ -57,7 +49,6 @@ class _PairingDialogState extends State<PairingDialog> {
   @override
   void initState() {
     super.initState();
-    _generateRandomQrCode();
     _loadHostIp();
 
     final device = widget.initialDevice;
@@ -70,11 +61,6 @@ class _PairingDialogState extends State<PairingDialog> {
       text: (device?.pairingPort ?? 37123).toString(),
     );
     _codeController = TextEditingController();
-  }
-
-  void _generateRandomQrCode() {
-    final rng = Random();
-    _qrPairingCode = (100000 + rng.nextInt(900000)).toString();
   }
 
   Future<void> _loadHostIp() async {
@@ -99,8 +85,6 @@ class _PairingDialogState extends State<PairingDialog> {
     _codeController.dispose();
     super.dispose();
   }
-
-  String get _qrPayload => 'WIFI:T:ADB;S:$_qrServiceName;P:$_qrPairingCode;;';
 
   void _submitManualPair(BuildContext context) {
     final port = int.tryParse(_portController.text.trim()) ?? 0;
@@ -150,27 +134,13 @@ class _PairingDialogState extends State<PairingDialog> {
                     const SizedBox(height: 16),
                     PairingHostIpBanner(hostMacIp: _hostMacIp),
                     const SizedBox(height: 16),
-                    PairingTabSwitcher(
-                      selectedTabIndex: _selectedTabIndex,
+                    PairingManualCodeTab(
                       isSubmitting: isSubmitting,
-                      onSelectTab: (idx) =>
-                          setState(() => _selectedTabIndex = idx),
+                      hostMacIp: _hostMacIp,
+                      ipController: _ipController,
+                      portController: _portController,
+                      codeController: _codeController,
                     ),
-                    const SizedBox(height: 18),
-                    if (_selectedTabIndex == 0)
-                      PairingQrCodeTab(
-                        qrPayload: _qrPayload,
-                        pairingCode: _qrPairingCode,
-                        onRegenerateCode: () => setState(_generateRandomQrCode),
-                      )
-                    else
-                      PairingManualCodeTab(
-                        isSubmitting: isSubmitting,
-                        hostMacIp: _hostMacIp,
-                        ipController: _ipController,
-                        portController: _portController,
-                        codeController: _codeController,
-                      ),
                     const SizedBox(height: 16),
                     PairingStatusBanner(state: state),
                     Row(
@@ -182,27 +152,25 @@ class _PairingDialogState extends State<PairingDialog> {
                               : () => Navigator.of(context).pop(),
                           child: const Text('Cancel'),
                         ),
-                        if (_selectedTabIndex == 1) ...[
-                          const SizedBox(width: 12),
-                          ElevatedButton.icon(
-                            onPressed: isSubmitting
-                                ? null
-                                : () => _submitManualPair(context),
-                            icon: isSubmitting
-                                ? const SizedBox(
-                                    width: 14,
-                                    height: 14,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Icon(Icons.check_rounded, size: 18),
-                            label: Text(
-                              isSubmitting ? 'Pairing...' : 'Pair & Connect',
-                            ),
+                        const SizedBox(width: 12),
+                        ElevatedButton.icon(
+                          onPressed: isSubmitting
+                              ? null
+                              : () => _submitManualPair(context),
+                          icon: isSubmitting
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(Icons.check_rounded, size: 18),
+                          label: Text(
+                            isSubmitting ? 'Pairing...' : 'Pair & Connect',
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ],

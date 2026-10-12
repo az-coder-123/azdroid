@@ -8,7 +8,7 @@ void main() {
     'EmptyStateView renders titles, checklist cards and triggers callbacks',
     (WidgetTester tester) async {
       var scanPressed = false;
-      var qrPressed = false;
+      var pairPressed = false;
       var guidePressed = false;
 
       await tester.pumpWidget(
@@ -18,7 +18,7 @@ void main() {
             body: EmptyStateView(
               isScanning: false,
               onScanPressed: () => scanPressed = true,
-              onPairWithQrPressed: () => qrPressed = true,
+              onPairPressed: () => pairPressed = true,
               onGuidePressed: () => guidePressed = true,
             ),
           ),
@@ -34,15 +34,15 @@ void main() {
 
       // Verify action buttons
       expect(find.text('Scan for Devices'), findsOneWidget);
-      expect(find.text('Pair with QR Code'), findsOneWidget);
+      expect(find.text('Pair with Wi-Fi Code'), findsOneWidget);
       expect(find.text('User Guide'), findsOneWidget);
 
       // Verify callbacks
       await tester.tap(find.text('Scan for Devices'));
       expect(scanPressed, isTrue);
 
-      await tester.tap(find.text('Pair with QR Code'));
-      expect(qrPressed, isTrue);
+      await tester.tap(find.text('Pair with Wi-Fi Code'));
+      expect(pairPressed, isTrue);
 
       await tester.tap(find.text('User Guide'));
       expect(guidePressed, isTrue);

@@ -29,7 +29,6 @@ class AdbService {
   /// Known macOS fallback paths where ADB is frequently installed.
   static final List<String> _knownAdbPaths = [
     'adb',
-    '/Users/trannamlong/Library/Android/sdk/platform-tools/adb',
     '${Platform.environment['HOME']}/Library/Android/sdk/platform-tools/adb',
     '/opt/homebrew/bin/adb',
     '/usr/local/bin/adb',
