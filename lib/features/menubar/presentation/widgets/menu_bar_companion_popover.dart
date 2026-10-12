@@ -11,11 +11,13 @@ class MenuBarCompanionPopover extends StatelessWidget {
     this.onToggleWindow,
     this.onDisconnect,
     this.onOpenDiscovery,
+    this.onOpenGuide,
   });
 
   final VoidCallback? onToggleWindow;
   final VoidCallback? onDisconnect;
   final VoidCallback? onOpenDiscovery;
+  final VoidCallback? onOpenGuide;
 
   @override
   Widget build(BuildContext context) {
@@ -239,6 +241,14 @@ class MenuBarCompanionPopover extends StatelessWidget {
                   onToggleWindow?.call();
                 },
               ),
+              if (onOpenGuide != null) ...[
+                const SizedBox(height: 6),
+                _buildActionButton(
+                  icon: Icons.menu_book_rounded,
+                  title: 'User Guide & Shortcuts',
+                  onTap: onOpenGuide!,
+                ),
+              ],
               if (isMirroring && onDisconnect != null) ...[
                 const SizedBox(height: 6),
                 _buildActionButton(

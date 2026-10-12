@@ -62,4 +62,36 @@ void main() {
       cubit.close();
     },
   );
+
+  testWidgets(
+    'MenuBarCompanionPopover renders and triggers onOpenGuide action',
+    (WidgetTester tester) async {
+      final cubit = MenuBarCubit();
+      var guideOpened = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: Scaffold(
+            body: Center(
+              child: BlocProvider<MenuBarCubit>.value(
+                value: cubit,
+                child: MenuBarCompanionPopover(
+                  onOpenGuide: () => guideOpened = true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('User Guide & Shortcuts'), findsOneWidget);
+      await tester.tap(find.text('User Guide & Shortcuts'));
+      await tester.pumpAndSettle();
+
+      expect(guideOpened, isTrue);
+      cubit.close();
+    },
+  );
 }

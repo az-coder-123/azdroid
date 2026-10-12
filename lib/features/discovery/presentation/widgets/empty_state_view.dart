@@ -12,11 +12,13 @@ class EmptyStateView extends StatelessWidget {
     required this.isScanning,
     required this.onScanPressed,
     this.onPairWithQrPressed,
+    this.onGuidePressed,
   });
 
   final bool isScanning;
   final VoidCallback onScanPressed;
   final VoidCallback? onPairWithQrPressed;
+  final VoidCallback? onGuidePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +126,15 @@ class EmptyStateView extends StatelessWidget {
                     onPressed: onPairWithQrPressed,
                     icon: const Icon(Icons.qr_code_2_rounded, size: 18),
                     label: const Text('Pair with QR Code'),
+                  ),
+                if (onGuidePressed != null)
+                  TextButton.icon(
+                    onPressed: onGuidePressed,
+                    icon: const Icon(Icons.menu_book_rounded, size: 18),
+                    label: const Text('User Guide'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
+                    ),
                   ),
               ],
             ),

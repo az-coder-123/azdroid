@@ -38,6 +38,7 @@ WifiDesk bridges two core principles:
 - 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet without external servers, tracking, or cloud proxies.
 - 💸 **Truly Free & Open Source:** Zero advertising, zero analytics trackers, and no recurring subscriptions.
 
+👉 *For the user handbook, Xiaomi setup, and keyboard shortcuts, visit [docs/user-guide.md](docs/user-guide.md).*
 👉 *For detailed technical specifications, visit [docs/features.md](docs/features.md).*
 
 ---
@@ -121,6 +122,7 @@ flutter run -d macos
 - [x] Build mouse and keyboard input translation layer
 - [x] Implement bidirectional clipboard synchronization and drag-and-drop transfers
 - [x] Implement macOS Menu Bar companion and audio forwarding
+- [x] Professional macOS user guide handbook with split-view navigation & shortcuts
 
 ---
 

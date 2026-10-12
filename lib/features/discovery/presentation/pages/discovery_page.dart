@@ -10,6 +10,7 @@ import 'package:wifi_desk/features/discovery/presentation/widgets/device_card.da
 import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state_view.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/manual_connect_dialog.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing_dialog.dart';
+import 'package:wifi_desk/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:wifi_desk/features/streaming/presentation/pages/mirroring_page.dart';
 
 /// Main landing page of WifiDesk hosting the device discovery and pairing dashboard.
@@ -72,6 +73,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                 (state is DiscoveryLoaded && state.isAutoScanning);
 
             return Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(
                   Icons.wifi_tethering_rounded,
@@ -79,7 +81,13 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                   size: 24,
                 ),
                 const SizedBox(width: 12),
-                const Text(AppConstants.appName, style: AppTypography.title),
+                const Flexible(
+                  child: Text(
+                    AppConstants.appName,
+                    style: AppTypography.title,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 if (isScanning) ...[
                   const SizedBox(width: 10),
                   const SizedBox(
@@ -108,6 +116,12 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             label: const Text('Direct IP'),
             style: TextButton.styleFrom(foregroundColor: AppColors.textPrimary),
             onPressed: _openManualConnectDialog,
+          ),
+          const SizedBox(width: 4),
+          IconButton(
+            tooltip: 'User Guide',
+            icon: const Icon(Icons.menu_book_rounded, size: 20),
+            onPressed: () => UserGuideDialog.show(context),
           ),
           const SizedBox(width: 4),
           IconButton(
@@ -219,6 +233,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             isScanning: false,
             onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
             onPairWithQrPressed: () => _openPairingDialog(),
+            onGuidePressed: () => UserGuideDialog.show(context),
           );
         },
       ),

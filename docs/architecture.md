@@ -154,6 +154,27 @@ lib/
 │   │       ├── cubit/menu_bar_cubit.dart
 │   │       ├── cubit/menu_bar_state.dart
 │   │       └── widgets/menu_bar_companion_popover.dart
+│   ├── guide/                              # User handbook & split guide modal (SRP)
+│   │   ├── domain/models/guide_category.dart
+│   │   └── presentation/widgets/
+│   │       ├── components/                 # Atomic UI elements (< 100 lines each)
+│   │       │   ├── guide_callout.dart
+│   │       │   ├── guide_card.dart
+│   │       │   ├── guide_command_snippet.dart
+│   │       │   ├── guide_faq_item.dart
+│   │       │   ├── guide_feature_bullet.dart
+│   │       │   ├── guide_gesture_item.dart
+│   │       │   ├── guide_section_header.dart
+│   │       │   ├── guide_shortcut_item.dart
+│   │       │   └── guide_step_row.dart
+│   │       ├── sections/                   # Modular guide chapters (< 120 lines each)
+│   │       │   ├── controls_section.dart
+│   │       │   ├── productivity_section.dart
+│   │       │   ├── quick_start_section.dart
+│   │       │   ├── troubleshooting_section.dart
+│   │       │   └── xiaomi_setup_section.dart
+│   │       ├── guide_sidebar.dart
+│   │       └── user_guide_dialog.dart
 │   └── settings/                           # User preferences & stream quality
 │       └── domain/entities/app_settings_entity.dart
 └── main.dart                               # Entrypoint with DI & MultiBlocProvider

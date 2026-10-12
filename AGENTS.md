@@ -88,8 +88,15 @@ flowchart TD
 
 ## 🧼 3. Clean Code & Engineering Standards
 
-1. **Adherence to SOLID & Clean Code:**
-   - **Single Responsibility Principle (SRP):** Each class, function, and file must have one single, well-defined responsibility. Keep files compact (< 250 lines where practical).
+1. **Strict Adherence to SOLID & Clean Code:**
+   - **Strict Single Responsibility Principle (SRP) Across All Levels:** SRP must be strictly applied to every level of the codebase and project structure without exception. This ensures that files, classes, functions/methods, widgets, and documentation remain small, modular, compact (< 250 lines where practical), and easily maintainable over time:
+     - **Modules & Features:** Each module must encapsulate a single cohesive domain responsibility (no monolithic feature dumping).
+     - **Files:** Each file must have one single distinct purpose and remain compact (< 250 lines where practical). Never merge multiple unrelated components, models, or large views into a single monolithic file.
+     - **Classes & Services:** Each class must encapsulate a single responsibility with only one reason to change.
+     - **Widgets & UI Components:** Decompose complex UI into small, focused, and reusable widgets. Never build monolithic widgets that embed full dialogs, multiple tab views, and distinct child cards into one file.
+     - **Functions & Methods:** Each function or method must perform one single task with zero hidden side-effects.
+     - **Documentation Files:** Documentation files (including `README.md`, `docs/*.md`, user guides) must strictly adhere to SRP—each document must cover a single dedicated topic or scope rather than combining architecture, networking, troubleshooting, and guides into one unmanageable file.
+   - **Compactness & Maintainability Goal:** By strictly enforcing SRP across modules, files, classes, functions/methods, widgets, and documentation, the entire codebase remains readable at a glance, testable in isolation, highly decoupled, and trivial to maintain and refactor.
    - **Don't Repeat Yourself (DRY):** Extract duplicated logic into reusable domain helpers, shared extension methods, or core utilities.
    - **Open/Closed & Dependency Inversion:** Depend upon abstractions, not concrete implementations.
 2. **Zero Hardcoding Policy:**
@@ -144,6 +151,8 @@ Before concluding any task or generating a commit, AI assistants must strictly e
    - Keep code docstrings, parameter descriptions, and return types accurate and up to date.
 2. **No Stale Information:**
    - Remove obsolete references or deprecated workflows immediately.
+3. **Strict SRP for Documentation Files:**
+   - Every documentation file must adhere strictly to the Single Responsibility Principle. Never combine unrelated domains into one monolithic document. Structure documentation into modular, focused files (e.g., `docs/architecture.md`, `docs/pairing-guide.md`, `docs/troubleshooting.md`, `docs/shortcuts.md`).
 
 ---
 
