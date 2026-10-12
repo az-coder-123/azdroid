@@ -83,6 +83,10 @@ lib/
 │   │       ├── cubit/discovery_state.dart
 │   │       ├── cubit/pairing_cubit.dart
 │   │       ├── cubit/pairing_state.dart
+│   │       ├── widgets/empty_state/
+│   │       │   ├── empty_state_radar_icon.dart
+│   │       │   ├── empty_state_step_card.dart
+│   │       │   └── usb_quick_switch_banner.dart
 │   │       ├── widgets/device_card.dart
 │   │       ├── widgets/device_status_badge.dart
 │   │       ├── widgets/discovery_app_bar_actions.dart

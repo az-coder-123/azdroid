@@ -116,18 +116,11 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
       body: BlocBuilder<DiscoveryCubit, DiscoveryState>(
         builder: (context, state) {
           if (state is DiscoveryLoading) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text(
-                    'Scanning for Android devices & mDNS services...',
-                    style: AppTypography.subtitle,
-                  ),
-                ],
-              ),
+            return EmptyStateView(
+              isScanning: true,
+              onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
+              onPairWithQrPressed: () => _openPairingDialog(),
+              onGuidePressed: () => UserGuideDialog.show(context),
             );
           }
 
@@ -219,7 +212,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
 
           // Initial or empty list
           return EmptyStateView(
-            isScanning: false,
+            isScanning: state is DiscoveryLoaded && state.isAutoScanning,
             onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
             onPairWithQrPressed: () => _openPairingDialog(),
             onGuidePressed: () => UserGuideDialog.show(context),
