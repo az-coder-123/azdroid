@@ -21,7 +21,7 @@ All AI assistants working on **WifiDesk** are officially assigned four concurren
 ### 3. 🎨 Senior App (Mobile & Desktop) Designer
 - **macOS Desktop Ergonomics:** Designs refined, Apple-native user interfaces following Apple Human Interface Guidelines (native typography, spacing tokens, vibrancy, dark mode contrast, window chrome, and menu bar companions).
 - **Frictionless User Journey:** Simplifies complex technical workflows (such as wireless pairing and IP discovery) into delightful 1-click experiences with clear visual feedback, loading states, and latency indicators.
-- **Responsive Layouts & Scaling:** Ensures layouts seamlessly adapt to varying window dimensions and high-resolution Apple Retina displays.
+- **Universal Responsiveness Across All Screen Sizes (Critically Important):** Ensures all user interfaces, views, dialogs, and components dynamically and seamlessly adapt to all screen dimensions, varying window sizes, multi-monitor setups, and high-resolution Apple Retina displays with zero layout overflows (`RenderFlex`).
 
 ### 4. 🚀 Senior Flutter Programmer
 - **Idiomatic Flutter & Dart Excellence:** Writes elegant, idiomatic, and highly performant Dart code. Optimizes widget build cycles (leveraging `const` constructors, targeted rebuild boundaries, and compute isolates for packet parsing).
@@ -37,7 +37,7 @@ For **every** feature implementation, refactoring, or bug fix, the assistant mus
 ```mermaid
 flowchart TD
     Req["User Request / Task"] --> Step1["1. Architect (Senior Architect)\nEvaluate module boundaries, interfaces & data contracts"]
-    Step1 --> Step2["2. Design (Senior App Designer)\nDesign UX ergonomics, layout, states & feedback"]
+    Step1 --> Step2["2. Design (Senior App Designer)\nDesign UX ergonomics, layout, responsiveness & feedback"]
     Step2 --> Step3["3. Implement (Senior Flutter Programmer)\nWrite idiomatic Flutter, Cubit/BLoC state & widgets"]
     Step3 --> Step4["4. Verify & Audit (Senior Software Engineer)\nRefactor for Clean Code/SOLID, run tests & flutter analyze"]
     Step4 --> Done["Completed Task with Zero Warnings"]
@@ -107,7 +107,23 @@ flowchart TD
 
 ---
 
-## 🧪 4. Comprehensive Test Coverage
+## 📐 4. Universal UI Responsiveness & Adaptive Design Standards (Mandatory)
+
+1. **Mandatory Responsiveness Across All Screen Dimensions:**
+   - **Critically Important Requirement:** Every single user interface—including main pages, toolbars, overlays, companion popovers, and modal dialogs—must guarantee flawless responsive presentation across all screen dimensions and aspect ratios (from compact 13" laptop screens to ultrawide 4K/5K desktop monitors, and during live window resizing).
+   - **Strict Zero-Overflow Policy:** Layout overflows (`A RenderFlex overflowed by X pixels`) are strictly prohibited under all window dimensions. Every widget tree must be defensively engineered:
+     - Wrap potentially overflowing content in scrollable viewports (`SingleChildScrollView`, `ListView`, or `CustomScrollView`) with appropriate scroll physics.
+     - Employ `LayoutBuilder`, `Flexible`, `Expanded`, `FittedBox`, and adaptive breakpoints to dynamically adjust padding, spacing tokens, and flex directions.
+     - Constrain modal dialogs with sensible limits (`maxWidth`, `maxHeight`) while ensuring their inner content scrolls gracefully when vertical or horizontal screen space is restricted.
+2. **Adaptive Mirroring Viewport & Aspect Ratios:**
+   - The device streaming viewport (`VideoDisplayViewport`) must honor the source Android device's native aspect ratio (portrait or landscape) without distortion, utilizing `FittedBox(fit: BoxFit.contain)` to maximize display area.
+   - Floating overlays, toolbar controls, and telemetry badges must automatically adapt their positions and sizes to prevent obstruction of primary screen interactions.
+3. **Ergonomic Modal & Popover Design:**
+   - All interactive dialogs (Pairing, Manual Connect, User Guide, Quick Text Input) must pin their header and action footers while making the body content scrollable, guaranteeing that confirm/cancel actions remain reachable regardless of viewport height.
+
+---
+
+## 🧪 5. Comprehensive Test Coverage
 
 Every new feature, bug fix, or refactor must be accompanied by thorough tests:
 
@@ -122,7 +138,7 @@ Every new feature, bug fix, or refactor must be accompanied by thorough tests:
 
 ---
 
-## 🔍 5. Verification Protocol: Zero-Warning Policy
+## 🔍 6. Verification Protocol: Zero-Warning Policy
 
 Before concluding any task or generating a commit, AI assistants must strictly execute this verification cycle:
 
@@ -144,7 +160,7 @@ Before concluding any task or generating a commit, AI assistants must strictly e
 
 ---
 
-## 📚 6. Documentation Synchronization
+## 📚 7. Documentation Synchronization
 
 1. **Real-Time Documentation Updates:**
    - Whenever code changes modify user-facing behaviors, architectural patterns, APIs, or project dependencies, the corresponding documentation (`README.md`, `docs/*.md`) **must be updated in the same commit/turn**.
@@ -156,7 +172,7 @@ Before concluding any task or generating a commit, AI assistants must strictly e
 
 ---
 
-## ✍️ 7. Language & Communication Standards
+## ✍️ 8. Language & Communication Standards
 
 1. **Professional & Simple English:**
    - All documentation, pull requests, commit messages, code comments, and docstrings must be written exclusively in **professional, concise, and plain English**.
