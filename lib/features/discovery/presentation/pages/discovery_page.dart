@@ -114,6 +114,13 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
         ],
       ),
       body: BlocBuilder<DiscoveryCubit, DiscoveryState>(
+        buildWhen: (previous, current) {
+          if (previous.runtimeType != current.runtimeType) return true;
+          if (previous is DiscoveryLoaded && current is DiscoveryLoaded) {
+            return previous.devices != current.devices;
+          }
+          return true;
+        },
         builder: (context, state) {
           if (state is DiscoveryLoading) {
             return EmptyStateView(
@@ -212,7 +219,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
 
           // Initial or empty list
           return EmptyStateView(
-            isScanning: state is DiscoveryLoaded && state.isAutoScanning,
+            isScanning: false,
             onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
             onPairWithQrPressed: () => _openPairingDialog(),
             onGuidePressed: () => UserGuideDialog.show(context),

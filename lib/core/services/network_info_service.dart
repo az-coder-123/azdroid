@@ -5,13 +5,24 @@ import 'package:wifi_desk/core/services/app_logger.dart';
 /// Abstract service providing host machine local network information.
 abstract class NetworkInfoService {
   /// Resolves the primary local IPv4 address of the host machine (e.g. Wi-Fi).
-  Future<String?> getLocalIpAddress();
+  Future<String?> getLocalIpAddress({bool forceRefresh = false});
 }
 
-/// Concrete implementation querying system network interfaces.
+/// Concrete implementation querying system network interfaces with in-memory caching.
 class NetworkInfoServiceImpl implements NetworkInfoService {
+  String? _cachedIp;
+  DateTime? _lastFetchTime;
+  static const Duration _cacheDuration = Duration(seconds: 30);
+
   @override
-  Future<String?> getLocalIpAddress() async {
+  Future<String?> getLocalIpAddress({bool forceRefresh = false}) async {
+    if (!forceRefresh &&
+        _cachedIp != null &&
+        _lastFetchTime != null &&
+        DateTime.now().difference(_lastFetchTime!) < _cacheDuration) {
+      return _cachedIp;
+    }
+
     try {
       final interfaces = await NetworkInterface.list(
         type: InternetAddressType.IPv4,
@@ -23,6 +34,8 @@ class NetworkInfoServiceImpl implements NetworkInfoService {
         if (interface.name == 'en0') {
           for (final addr in interface.addresses) {
             if (!addr.isLoopback && !addr.address.startsWith('127.')) {
+              _cachedIp = addr.address;
+              _lastFetchTime = DateTime.now();
               return addr.address;
             }
           }
@@ -33,6 +46,8 @@ class NetworkInfoServiceImpl implements NetworkInfoService {
       for (final interface in interfaces) {
         for (final addr in interface.addresses) {
           if (!addr.isLoopback && !addr.address.startsWith('127.')) {
+            _cachedIp = addr.address;
+            _lastFetchTime = DateTime.now();
             return addr.address;
           }
         }
@@ -44,6 +59,6 @@ class NetworkInfoServiceImpl implements NetworkInfoService {
         stackTrace: stack,
       );
     }
-    return null;
+    return _cachedIp;
   }
 }

@@ -8,7 +8,7 @@ import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state/em
 import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state/usb_quick_switch_banner.dart';
 
 /// Clean and interactive onboarding launchpad displayed when no devices are detected.
-class EmptyStateView extends StatelessWidget {
+class EmptyStateView extends StatefulWidget {
   const EmptyStateView({
     super.key,
     required this.isScanning,
@@ -23,6 +23,21 @@ class EmptyStateView extends StatelessWidget {
   final VoidCallback? onGuidePressed;
 
   @override
+  State<EmptyStateView> createState() => _EmptyStateViewState();
+}
+
+class _EmptyStateViewState extends State<EmptyStateView> {
+  late final Future<String?> _ipFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _ipFuture = sl.isRegistered<NetworkInfoService>()
+        ? sl<NetworkInfoService>().getLocalIpAddress()
+        : Future.value(null);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
@@ -32,10 +47,10 @@ class EmptyStateView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              EmptyStateRadarIcon(isScanning: isScanning),
+              EmptyStateRadarIcon(isScanning: widget.isScanning),
               const SizedBox(height: 20),
               Text(
-                isScanning
+                widget.isScanning
                     ? 'Scanning Local Network...'
                     : 'No Devices Discovered',
                 style: AppTypography.display,
@@ -54,9 +69,7 @@ class EmptyStateView extends StatelessWidget {
 
               // 3 Quick Setup Step Cards
               FutureBuilder<String?>(
-                future: sl.isRegistered<NetworkInfoService>()
-                    ? sl<NetworkInfoService>().getLocalIpAddress()
-                    : Future.value(null),
+                future: _ipFuture,
                 builder: (context, snapshot) {
                   final macIp = snapshot.data;
                   return LayoutBuilder(
@@ -127,8 +140,8 @@ class EmptyStateView extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: isScanning ? null : onScanPressed,
-                    icon: isScanning
+                    onPressed: widget.isScanning ? null : widget.onScanPressed,
+                    icon: widget.isScanning
                         ? const SizedBox(
                             width: 16,
                             height: 16,
@@ -139,12 +152,14 @@ class EmptyStateView extends StatelessWidget {
                           )
                         : const Icon(Icons.refresh_rounded, size: 18),
                     label: Text(
-                      isScanning ? 'Scanning Network...' : 'Scan for Devices',
+                      widget.isScanning
+                          ? 'Scanning Network...'
+                          : 'Scan for Devices',
                     ),
                   ),
-                  if (onPairWithQrPressed != null)
+                  if (widget.onPairWithQrPressed != null)
                     OutlinedButton.icon(
-                      onPressed: onPairWithQrPressed,
+                      onPressed: widget.onPairWithQrPressed,
                       icon: const Icon(Icons.qr_code_2_rounded, size: 18),
                       label: const Text('Pair with QR Code'),
                       style: OutlinedButton.styleFrom(
@@ -155,9 +170,9 @@ class EmptyStateView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (onGuidePressed != null)
+                  if (widget.onGuidePressed != null)
                     TextButton.icon(
-                      onPressed: onGuidePressed,
+                      onPressed: widget.onGuidePressed,
                       icon: const Icon(Icons.menu_book_rounded, size: 18),
                       label: const Text('User Guide'),
                       style: TextButton.styleFrom(
@@ -169,7 +184,7 @@ class EmptyStateView extends StatelessWidget {
               const SizedBox(height: 20),
 
               // USB 1-time fallback hint banner
-              UsbQuickSwitchBanner(onGuidePressed: onGuidePressed),
+              UsbQuickSwitchBanner(onGuidePressed: widget.onGuidePressed),
             ],
           ),
         ),
