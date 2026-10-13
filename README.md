@@ -33,6 +33,7 @@ WifiDesk bridges two core principles:
 - 🍎 **Mac-First Productivity:**
   - **Bidirectional Clipboard Sharing:** Instant synchronization between macOS pasteboard (`Cmd + C`) and the Android system clipboard.
   - **Lossless Phone Screenshots:** Capture native-resolution PNG screenshots via floating camera button or <kbd>Cmd</kbd> + <kbd>S</kbd>, auto-saved to `~/Downloads` and copied to macOS clipboard (`⌘V`) with 1-click Finder actions.
+  - **Hardware Screen Recording:** Record high-quality MP4 video with live duration HUD (`REC 00:15`) via sidebar camera button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, auto-saved to `~/Downloads`.
   - **Drag & Drop Transfers:** Drag images, videos, and documents directly from Finder to push files or sideload `.apk` packages.
   - **Screen-Off Streaming:** Automatically powers off the physical phone screen during mirroring sessions to preserve battery life and prevent thermal throttling.
   - **Menu Bar Companion:** Quick-access status bar icon for toggling device windows and monitoring battery/Wi-Fi health.

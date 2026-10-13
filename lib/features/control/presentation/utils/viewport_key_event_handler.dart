@@ -6,6 +6,8 @@ import 'package:wifi_desk/features/control/domain/entities/input_event_entity.da
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_event.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 
 /// Translates raw desktop keyboard events into Android navigation and key inputs.
@@ -39,6 +41,19 @@ class ViewportKeyEventHandler {
       if (logicalKey == LogicalKeyboardKey.keyS) {
         try {
           context.read<ScreenshotCubit>().captureScreenshot(deviceSerial);
+          return KeyEventResult.handled;
+        } catch (_) {}
+      }
+
+      if (logicalKey == LogicalKeyboardKey.keyR &&
+          HardwareKeyboard.instance.isShiftPressed) {
+        try {
+          final cubit = context.read<ScreenRecordingCubit>();
+          if (cubit.state is ScreenRecordingActive) {
+            cubit.stopRecording();
+          } else {
+            cubit.startRecording(deviceSerial);
+          }
           return KeyEventResult.handled;
         } catch (_) {}
       }

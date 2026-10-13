@@ -12,9 +12,11 @@ import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart'
 import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/screen_recording_repository.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
@@ -34,6 +36,9 @@ class MockAudioRepository extends Mock implements AudioRepository {}
 
 class MockScreenshotRepository extends Mock implements ScreenshotRepository {}
 
+class MockScreenRecordingRepository extends Mock
+    implements ScreenRecordingRepository {}
+
 void main() {
   late MockStreamingRepository mockRepository;
   late MockControlRepository mockControlRepository;
@@ -41,6 +46,7 @@ void main() {
   late MockFileTransferRepository mockFileTransferRepository;
   late MockAudioRepository mockAudioRepository;
   late MockScreenshotRepository mockScreenshotRepository;
+  late MockScreenRecordingRepository mockScreenRecordingRepository;
 
   const testDevice = DeviceEntity(
     id: '192.168.1.100:5555',
@@ -75,6 +81,7 @@ void main() {
     mockFileTransferRepository = MockFileTransferRepository();
     mockAudioRepository = MockAudioRepository();
     mockScreenshotRepository = MockScreenshotRepository();
+    mockScreenRecordingRepository = MockScreenRecordingRepository();
 
     when(() => mockRepository.startSession(testDevice))
         .thenAnswer((_) async => testSession);
@@ -124,6 +131,13 @@ void main() {
       () => ScreenshotCubit(repository: sl<ScreenshotRepository>()),
     );
 
+    sl.registerLazySingleton<ScreenRecordingRepository>(
+      () => mockScreenRecordingRepository,
+    );
+    sl.registerFactory<ScreenRecordingCubit>(
+      () => ScreenRecordingCubit(repository: sl<ScreenRecordingRepository>()),
+    );
+
     sl.registerLazySingleton<MenuBarCubit>(() => MenuBarCubit());
   });
 
@@ -167,6 +181,7 @@ void main() {
       // Verify Side Controls Toolbar buttons
       expect(find.byTooltip('Streaming Bitrate & Quality'), findsOneWidget);
       expect(find.byTooltip('Take Screenshot (Cmd+S)'), findsOneWidget);
+      expect(find.byTooltip('Record Screen (Cmd+Shift+R)'), findsOneWidget);
       expect(find.byTooltip('Inject Text (Cmd+K)'), findsOneWidget);
       expect(find.byTooltip('Clipboard Synchronization'), findsOneWidget);
 

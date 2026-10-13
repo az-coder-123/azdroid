@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 
 /// Vertical actions toolbar placed beside the real-time phone display
-/// providing fast access to quality bitrate settings, screenshots, text injection, and clipboard sync.
+/// providing fast access to quality bitrate settings, screenshots, screen recording,
+/// text injection, and clipboard sync.
 class SideControlsToolbar extends StatelessWidget {
   const SideControlsToolbar({
     super.key,
@@ -73,8 +77,8 @@ class SideControlsToolbar extends StatelessWidget {
             ),
 
             if (onScreenshot != null ||
-                onTextInject != null ||
-                deviceSerial != null) ...[
+                deviceSerial != null ||
+                onTextInject != null) ...[
               const SizedBox(height: 6),
               _buildDivider(),
               const SizedBox(height: 6),
@@ -87,9 +91,15 @@ class SideControlsToolbar extends StatelessWidget {
                   onPressed: onScreenshot!,
                 ),
 
+              // Screen Recording Toggle
+              if (deviceSerial != null) ...[
+                const SizedBox(height: 4),
+                _buildScreenRecordButton(context),
+              ],
+
               // Quick Text Injection (Unicode / IME)
               if (onTextInject != null) ...[
-                if (onScreenshot != null) const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.keyboard_alt_outlined,
                   tooltip: 'Inject Text (Cmd+K)',
@@ -99,13 +109,54 @@ class SideControlsToolbar extends StatelessWidget {
 
               // Clipboard Synchronization Menu
               if (deviceSerial != null) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
               ],
             ],
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildScreenRecordButton(BuildContext context) {
+    return BlocBuilder<ScreenRecordingCubit, ScreenRecordingState>(
+      builder: (context, state) {
+        final isRecording = state is ScreenRecordingActive;
+        final isFinalizing = state is ScreenRecordingFinalizing;
+
+        if (isFinalizing) {
+          return const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.accent,
+              ),
+            ),
+          );
+        }
+
+        return _buildToolButton(
+          icon: isRecording
+              ? Icons.stop_circle_rounded
+              : Icons.videocam_outlined,
+          tooltip: isRecording
+              ? 'Stop Recording (REC)'
+              : 'Record Screen (Cmd+Shift+R)',
+          color: isRecording ? AppColors.statusError : null,
+          onPressed: () {
+            final cubit = context.read<ScreenRecordingCubit>();
+            if (isRecording) {
+              cubit.stopRecording();
+            } else {
+              cubit.startRecording(deviceSerial!);
+            }
+          },
+        );
+      },
     );
   }
 
@@ -117,6 +168,7 @@ class SideControlsToolbar extends StatelessWidget {
     required IconData icon,
     required String tooltip,
     required VoidCallback onPressed,
+    Color? color,
   }) {
     return Tooltip(
       message: tooltip,
@@ -126,7 +178,7 @@ class SideControlsToolbar extends StatelessWidget {
         hoverColor: AppColors.surfaceElevated,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Icon(icon, size: 20.0, color: AppColors.textPrimary),
+          child: Icon(icon, size: 20.0, color: color ?? AppColors.textPrimary),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/mirroring_view.dart';
@@ -33,6 +34,9 @@ class MirroringPage extends StatelessWidget {
           create: (_) => sl<AudioCubit>()..startAudio(device.serial),
         ),
         BlocProvider<ScreenshotCubit>(create: (_) => sl<ScreenshotCubit>()),
+        BlocProvider<ScreenRecordingCubit>(
+          create: (_) => sl<ScreenRecordingCubit>(),
+        ),
       ],
       child: MirroringView(device: device),
     );

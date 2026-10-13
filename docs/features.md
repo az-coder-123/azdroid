@@ -95,8 +95,13 @@
 - **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via floating bottom toolbar camera button or <kbd>Cmd</kbd> + <kbd>S</kbd>.
 
 ### 4.7 Right-Side Vertical Action Dock
-- **Unobstructed Viewport Ergonomics:** Productivity tools (Streaming Bitrate, Screenshot, Text Injector, Clipboard Sync) are isolated from the bottom navigation dock and placed in an elegant vertical floating dock along the right edge of the real-time phone display.
+- **Unobstructed Viewport Ergonomics:** Productivity tools (Streaming Bitrate, Screenshot, Screen Recording, Text Injector, Clipboard Sync) are isolated from the bottom navigation dock and placed in an elegant vertical floating dock along the right edge of the real-time phone display.
 - **Dynamic Proximity & Gap Preservation:** Positioned outside the phone frame with a consistent 16px ergonomic gap, scaling responsively with window size and device aspect ratio while maintaining symmetrical window centering.
+
+### 4.8 Hardware Screen Recording (Lossless MP4)
+- **On-Device Hardware Video Recording:** Directly invokes Android's native `screenrecord` binary to record video up to 180s in hardware H.264 MP4 without desktop rendering overhead.
+- **Live Elapsed Duration HUD:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot and 1-click stop action.
+- **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/WifiDesk_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
 
 ---
 

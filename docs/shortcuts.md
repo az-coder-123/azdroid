@@ -24,6 +24,7 @@
 | <kbd>Cmd</kbd> + <kbd>Backspace</kbd> | Back | Simulates Android Back navigation |
 | <kbd>Cmd</kbd> + <kbd>Tab</kbd> | App Switcher | Opens Android Recent Apps list |
 | <kbd>Cmd</kbd> + <kbd>S</kbd> | Capture Screenshot | Lossless PNG saved to `~/Downloads` & copied to macOS clipboard (`⌘V`) |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Starts / stops hardware MP4 recording saved to `~/Downloads` |
 | <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send Unicode / Vietnamese text |
 | <kbd>Cmd</kbd> + <kbd>R</kbd> | Rotate Screen | Rotates video viewport by 90° clockwise |
 | <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen Toggle | Toggles physical device screen off to save power |
