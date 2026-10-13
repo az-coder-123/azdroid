@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -6,15 +7,29 @@ import 'package:flutter/foundation.dart';
 class AppLogger {
   const AppLogger._();
 
+  static void _logToFile(String line) {
+    try {
+      File('/tmp/wifidesk_dart.log').writeAsStringSync(
+        '${DateTime.now().toIso8601String()} $line\n',
+        mode: FileMode.append,
+        flush: true,
+      );
+    } catch (_) {}
+  }
+
   /// Logs informational system messages.
   static void info(String message, {String tag = 'WifiDesk'}) {
     developer.log(message, name: tag, level: 800);
+    debugPrint('[$tag] $message');
+    _logToFile('INFO [$tag] $message');
   }
 
   /// Logs debug messages during development.
   static void debug(String message, {String tag = 'WifiDesk'}) {
     if (kDebugMode) {
       developer.log(message, name: tag, level: 500);
+      debugPrint('[$tag] $message');
+      _logToFile('DEBUG [$tag] $message');
     }
   }
 
@@ -32,6 +47,8 @@ class AppLogger {
       error: error,
       stackTrace: stackTrace,
     );
+    debugPrint('[$tag] WARNING: $message ${error ?? ""}');
+    _logToFile('WARN [$tag] $message ${error ?? ""}');
   }
 
   /// Logs critical errors and boundary exceptions with required error details.
@@ -48,5 +65,7 @@ class AppLogger {
       error: error,
       stackTrace: stackTrace,
     );
+    debugPrint('[$tag] ERROR: $message ${error ?? ""}');
+    _logToFile('ERROR [$tag] $message ${error ?? ""}');
   }
 }

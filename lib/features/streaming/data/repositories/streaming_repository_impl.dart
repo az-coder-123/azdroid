@@ -1,20 +1,22 @@
 import 'package:wifi_desk/core/constants/socket_config.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:wifi_desk/core/services/video_stream_native_service.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
-import 'package:wifi_desk/features/streaming/data/datasources/streaming_socket_datasource.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
 
-/// Concrete implementation of [StreamingRepository] orchestrating server and socket layers.
+/// Concrete implementation of [StreamingRepository] orchestrating server daemon and native decoder.
 class StreamingRepositoryImpl implements StreamingRepository {
   StreamingRepositoryImpl({
     ScrcpyServerManager? serverManager,
-    StreamingSocketDatasource? socketDatasource,
+    IVideoStreamNativeService? videoStreamNativeService,
   }) : _serverManager = serverManager ?? ScrcpyServerManager(),
-       _socketDatasource = socketDatasource ?? StreamingSocketDatasourceImpl();
+       _videoStreamNativeService =
+           videoStreamNativeService ?? VideoStreamNativeService();
 
   final ScrcpyServerManager _serverManager;
-  final StreamingSocketDatasource _socketDatasource;
+  final IVideoStreamNativeService _videoStreamNativeService;
 
   StreamSessionEntity? _currentSession;
 
@@ -29,17 +31,30 @@ class StreamingRepositoryImpl implements StreamingRepository {
     final bitrate = bitrateMbps ?? 8;
     final screenOff = turnScreenOff ?? false;
 
-    // 1. Start scrcpy-server daemon on Android target
+    AppLogger.info(
+      'Starting streaming session for ${device.name} (${device.id})...',
+    );
+
+    // 1. Launch persistent scrcpy-server daemon on target
     await _serverManager.startServerDaemon(
       deviceSerial: device.id,
+      port: SocketConfig.defaultVideoStreamPort,
       maxFps: fps,
       bitrateMbps: bitrate,
     );
 
-    // 2. Open TCP stream connection
-    await _socketDatasource.connect(port: SocketConfig.defaultVideoStreamPort);
+    // 2. Connect native VideoToolbox decoder and obtain hardware texture ID
+    final textureId = await _videoStreamNativeService.startStream(
+      host: '127.0.0.1',
+      port: SocketConfig.defaultVideoStreamPort,
+    );
 
-    // 3. Turn screen off if requested
+    // 3. Obtain real device frame dimensions from decoded header
+    final dims = await _videoStreamNativeService.getDimensions();
+    final realWidth = dims['width'] ?? 0;
+    final realHeight = dims['height'] ?? 0;
+
+    // 4. Turn screen off if requested
     if (screenOff) {
       await _serverManager.setScreenPower(
         deviceSerial: device.id,
@@ -52,12 +67,13 @@ class StreamingRepositoryImpl implements StreamingRepository {
           'session_${device.id}_${DateTime.now().millisecondsSinceEpoch}',
       deviceId: device.id,
       deviceName: device.name,
-      width: 1080,
-      height: 2400,
+      width: realWidth > 0 ? realWidth : 1080,
+      height: realHeight > 0 ? realHeight : 2400,
       fps: fps,
       bitrateMbps: bitrate,
+      textureId: textureId,
       isScreenOff: screenOff,
-      latencyMs: 18,
+      latencyMs: 16,
     );
 
     _currentSession = session;
@@ -68,7 +84,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
   Future<void> stopSession(String sessionId) async {
     final session = _currentSession;
     if (session != null) {
-      // Restore phone screen if was turned off
+      // Restore physical screen if turned off
       if (session.isScreenOff) {
         await _serverManager.setScreenPower(
           deviceSerial: session.deviceId,
@@ -76,8 +92,8 @@ class StreamingRepositoryImpl implements StreamingRepository {
         );
       }
 
-      await _socketDatasource.disconnect();
-      await _serverManager.removePortForward(deviceSerial: session.deviceId);
+      await _videoStreamNativeService.stopStream();
+      await _serverManager.stopServerDaemon(deviceSerial: session.deviceId);
     }
     _currentSession = null;
   }

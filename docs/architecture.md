@@ -64,7 +64,8 @@ lib/
 │   ├── services/                           # System process & native bridge services
 │   │   ├── adb_service.dart                # ADB CLI & mDNS daemon controller
 │   │   ├── network_info_service.dart       # Host machine Wi-Fi IPv4 address resolution
-│   │   └── process_executor.dart           # Testable process runner abstraction
+│   │   ├── process_executor.dart           # Testable process runner abstraction
+│   │   └── video_stream_native_service.dart # macOS VideoToolbox texture bridge
 │   └── theme/                              # Apple-native design system tokens
 │       ├── app_colors.dart                 # macOS Dark Mode color palette
 │       ├── app_typography.dart             # Apple system font styles

@@ -4,6 +4,7 @@ import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
 import 'package:wifi_desk/core/services/device_history_service.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:wifi_desk/core/services/video_stream_native_service.dart';
 import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
 import 'package:wifi_desk/features/audio/data/repositories/audio_repository_impl.dart';
 import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
@@ -27,7 +28,6 @@ import 'package:wifi_desk/features/productivity/domain/repositories/file_transfe
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
-import 'package:wifi_desk/features/streaming/data/datasources/streaming_socket_datasource.dart';
 import 'package:wifi_desk/features/streaming/data/repositories/streaming_repository_impl.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
@@ -81,14 +81,14 @@ Future<void> initDependencies() async {
     ),
   );
 
-  sl.registerLazySingleton<StreamingSocketDatasource>(
-    () => StreamingSocketDatasourceImpl(),
+  sl.registerLazySingleton<IVideoStreamNativeService>(
+    () => VideoStreamNativeService(),
   );
 
   sl.registerLazySingleton<StreamingRepository>(
     () => StreamingRepositoryImpl(
       serverManager: sl<ScrcpyServerManager>(),
-      socketDatasource: sl<StreamingSocketDatasource>(),
+      videoStreamNativeService: sl<IVideoStreamNativeService>(),
     ),
   );
 

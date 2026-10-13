@@ -35,7 +35,7 @@ void main() {
           testSerial,
           'forward',
           'tcp:27183',
-          'localabstract:scrcpy',
+          'localabstract:scrcpy_00000000',
         ], timeout: any(named: 'timeout')),
       ).thenAnswer((_) async => ProcessResult(1, 0, '', ''));
 

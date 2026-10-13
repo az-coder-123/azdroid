@@ -1,26 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:wifi_desk/core/services/video_stream_native_service.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
-import 'package:wifi_desk/features/streaming/data/datasources/streaming_socket_datasource.dart';
 import 'package:wifi_desk/features/streaming/data/repositories/streaming_repository_impl.dart';
 
 class MockScrcpyServerManager extends Mock implements ScrcpyServerManager {}
 
-class MockStreamingSocketDatasource extends Mock
-    implements StreamingSocketDatasource {}
+class MockVideoStreamNativeService extends Mock
+    implements IVideoStreamNativeService {}
 
 void main() {
   late MockScrcpyServerManager mockServerManager;
-  late MockStreamingSocketDatasource mockSocketDatasource;
+  late MockVideoStreamNativeService mockNativeService;
   late StreamingRepositoryImpl repository;
 
   setUp(() {
     mockServerManager = MockScrcpyServerManager();
-    mockSocketDatasource = MockStreamingSocketDatasource();
+    mockNativeService = MockVideoStreamNativeService();
     repository = StreamingRepositoryImpl(
       serverManager: mockServerManager,
-      socketDatasource: mockSocketDatasource,
+      videoStreamNativeService: mockNativeService,
     );
   });
 
@@ -33,39 +33,7 @@ void main() {
       connectionType: DeviceConnectionType.wireless,
     );
 
-    test(
-      'startSession starts server daemon, connects socket, and returns session',
-      () async {
-        when(
-          () => mockServerManager.startServerDaemon(
-            deviceSerial: any(named: 'deviceSerial'),
-            port: any(named: 'port'),
-            maxFps: any(named: 'maxFps'),
-            bitrateMbps: any(named: 'bitrateMbps'),
-          ),
-        ).thenAnswer((_) async => true);
-
-        when(() => mockSocketDatasource.connect(port: any(named: 'port')))
-            .thenAnswer((_) async => true);
-
-        final session = await repository.startSession(testDevice);
-
-        expect(session.deviceId, equals(testDevice.id));
-        expect(session.deviceName, equals(testDevice.name));
-        expect(session.fps, equals(60));
-        expect(session.bitrateMbps, equals(8));
-
-        verify(
-          () => mockServerManager.startServerDaemon(
-            deviceSerial: testDevice.id,
-            maxFps: 60,
-            bitrateMbps: 8,
-          ),
-        ).called(1);
-      },
-    );
-
-    test('stopSession disconnects socket and removes port forward', () async {
+    test('startSession starts server daemon, calls native stream, and returns session', () async {
       when(
         () => mockServerManager.startServerDaemon(
           deviceSerial: any(named: 'deviceSerial'),
@@ -75,22 +43,75 @@ void main() {
         ),
       ).thenAnswer((_) async => true);
 
-      when(() => mockSocketDatasource.connect(port: any(named: 'port')))
-          .thenAnswer((_) async => true);
-
-      when(() => mockSocketDatasource.disconnect()).thenAnswer((_) async {});
       when(
-        () => mockServerManager.removePortForward(
+        () => mockNativeService.startStream(
+          host: any(named: 'host'),
+          port: any(named: 'port'),
+        ),
+      ).thenAnswer((_) async => 42);
+
+      when(() => mockNativeService.getDimensions())
+          .thenAnswer((_) async => {'width': 1080, 'height': 2400});
+
+      final session = await repository.startSession(testDevice);
+
+      expect(session.deviceId, equals(testDevice.id));
+      expect(session.deviceName, equals(testDevice.name));
+      expect(session.fps, equals(60));
+      expect(session.bitrateMbps, equals(8));
+      expect(session.textureId, equals(42));
+      expect(session.width, equals(1080));
+      expect(session.height, equals(2400));
+
+      verify(
+        () => mockServerManager.startServerDaemon(
+          deviceSerial: testDevice.id,
+          maxFps: 60,
+          bitrateMbps: 8,
+        ),
+      ).called(1);
+
+      verify(
+        () => mockNativeService.startStream(
+          host: '127.0.0.1',
+          port: any(named: 'port'),
+        ),
+      ).called(1);
+    });
+
+    test('stopSession stops native stream and stops server daemon', () async {
+      when(
+        () => mockServerManager.startServerDaemon(
           deviceSerial: any(named: 'deviceSerial'),
+          port: any(named: 'port'),
+          maxFps: any(named: 'maxFps'),
+          bitrateMbps: any(named: 'bitrateMbps'),
         ),
       ).thenAnswer((_) async => true);
+
+      when(
+        () => mockNativeService.startStream(
+          host: any(named: 'host'),
+          port: any(named: 'port'),
+        ),
+      ).thenAnswer((_) async => 42);
+
+      when(() => mockNativeService.getDimensions())
+          .thenAnswer((_) async => {'width': 1080, 'height': 2400});
+
+      when(() => mockNativeService.stopStream()).thenAnswer((_) async {});
+      when(
+        () => mockServerManager.stopServerDaemon(
+          deviceSerial: any(named: 'deviceSerial'),
+        ),
+      ).thenAnswer((_) async {});
 
       final session = await repository.startSession(testDevice);
       await repository.stopSession(session.sessionId);
 
-      verify(() => mockSocketDatasource.disconnect()).called(1);
+      verify(() => mockNativeService.stopStream()).called(1);
       verify(
-        () => mockServerManager.removePortForward(deviceSerial: testDevice.id),
+        () => mockServerManager.stopServerDaemon(deviceSerial: testDevice.id),
       ).called(1);
     });
 
@@ -103,8 +124,17 @@ void main() {
           bitrateMbps: any(named: 'bitrateMbps'),
         ),
       ).thenAnswer((_) async => true);
-      when(() => mockSocketDatasource.connect(port: any(named: 'port')))
-          .thenAnswer((_) async => true);
+
+      when(
+        () => mockNativeService.startStream(
+          host: any(named: 'host'),
+          port: any(named: 'port'),
+        ),
+      ).thenAnswer((_) async => 42);
+
+      when(() => mockNativeService.getDimensions())
+          .thenAnswer((_) async => {'width': 1080, 'height': 2400});
+
       when(
         () => mockServerManager.sendKeyevent(
           deviceSerial: any(named: 'deviceSerial'),
