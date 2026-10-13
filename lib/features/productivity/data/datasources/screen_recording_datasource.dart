@@ -83,13 +83,24 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
       throw const SocketException('ADB executable not available on host');
     }
 
-    // Gracefully interrupt screenrecord so it finalizes the MP4 moov atom
+    // Gracefully interrupt screenrecord so Android finalizes the MP4 moov atom
     await _interruptRemoteRecording(adb, deviceSerial);
-    _activeRecordingProcess?.kill(ProcessSignal.sigint);
-    _activeRecordingProcess = null;
 
-    // Brief delay to allow the device to flush file buffer
-    await Future<void>.delayed(const Duration(milliseconds: 800));
+    // Wait for the active recording process to exit cleanly on its own.
+    // Screenrecord requires ~0.5s to write MP4 track headers and sample tables.
+    if (_activeRecordingProcess != null) {
+      try {
+        await _activeRecordingProcess!.exitCode.timeout(
+          const Duration(seconds: 4),
+        );
+      } catch (e) {
+        AppLogger.warning('Recording process exit timeout: $e');
+        _activeRecordingProcess?.kill(ProcessSignal.sigint);
+      }
+      _activeRecordingProcess = null;
+    } else {
+      await Future<void>.delayed(const Duration(milliseconds: 1000));
+    }
 
     // Determine target save destination on macOS
     final home = Platform.environment['HOME'] ?? Directory.systemTemp.path;
@@ -180,12 +191,26 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
 
   Future<void> _interruptRemoteRecording(String adb, String serial) async {
     try {
-      await _executor.run(adb, [
+      final pidResult = await _executor.run(adb, [
         '-s',
         serial,
         'shell',
-        r'kill -2 $(pidof screenrecord) 2>/dev/null || killall -2 screenrecord 2>/dev/null',
+        'pidof',
+        'screenrecord',
       ]);
+      final pid = pidResult.stdout.toString().trim();
+      if (pid.isNotEmpty) {
+        await _executor.run(adb, ['-s', serial, 'shell', 'kill', '-2', pid]);
+      } else {
+        await _executor.run(adb, [
+          '-s',
+          serial,
+          'shell',
+          'pkill',
+          '-2',
+          'screenrecord',
+        ]);
+      }
     } catch (e) {
       AppLogger.debug('Interrupting screenrecord produced exception: $e');
     }
