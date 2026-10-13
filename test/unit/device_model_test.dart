@@ -60,5 +60,45 @@ void main() {
       expect(model.name, equals(entity.name));
       expect(model.connectionType, equals(DeviceConnectionType.usb));
     });
+
+    test('should correctly serialize and deserialize dual mode device', () {
+      const dualEntity = DeviceEntity(
+        id: '192.168.1.3:5555',
+        name: 'M2004J19C',
+        ipAddress: '192.168.1.3',
+        port: 5555,
+        connectionType: DeviceConnectionType.dual,
+        isConnected: true,
+        model: 'M2004J19C',
+        usbSerial: '9789f2350404',
+        wirelessSerial: '192.168.1.3:5555',
+      );
+
+      final model = DeviceModel.fromEntity(dualEntity);
+      expect(model.isDualConnected, isTrue);
+      expect(model.usbSerial, equals('9789f2350404'));
+      expect(model.wirelessSerial, equals('192.168.1.3:5555'));
+
+      final json = model.toJson();
+      expect(json['connectionType'], equals('dual'));
+      expect(json['usbSerial'], equals('9789f2350404'));
+      expect(json['wirelessSerial'], equals('192.168.1.3:5555'));
+
+      final deserialized = DeviceModel.fromJson(json);
+      expect(deserialized.isDualConnected, isTrue);
+      expect(deserialized.usbSerial, equals('9789f2350404'));
+      expect(deserialized.wirelessSerial, equals('192.168.1.3:5555'));
+
+      final usbEndpoint = deserialized.toUsbEndpoint();
+      expect(usbEndpoint.id, equals('9789f2350404'));
+      expect(usbEndpoint.connectionType, equals(DeviceConnectionType.usb));
+
+      final wirelessEndpoint = deserialized.toWirelessEndpoint();
+      expect(wirelessEndpoint.id, equals('192.168.1.3:5555'));
+      expect(
+        wirelessEndpoint.connectionType,
+        equals(DeviceConnectionType.wireless),
+      );
+    });
   });
 }

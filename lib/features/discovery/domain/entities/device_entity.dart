@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Connection medium between the Mac host and the Android target.
-enum DeviceConnectionType { wireless, usb }
+enum DeviceConnectionType { wireless, usb, dual }
 
 /// Core domain entity representing an Android device.
 class DeviceEntity extends Equatable {
@@ -17,6 +17,8 @@ class DeviceEntity extends Equatable {
     this.pairingPort,
     this.batteryLevel,
     this.model,
+    this.usbSerial,
+    this.wirelessSerial,
   });
 
   /// Unique hardware identifier or ADB serial.
@@ -34,7 +36,7 @@ class DeviceEntity extends Equatable {
   /// Wireless ADB communication port (default: 5555).
   final int port;
 
-  /// Connection transport (USB or Wi-Fi).
+  /// Connection transport (USB, Wi-Fi, or Dual).
   final DeviceConnectionType connectionType;
 
   /// Active connection status.
@@ -55,6 +57,31 @@ class DeviceEntity extends Equatable {
   /// Device hardware model descriptor.
   final String? model;
 
+  /// Hardware serial for USB connection if available.
+  final String? usbSerial;
+
+  /// Target descriptor (ip:port) for Wi-Fi connection if available.
+  final String? wirelessSerial;
+
+  /// Whether the device is concurrently connected via both USB and Wi-Fi.
+  bool get isDualConnected => connectionType == DeviceConnectionType.dual;
+
+  /// Returns a [DeviceEntity] configured for USB transport.
+  DeviceEntity toUsbEndpoint() {
+    return copyWith(
+      id: usbSerial ?? id,
+      connectionType: DeviceConnectionType.usb,
+    );
+  }
+
+  /// Returns a [DeviceEntity] configured for Wireless transport.
+  DeviceEntity toWirelessEndpoint() {
+    return copyWith(
+      id: wirelessSerial ?? id,
+      connectionType: DeviceConnectionType.wireless,
+    );
+  }
+
   DeviceEntity copyWith({
     String? id,
     String? name,
@@ -67,6 +94,8 @@ class DeviceEntity extends Equatable {
     int? pairingPort,
     int? batteryLevel,
     String? model,
+    String? usbSerial,
+    String? wirelessSerial,
   }) {
     return DeviceEntity(
       id: id ?? this.id,
@@ -80,6 +109,8 @@ class DeviceEntity extends Equatable {
       pairingPort: pairingPort ?? this.pairingPort,
       batteryLevel: batteryLevel ?? this.batteryLevel,
       model: model ?? this.model,
+      usbSerial: usbSerial ?? this.usbSerial,
+      wirelessSerial: wirelessSerial ?? this.wirelessSerial,
     );
   }
 
@@ -108,5 +139,7 @@ class DeviceEntity extends Equatable {
     pairingPort,
     batteryLevel,
     model,
+    usbSerial,
+    wirelessSerial,
   ];
 }

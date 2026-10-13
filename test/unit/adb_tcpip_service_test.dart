@@ -147,5 +147,20 @@ default via 192.168.0.1 dev wlan0
       expect(result.isSuccess, isTrue);
       expect(result.message, contains('192.168.1.99'));
     });
+
+    test('getHardwareSerial returns ro.serialno when query succeeds', () async {
+      when(
+        () => mockExecutor.run('/mock/adb', [
+          '-s',
+          '192.168.1.50:5555',
+          'shell',
+          'getprop',
+          'ro.serialno',
+        ], timeout: any(named: 'timeout')),
+      ).thenAnswer((_) async => ProcessResult(0, 0, 'hw_serial_999\n', ''));
+
+      final serial = await tcpipService.getHardwareSerial('192.168.1.50:5555');
+      expect(serial, equals('hw_serial_999'));
+    });
   });
 }

@@ -3,7 +3,7 @@ import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 
 /// Interactive button group for device actions (Connect, Mirror, Disconnect, Pair, Wi-Fi Mode).
-class DeviceCardActions extends StatelessWidget {
+class DeviceCardActions extends StatefulWidget {
   const DeviceCardActions({
     super.key,
     required this.device,
@@ -22,7 +22,70 @@ class DeviceCardActions extends StatelessWidget {
   final ValueChanged<DeviceEntity>? onSwitchToWifi;
 
   @override
+  State<DeviceCardActions> createState() => _DeviceCardActionsState();
+}
+
+class _DeviceCardActionsState extends State<DeviceCardActions> {
+  DeviceConnectionType _selectedTransport = DeviceConnectionType.wireless;
+
+  @override
   Widget build(BuildContext context) {
+    final device = widget.device;
+
+    if (device.isDualConnected) {
+      return Wrap(
+        spacing: 8,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          SegmentedButton<DeviceConnectionType>(
+            segments: const [
+              ButtonSegment(
+                value: DeviceConnectionType.wireless,
+                icon: Icon(Icons.wifi_rounded, size: 14),
+                label: Text('Wi-Fi', style: TextStyle(fontSize: 12)),
+              ),
+              ButtonSegment(
+                value: DeviceConnectionType.usb,
+                icon: Icon(Icons.usb_rounded, size: 14),
+                label: Text('USB', style: TextStyle(fontSize: 12)),
+              ),
+            ],
+            selected: {_selectedTransport},
+            onSelectionChanged: (selection) {
+              setState(() {
+                _selectedTransport = selection.first;
+              });
+            },
+            style: const ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              final target = _selectedTransport == DeviceConnectionType.usb
+                  ? device.toUsbEndpoint()
+                  : device.toWirelessEndpoint();
+              widget.onMirror?.call(target);
+            },
+            icon: const Icon(Icons.screen_share_rounded, size: 16),
+            label: const Text('Mirror'),
+          ),
+          OutlinedButton.icon(
+            onPressed: () =>
+                widget.onDisconnect(device.wirelessSerial ?? device.id),
+            icon: const Icon(Icons.link_off_rounded, size: 16),
+            label: const Text('Disconnect'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.statusError,
+              side: const BorderSide(color: AppColors.statusError),
+            ),
+          ),
+        ],
+      );
+    }
+
     if (device.isConnected) {
       return Wrap(
         spacing: 8,
@@ -30,19 +93,19 @@ class DeviceCardActions extends StatelessWidget {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           ElevatedButton.icon(
-            onPressed: () => onMirror?.call(device),
+            onPressed: () => widget.onMirror?.call(device),
             icon: const Icon(Icons.screen_share_rounded, size: 16),
             label: const Text('Mirror'),
           ),
           if (device.connectionType == DeviceConnectionType.usb &&
-              onSwitchToWifi != null)
+              widget.onSwitchToWifi != null)
             OutlinedButton.icon(
-              onPressed: () => onSwitchToWifi?.call(device),
+              onPressed: () => widget.onSwitchToWifi?.call(device),
               icon: const Icon(Icons.wifi_rounded, size: 16),
               label: const Text('Wi-Fi Mode'),
             ),
           OutlinedButton.icon(
-            onPressed: () => onDisconnect(device.id),
+            onPressed: () => widget.onDisconnect(device.id),
             icon: const Icon(Icons.link_off_rounded, size: 16),
             label: const Text('Disconnect'),
             style: OutlinedButton.styleFrom(
@@ -56,7 +119,7 @@ class DeviceCardActions extends StatelessWidget {
 
     if (device.requiresPairing) {
       return ElevatedButton.icon(
-        onPressed: () => onPair?.call(device),
+        onPressed: () => widget.onPair?.call(device),
         icon: const Icon(Icons.phonelink_lock_rounded, size: 16),
         label: const Text('Pair Device'),
         style: ElevatedButton.styleFrom(
@@ -67,18 +130,18 @@ class DeviceCardActions extends StatelessWidget {
     }
 
     if (device.connectionType == DeviceConnectionType.usb &&
-        onSwitchToWifi != null &&
+        widget.onSwitchToWifi != null &&
         !device.isUnauthorized) {
       return Wrap(
         spacing: 8,
         children: [
           ElevatedButton.icon(
-            onPressed: () => onConnect(device),
+            onPressed: () => widget.onConnect(device),
             icon: const Icon(Icons.play_arrow_rounded, size: 18),
             label: const Text('Connect'),
           ),
           OutlinedButton.icon(
-            onPressed: () => onSwitchToWifi?.call(device),
+            onPressed: () => widget.onSwitchToWifi?.call(device),
             icon: const Icon(Icons.wifi_rounded, size: 16),
             label: const Text('Wi-Fi Mode'),
           ),
@@ -87,7 +150,7 @@ class DeviceCardActions extends StatelessWidget {
     }
 
     return ElevatedButton.icon(
-      onPressed: () => onConnect(device),
+      onPressed: () => widget.onConnect(device),
       icon: const Icon(Icons.play_arrow_rounded, size: 18),
       label: const Text('Connect'),
     );

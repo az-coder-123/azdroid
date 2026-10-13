@@ -43,35 +43,81 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
 
     final deviceMap = <String, DeviceModel>{};
 
-    // 1. Process attached devices from `adb devices -l`
-    for (final device in attached) {
-      final isUsb = device.isUsb;
-      String ip = '127.0.0.1';
-      int port = 5555;
+    // 1. Process attached devices with USB/Wi-Fi deduplication
+    final usbDevices = attached.where((d) => d.isUsb).toList();
+    final wifiDevices = attached.where((d) => !d.isUsb).toList();
+    final matchedUsbSerials = <String>{};
 
-      if (!isUsb && device.serial.contains(':')) {
-        final parts = device.serial.split(':');
-        ip = parts[0];
-        port = int.tryParse(parts[1]) ?? 5555;
+    for (final wifi in wifiDevices) {
+      final parts = wifi.serial.split(':');
+      final ip = parts[0];
+      final port = parts.length > 1 ? (int.tryParse(parts[1]) ?? 5555) : 5555;
+      final hwSerial = await _tcpipService.getHardwareSerial(wifi.serial);
+
+      AdbDevice? matchedUsb;
+      for (final usb in usbDevices) {
+        if (matchedUsbSerials.contains(usb.serial)) continue;
+        if (hwSerial != null && usb.serial == hwSerial) {
+          matchedUsb = usb;
+          break;
+        } else if (hwSerial == null &&
+            usb.model != null &&
+            usb.model == wifi.model &&
+            usb.product != null &&
+            usb.product == wifi.product) {
+          matchedUsb = usb;
+          break;
+        }
       }
 
-      final deviceName = device.model ?? device.product ?? device.serial;
+      if (matchedUsb != null) {
+        matchedUsbSerials.add(matchedUsb.serial);
+        final name = wifi.model ?? matchedUsb.model ?? wifi.serial;
+        deviceMap[wifi.serial] = DeviceModel(
+          id: wifi.serial,
+          name: name,
+          ipAddress: ip,
+          port: port,
+          connectionType: DeviceConnectionType.dual,
+          isConnected: wifi.isAuthorized && matchedUsb.isAuthorized,
+          isUnauthorized: wifi.isUnauthorized || matchedUsb.isUnauthorized,
+          requiresPairing: false,
+          model: wifi.model ?? matchedUsb.model,
+          usbSerial: matchedUsb.serial,
+          wirelessSerial: wifi.serial,
+        );
+      } else {
+        final name = wifi.model ?? wifi.product ?? wifi.serial;
+        deviceMap[wifi.serial] = DeviceModel(
+          id: wifi.serial,
+          name: name,
+          ipAddress: ip,
+          port: port,
+          connectionType: DeviceConnectionType.wireless,
+          isConnected: wifi.isAuthorized,
+          isUnauthorized: wifi.isUnauthorized,
+          requiresPairing: false,
+          model: wifi.model,
+          wirelessSerial: wifi.serial,
+        );
+      }
+    }
 
-      final model = DeviceModel(
-        id: device.serial,
-        name: deviceName,
-        ipAddress: ip,
-        port: port,
-        connectionType: isUsb
-            ? DeviceConnectionType.usb
-            : DeviceConnectionType.wireless,
-        isConnected: device.isAuthorized,
-        isUnauthorized: device.isUnauthorized,
+    for (final usb in usbDevices) {
+      if (matchedUsbSerials.contains(usb.serial)) continue;
+      final name = usb.model ?? usb.product ?? usb.serial;
+      deviceMap[usb.serial] = DeviceModel(
+        id: usb.serial,
+        name: name,
+        ipAddress: '127.0.0.1',
+        port: 5555,
+        connectionType: DeviceConnectionType.usb,
+        isConnected: usb.isAuthorized,
+        isUnauthorized: usb.isUnauthorized,
         requiresPairing: false,
-        model: device.model,
+        model: usb.model,
+        usbSerial: usb.serial,
       );
-
-      deviceMap[device.serial] = model;
     }
 
     // 2. Process discovered mDNS services

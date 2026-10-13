@@ -32,7 +32,7 @@ class DeviceCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final isCompact = constraints.maxWidth < 480;
+            final isCompact = constraints.maxWidth < 620;
             final actions = DeviceCardActions(
               device: device,
               onConnect: onConnect,
@@ -102,16 +102,15 @@ class DeviceCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Flexible(
-              child: Text(
-                device.name,
-                style: AppTypography.title.copyWith(fontSize: 16),
-                overflow: TextOverflow.ellipsis,
-              ),
+            Text(
+              device.name,
+              style: AppTypography.title.copyWith(fontSize: 16),
             ),
-            const SizedBox(width: 8),
             _buildStatusBadge(),
           ],
         ),
@@ -122,12 +121,16 @@ class DeviceCard extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(
-              device.connectionType == DeviceConnectionType.usb
+              device.isDualConnected
+                  ? 'USB (${device.usbSerial}) • Wi-Fi (${device.wirelessSerial ?? "${device.ipAddress}:${device.port}"})'
+                  : device.connectionType == DeviceConnectionType.usb
                   ? 'USB (${device.id})'
                   : '${device.ipAddress}:${device.port}',
               style: AppTypography.caption,
             ),
-            if (device.model != null)
+            if (device.model != null &&
+                device.model != device.name &&
+                !device.isDualConnected)
               Text('• ${device.model}', style: AppTypography.caption),
             if (device.requiresPairing && device.pairingPort != null)
               Text(
@@ -179,7 +182,16 @@ class DeviceCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge() {
-    if (device.isConnected) {
+    if (device.isDualConnected) {
+      return const Wrap(
+        spacing: 6,
+        runSpacing: 4,
+        children: [
+          DeviceStatusBadge(label: 'Connected', color: AppColors.statusSuccess),
+          DeviceStatusBadge(label: 'Dual Mode', color: AppColors.accent),
+        ],
+      );
+    } else if (device.isConnected) {
       return const DeviceStatusBadge(
         label: 'Connected',
         color: AppColors.statusSuccess,
@@ -205,7 +217,9 @@ class DeviceCard extends StatelessWidget {
   }
 
   IconData _getStatusIcon() {
-    if (device.isConnected) return Icons.check_circle_rounded;
+    if (device.isDualConnected || device.isConnected) {
+      return Icons.check_circle_rounded;
+    }
     if (device.isUnauthorized) return Icons.lock_outline_rounded;
     if (device.requiresPairing) return Icons.phonelink_lock_rounded;
     if (device.connectionType == DeviceConnectionType.usb) {

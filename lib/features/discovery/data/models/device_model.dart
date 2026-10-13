@@ -14,6 +14,8 @@ class DeviceModel extends DeviceEntity {
     super.pairingPort,
     super.batteryLevel,
     super.model,
+    super.usbSerial,
+    super.wirelessSerial,
   });
 
   /// Factory constructor to deserialize a [DeviceModel] from JSON.
@@ -23,7 +25,9 @@ class DeviceModel extends DeviceEntity {
       name: json['name'] as String,
       ipAddress: json['ipAddress'] as String,
       port: json['port'] as int? ?? 5555,
-      connectionType: (json['connectionType'] as String?) == 'usb'
+      connectionType: (json['connectionType'] as String?) == 'dual'
+          ? DeviceConnectionType.dual
+          : (json['connectionType'] as String?) == 'usb'
           ? DeviceConnectionType.usb
           : DeviceConnectionType.wireless,
       isConnected: json['isConnected'] as bool? ?? false,
@@ -32,6 +36,8 @@ class DeviceModel extends DeviceEntity {
       pairingPort: json['pairingPort'] as int?,
       batteryLevel: json['batteryLevel'] as int?,
       model: json['model'] as String?,
+      usbSerial: json['usbSerial'] as String?,
+      wirelessSerial: json['wirelessSerial'] as String?,
     );
   }
 
@@ -42,7 +48,9 @@ class DeviceModel extends DeviceEntity {
       'name': name,
       'ipAddress': ipAddress,
       'port': port,
-      'connectionType': connectionType == DeviceConnectionType.usb
+      'connectionType': connectionType == DeviceConnectionType.dual
+          ? 'dual'
+          : connectionType == DeviceConnectionType.usb
           ? 'usb'
           : 'wireless',
       'isConnected': isConnected,
@@ -51,6 +59,8 @@ class DeviceModel extends DeviceEntity {
       'pairingPort': pairingPort,
       'batteryLevel': batteryLevel,
       'model': model,
+      'usbSerial': usbSerial,
+      'wirelessSerial': wirelessSerial,
     };
   }
 
@@ -68,6 +78,8 @@ class DeviceModel extends DeviceEntity {
       pairingPort: entity.pairingPort,
       batteryLevel: entity.batteryLevel,
       model: entity.model,
+      usbSerial: entity.usbSerial,
+      wirelessSerial: entity.wirelessSerial,
     );
   }
 }

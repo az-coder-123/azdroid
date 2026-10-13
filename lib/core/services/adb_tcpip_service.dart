@@ -61,6 +61,32 @@ class AdbTcpipService {
     return null;
   }
 
+  /// Queries hardware serial (ro.serialno) of an ADB target.
+  Future<String?> getHardwareSerial(String target) async {
+    final adb = await _adbService.resolveAdbPath();
+    if (adb == null) return null;
+
+    try {
+      final result = await _executor.run(adb, [
+        '-s',
+        target,
+        'shell',
+        'getprop',
+        'ro.serialno',
+      ], timeout: const Duration(seconds: 4));
+
+      final output = result.stdout.toString().trim();
+      if (result.exitCode == 0 &&
+          output.isNotEmpty &&
+          !output.toLowerCase().contains('error')) {
+        return output;
+      }
+    } catch (e) {
+      AppLogger.debug('Hardware serial query failed for $target: $e');
+    }
+    return null;
+  }
+
   /// Switches device to TCP mode using `adb -s <serial> tcpip <port>`.
   Future<AdbCommandResult> enableTcpip(String serial, {int port = 5555}) async {
     final adb = await _adbService.resolveAdbPath();
