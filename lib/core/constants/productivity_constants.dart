@@ -17,6 +17,16 @@ class ProductivityConstants {
   /// Timeout in seconds when installing APK packages via ADB.
   static const int apkInstallTimeoutSeconds = 120;
 
+  /// Timeout in seconds when pulling files from Android via ADB.
+  static const int filePullTimeoutSeconds = 120;
+
+  /// Default remote camera directory on Android.
+  static const String defaultRemoteCameraDir = '/sdcard/DCIM/Camera/';
+
+  /// Default remote screenshots directory on Android.
+  static const String defaultRemoteScreenshotsDir =
+      '/sdcard/Pictures/Screenshots/';
+
   /// Duration in seconds to display completed transfer toast banners.
   static const int transferBannerDisplaySeconds = 5;
 }

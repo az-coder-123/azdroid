@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wifi_desk/core/di/injection.dart';
+import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screen_recording_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screenshot_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/transfer_status_banner.dart';
@@ -48,12 +52,8 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                   child: StreamTelemetryHeader(
                     session: widget.state.session,
                     isZenMode: _isZenMode,
-                    onToggleZenMode: () {
-                      setState(() => _isZenMode = true);
-                    },
-                    onClose: () {
-                      context.read<StreamingCubit>().stopSession();
-                    },
+                    onToggleZenMode: () => setState(() => _isZenMode = true),
+                    onClose: () => context.read<StreamingCubit>().stopSession(),
                   ),
                 ),
 
@@ -177,15 +177,9 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
         final availableH = maxH;
 
         // Compute FittedBox contain dimensions
-        double phoneDisplayW;
-        double phoneDisplayH;
-        if ((availableW / availableH) > phoneAspect) {
-          phoneDisplayH = availableH;
-          phoneDisplayW = phoneDisplayH * phoneAspect;
-        } else {
-          phoneDisplayW = availableW;
-          phoneDisplayH = phoneDisplayW / phoneAspect;
-        }
+        final fitsWidth = (availableW / availableH) > phoneAspect;
+        final phoneDisplayH = fitsWidth ? availableH : availableW / phoneAspect;
+        final phoneDisplayW = fitsWidth ? availableH * phoneAspect : availableW;
 
         // Left spacer to keep phone centered in the window when horizontal space permits
         final canCenterSymmetrically =
@@ -216,8 +210,8 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
               SideControlsToolbar(
                 session: widget.state.session,
                 deviceSerial: widget.device.serial,
-                onSelectBitrate: (bitrate) =>
-                    context.read<StreamingCubit>().updateBitrate(bitrate),
+                onSelectBitrate: (b) =>
+                    context.read<StreamingCubit>().updateBitrate(b),
                 onScreenshot: () => context
                     .read<ScreenshotCubit>()
                     .captureScreenshot(widget.device.serial),
@@ -226,11 +220,25 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                     .startAreaSelection(widget.device.serial),
                 onTextInject: () =>
                     QuickTextInputDialog.show(context, widget.device.serial),
+                onSendFiles: _pickAndSendFiles,
+                onBrowseFiles: () =>
+                    DeviceFileManagerDialog.show(context, widget.device.serial),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  Future<void> _pickAndSendFiles() async {
+    final picker = sl<MacFilePickerService>();
+    final files = await picker.pickFiles();
+    if (files.isNotEmpty && mounted) {
+      context.read<FileTransferCubit>().transferFiles(
+        widget.device.serial,
+        files,
+      );
+    }
   }
 }

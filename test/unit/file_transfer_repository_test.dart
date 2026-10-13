@@ -52,5 +52,46 @@ void main() {
       verify(() => mockDatasource.installApk(testSerial, '/tmp/app.apk'))
           .called(1);
     });
+
+    test('pullFile delegates to datasource', () async {
+      when(
+        () => mockDatasource.pullFile(
+          testSerial,
+          '/sdcard/Download/test.mp4',
+          '/local/Downloads',
+        ),
+      ).thenAnswer((_) async => true);
+
+      final result = await repository.pullFile(
+        testSerial,
+        '/sdcard/Download/test.mp4',
+        '/local/Downloads',
+      );
+
+      expect(result, isTrue);
+      verify(
+        () => mockDatasource.pullFile(
+          testSerial,
+          '/sdcard/Download/test.mp4',
+          '/local/Downloads',
+        ),
+      ).called(1);
+    });
+
+    test('listRemoteFiles delegates to datasource', () async {
+      when(
+        () => mockDatasource.listRemoteFiles(testSerial, '/sdcard/Download/'),
+      ).thenAnswer((_) async => []);
+
+      final result = await repository.listRemoteFiles(
+        testSerial,
+        '/sdcard/Download/',
+      );
+
+      expect(result, isEmpty);
+      verify(
+        () => mockDatasource.listRemoteFiles(testSerial, '/sdcard/Download/'),
+      ).called(1);
+    });
   });
 }

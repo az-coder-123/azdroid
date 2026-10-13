@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
 import 'package:wifi_desk/core/services/device_history_service.dart';
+import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 import 'package:wifi_desk/core/services/video_stream_native_service.dart';
@@ -32,6 +33,7 @@ import 'package:wifi_desk/features/productivity/domain/repositories/file_transfe
 import 'package:wifi_desk/features/productivity/domain/repositories/screen_recording_repository.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
@@ -65,6 +67,10 @@ Future<void> initDependencies() async {
 
   sl.registerLazySingleton<DeviceHistoryService>(
     () => DeviceHistoryServiceImpl(),
+  );
+
+  sl.registerLazySingleton<MacFilePickerService>(
+    () => MacFilePickerServiceImpl(processExecutor: sl<ProcessExecutor>()),
   );
 
   // Discovery data sources & repositories
@@ -200,6 +206,13 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<FileTransferCubit>(
     () => FileTransferCubit(repository: sl<FileTransferRepository>()),
+  );
+
+  sl.registerFactory<DeviceFileManagerCubit>(
+    () => DeviceFileManagerCubit(
+      repository: sl<FileTransferRepository>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
   );
 
   sl.registerFactory<AudioCubit>(

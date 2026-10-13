@@ -17,6 +17,8 @@ class SideControlsToolbar extends StatelessWidget {
     this.onScreenshot,
     this.onCropScreenshot,
     this.onTextInject,
+    this.onSendFiles,
+    this.onBrowseFiles,
     this.deviceSerial,
   });
 
@@ -25,6 +27,8 @@ class SideControlsToolbar extends StatelessWidget {
   final VoidCallback? onScreenshot;
   final VoidCallback? onCropScreenshot;
   final VoidCallback? onTextInject;
+  final VoidCallback? onSendFiles;
+  final VoidCallback? onBrowseFiles;
   final String? deviceSerial;
 
   @override
@@ -124,6 +128,26 @@ class SideControlsToolbar extends StatelessWidget {
               if (deviceSerial != null) ...[
                 const SizedBox(height: 4),
                 ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
+              ],
+
+              // Send Files from Mac to Phone (Finder Picker)
+              if (onSendFiles != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.file_upload_outlined,
+                  tooltip: 'Send Files to Phone',
+                  onPressed: onSendFiles!,
+                ),
+              ],
+
+              // Browse & Download Android Files to Mac
+              if (onBrowseFiles != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.folder_shared_outlined,
+                  tooltip: 'Device Files & Downloads',
+                  onPressed: onBrowseFiles!,
+                ),
               ],
             ],
           ],
