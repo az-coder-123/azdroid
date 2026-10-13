@@ -7,8 +7,9 @@ import 'package:wifi_desk/core/theme/app_typography.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_list_view.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_toolbar.dart';
 
-/// Modal dialog allowing users to browse and download Android files to macOS Finder.
+/// Modal dialog allowing users to browse, search, and download Android files to macOS Finder.
 class DeviceFileManagerDialog extends StatefulWidget {
   const DeviceFileManagerDialog({super.key, required this.deviceSerial});
 
@@ -62,14 +63,25 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
       ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          maxWidth: 680,
-          maxHeight: 560,
-          minWidth: 420,
+          maxWidth: 720,
+          maxHeight: 620,
+          minWidth: 440,
         ),
         child: Column(
           children: [
             _buildHeader(context),
             _buildQuickFolderBar(context),
+            BlocBuilder<DeviceFileManagerCubit, DeviceFileManagerState>(
+              builder: (context, state) {
+                if (state is DeviceFileManagerLoaded) {
+                  return DeviceFileManagerToolbar(
+                    deviceSerial: widget.deviceSerial,
+                    state: state,
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             const Divider(height: 1, color: AppColors.border),
             Expanded(
               child:
@@ -101,7 +113,7 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 12, 12),
+      padding: const EdgeInsets.fromLTRB(20, 16, 12, 8),
       child: Row(
         children: [
           const Icon(
@@ -137,7 +149,7 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           child: Row(
             children: _quickFolders.map((folder) {
               final isSelected = currentDir == folder.$2;
@@ -167,6 +179,11 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
         final count = state is DeviceFileManagerLoaded
             ? state.selectedFiles.length
             : 0;
+        final sizeText =
+            state is DeviceFileManagerLoaded &&
+                state.formattedSelectedSize.isNotEmpty
+            ? ' (${state.formattedSelectedSize})'
+            : '';
         final isDownloading =
             state is DeviceFileManagerLoaded && state.isDownloading;
         final statusMsg = state is DeviceFileManagerLoaded
@@ -193,7 +210,7 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
                 Expanded(
                   child: Text(
                     count > 0
-                        ? '$count file(s) selected'
+                        ? '$count file(s) selected$sizeText'
                         : 'Select files to download',
                     style: AppTypography.caption,
                   ),

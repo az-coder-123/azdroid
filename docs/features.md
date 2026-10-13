@@ -118,9 +118,10 @@
 ### 4.9 Bidirectional File Transfer & Device File Explorer
 - **macOS to Android Push:** Send arbitrary files, photos, videos, documents, or APKs to the Android device via native Apple Finder file selection dialog or drag-and-drop. APKs are automatically installed; media files trigger an Android MediaScanner broadcast to appear instantly in the Gallery. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>U</kbd>.
 - **Real-Time Transfer Progress & Size HUD:** Floating dynamic banner displays file names, human-readable file sizes (e.g., `14.5 MB`), multi-item counters (`Item 1 of 3`), and dismissible completion badges.
-- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`), multi-file selection, formatted sizes, and batch download to `~/Downloads/WifiDesk` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
+- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`), breadcrumb path display with <kbd>← Back</kbd> navigation, instant search filtering, multi-criteria sorting (Date, Size, Name), "Select All" bulk controls, vibrant file-type badges, formatted total selection sizes, and batch download to `~/Downloads/WifiDesk` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
 
 ---
+
 
 
 ## 5. Security & Privacy Architecture

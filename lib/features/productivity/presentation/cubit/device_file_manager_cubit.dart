@@ -33,7 +33,6 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
 
     try {
       final items = await repository.listRemoteFiles(deviceSerial, directory);
-      // Sort directories first, then alphabetical
       items.sort((a, b) {
         if (a.isDirectory && !b.isDirectory) return -1;
         if (!a.isDirectory && b.isDirectory) return 1;
@@ -62,6 +61,39 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
     }
   }
 
+  /// Reloads the active directory.
+  Future<void> refresh(String deviceSerial) async {
+    final current = state;
+    final dir = current is DeviceFileManagerLoaded
+        ? current.currentDirectory
+        : ProductivityConstants.defaultRemoteDownloadDir;
+    await loadDirectory(deviceSerial, directory: dir);
+  }
+
+  /// Navigates to the parent directory if possible.
+  Future<void> navigateUp(String deviceSerial) async {
+    final current = state;
+    if (current is! DeviceFileManagerLoaded) return;
+    final parent = current.parentDirectory;
+    if (parent != null) {
+      await loadDirectory(deviceSerial, directory: parent);
+    }
+  }
+
+  /// Sets the active search filter query.
+  void setSearchQuery(String query) {
+    final current = state;
+    if (current is! DeviceFileManagerLoaded) return;
+    emit(current.copyWith(searchQuery: query, clearStatusMessage: true));
+  }
+
+  /// Updates the sorting criteria.
+  void setSortOption(FileSortOption sort) {
+    final current = state;
+    if (current is! DeviceFileManagerLoaded) return;
+    emit(current.copyWith(sortOption: sort, clearStatusMessage: true));
+  }
+
   /// Toggles selection of a remote file path.
   void toggleFileSelection(String remotePath) {
     final current = state;
@@ -77,7 +109,7 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
     emit(current.copyWith(selectedFiles: updated, clearStatusMessage: true));
   }
 
-  /// Selects or deselects all regular files in the active directory.
+  /// Selects or deselects all regular files currently visible in the directory.
   void selectAll(bool select) {
     final current = state;
     if (current is! DeviceFileManagerLoaded) return;
@@ -87,7 +119,7 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
       return;
     }
 
-    final allFilePaths = current.files
+    final allFilePaths = current.visibleFiles
         .where((f) => !f.isDirectory)
         .map((f) => f.path)
         .toSet();

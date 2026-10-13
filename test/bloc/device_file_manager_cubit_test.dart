@@ -126,5 +126,87 @@ void main() {
         ),
       ],
     );
+
+    blocTest<DeviceFileManagerCubit, DeviceFileManagerState>(
+      'setSearchQuery updates searchQuery in loaded state',
+      build: () => cubit,
+      seed: () => const DeviceFileManagerLoaded(
+        currentDirectory: testDirectory,
+        files: [sampleFile1],
+      ),
+      act: (c) => c.setSearchQuery('photo'),
+      expect: () => [
+        const DeviceFileManagerLoaded(
+          currentDirectory: testDirectory,
+          files: [sampleFile1],
+          searchQuery: 'photo',
+        ),
+      ],
+    );
+
+    blocTest<DeviceFileManagerCubit, DeviceFileManagerState>(
+      'setSortOption updates sortOption in loaded state',
+      build: () => cubit,
+      seed: () => const DeviceFileManagerLoaded(
+        currentDirectory: testDirectory,
+        files: [sampleFile1],
+      ),
+      act: (c) => c.setSortOption(FileSortOption.sizeDesc),
+      expect: () => [
+        const DeviceFileManagerLoaded(
+          currentDirectory: testDirectory,
+          files: [sampleFile1],
+          sortOption: FileSortOption.sizeDesc,
+        ),
+      ],
+    );
+
+    blocTest<DeviceFileManagerCubit, DeviceFileManagerState>(
+      'selectAll selects all regular files and deselects them when false',
+      build: () => cubit,
+      seed: () => const DeviceFileManagerLoaded(
+        currentDirectory: testDirectory,
+        files: [sampleDir, sampleFile1],
+      ),
+      act: (c) {
+        c.selectAll(true);
+        c.selectAll(false);
+      },
+      expect: () => [
+        const DeviceFileManagerLoaded(
+          currentDirectory: testDirectory,
+          files: [sampleDir, sampleFile1],
+          selectedFiles: {'/sdcard/Download/photo.jpg'},
+        ),
+        const DeviceFileManagerLoaded(
+          currentDirectory: testDirectory,
+          files: [sampleDir, sampleFile1],
+          selectedFiles: {},
+        ),
+      ],
+    );
+
+    blocTest<DeviceFileManagerCubit, DeviceFileManagerState>(
+      'navigateUp calls loadDirectory with parent directory',
+      build: () {
+        when(
+          () => mockRepository.listRemoteFiles(testSerial, '/sdcard/Download/'),
+        ).thenAnswer((_) async => [sampleFile1]);
+        return cubit;
+      },
+      seed: () => const DeviceFileManagerLoaded(
+        currentDirectory: '/sdcard/Download/Subdir/',
+        files: [],
+      ),
+      act: (c) => c.navigateUp(testSerial),
+      expect: () => [
+        const DeviceFileManagerLoading(currentDirectory: '/sdcard/Download/'),
+        const DeviceFileManagerLoaded(
+          currentDirectory: '/sdcard/Download/',
+          files: [sampleFile1],
+        ),
+      ],
+    );
   });
 }
+

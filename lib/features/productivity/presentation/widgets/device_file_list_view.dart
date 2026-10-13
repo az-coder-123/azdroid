@@ -3,7 +3,7 @@ import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/remote_file_entity.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_state.dart';
 
-/// List view displaying remote Android directory contents with checkboxes and file icons.
+/// List view displaying remote Android directory contents with checkboxes and vibrant file icons.
 class DeviceFileListView extends StatelessWidget {
   const DeviceFileListView({
     super.key,
@@ -55,30 +55,49 @@ class DeviceFileListView extends StatelessWidget {
 
     if (state is DeviceFileManagerLoaded) {
       final loaded = state as DeviceFileManagerLoaded;
-      if (loaded.files.isEmpty) {
-        return const Center(
-          child: Text(
-            'No files in this folder.',
-            style: TextStyle(color: AppColors.textSecondary),
+      final visible = loaded.visibleFiles;
+
+      if (visible.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  loaded.searchQuery.isNotEmpty
+                      ? Icons.search_off_rounded
+                      : Icons.folder_open_rounded,
+                  size: 40,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  loaded.searchQuery.isNotEmpty
+                      ? 'No files matching "${loaded.searchQuery}"'
+                      : 'No files in this folder.',
+                  style: const TextStyle(color: AppColors.textSecondary),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         );
       }
 
       return ListView.separated(
-        itemCount: loaded.files.length,
+        itemCount: visible.length,
         separatorBuilder: (_, _) =>
             const Divider(height: 1, color: AppColors.border),
         itemBuilder: (context, index) {
-          final item = loaded.files[index];
+          final item = visible[index];
           final isSelected = loaded.selectedFiles.contains(item.path);
 
           return ListTile(
             dense: true,
             leading: Icon(
               _getFileIcon(item),
-              color: item.isDirectory
-                  ? AppColors.accentLight
-                  : AppColors.textSecondary,
+              color: _getFileColor(item),
               size: 22,
             ),
             title: Text(
@@ -126,5 +145,14 @@ class DeviceFileListView extends StatelessWidget {
     if (item.isAudio) return Icons.audio_file_rounded;
     if (item.isApk) return Icons.android_rounded;
     return Icons.insert_drive_file_rounded;
+  }
+
+  Color _getFileColor(RemoteFileEntity item) {
+    if (item.isDirectory) return AppColors.accentLight;
+    if (item.isImage) return const Color(0xFFC084FC); // Purple
+    if (item.isVideo) return const Color(0xFF60A5FA); // Blue
+    if (item.isAudio) return const Color(0xFFFBBF24); // Amber
+    if (item.isApk) return const Color(0xFF4ADE80); // Green
+    return AppColors.textSecondary;
   }
 }
