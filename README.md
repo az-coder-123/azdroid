@@ -11,13 +11,17 @@
   <a href="https://github.com/az-coder-123/wifi-desk/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
+<p align="center">
+  <img src="docs/images/wifidesk_mirroring_preview.png" alt="WifiDesk Live Mirroring & Controls on macOS" width="520">
+</p>
+
 ---
 
 ## 📖 Overview
 
 **WifiDesk** is an open-source desktop application crafted with **Flutter Desktop** for **macOS**. 
 
-It allows users to **wirelessly mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over a local Wi-Fi network**—delivering glass-to-glass latency under 30ms and high refresh rates up to 60–120 FPS.
+It allows users to **wirelessly mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over a local Wi-Fi network**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
 
 WifiDesk bridges two core principles:
 1. **Unrivaled Performance:** Powered by the robust, hardware-accelerated `scrcpy-server` engine (H.264/H.265 GPU encoding).
@@ -27,21 +31,22 @@ WifiDesk bridges two core principles:
 
 ## ✨ Key Highlights
 
-- 🚀 **Sub-30ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on the Android device; streaming raw NAL units over a local TCP socket.
+- 🚀 **Sub-20ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on the Android device; streaming raw NAL units over a local TCP socket.
 - 📶 **Zero-Config Wi-Fi Pairing:** Automated mDNS device discovery on your local network, with one-click pairing for Android 11+ Wireless Debugging (QR code / pairing PIN).
 - 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (including full Unicode and IME support).
 - 🍎 **Mac-First Productivity:**
+  - **Bidirectional File Transfers & Explorer:** Send files/APKs via Finder sheet (<kbd>Cmd</kbd> + <kbd>U</kbd>) or drag-and-drop; browse phone storage and download files to Mac (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>) with quick folders.
+  - **Lossless Screenshots (Full & Area Crop):** Capture full-screen (<kbd>Cmd</kbd> + <kbd>S</kbd>) or draggable area crop (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>), auto-saved to `~/Downloads` and copied to macOS clipboard (`⌘V`).
+  - **Hardware Screen Recording:** Capture lossless MP4 video with countdown HUD & live timer (`REC 00:15`) via sidebar or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, auto-saved to `~/Downloads`.
   - **Bidirectional Clipboard Sharing:** Instant synchronization between macOS pasteboard (`Cmd + C`) and the Android system clipboard.
-  - **Lossless Phone Screenshots:** Capture native-resolution PNG screenshots via floating camera button or <kbd>Cmd</kbd> + <kbd>S</kbd>, auto-saved to `~/Downloads` and copied to macOS clipboard (`⌘V`) with 1-click Finder actions.
-  - **Hardware Screen Recording:** Record high-quality MP4 video with live duration HUD (`REC 00:15`) via sidebar camera button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, auto-saved to `~/Downloads`.
-  - **Drag & Drop Transfers:** Drag images, videos, and documents directly from Finder to push files or sideload `.apk` packages.
   - **Screen-Off Streaming:** Automatically powers off the physical phone screen during mirroring sessions to preserve battery life and prevent thermal throttling.
-  - **Menu Bar Companion:** Quick-access status bar icon for toggling device windows and monitoring battery/Wi-Fi health.
+  - **Menu Bar Companion:** Quick-access status bar icon for toggling device windows and monitoring latency, battery, and Wi-Fi health.
 - 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet without external servers, tracking, or cloud proxies.
 - 💸 **Truly Free & Open Source:** Zero advertising, zero analytics trackers, and no recurring subscriptions.
 
 👉 *For the user handbook, Xiaomi setup, and keyboard shortcuts, visit [docs/user-guide.md](docs/user-guide.md).*
 👉 *For detailed technical specifications, visit [docs/features.md](docs/features.md).*
+
 
 ---
 
