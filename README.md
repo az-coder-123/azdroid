@@ -1,7 +1,7 @@
 # ⚡️ WifiDesk
 
 <p align="center">
-  <b>Silky-smooth, low-latency Android screen mirroring and remote control for macOS over local Wi-Fi.</b>
+  <b>Silky-smooth, low-latency Android screen mirroring and remote control for macOS over Wi-Fi & USB.</b>
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
 
 **WifiDesk** is an open-source desktop application crafted with **Flutter Desktop** for **macOS**. 
 
-It enables users to **wirelessly mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over a local Wi-Fi network**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
+It enables users to **mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over local Wi-Fi or USB cable**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
 
 WifiDesk bridges two core principles:
 1. **Unrivaled Performance:** Powered by the robust, hardware-accelerated `scrcpy-server` engine (H.264/H.265 GPU encoding).
@@ -32,7 +32,7 @@ WifiDesk bridges two core principles:
 ## ✨ Key Highlights
 
 - 🚀 **Sub-20ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on Android; streaming raw NAL units over a local TCP socket.
-- 📶 **Zero-Config Wi-Fi Pairing:** Automated mDNS device discovery on your local network, with one-click pairing for Android 11+ Wireless Debugging.
+- 📶 **Dual-Mode Connectivity (Wi-Fi & USB):** Seamless plug-and-play USB cable connection with 1-click wireless switching, plus automated mDNS discovery and pairing for Android 11+ Wireless Debugging.
 - 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (full Unicode and IME support).
 - 🍎 **Mac-First Productivity:**
   - **Bidirectional File Transfers & Explorer:** Send files/APKs via Finder sheet (<kbd>Cmd</kbd> + <kbd>U</kbd>) or drag-and-drop; browse phone storage and download files to Mac (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>) with quick folders.
@@ -41,7 +41,7 @@ WifiDesk bridges two core principles:
   - **Bidirectional Clipboard Sharing:** Instant synchronization between macOS pasteboard (`Cmd + C`) and Android system clipboard.
   - **Screen-Off Streaming:** Automatically powers off the physical phone screen during mirroring to save battery and prevent heat buildup.
   - **Menu Bar Companion:** Quick-access status bar icon for toggling device windows and monitoring latency, battery, and Wi-Fi health.
-- 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet without external servers or cloud proxies.
+- 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet or direct USB link without external servers or cloud proxies.
 - 💸 **Truly Free & Open Source:** Zero advertising, zero analytics trackers, and no subscriptions.
 
 ---
@@ -83,7 +83,7 @@ flowchart LR
         A4["InputManager (Touch / Key Injection)"] <--- A3
     end
 
-    subgraph LocalNetwork ["📶 Local Wi-Fi Subnet (LAN)"]
+    subgraph Transport ["📶 Local Wi-Fi (LAN) / 🔌 USB Cable"]
         V_STREAM["TCP Video Stream (Raw NAL Units)"]
         C_SOCKET["TCP / UDP Control Events (Input Packets)"]
     end

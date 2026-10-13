@@ -1,5 +1,5 @@
 name: wifi_desk
-description: "WifiDesk — Low-latency Android screen mirroring & remote control on macOS via Wi-Fi"
+description: "WifiDesk — Low-latency Android screen mirroring & remote control on macOS via Wi-Fi & USB"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
