@@ -17,12 +17,14 @@ class InputGestureViewportOverlay extends StatefulWidget {
     required this.deviceSerial,
     required this.child,
     this.showTouchIndicators = true,
+    this.showShortcutBadge = true,
     super.key,
   });
 
   final String deviceSerial;
   final Widget child;
   final bool showTouchIndicators;
+  final bool showShortcutBadge;
 
   @override
   State<InputGestureViewportOverlay> createState() =>
@@ -179,15 +181,16 @@ class _InputGestureViewportOverlayState
                   enabled: widget.showTouchIndicators,
                   child: widget.child,
                 ),
-                Positioned(
-                  bottom: 8,
-                  right: 8,
-                  child: ControlShortcutHelpBadge(
-                    onTapTextInject: () {
-                      QuickTextInputDialog.show(context, widget.deviceSerial);
-                    },
+                if (widget.showShortcutBadge)
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: ControlShortcutHelpBadge(
+                      onTapTextInject: () {
+                        QuickTextInputDialog.show(context, widget.deviceSerial);
+                      },
+                    ),
                   ),
-                ),
               ],
             ),
           );

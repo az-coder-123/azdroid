@@ -139,6 +139,35 @@ class FloatingControlsToolbar extends StatelessWidget {
                 ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
               ],
             ],
+
+            const SizedBox(width: 12),
+            _buildDivider(),
+            const SizedBox(width: 12),
+
+            // Ergonomic Mouse Shortcuts Guide
+            const Tooltip(
+              message:
+                  'Quick gestures: Right-Click for Back, Middle-Click for Home',
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.mouse_outlined,
+                    size: 14,
+                    color: AppColors.textTertiary,
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    'R-Click: Back  •  M-Click: Home',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                      fontFamily: 'SF Pro Text',
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
