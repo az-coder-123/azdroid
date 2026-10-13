@@ -94,6 +94,10 @@
 - **Auto-Save & Instant Paste:** Automatically saves files to `~/Downloads/WifiDesk_Screenshot_YYYYMMDD_HHMMSS.png` and copies the raw PNG data directly to the macOS system clipboard (`⌘V`).
 - **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via floating bottom toolbar camera button or <kbd>Cmd</kbd> + <kbd>S</kbd>.
 
+### 4.7 Right-Side Vertical Action Dock
+- **Unobstructed Viewport Ergonomics:** Productivity tools (Streaming Bitrate, Screenshot, Text Injector, Clipboard Sync) are isolated from the bottom navigation dock and placed in an elegant vertical floating dock along the right edge of the real-time phone display.
+- **Dynamic Proximity & Gap Preservation:** Positioned outside the phone frame with a consistent 16px ergonomic gap, scaling responsively with window size and device aspect ratio while maintaining symmetrical window centering.
+
 ---
 
 ## 5. Security & Privacy Architecture

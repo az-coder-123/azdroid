@@ -164,6 +164,12 @@ void main() {
       expect(find.byTooltip('App Switcher (Cmd+Tab)'), findsOneWidget);
       expect(find.byTooltip('Rotate Display'), findsOneWidget);
 
+      // Verify Side Controls Toolbar buttons
+      expect(find.byTooltip('Streaming Bitrate & Quality'), findsOneWidget);
+      expect(find.byTooltip('Take Screenshot (Cmd+S)'), findsOneWidget);
+      expect(find.byTooltip('Inject Text (Cmd+K)'), findsOneWidget);
+      expect(find.byTooltip('Clipboard Synchronization'), findsOneWidget);
+
       // Tap Back button
       await tester.tap(find.byTooltip('Back (Right Click)'));
       await tester.pump();

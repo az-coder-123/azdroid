@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/audio/presentation/widgets/audio_controls_widget.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 
-/// Floating HUD toolbar providing quick access to Android navigation, stream controls,
-/// text injection, and clipboard synchronization.
+/// Floating HUD toolbar providing quick access to Android navigation and core stream controls.
 class FloatingControlsToolbar extends StatelessWidget {
   const FloatingControlsToolbar({
     super.key,
@@ -15,10 +13,6 @@ class FloatingControlsToolbar extends StatelessWidget {
     required this.onAppSwitch,
     required this.onRotate,
     required this.onToggleScreenOff,
-    required this.onSelectBitrate,
-    this.onTextInject,
-    this.onScreenshot,
-    this.deviceSerial,
   });
 
   final StreamSessionEntity session;
@@ -27,10 +21,6 @@ class FloatingControlsToolbar extends StatelessWidget {
   final VoidCallback onAppSwitch;
   final VoidCallback onRotate;
   final VoidCallback onToggleScreenOff;
-  final ValueChanged<int> onSelectBitrate;
-  final VoidCallback? onTextInject;
-  final VoidCallback? onScreenshot;
-  final String? deviceSerial;
 
   @override
   Widget build(BuildContext context) {
@@ -94,63 +84,6 @@ class FloatingControlsToolbar extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             const AudioControlsWidget(),
-            const SizedBox(width: 8),
-            PopupMenuButton<int>(
-              tooltip: 'Streaming Bitrate & Quality',
-              icon: const Icon(
-                Icons.tune_rounded,
-                size: 20,
-                color: AppColors.textPrimary,
-              ),
-              color: AppColors.surfaceElevated,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(color: AppColors.border),
-              ),
-              initialValue: session.bitrateMbps,
-              onSelected: onSelectBitrate,
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 4,
-                  child: Text('4 Mbps (Eco / Weak Wi-Fi)'),
-                ),
-                const PopupMenuItem(
-                  value: 8,
-                  child: Text('8 Mbps (Standard 1080p)'),
-                ),
-                const PopupMenuItem(
-                  value: 16,
-                  child: Text('16 Mbps (Ultra / 60+ FPS)'),
-                ),
-              ],
-            ),
-
-            // Productivity Controls (Screenshot, Text & Clipboard)
-            if (onScreenshot != null ||
-                onTextInject != null ||
-                deviceSerial != null) ...[
-              const SizedBox(width: 12),
-              _buildDivider(),
-              const SizedBox(width: 12),
-              if (onScreenshot != null)
-                _buildToolButton(
-                  icon: Icons.camera_alt_outlined,
-                  tooltip: 'Take Screenshot (Cmd+S)',
-                  onPressed: onScreenshot!,
-                ),
-              if (onTextInject != null) ...[
-                if (onScreenshot != null) const SizedBox(width: 4),
-                _buildToolButton(
-                  icon: Icons.keyboard_alt_outlined,
-                  tooltip: 'Inject Text (Cmd+K)',
-                  onPressed: onTextInject!,
-                ),
-              ],
-              if (deviceSerial != null) ...[
-                const SizedBox(width: 4),
-                ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
-              ],
-            ],
 
             const SizedBox(width: 12),
             _buildDivider(),
@@ -187,7 +120,7 @@ class FloatingControlsToolbar extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return Container(width: 1, height: 20, color: AppColors.border);
+    return Container(width: 1.0, height: 20.0, color: AppColors.borderSubtle);
   }
 
   Widget _buildToolButton({
@@ -196,13 +129,17 @@ class FloatingControlsToolbar extends StatelessWidget {
     required VoidCallback onPressed,
     Color? color,
   }) {
-    return IconButton(
-      tooltip: tooltip,
-      icon: Icon(icon, size: 20, color: color ?? AppColors.textPrimary),
-      padding: const EdgeInsets.all(8),
-      constraints: const BoxConstraints(),
-      splashRadius: 20,
-      onPressed: onPressed,
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(8.0),
+        hoverColor: AppColors.surfaceElevated,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(icon, size: 20.0, color: color ?? AppColors.textPrimary),
+        ),
+      ),
     );
   }
 }
