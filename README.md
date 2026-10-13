@@ -114,15 +114,23 @@ flowchart LR
 
 ### Prerequisites
 
-- **macOS:** macOS 12 Monterey or later.
-- **Flutter SDK:** Flutter 3.x+ with desktop support enabled.
-- **Android Device:** Android 5.0+ (Android 11+ recommended for wireless pairing).
-- **Android Platform Tools (ADB):** Install via Homebrew:
+#### 1. macOS Host (Mac)
+- **Operating System:** macOS 12 Monterey or later.
+- **Android Debug Bridge (ADB):** The only external tool required on macOS. Install via Homebrew:
   ```bash
   brew install android-platform-tools
   ```
+  > [!NOTE]
+  > If Android Studio is already installed, ADB is detected automatically. You do **not** need to install `scrcpy` or `ffmpeg`—all server components are bundled inside WifiDesk, and video is decoded via native Apple VideoToolbox.
+
+#### 2. Android Device (Phone / Tablet)
+- **OS Version:** Android 5.0+ (Android 11+ recommended for cable-free wireless pairing).
+- **Developer Options:** Go to **Settings ➔ About Phone** and tap **Build Number** 7 times.
+- **Debugging Flags:** Enable **USB Debugging** (and **Wireless Debugging** for Android 11+).
+- **Xiaomi / Redmi / POCO:** Also enable **USB debugging (Security settings)** to permit mouse clicks and keyboard typing.
 
 ### Build & Run
+
 
 ```bash
 # 1. Clone the repository

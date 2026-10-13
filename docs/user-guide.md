@@ -1,49 +1,76 @@
 # WifiDesk — User Guide & Setup Handbook
 
-> Complete handbook for wireless screen mirroring, touch injection, keyboard navigation, and productivity features on macOS.
+> Complete handbook for macOS tool requirements, Android device configuration, wireless screen mirroring, touch injection, and productivity features.
 
 ---
 
-## 🚀 1. Connection Methods
+## 🛠️ 1. Required Tools & Prerequisites
 
-WifiDesk provides 3 connection pathways adapted to your Android version and network configuration:
+### 1.1 macOS Host Preparation
+WifiDesk is engineered to require minimal host dependencies. The **only external requirement** on macOS is the Android Debug Bridge (`adb`):
 
-### Method 1: Scan QR Code (Android 11+ / 100% Wireless)
-1. **On your phone:** Go to **Settings ➔ Developer Options ➔ Wireless Debugging**.
-2. Tap **"Pair device with QR code"** (Ghép nối bằng mã QR).
-3. **On WifiDesk:** Click **"Pair Device"** on the macOS top bar.
-4. Scan the QR code displayed on your Mac with your phone camera.
-5. The device pairs instantly and appears in the **Discovered Devices** list.
+- **Installing ADB via Homebrew (Recommended):**
+  ```bash
+  brew install android-platform-tools
+  ```
+- **If Android Studio is already installed:**
+  WifiDesk automatically detects ADB inside your Android SDK (`~/Library/Android/sdk/platform-tools/adb`). No extra installation is needed.
+- **Automated Path Discovery:**
+  WifiDesk searches standard locations automatically without manual configuration:
+  - Apple Silicon Homebrew: `/opt/homebrew/bin/adb`
+  - Intel Mac Homebrew: `/usr/local/bin/adb`
+  - Android SDK: `~/Library/Android/sdk/platform-tools/adb`
+  - Current shell `$PATH` via `which adb`
 
-### Method 2: One-Time USB Activation (`adb tcpip 5555`)
-*Recommended for Android 10 and older devices (e.g. Redmi 9 `M2004J19C`) lacking native Wireless Debugging:*
-1. Connect your phone to your Mac via USB cable and allow USB Debugging.
-2. Open Terminal on your Mac and execute:
-   ```bash
-   adb tcpip 5555
-   ```
-3. Disconnect the USB cable. Your phone ADB daemon is now listening wirelessly on port 5555.
-4. On WifiDesk, click **"Direct IP"**, enter your phone IP (e.g., `192.168.1.3:5555`), and click Connect.
+> [!NOTE]
+> You do **not** need to install `scrcpy` or `ffmpeg`. The `scrcpy-server.jar` daemon is bundled inside WifiDesk, and video rendering uses native macOS **Apple VideoToolbox** GPU acceleration.
+
+### 1.2 Android Device Preparation
+
+#### Step 1: Unlock Developer Options
+1. Open phone **Settings ➔ About phone** (or *About device*).
+2. Tap **Build number** (or **MIUI / OS version** on Xiaomi) **7 times** until the toast *"You are now a developer!"* appears.
+
+#### Step 2: Enable Debugging
+1. Open **Settings ➔ System ➔ Developer options** (or *Additional settings ➔ Developer options*).
+2. Toggle **USB debugging** to **ON**.
+3. For Android 11+: Toggle **Wireless debugging** to **ON** (required for 100% cable-free pairing).
+
+#### Step 3: Authorize Mac Host
+When connecting for the first time via USB or Wi-Fi, an authorization dialog appears on your phone screen:
+- Check **"Always allow from this computer"** and tap **Allow**.
+
+#### Step 4: Brand-Specific Permissions (Crucial)
+- **Xiaomi / Redmi / POCO (MIUI & HyperOS):**
+  You **must** turn ON **USB debugging (Security settings)** (*Gỡ lỗi USB - Cài đặt bảo mật*) in Developer options. Without this, Xiaomi blocks mouse clicks and keystrokes from desktop apps.
+  *(Requires inserting a SIM card and signing into a Mi Account to toggle; accept 3 consecutive 5-second security warnings).*
+- **Oppo / Realme / OnePlus (ColorOS / OxygenOS):**
+  If touch events are blocked, turn ON **"Disable permission monitoring"** in Developer options.
+- **Samsung / Google Pixel / Motorola:**
+  Standard **USB debugging** is sufficient without extra flags.
+
+---
+
+## 🚀 2. Connection Methods
+
+WifiDesk provides 3 connection pathways:
+
+### Method 1: 1-Click USB to Wi-Fi Switch (Easiest & Most Reliable)
+1. Plug your phone into your Mac via USB cable.
+2. Allow USB Debugging on your phone.
+3. Your phone immediately appears under **Discovered Devices**.
+4. Click **"Wi-Fi Mode"** on the device card. WifiDesk automatically switches ADB to wireless TCP mode (`adb tcpip 5555`) and establishes the wireless connection.
+5. Unplug the USB cable! Mirroring continues smoothly over Wi-Fi.
+
+### Method 2: Wireless 6-Digit PIN Pairing (Android 11+ Cable-Free)
+1. On your phone: Go to **Settings ➔ Developer Options ➔ Wireless Debugging**.
+2. Tap **"Pair device with pairing code"** (*Ghép nối bằng mã ghép nối*).
+3. On WifiDesk: Click **"Pair with Wi-Fi Code"** on the top toolbar.
+4. Enter the IP, port, and 6-digit code shown on your phone screen, then click **Pair & Connect**.
 
 ### Method 3: Direct IP Connection
-Connect directly to any device already on your local Wi-Fi with an open ADB port:
-1. Check your phone IP under **Settings ➔ Wi-Fi ➔ Current Network** (e.g., `192.168.1.3`).
-2. Click **"Direct IP"** on WifiDesk, enter the IP address and port (default: 5555), and click Connect.
-
----
-
-## 📱 2. Xiaomi / MIUI / HyperOS Specific Setup
-
-Xiaomi devices enforce additional security checks that block mouse clicks and keystrokes unless explicitly authorized:
-
-| Setting | Path in Settings | Why It's Required |
-| :--- | :--- | :--- |
-| **Developer Options** | About Phone ➔ Tap *MIUI version* 7 times | Unlocks developer menu |
-| **USB Debugging** | Additional Settings ➔ Developer Options | Allows ADB connection |
-| **USB Debugging (Security Settings)** | Additional Settings ➔ Developer Options | **Mandatory** for mouse clicks & keystroke injection |
-
-> [!WARNING]
-> Without enabling **USB debugging (Security settings)**, screen mirroring will work, but mouse clicks and keyboard typing will be ignored by MIUI.
+1. Find your phone's local IP address under **Settings ➔ Wi-Fi ➔ Current Network Details** (e.g. `192.168.1.35`).
+2. Click **"Direct IP"** on WifiDesk, enter the IP address (port defaults to 5555), and click **Connect**.
 
 ---
 
@@ -59,6 +86,11 @@ Xiaomi devices enforce additional security checks that block mouse clicks and ke
 - <kbd>Cmd</kbd> + <kbd>H</kbd>: Go to Home Screen.
 - <kbd>Cmd</kbd> + <kbd>Backspace</kbd>: Back key.
 - <kbd>Cmd</kbd> + <kbd>Tab</kbd>: App Switcher (Recent Apps).
+- <kbd>Cmd</kbd> + <kbd>S</kbd>: Full Screenshot to `~/Downloads` & clipboard.
+- <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>: Area Screenshot crop.
+- <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>: Hardware MP4 Screen Recording.
+- <kbd>Cmd</kbd> + <kbd>U</kbd>: Send Files / APK from macOS Finder.
+- <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>: Open Android File Explorer.
 - <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector (Direct Unicode & Vietnamese accents).
 - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate display 90 degrees.
 - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn phone screen off/on (`--turn-screen-off`).
@@ -67,16 +99,18 @@ Xiaomi devices enforce additional security checks that block mouse clicks and ke
 
 ## 📁 4. Productivity Features
 
-### Drag & Drop File Transfers
-- Drag any photo, video, or document from **macOS Finder** and drop it onto the streaming window. Files are automatically transferred to `/sdcard/Download/`.
-- Drag an `.apk` package to install and sideload the app directly with live transfer progress.
+### Drag & Drop & Finder Transfers
+- Press <kbd>Cmd</kbd> + <kbd>U</kbd> or click the toolbar upload icon to select files via native macOS Finder dialog.
+- Drag files, photos, or documents directly from Finder onto the stream to push to `/sdcard/Download/`.
+- Sideload `.apk` packages automatically upon drop or selection.
+
+### Device File Explorer & Pull to Mac
+- Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> or click the folder icon on the side dock to browse Android storage (`Downloads`, `DCIM`, `Screenshots`, `Movies`).
+- Select files and download them directly to `~/Downloads/WifiDesk` with 1-click Finder reveal.
 
 ### Bidirectional Clipboard Sync
 - Text copied on macOS (<kbd>Cmd</kbd> + <kbd>C</kbd>) is automatically synced to the Android clipboard.
 - Text copied on Android is instantly available on macOS (<kbd>Cmd</kbd> + <kbd>V</kbd>).
-
-### Low-Latency Audio Streaming
-- Android device audio is forwarded directly to your Mac speakers over 48kHz stereo Opus/PCM.
 
 ---
 
@@ -84,7 +118,7 @@ Xiaomi devices enforce additional security checks that block mouse clicks and ke
 
 #### 1. "No route to host" or cannot connect
 - Ensure both Mac and Android are connected to the **same Wi-Fi network**.
-- Check for **AP Isolation** on cafe/university Wi-Fi networks (use your home Wi-Fi or create an iPhone/Mac hotspot).
+- Check for **AP Isolation** on cafe/public Wi-Fi networks (use a home network or Mac hotspot).
 
 #### 2. Mouse clicks do nothing on Xiaomi
 - Verify that **USB debugging (Security settings)** is turned ON in Developer options.
