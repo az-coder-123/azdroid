@@ -115,7 +115,13 @@
 - **Live Elapsed Duration & Dual Actions:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot, 1-click **STOP** (finalize & pull MP4), and **DISCARD** (purge temporary file without host disk clutter).
 - **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/WifiDesk_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
 
+### 4.9 Bidirectional File Transfer & Device File Explorer
+- **macOS to Android Push:** Send arbitrary files, photos, videos, documents, or APKs to the Android device via native Apple Finder file selection dialog or drag-and-drop. APKs are automatically installed; media files trigger an Android MediaScanner broadcast to appear instantly in the Gallery. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>U</kbd>.
+- **Real-Time Transfer Progress & Size HUD:** Floating dynamic banner displays file names, human-readable file sizes (e.g., `14.5 MB`), multi-item counters (`Item 1 of 3`), and dismissible completion badges.
+- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`), multi-file selection, formatted sizes, and batch download to `~/Downloads/WifiDesk` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
+
 ---
+
 
 ## 5. Security & Privacy Architecture
 

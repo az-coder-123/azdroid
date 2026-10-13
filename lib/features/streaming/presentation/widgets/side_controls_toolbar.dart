@@ -135,7 +135,7 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.file_upload_outlined,
-                  tooltip: 'Send Files to Phone',
+                  tooltip: 'Send Files to Phone (Cmd+U)',
                   onPressed: onSendFiles!,
                 ),
               ],
@@ -145,7 +145,7 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.folder_shared_outlined,
-                  tooltip: 'Device Files & Downloads',
+                  tooltip: 'Device Files & Downloads (Cmd+Shift+F)',
                   onPressed: onBrowseFiles!,
                 ),
               ],

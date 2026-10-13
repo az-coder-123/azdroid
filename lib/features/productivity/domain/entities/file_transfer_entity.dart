@@ -40,6 +40,19 @@ class FileTransferEntity extends Equatable {
   /// Human-readable error description if transfer fails.
   final String? errorMessage;
 
+  /// Returns human-readable file size (e.g., '14.2 MB', '850 KB').
+  String get formattedSize {
+    if (fileSizeBytes <= 0) return '';
+    if (fileSizeBytes < 1024) return '$fileSizeBytes B';
+    if (fileSizeBytes < 1024 * 1024) {
+      return '${(fileSizeBytes / 1024).toStringAsFixed(1)} KB';
+    }
+    if (fileSizeBytes < 1024 * 1024 * 1024) {
+      return '${(fileSizeBytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    }
+    return '${(fileSizeBytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
+  }
+
   FileTransferEntity copyWith({
     String? id,
     String? fileName,

@@ -18,14 +18,17 @@ class TransferStatusBanner extends StatelessWidget {
 
         if (state is FileTransferActive) {
           final transfer = state.currentTransfer;
+          final sizeLabel = transfer.formattedSize.isNotEmpty
+              ? ' (${transfer.formattedSize})'
+              : '';
           return _buildBanner(
             icon: transfer.isApk
                 ? Icons.android_rounded
                 : Icons.upload_file_rounded,
             iconColor: AppColors.accent,
             title: transfer.isApk
-                ? 'Installing APK: ${transfer.fileName}'
-                : 'Transferring: ${transfer.fileName}',
+                ? 'Installing APK: ${transfer.fileName}$sizeLabel'
+                : 'Transferring: ${transfer.fileName}$sizeLabel',
             subtitle: 'Item ${state.completedCount + 1} of ${state.totalCount}',
             showProgress: true,
           );
@@ -33,6 +36,9 @@ class TransferStatusBanner extends StatelessWidget {
 
         if (state is FileTransferSuccess) {
           final transfer = state.completedTransfer;
+          final sizeLabel = transfer.formattedSize.isNotEmpty
+              ? ' • ${transfer.formattedSize}'
+              : '';
           return _buildBanner(
             icon: Icons.check_circle_outline_rounded,
             iconColor: AppColors.statusSuccess,
@@ -40,8 +46,8 @@ class TransferStatusBanner extends StatelessWidget {
                 ? 'APK Successfully Installed'
                 : 'File Transfer Complete',
             subtitle: transfer.isApk
-                ? transfer.fileName
-                : 'Saved to /sdcard/Download/${transfer.fileName}',
+                ? '${transfer.fileName}$sizeLabel'
+                : 'Saved to /sdcard/Download/${transfer.fileName}$sizeLabel',
             onDismiss: () => context.read<FileTransferCubit>().reset(),
           );
         }

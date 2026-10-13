@@ -63,4 +63,28 @@ void main() {
       cubit.close();
     },
   );
+
+  testWidgets(
+    'TransferStatusBanner displays failure and dismisses on close button',
+    (WidgetTester tester) async {
+      when(() => mockRepository.pushFile(testSerial, '/Users/mac/fail.txt'))
+          .thenAnswer((_) async => false);
+
+      final cubit = FileTransferCubit(repository: mockRepository);
+      await tester.pumpWidget(createSubject(cubit));
+
+      cubit.transferFiles(testSerial, ['/Users/mac/fail.txt']);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Transfer Failed'), findsOneWidget);
+      expect(find.byIcon(Icons.close_rounded), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.close_rounded));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Transfer Failed'), findsNothing);
+
+      cubit.close();
+    },
+  );
 }

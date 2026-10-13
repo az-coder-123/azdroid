@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/constants/productivity_constants.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/file_transfer_entity.dart';
@@ -32,10 +34,19 @@ class FileTransferCubit extends Cubit<FileTransferState> {
         ProductivityConstants.apkExtension,
       );
 
+      int sizeBytes = 0;
+      try {
+        final f = File(path);
+        if (f.existsSync()) {
+          sizeBytes = f.lengthSync();
+        }
+      } catch (_) {}
+
       final transfer = FileTransferEntity(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         fileName: fileName,
         localPath: path,
+        fileSizeBytes: sizeBytes,
         isApk: isApk,
         status: FileTransferStatus.inProgress,
       );
