@@ -60,7 +60,8 @@
   - **Left Click:** Touch down, drag, and touch up.
   - **Right Click:** Android system **Back** action (`KEYCODE_BACK`).
   - **Middle Click / Command + H:** Android system **Home** action (`KEYCODE_HOME`).
-  - **Command + Tab / Command + S:** Android **Recent Apps / App Switcher** (`KEYCODE_APP_SWITCH`).
+  - **Command + Tab:** Android **Recent Apps / App Switcher** (`KEYCODE_APP_SWITCH`).
+  - **Command + S:** Device **Screenshot Capture** (Lossless PNG to `~/Downloads` & macOS clipboard).
 - **Smooth Inertial Scrolling:** Converts macOS trackpad and mouse wheel scroll events into natural Android gesture scroll velocity.
 
 ### 3.2 Keyboard & International Text Input
@@ -87,6 +88,11 @@
 
 ### 4.5 Audio Forwarding
 - **Synchronized Audio Stream:** Low-latency PCM/AAC audio streaming directly to macOS audio output devices (via Android 10+ internal audio capture API).
+
+### 4.6 Lossless Device Screenshot & System Clipboard Integration
+- **Direct SurfaceFlinger Capture:** Captures native full-resolution PNG frames directly via `adb exec-out screencap -p` without client-side video scaling distortion or letterbox artifacts.
+- **Auto-Save & Instant Paste:** Automatically saves files to `~/Downloads/WifiDesk_Screenshot_YYYYMMDD_HHMMSS.png` and copies the raw PNG data directly to the macOS system clipboard (`⌘V`).
+- **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via floating bottom toolbar camera button or <kbd>Cmd</kbd> + <kbd>S</kbd>.
 
 ---
 

@@ -17,6 +17,7 @@ class FloatingControlsToolbar extends StatelessWidget {
     required this.onToggleScreenOff,
     required this.onSelectBitrate,
     this.onTextInject,
+    this.onScreenshot,
     this.deviceSerial,
   });
 
@@ -28,6 +29,7 @@ class FloatingControlsToolbar extends StatelessWidget {
   final VoidCallback onToggleScreenOff;
   final ValueChanged<int> onSelectBitrate;
   final VoidCallback? onTextInject;
+  final VoidCallback? onScreenshot;
   final String? deviceSerial;
 
   @override
@@ -123,17 +125,27 @@ class FloatingControlsToolbar extends StatelessWidget {
               ],
             ),
 
-            // Productivity Controls (Text & Clipboard)
-            if (onTextInject != null || deviceSerial != null) ...[
+            // Productivity Controls (Screenshot, Text & Clipboard)
+            if (onScreenshot != null ||
+                onTextInject != null ||
+                deviceSerial != null) ...[
               const SizedBox(width: 12),
               _buildDivider(),
               const SizedBox(width: 12),
-              if (onTextInject != null)
+              if (onScreenshot != null)
+                _buildToolButton(
+                  icon: Icons.camera_alt_outlined,
+                  tooltip: 'Take Screenshot (Cmd+S)',
+                  onPressed: onScreenshot!,
+                ),
+              if (onTextInject != null) ...[
+                if (onScreenshot != null) const SizedBox(width: 4),
                 _buildToolButton(
                   icon: Icons.keyboard_alt_outlined,
                   tooltip: 'Inject Text (Cmd+K)',
                   onPressed: onTextInject!,
                 ),
+              ],
               if (deviceSerial != null) ...[
                 const SizedBox(width: 4),
                 ClipboardSyncMenuButton(deviceSerial: deviceSerial!),

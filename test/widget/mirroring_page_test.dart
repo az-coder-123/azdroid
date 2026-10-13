@@ -12,8 +12,10 @@ import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart'
 import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
@@ -30,12 +32,15 @@ class MockFileTransferRepository extends Mock
 
 class MockAudioRepository extends Mock implements AudioRepository {}
 
+class MockScreenshotRepository extends Mock implements ScreenshotRepository {}
+
 void main() {
   late MockStreamingRepository mockRepository;
   late MockControlRepository mockControlRepository;
   late MockClipboardRepository mockClipboardRepository;
   late MockFileTransferRepository mockFileTransferRepository;
   late MockAudioRepository mockAudioRepository;
+  late MockScreenshotRepository mockScreenshotRepository;
 
   const testDevice = DeviceEntity(
     id: '192.168.1.100:5555',
@@ -69,6 +74,7 @@ void main() {
     mockClipboardRepository = MockClipboardRepository();
     mockFileTransferRepository = MockFileTransferRepository();
     mockAudioRepository = MockAudioRepository();
+    mockScreenshotRepository = MockScreenshotRepository();
 
     when(() => mockRepository.startSession(testDevice))
         .thenAnswer((_) async => testSession);
@@ -109,6 +115,13 @@ void main() {
     sl.registerLazySingleton<AudioRepository>(() => mockAudioRepository);
     sl.registerFactory<AudioCubit>(
       () => AudioCubit(repository: sl<AudioRepository>()),
+    );
+
+    sl.registerLazySingleton<ScreenshotRepository>(
+      () => mockScreenshotRepository,
+    );
+    sl.registerFactory<ScreenshotCubit>(
+      () => ScreenshotCubit(repository: sl<ScreenshotRepository>()),
     );
 
     sl.registerLazySingleton<MenuBarCubit>(() => MenuBarCubit());

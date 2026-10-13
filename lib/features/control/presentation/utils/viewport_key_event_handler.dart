@@ -6,6 +6,7 @@ import 'package:wifi_desk/features/control/domain/entities/input_event_entity.da
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_event.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 
 /// Translates raw desktop keyboard events into Android navigation and key inputs.
 class ViewportKeyEventHandler {
@@ -35,8 +36,14 @@ class ViewportKeyEventHandler {
         return KeyEventResult.handled;
       }
 
-      if (logicalKey == LogicalKeyboardKey.keyS ||
-          logicalKey == LogicalKeyboardKey.tab) {
+      if (logicalKey == LogicalKeyboardKey.keyS) {
+        try {
+          context.read<ScreenshotCubit>().captureScreenshot(deviceSerial);
+          return KeyEventResult.handled;
+        } catch (_) {}
+      }
+
+      if (logicalKey == LogicalKeyboardKey.tab) {
         context.read<ControlBloc>().add(
           ControlNavigationActionDispatched(
             deviceSerial: deviceSerial,

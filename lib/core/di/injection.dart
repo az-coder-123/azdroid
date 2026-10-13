@@ -21,12 +21,16 @@ import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.da
 import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/data/datasources/clipboard_datasource.dart';
 import 'package:wifi_desk/features/productivity/data/datasources/file_transfer_datasource.dart';
+import 'package:wifi_desk/features/productivity/data/datasources/screenshot_datasource.dart';
 import 'package:wifi_desk/features/productivity/data/repositories/clipboard_repository_impl.dart';
 import 'package:wifi_desk/features/productivity/data/repositories/file_transfer_repository_impl.dart';
+import 'package:wifi_desk/features/productivity/data/repositories/screenshot_repository_impl.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:wifi_desk/features/streaming/data/repositories/streaming_repository_impl.dart';
 import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
@@ -127,6 +131,17 @@ Future<void> initDependencies() async {
     () => FileTransferRepositoryImpl(datasource: sl<FileTransferDatasource>()),
   );
 
+  sl.registerLazySingleton<ScreenshotDatasource>(
+    () => ScreenshotDatasourceImpl(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ScreenshotRepository>(
+    () => ScreenshotRepositoryImpl(datasource: sl<ScreenshotDatasource>()),
+  );
+
   // Audio data sources & repositories
   sl.registerLazySingleton<AudioSocketDatasource>(
     () => AudioSocketDatasourceImpl(),
@@ -172,5 +187,9 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<AudioCubit>(
     () => AudioCubit(repository: sl<AudioRepository>()),
+  );
+
+  sl.registerFactory<ScreenshotCubit>(
+    () => ScreenshotCubit(repository: sl<ScreenshotRepository>()),
   );
 }

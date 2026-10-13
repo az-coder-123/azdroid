@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/screenshot_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/transfer_status_banner.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
+import 'package:wifi_desk/features/streaming/presentation/widgets/mirroring_status_fallback.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/stream_telemetry_header.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/video_display_viewport.dart';
 
-/// Interactive mirroring view with non-overlapping controls and Zen mode support.
+/// Interactive mirroring view with non-overlapping controls, screenshot feedback, and Zen mode.
 class MirroringView extends StatefulWidget {
   const MirroringView({super.key, required this.device});
 
@@ -47,11 +49,14 @@ class _MirroringViewState extends State<MirroringView> {
         },
         builder: (context, state) {
           if (state is StreamingStarting) {
-            return _buildStartingView();
+            return MirroringStartingFallback(deviceName: widget.device.name);
           }
 
           if (state is StreamingError) {
-            return _buildErrorView(context, state.message);
+            return MirroringErrorFallback(
+              device: widget.device,
+              message: state.message,
+            );
           }
 
           if (state is StreamingActive) {
@@ -60,68 +65,6 @@ class _MirroringViewState extends State<MirroringView> {
 
           return const SizedBox.shrink();
         },
-      ),
-    );
-  }
-
-  Widget _buildStartingView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(color: AppColors.accent),
-          const SizedBox(height: 20),
-          Text(
-            'Starting Display Stream on ${widget.device.name}...',
-            style: AppTypography.title,
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Initializing hardware video decoder & tunneling sockets...',
-            style: AppTypography.subtitle,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorView(BuildContext context, String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline_rounded,
-              color: AppColors.statusError,
-              size: 54,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              style: AppTypography.body,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Back to Devices'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: () => context.read<StreamingCubit>().startSession(
-                    widget.device,
-                  ),
-                  child: const Text('Retry Connection'),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -186,6 +129,9 @@ class _MirroringViewState extends State<MirroringView> {
                         context.read<StreamingCubit>().toggleScreenOff(),
                     onSelectBitrate: (bitrate) =>
                         context.read<StreamingCubit>().updateBitrate(bitrate),
+                    onScreenshot: () => context
+                        .read<ScreenshotCubit>()
+                        .captureScreenshot(widget.device.serial),
                     onTextInject: () => QuickTextInputDialog.show(
                       context,
                       widget.device.serial,
@@ -241,6 +187,13 @@ class _MirroringViewState extends State<MirroringView> {
           top: 16,
           right: _isZenMode ? 64 : 16,
           child: const TransferStatusBanner(),
+        ),
+
+        // Bottom-Right Screenshot Feedback Toast Banner
+        Positioned(
+          bottom: _isZenMode ? 24 : 76,
+          right: 24,
+          child: const ScreenshotFeedbackBanner(),
         ),
       ],
     );
