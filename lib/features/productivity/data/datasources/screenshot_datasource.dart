@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:wifi_desk/features/productivity/data/utils/image_crop_util.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
 
 /// Data source interface for capturing raw device screenshots.
@@ -10,6 +12,7 @@ abstract class ScreenshotDatasource {
   Future<ScreenshotEntity?> captureScreenshot({
     required String deviceSerial,
     String? customSaveDirectory,
+    Rect? cropRectNormalized,
   });
 }
 
@@ -28,6 +31,7 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
   Future<ScreenshotEntity?> captureScreenshot({
     required String deviceSerial,
     String? customSaveDirectory,
+    Rect? cropRectNormalized,
   }) async {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) {
@@ -72,6 +76,16 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
           'Failed to capture screenshot from device',
           exitCode,
         );
+      }
+
+      // If user selected a specific area, crop the image
+      if (cropRectNormalized != null) {
+        final originalBytes = await targetFile.readAsBytes();
+        final croppedBytes = await ImageCropUtil.cropPng(
+          originalBytes,
+          cropRectNormalized,
+        );
+        await targetFile.writeAsBytes(croppedBytes, flush: true);
       }
 
       final fileLength = await targetFile.length();

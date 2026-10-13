@@ -181,6 +181,7 @@ void main() {
       // Verify Side Controls Toolbar buttons
       expect(find.byTooltip('Streaming Bitrate & Quality'), findsOneWidget);
       expect(find.byTooltip('Take Screenshot (Cmd+S)'), findsOneWidget);
+      expect(find.byTooltip('Capture Area (Cmd+Shift+S)'), findsOneWidget);
       expect(find.byTooltip('Record Screen (Cmd+Shift+R)'), findsOneWidget);
       expect(find.byTooltip('Inject Text (Cmd+K)'), findsOneWidget);
       expect(find.byTooltip('Clipboard Synchronization'), findsOneWidget);

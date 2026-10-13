@@ -14,6 +14,16 @@ final class ScreenshotInitial extends ScreenshotState {
   const ScreenshotInitial();
 }
 
+/// Active interactive state when user is selecting a sub-region on the phone screen.
+final class ScreenshotSelectingArea extends ScreenshotState {
+  const ScreenshotSelectingArea(this.deviceSerial);
+
+  final String deviceSerial;
+
+  @override
+  List<Object?> get props => [deviceSerial];
+}
+
 /// Active state while screenshot frame is being streamed and written to disk.
 final class ScreenshotCapturing extends ScreenshotState {
   const ScreenshotCapturing();

@@ -89,10 +89,12 @@
 ### 4.5 Audio Forwarding
 - **Synchronized Audio Stream:** Low-latency PCM/AAC audio streaming directly to macOS audio output devices (via Android 10+ internal audio capture API).
 
-### 4.6 Lossless Device Screenshot & System Clipboard Integration
-- **Direct SurfaceFlinger Capture:** Captures native full-resolution PNG frames directly via `adb exec-out screencap -p` without client-side video scaling distortion or letterbox artifacts.
-- **Auto-Save & Instant Paste:** Automatically saves files to `~/Downloads/WifiDesk_Screenshot_YYYYMMDD_HHMMSS.png` and copies the raw PNG data directly to the macOS system clipboard (`⌘V`).
-- **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via floating bottom toolbar camera button or <kbd>Cmd</kbd> + <kbd>S</kbd>.
+### 4.6 Lossless Device Screenshot & Regional Area Crop
+- **Full & Custom Area Capture:** Supports both full-screen lossless capture and interactive region selection.
+- **Interactive Drag Marquee HUD:** Allows users to freely drag on the phone display to select position and size with live dimension indicators (`W × H px`), darkened cutout mask, and macOS corner reticles. Cancelable with <kbd>Esc</kbd> or right-click.
+- **Direct SurfaceFlinger & Sub-Region Cropping:** Normalizes selection coordinates ($0.0 \to 1.0$) and maps with pixel precision to raw Android device resolution via hardware-accelerated image pipeline.
+- **Auto-Save & Instant Paste:** Automatically saves PNG to `~/Downloads/WifiDesk_Screenshot_YYYYMMDD_HHMMSS.png` and copies directly to the macOS system clipboard (`⌘V`).
+- **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via vertical dock buttons or shortcuts: <kbd>Cmd</kbd> + <kbd>S</kbd> (Full) and <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> (Area).
 
 ### 4.7 Right-Side Vertical Action Dock
 - **Unobstructed Viewport Ergonomics:** Productivity tools (Streaming Bitrate, Screenshot, Screen Recording, Text Injector, Clipboard Sync) are isolated from the bottom navigation dock and placed in an elegant vertical floating dock along the right edge of the real-time phone display.

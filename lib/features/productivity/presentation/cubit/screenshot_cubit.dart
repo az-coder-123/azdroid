@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
@@ -10,10 +12,24 @@ class ScreenshotCubit extends Cubit<ScreenshotState> {
 
   final ScreenshotRepository repository;
 
+  /// Enters interactive area selection mode for the phone screen.
+  void startAreaSelection(String deviceSerial) {
+    emit(ScreenshotSelectingArea(deviceSerial));
+  }
+
+  /// Cancels area selection mode without capturing.
+  void cancelAreaSelection() {
+    if (state is ScreenshotSelectingArea) {
+      emit(const ScreenshotInitial());
+    }
+  }
+
   /// Captures a screenshot from the remote Android device.
+  /// If [cropRectNormalized] is provided, crops the screenshot to that region.
   Future<void> captureScreenshot(
     String deviceSerial, {
     String? customSaveDirectory,
+    Rect? cropRectNormalized,
   }) async {
     if (state is ScreenshotCapturing) return;
 
@@ -23,6 +39,7 @@ class ScreenshotCubit extends Cubit<ScreenshotState> {
       final screenshot = await repository.captureScreenshot(
         deviceSerial: deviceSerial,
         customSaveDirectory: customSaveDirectory,
+        cropRectNormalized: cropRectNormalized,
       );
 
       if (screenshot != null) {

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -99,6 +101,54 @@ void main() {
           contains('ADB screencap failed'),
         ),
       ],
+    );
+
+    blocTest<ScreenshotCubit, ScreenshotState>(
+      'startAreaSelection emits ScreenshotSelectingArea',
+      build: () => ScreenshotCubit(repository: mockRepository),
+      act: (cubit) => cubit.startAreaSelection(testSerial),
+      expect: () => [
+        isA<ScreenshotSelectingArea>().having(
+          (s) => s.deviceSerial,
+          'deviceSerial',
+          testSerial,
+        ),
+      ],
+    );
+
+    blocTest<ScreenshotCubit, ScreenshotState>(
+      'cancelAreaSelection emits ScreenshotInitial when selecting area',
+      build: () => ScreenshotCubit(repository: mockRepository),
+      seed: () => const ScreenshotSelectingArea(testSerial),
+      act: (cubit) => cubit.cancelAreaSelection(),
+      expect: () => [isA<ScreenshotInitial>()],
+    );
+
+    blocTest<ScreenshotCubit, ScreenshotState>(
+      'captureScreenshot forwards cropRectNormalized to repository',
+      build: () {
+        when(
+          () => mockRepository.captureScreenshot(
+            deviceSerial: testSerial,
+            customSaveDirectory: any(named: 'customSaveDirectory'),
+            cropRectNormalized: any(named: 'cropRectNormalized'),
+          ),
+        ).thenAnswer((_) async => testScreenshot);
+        return ScreenshotCubit(repository: mockRepository);
+      },
+      act: (cubit) => cubit.captureScreenshot(
+        testSerial,
+        cropRectNormalized: const Rect.fromLTWH(0.1, 0.2, 0.5, 0.4),
+      ),
+      expect: () => [isA<ScreenshotCapturing>(), isA<ScreenshotSuccess>()],
+      verify: (_) {
+        verify(
+          () => mockRepository.captureScreenshot(
+            deviceSerial: testSerial,
+            cropRectNormalized: const Rect.fromLTWH(0.1, 0.2, 0.5, 0.4),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<ScreenshotCubit, ScreenshotState>(

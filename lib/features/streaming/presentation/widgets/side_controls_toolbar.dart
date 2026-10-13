@@ -15,6 +15,7 @@ class SideControlsToolbar extends StatelessWidget {
     required this.session,
     required this.onSelectBitrate,
     this.onScreenshot,
+    this.onCropScreenshot,
     this.onTextInject,
     this.deviceSerial,
   });
@@ -22,6 +23,7 @@ class SideControlsToolbar extends StatelessWidget {
   final StreamSessionEntity session;
   final ValueChanged<int> onSelectBitrate;
   final VoidCallback? onScreenshot;
+  final VoidCallback? onCropScreenshot;
   final VoidCallback? onTextInject;
   final String? deviceSerial;
 
@@ -77,19 +79,30 @@ class SideControlsToolbar extends StatelessWidget {
             ),
 
             if (onScreenshot != null ||
+                onCropScreenshot != null ||
                 deviceSerial != null ||
                 onTextInject != null) ...[
               const SizedBox(height: 6),
               _buildDivider(),
               const SizedBox(height: 6),
 
-              // Lossless Phone Screenshot
+              // Lossless Full Phone Screenshot
               if (onScreenshot != null)
                 _buildToolButton(
                   icon: Icons.camera_alt_outlined,
                   tooltip: 'Take Screenshot (Cmd+S)',
                   onPressed: onScreenshot!,
                 ),
+
+              // Regional / Partial Screenshot
+              if (onCropScreenshot != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.crop_rounded,
+                  tooltip: 'Capture Area (Cmd+Shift+S)',
+                  onPressed: onCropScreenshot!,
+                ),
+              ],
 
               // Screen Recording Toggle
               if (deviceSerial != null) ...[

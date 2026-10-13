@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screen_recording_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screenshot_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/transfer_status_banner.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
+import 'package:wifi_desk/features/streaming/presentation/widgets/interactive_display_viewport.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/side_controls_toolbar.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/stream_telemetry_header.dart';
-import 'package:wifi_desk/features/streaming/presentation/widgets/video_display_viewport.dart';
 
 /// Active mirroring viewport layout with top telemetry, centered phone display,
 /// right-side tools dock, bottom navigation toolbar, and overlay feedback cards.
@@ -92,16 +90,10 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
           // Zen Mode: Full-window display viewport
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: FileDropTargetOverlay(
+            child: InteractiveDisplayViewport(
+              session: widget.state.session,
               deviceSerial: widget.device.serial,
-              child: InputGestureViewportOverlay(
-                deviceSerial: widget.device.serial,
-                showShortcutBadge: false,
-                child: VideoDisplayViewport(
-                  session: widget.state.session,
-                  rotationDegrees: widget.state.rotationDegrees,
-                ),
-              ),
+              rotationDegrees: widget.state.rotationDegrees,
             ),
           ),
 
@@ -211,16 +203,10 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
               SizedBox(
                 width: phoneDisplayW,
                 height: phoneDisplayH,
-                child: FileDropTargetOverlay(
+                child: InteractiveDisplayViewport(
+                  session: widget.state.session,
                   deviceSerial: widget.device.serial,
-                  child: InputGestureViewportOverlay(
-                    deviceSerial: widget.device.serial,
-                    showShortcutBadge: false,
-                    child: VideoDisplayViewport(
-                      session: widget.state.session,
-                      rotationDegrees: widget.state.rotationDegrees,
-                    ),
-                  ),
+                  rotationDegrees: widget.state.rotationDegrees,
                 ),
               ),
 
@@ -235,6 +221,9 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                 onScreenshot: () => context
                     .read<ScreenshotCubit>()
                     .captureScreenshot(widget.device.serial),
+                onCropScreenshot: () => context
+                    .read<ScreenshotCubit>()
+                    .startAreaSelection(widget.device.serial),
                 onTextInject: () =>
                     QuickTextInputDialog.show(context, widget.device.serial),
               ),

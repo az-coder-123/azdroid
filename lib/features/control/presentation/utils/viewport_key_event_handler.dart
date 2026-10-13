@@ -9,6 +9,7 @@ import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
 
 /// Translates raw desktop keyboard events into Android navigation and key inputs.
 class ViewportKeyEventHandler {
@@ -40,7 +41,11 @@ class ViewportKeyEventHandler {
 
       if (logicalKey == LogicalKeyboardKey.keyS) {
         try {
-          context.read<ScreenshotCubit>().captureScreenshot(deviceSerial);
+          if (HardwareKeyboard.instance.isShiftPressed) {
+            context.read<ScreenshotCubit>().startAreaSelection(deviceSerial);
+          } else {
+            context.read<ScreenshotCubit>().captureScreenshot(deviceSerial);
+          }
           return KeyEventResult.handled;
         } catch (_) {}
       }
@@ -84,8 +89,16 @@ class ViewportKeyEventHandler {
       }
     }
 
-    // Escape -> Android Back
+    // Escape -> Cancel area crop selection or send Android Back
     if (logicalKey == LogicalKeyboardKey.escape) {
+      try {
+        final screenshotCubit = context.read<ScreenshotCubit>();
+        if (screenshotCubit.state is ScreenshotSelectingArea) {
+          screenshotCubit.cancelAreaSelection();
+          return KeyEventResult.handled;
+        }
+      } catch (_) {}
+
       context.read<ControlBloc>().add(
         ControlNavigationActionDispatched(
           deviceSerial: deviceSerial,

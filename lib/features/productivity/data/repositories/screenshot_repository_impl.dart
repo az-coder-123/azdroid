@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:wifi_desk/features/productivity/data/datasources/screenshot_datasource.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
@@ -12,10 +14,12 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   Future<ScreenshotEntity?> captureScreenshot({
     required String deviceSerial,
     String? customSaveDirectory,
+    Rect? cropRectNormalized,
   }) {
     return datasource.captureScreenshot(
       deviceSerial: deviceSerial,
       customSaveDirectory: customSaveDirectory,
+      cropRectNormalized: cropRectNormalized,
     );
   }
 }
