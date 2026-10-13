@@ -36,10 +36,11 @@ void main() {
   Widget createSubject() {
     return MaterialApp(
       home: Scaffold(
-        body: Center(
+        body: Align(
+          alignment: Alignment.topLeft,
           child: SizedBox(
             width: 400,
-            height: 800,
+            height: 400,
             child: BlocProvider<ScreenshotCubit>.value(
               value: mockCubit,
               child: const CropSelectionOverlay(deviceSerial: testSerial),
@@ -76,8 +77,8 @@ void main() {
       (tester) async {
         await tester.pumpWidget(createSubject());
 
-        final gesture = await tester.startGesture(const Offset(220, 100));
-        await gesture.moveTo(const Offset(320, 250));
+        final gesture = await tester.startGesture(const Offset(50, 50));
+        await gesture.moveTo(const Offset(150, 200));
         await tester.pump();
 
         // Dimension badge should appear
@@ -100,6 +101,48 @@ void main() {
             testSerial,
             cropRectNormalized: any(named: 'cropRectNormalized'),
             destination: ScreenshotDestination.clipboard,
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'allows modifying selection by dragging handle after initial marquee',
+      (tester) async {
+        await tester.pumpWidget(createSubject());
+
+        // 1. Initial drag: from (50, 50) to (150, 150) -> 100x100
+        final gesture1 = await tester.startGesture(const Offset(50, 50));
+        await gesture1.moveTo(const Offset(150, 150));
+        await tester.pump();
+        await gesture1.up();
+        await tester.pump();
+
+        expect(find.text('Clipboard'), findsOneWidget);
+
+        // 2. Drag bottom-right handle at (150, 150) to (200, 200) -> 150x150
+        final gesture2 = await tester.startGesture(const Offset(150, 150));
+        await gesture2.moveTo(const Offset(200, 200));
+        await tester.pump();
+        await gesture2.up();
+        await tester.pump();
+
+        // 3. Confirm with Lưu file
+        await tester.tap(find.text('Lưu file'));
+        await tester.pump();
+
+        verify(
+          () => mockCubit.captureScreenshot(
+            testSerial,
+            cropRectNormalized: any(
+              named: 'cropRectNormalized',
+              that: isA<Rect>().having(
+                (r) => r.right,
+                'right',
+                closeTo(200 / 400, 0.01),
+              ),
+            ),
+            destination: ScreenshotDestination.file,
           ),
         ).called(1);
       },

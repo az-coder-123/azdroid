@@ -92,6 +92,10 @@
 ### 4.6 Lossless Device Screenshot & Regional Area Crop
 - **Full & Custom Area Capture:** Supports both full-screen lossless capture and interactive region selection.
 - **Interactive Drag Marquee HUD:** Allows users to freely drag on the phone display to select position and size with live dimension indicators (`W × H px`), darkened cutout mask, and macOS corner reticles. Cancelable with <kbd>Esc</kbd> or right-click.
+- **Professional 8-Point Resize & Translation:** After drawing the initial selection, users can flexibly fine-tune the region:
+  - **8 Handle Knobs:** Circular Apple-style knobs on all 4 corners and 4 edge midpoints with responsive directional cursors (`resizeUpDown`, `resizeLeftRight`, `resizeUpLeftDownRight`, `resizeUpRightDownLeft`).
+  - **Whole-Box Pan/Move:** Dragging inside the selection body translates the entire frame smoothly with `move` cursor.
+  - **Outside Re-Selection:** Dragging outside immediately starts drawing a fresh marquee.
 - **Direct SurfaceFlinger & Sub-Region Cropping:** Normalizes selection coordinates ($0.0 \to 1.0$) and maps with pixel precision to raw Android device resolution via hardware-accelerated image pipeline.
 - **Interactive Floating Action Bar:** Upon completing area selection, an exquisite floating glassmorphism capsule appears anchored to the crop marquee offering instant destination choices:
   - **Clipboard:** Copies cropped PNG directly to macOS clipboard (`⌘V`) without saving temporary files to disk.

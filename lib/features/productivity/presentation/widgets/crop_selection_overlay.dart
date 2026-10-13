@@ -6,11 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:wifi_desk/features/productivity/presentation/utils/crop_handle_helper.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/crop_action_toolbar.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/crop_dimension_badge.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/crop_instruction_pill.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/crop_mask_painter.dart';
 
 /// Interactive draggable overlay displayed over the phone viewport when
-/// regional/area screenshot mode is active, with floating destination options.
+/// regional screenshot mode is active, supporting 8-point resize and translation.
 class CropSelectionOverlay extends StatefulWidget {
   const CropSelectionOverlay({super.key, required this.deviceSerial});
 
@@ -24,8 +27,11 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
   final FocusNode _focusNode = FocusNode();
   Offset? _startPoint;
   Offset? _currentPoint;
+  Offset? _lastPanPosition;
   Rect? _finalRect;
   bool _hasSelection = false;
+  CropHandle _activeHandle = CropHandle.none;
+  CropHandle _hoveredHandle = CropHandle.none;
 
   @override
   void initState() {
@@ -52,7 +58,55 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
     );
   }
 
+  void _onPanStart(DragStartDetails d) {
+    if (_hasSelection && _finalRect != null) {
+      final handle = CropHandleHelper.hitTest(d.localPosition, _finalRect!);
+      if (handle != CropHandle.none) {
+        setState(() {
+          _activeHandle = handle;
+          _lastPanPosition = d.localPosition;
+        });
+        return;
+      }
+    }
+    setState(() {
+      _hasSelection = false;
+      _finalRect = null;
+      _activeHandle = CropHandle.none;
+      _startPoint = d.localPosition;
+      _currentPoint = d.localPosition;
+    });
+  }
+
+  void _onPanUpdate(DragUpdateDetails d, Size size) {
+    if (_hasSelection &&
+        _finalRect != null &&
+        _activeHandle != CropHandle.none) {
+      final delta = d.localPosition - (_lastPanPosition ?? d.localPosition);
+      _lastPanPosition = d.localPosition;
+      setState(() {
+        _finalRect = CropHandleHelper.transformRect(
+          currentRect: _finalRect!,
+          handle: _activeHandle,
+          delta: delta,
+          bounds: size,
+        );
+      });
+      return;
+    }
+    if (!_hasSelection) {
+      setState(() => _currentPoint = d.localPosition);
+    }
+  }
+
   void _onPanEnd(Size size) {
+    if (_hasSelection) {
+      setState(() {
+        _activeHandle = CropHandle.none;
+        _lastPanPosition = null;
+      });
+      return;
+    }
     final rect = _computeActiveRect(size);
     if (rect != null &&
         rect.width >= 16 &&
@@ -108,6 +162,16 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
     return KeyEventResult.ignored;
   }
 
+  MouseCursor _resolveCursor() {
+    if (_activeHandle != CropHandle.none) {
+      return CropHandleHelper.getCursor(_activeHandle);
+    }
+    if (_hasSelection) {
+      return CropHandleHelper.getCursor(_hoveredHandle);
+    }
+    return SystemMouseCursors.precise;
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -120,24 +184,24 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
           autofocus: true,
           onKeyEvent: (node, event) => _handleKeyEvent(event, size),
           child: MouseRegion(
-            cursor: _hasSelection
-                ? SystemMouseCursors.basic
-                : SystemMouseCursors.precise,
+            cursor: _resolveCursor(),
+            onHover: (event) {
+              if (_hasSelection && _finalRect != null) {
+                final handle = CropHandleHelper.hitTest(
+                  event.localPosition,
+                  _finalRect!,
+                );
+                if (_hoveredHandle != handle) {
+                  setState(() => _hoveredHandle = handle);
+                }
+              }
+            },
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onSecondaryTap: () =>
                   context.read<ScreenshotCubit>().cancelAreaSelection(),
-              onPanStart: (d) => setState(() {
-                _hasSelection = false;
-                _finalRect = null;
-                _startPoint = d.localPosition;
-                _currentPoint = d.localPosition;
-              }),
-              onPanUpdate: (d) {
-                if (!_hasSelection) {
-                  setState(() => _currentPoint = d.localPosition);
-                }
-              },
+              onPanStart: _onPanStart,
+              onPanUpdate: (d) => _onPanUpdate(d, size),
               onPanEnd: (_) => _onPanEnd(size),
               child: Stack(
                 fit: StackFit.expand,
@@ -148,12 +212,23 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
                       selectionRect: selRect,
                       maskColor: Colors.black.withValues(alpha: 0.55),
                       borderColor: AppColors.accent,
+                      showHandles: _hasSelection,
                     ),
                   ),
-                  _buildInstructionPill(size),
-                  if (!_hasSelection && selRect != null && selRect.width > 24)
-                    _buildDimensionBadge(selRect, size),
-                  if (_hasSelection && selRect != null)
+                  CropInstructionPill(
+                    hasSelection: _hasSelection,
+                    maxWidth: size.width,
+                    onCancel: () =>
+                        context.read<ScreenshotCubit>().cancelAreaSelection(),
+                  ),
+                  if (selRect != null && selRect.width > 24)
+                    CropDimensionBadge(
+                      selectionRect: selRect,
+                      viewportHeight: size.height,
+                    ),
+                  if (_hasSelection &&
+                      selRect != null &&
+                      _activeHandle == CropHandle.none)
                     _buildFloatingToolbar(selRect, size),
                 ],
               ),
@@ -164,87 +239,11 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
     );
   }
 
-  Widget _buildInstructionPill(Size size) {
-    return Positioned(
-      top: 14,
-      left: 0,
-      right: 0,
-      child: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: math.max(0.0, size.width - 24)),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceElevated.withValues(alpha: 0.92),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.crop_rounded, size: 15, color: AppColors.accent),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  _hasSelection
-                      ? 'Choose destination below • Esc to cancel'
-                      : 'Drag to select area • Esc to cancel',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              InkWell(
-                onTap: () =>
-                    context.read<ScreenshotCubit>().cancelAreaSelection(),
-                child: const Icon(
-                  Icons.close_rounded,
-                  size: 16,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDimensionBadge(Rect selRect, Size size) {
-    final topPos = (selRect.bottom + 8 < size.height - 30)
-        ? selRect.bottom + 8.0
-        : (math.max(8.0, selRect.top - 28.0)).toDouble();
-
-    return Positioned(
-      left: selRect.left + (selRect.width / 2) - 45,
-      top: topPos,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.85),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: AppColors.accent.withValues(alpha: 0.7)),
-        ),
-        child: Text(
-          '${selRect.width.toInt()} × ${selRect.height.toInt()} px',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildFloatingToolbar(Rect selRect, Size size) {
     const toolbarWidth = 275.0;
     const toolbarHeight = 40.0;
     final maxLeft = math.max(12.0, size.width - toolbarWidth - 12.0).toDouble();
-    final left = (selRect.left + (selRect.width / 2) - (toolbarWidth / 2))
+    final left = ((selRect.left + (selRect.width / 2) - (toolbarWidth / 2)))
         .clamp(12.0, maxLeft);
     final fitsBelow = selRect.bottom + 10 + toolbarHeight < size.height;
     final top = fitsBelow
