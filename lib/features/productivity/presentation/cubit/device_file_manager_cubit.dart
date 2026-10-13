@@ -39,11 +39,18 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
         return a.name.toLowerCase().compareTo(b.name.toLowerCase());
       });
 
+      String? extPath;
+      if (state is DeviceFileManagerLoaded) {
+        extPath = (state as DeviceFileManagerLoaded).externalStoragePath;
+      }
+      extPath ??= await repository.getExternalStorageDirectory(deviceSerial);
+
       emit(
         DeviceFileManagerLoaded(
           currentDirectory: directory,
           files: items,
           selectedFiles: const {},
+          externalStoragePath: extPath,
         ),
       );
     } catch (e, stack) {

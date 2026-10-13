@@ -37,6 +37,7 @@ class DeviceFileManagerLoaded extends DeviceFileManagerState {
     this.statusMessage,
     this.searchQuery = '',
     this.sortOption = FileSortOption.nameAsc,
+    this.externalStoragePath,
   });
 
   final String currentDirectory;
@@ -46,6 +47,7 @@ class DeviceFileManagerLoaded extends DeviceFileManagerState {
   final String? statusMessage;
   final String searchQuery;
   final FileSortOption sortOption;
+  final String? externalStoragePath;
 
   /// Returns total size in bytes of all currently selected files.
   int get selectedSizeBytes {
@@ -77,11 +79,16 @@ class DeviceFileManagerLoaded extends DeviceFileManagerState {
     if (norm.endsWith('/')) {
       norm = norm.substring(0, norm.length - 1);
     }
-    if (norm.isEmpty || norm == '/sdcard' || norm == '/storage/emulated/0') {
+    if (norm.isEmpty || norm == '/storage') {
       return null;
     }
+    if (norm == '/sdcard' ||
+        norm == '/storage/emulated/0' ||
+        norm == '/storage/emulated') {
+      return '/storage/';
+    }
     final lastSlash = norm.lastIndexOf('/');
-    if (lastSlash <= 0) return '/';
+    if (lastSlash <= 0) return '/storage/';
     return '${norm.substring(0, lastSlash)}/';
   }
 
@@ -123,6 +130,7 @@ class DeviceFileManagerLoaded extends DeviceFileManagerState {
     String? statusMessage,
     String? searchQuery,
     FileSortOption? sortOption,
+    String? externalStoragePath,
     bool clearStatusMessage = false,
   }) {
     return DeviceFileManagerLoaded(
@@ -135,6 +143,7 @@ class DeviceFileManagerLoaded extends DeviceFileManagerState {
           : (statusMessage ?? this.statusMessage),
       searchQuery: searchQuery ?? this.searchQuery,
       sortOption: sortOption ?? this.sortOption,
+      externalStoragePath: externalStoragePath ?? this.externalStoragePath,
     );
   }
 
@@ -147,6 +156,7 @@ class DeviceFileManagerLoaded extends DeviceFileManagerState {
     statusMessage,
     searchQuery,
     sortOption,
+    externalStoragePath,
   ];
 }
 

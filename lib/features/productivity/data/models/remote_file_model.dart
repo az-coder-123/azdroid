@@ -23,12 +23,18 @@ class RemoteFileModel extends RemoteFileEntity {
     if (parts.length < 8) return null;
 
     final permissions = parts[0];
-    final isDir = permissions.startsWith('d') || parts.last.endsWith('/');
+    var isDir =
+        permissions.startsWith('d') ||
+        permissions.startsWith('l') ||
+        parts.last.endsWith('/');
     final size = int.tryParse(parts[4]) ?? 0;
     final date = '${parts[5]} ${parts[6]}';
 
     // The filename may contain spaces, so join all tokens from index 7 onwards.
     var fileName = parts.sublist(7).join(' ');
+    if (fileName.contains(' -> ')) {
+      fileName = fileName.split(' -> ').first.trim();
+    }
     if (fileName.endsWith('/')) {
       fileName = fileName.substring(0, fileName.length - 1);
     }

@@ -24,4 +24,7 @@ abstract class FileTransferRepository {
 
   /// Installs an Android APK package onto the target device (`adb install -r`).
   Future<bool> installApk(String deviceSerial, String apkPath);
+
+  /// Detects external physical SD card directory on the device if mounted.
+  Future<String?> getExternalStorageDirectory(String deviceSerial);
 }

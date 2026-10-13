@@ -28,6 +28,9 @@ abstract class FileTransferDatasource {
 
   /// Sideloads an APK package on the target device via `adb install -r`.
   Future<bool> installApk(String deviceSerial, String apkPath);
+
+  /// Detects external physical SD card directory on the device if mounted.
+  Future<String?> getExternalStorageDirectory(String deviceSerial);
 }
 
 /// Concrete implementation of [FileTransferDatasource] executing ADB commands.
@@ -91,7 +94,6 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       '.mkv',
       '.mp3',
       '.wav',
-      '.aac',
     ].any(lower.endsWith);
 
     if (!isMedia) return;
@@ -155,21 +157,25 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
     if (adb == null) return [];
 
     try {
+      final normDir = remoteDirectory.endsWith('/')
+          ? remoteDirectory
+          : '$remoteDirectory/';
       final result = await _executor.run(adb, [
         '-s',
         deviceSerial,
         'shell',
         'ls',
         '-lp',
-        remoteDirectory,
+        normDir,
       ], timeout: const Duration(seconds: 8));
 
-      if (result.exitCode != 0) return [];
+      final stdoutStr = result.stdout.toString();
+      if (result.exitCode != 0 && stdoutStr.trim().isEmpty) return [];
 
-      final lines = result.stdout.toString().split('\n');
+      final lines = stdoutStr.split('\n');
       final files = <RemoteFileModel>[];
       for (final line in lines) {
-        final model = RemoteFileModel.fromLsLine(line, remoteDirectory);
+        final model = RemoteFileModel.fromLsLine(line, normDir);
         if (model != null) {
           files.add(model);
         }
@@ -183,6 +189,35 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       );
       return [];
     }
+  }
+
+  @override
+  Future<String?> getExternalStorageDirectory(String deviceSerial) async {
+    final adb = await _adbService.resolveAdbPath();
+    if (adb == null) return null;
+
+    try {
+      final result = await _executor.run(adb, [
+        '-s',
+        deviceSerial,
+        'shell',
+        'ls',
+        '-d',
+        '/storage/*',
+      ], timeout: const Duration(seconds: 4));
+
+      final lines = result.stdout.toString().split('\n');
+      for (final line in lines) {
+        final path = line.trim();
+        final name = path.split('/').last;
+        if (name.isNotEmpty &&
+            !['emulated', 'self', 'sdcard0'].contains(name) &&
+            !name.startsWith('.')) {
+          return path.endsWith('/') ? path : '$path/';
+        }
+      }
+    } catch (_) {}
+    return null;
   }
 
   @override

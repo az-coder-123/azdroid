@@ -41,6 +41,8 @@ void main() {
       repository: mockRepository,
       processExecutor: mockExecutor,
     );
+    when(() => mockRepository.getExternalStorageDirectory(any()))
+        .thenAnswer((_) async => null);
   });
 
   tearDown(() {
@@ -209,4 +211,3 @@ void main() {
     );
   });
 }
-

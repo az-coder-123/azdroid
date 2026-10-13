@@ -57,10 +57,7 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
         borderRadius: BorderRadius.circular(16.0),
         side: const BorderSide(color: AppColors.border),
       ),
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: 24.0,
-        vertical: 32.0,
-      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxWidth: 720,
@@ -87,18 +84,16 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
               child:
                   BlocBuilder<DeviceFileManagerCubit, DeviceFileManagerState>(
                     builder: (context, state) {
+                      final cubit = context.read<DeviceFileManagerCubit>();
                       return DeviceFileListView(
                         state: state,
                         deviceSerial: widget.deviceSerial,
-                        onOpenFolder: (dir) => context
-                            .read<DeviceFileManagerCubit>()
-                            .loadDirectory(widget.deviceSerial, directory: dir),
-                        onToggleSelection: (path) => context
-                            .read<DeviceFileManagerCubit>()
-                            .toggleFileSelection(path),
-                        onRetry: () => context
-                            .read<DeviceFileManagerCubit>()
-                            .loadDirectory(widget.deviceSerial),
+                        onOpenFolder: (dir) => cubit.loadDirectory(
+                          widget.deviceSerial,
+                          directory: dir,
+                        ),
+                        onToggleSelection: cubit.toggleFileSelection,
+                        onRetry: () => cubit.loadDirectory(widget.deviceSerial),
                       );
                     },
                   ),
@@ -146,16 +141,27 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
             : state is DeviceFileManagerLoading
             ? state.currentDirectory
             : '';
+        final extPath = state is DeviceFileManagerLoaded
+            ? state.externalStoragePath
+            : null;
+        final folders = [..._quickFolders, ('SD Card', extPath ?? '/storage/')];
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           child: Row(
-            children: _quickFolders.map((folder) {
-              final isSelected = currentDir == folder.$2;
+            children: folders.map((folder) {
+              final isSelected =
+                  currentDir == folder.$2 ||
+                  (folder.$1 == 'SD Card' &&
+                      currentDir.startsWith('/storage/') &&
+                      !currentDir.startsWith('/storage/emulated'));
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: FilterChip(
+                  avatar: folder.$1 == 'SD Card'
+                      ? const Icon(Icons.sd_card_rounded, size: 16)
+                      : null,
                   label: Text(folder.$1),
                   selected: isSelected,
                   onSelected: (_) {
@@ -194,27 +200,22 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Row(
             children: [
-              if (statusMsg != null)
-                Expanded(
-                  child: Text(
-                    statusMsg,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.statusSuccess,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                )
-              else
-                Expanded(
-                  child: Text(
-                    count > 0
-                        ? '$count file(s) selected$sizeText'
-                        : 'Select files to download',
-                    style: AppTypography.caption,
-                  ),
+              Expanded(
+                child: Text(
+                  statusMsg ??
+                      (count > 0
+                          ? '$count file(s) selected$sizeText'
+                          : 'Select files to download'),
+                  style: statusMsg != null
+                      ? const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.statusSuccess,
+                        )
+                      : AppTypography.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+              ),
               OutlinedButton.icon(
                 onPressed: () =>
                     context.read<DeviceFileManagerCubit>().openInFinder(),

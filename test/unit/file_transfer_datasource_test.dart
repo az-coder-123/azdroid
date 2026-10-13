@@ -86,5 +86,29 @@ void main() {
         ], timeout: any(named: 'timeout')),
       ).called(1);
     });
+
+    test('getExternalStorageDirectory returns physical SD card path', () async {
+      when(
+        () => mockExecutor.run('/opt/homebrew/bin/adb', [
+          '-s',
+          testSerial,
+          'shell',
+          'ls',
+          '-d',
+          '/storage/*',
+        ], timeout: any(named: 'timeout')),
+      ).thenAnswer(
+        (_) async => ProcessResult(
+          1,
+          0,
+          '/storage/emulated\n/storage/self\n/storage/3662-FF26\n',
+          '',
+        ),
+      );
+
+      final result = await datasource.getExternalStorageDirectory(testSerial);
+
+      expect(result, equals('/storage/3662-FF26/'));
+    });
   });
 }

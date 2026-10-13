@@ -93,5 +93,16 @@ void main() {
         () => mockDatasource.listRemoteFiles(testSerial, '/sdcard/Download/'),
       ).called(1);
     });
+
+    test('getExternalStorageDirectory delegates to datasource', () async {
+      when(() => mockDatasource.getExternalStorageDirectory(testSerial))
+          .thenAnswer((_) async => '/storage/3662-FF26/');
+
+      final result = await repository.getExternalStorageDirectory(testSerial);
+
+      expect(result, equals('/storage/3662-FF26/'));
+      verify(() => mockDatasource.getExternalStorageDirectory(testSerial))
+          .called(1);
+    });
   });
 }

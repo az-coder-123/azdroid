@@ -42,4 +42,9 @@ class FileTransferRepositoryImpl implements FileTransferRepository {
   Future<bool> installApk(String deviceSerial, String apkPath) {
     return _datasource.installApk(deviceSerial, apkPath);
   }
+
+  @override
+  Future<String?> getExternalStorageDirectory(String deviceSerial) {
+    return _datasource.getExternalStorageDirectory(deviceSerial);
+  }
 }

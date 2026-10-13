@@ -74,19 +74,28 @@ void main() {
         },
       );
 
-      expect(state.selectedSizeBytes, equals(fileA.sizeBytes + fileB.sizeBytes));
+      expect(
+        state.selectedSizeBytes,
+        equals(fileA.sizeBytes + fileB.sizeBytes),
+      );
       expect(state.formattedSelectedSize, equals('52.0 MB'));
     });
 
-    test('parentDirectory resolves parent paths and null for root', () {
+    test('parentDirectory resolves parent paths, navigates to /storage/, and null for /storage', () {
       const subState = DeviceFileManagerLoaded(
         currentDirectory: '/sdcard/Download/NearSend/',
         files: [],
       );
       expect(subState.parentDirectory, equals('/sdcard/Download/'));
 
-      const rootState = DeviceFileManagerLoaded(
+      const sdcardState = DeviceFileManagerLoaded(
         currentDirectory: '/sdcard/',
+        files: [],
+      );
+      expect(sdcardState.parentDirectory, equals('/storage/'));
+
+      const rootState = DeviceFileManagerLoaded(
+        currentDirectory: '/storage/',
         files: [],
       );
       expect(rootState.parentDirectory, isNull);
