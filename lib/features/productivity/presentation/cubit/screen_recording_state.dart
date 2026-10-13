@@ -14,6 +14,44 @@ final class ScreenRecordingInitial extends ScreenRecordingState {
   const ScreenRecordingInitial();
 }
 
+/// Preparing state when user clicked record, showing countdown toggle and start action.
+final class ScreenRecordingPreparing extends ScreenRecordingState {
+  const ScreenRecordingPreparing({
+    required this.deviceSerial,
+    this.countdownEnabled = true,
+  });
+
+  final String deviceSerial;
+  final bool countdownEnabled;
+
+  ScreenRecordingPreparing copyWith({
+    String? deviceSerial,
+    bool? countdownEnabled,
+  }) {
+    return ScreenRecordingPreparing(
+      deviceSerial: deviceSerial ?? this.deviceSerial,
+      countdownEnabled: countdownEnabled ?? this.countdownEnabled,
+    );
+  }
+
+  @override
+  List<Object?> get props => [deviceSerial, countdownEnabled];
+}
+
+/// Active countdown state ticking down before screenrecord process starts.
+final class ScreenRecordingCountdown extends ScreenRecordingState {
+  const ScreenRecordingCountdown({
+    required this.deviceSerial,
+    required this.remainingSeconds,
+  });
+
+  final String deviceSerial;
+  final int remainingSeconds;
+
+  @override
+  List<Object?> get props => [deviceSerial, remainingSeconds];
+}
+
 /// Active recording state with live elapsed duration and target device info.
 final class ScreenRecordingActive extends ScreenRecordingState {
   const ScreenRecordingActive({

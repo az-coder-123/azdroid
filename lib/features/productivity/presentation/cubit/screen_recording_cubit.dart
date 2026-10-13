@@ -12,13 +12,96 @@ class ScreenRecordingCubit extends Cubit<ScreenRecordingState> {
 
   final ScreenRecordingRepository repository;
   Timer? _tickerTimer;
+  Timer? _countdownTimer;
 
-  /// Starts a screen recording session on the target Android device.
+  /// Enters preparation state, showing setup actions before recording.
+  void prepareRecording(String deviceSerial) {
+    if (state is ScreenRecordingActive || state is ScreenRecordingFinalizing) {
+      return;
+    }
+    if (state is ScreenRecordingPreparing) {
+      emit(const ScreenRecordingInitial());
+    } else {
+      emit(ScreenRecordingPreparing(deviceSerial: deviceSerial));
+    }
+  }
+
+  /// Toggles whether 3-second countdown is enabled in preparation state.
+  void toggleCountdown() {
+    if (state is ScreenRecordingPreparing) {
+      final prep = state as ScreenRecordingPreparing;
+      emit(prep.copyWith(countdownEnabled: !prep.countdownEnabled));
+    }
+  }
+
+  /// Cancels preparation or countdown and returns to initial state.
+  void cancelPreparation() {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+    emit(const ScreenRecordingInitial());
+  }
+
+  /// Initiates recording with optional 3-second countdown.
+  void startWithCountdown(
+    String deviceSerial, {
+    bool? withCountdown,
+    int? bitrateBps,
+    int? timeLimitSeconds,
+  }) {
+    final useCountdown =
+        withCountdown ??
+        (state is ScreenRecordingPreparing
+            ? (state as ScreenRecordingPreparing).countdownEnabled
+            : true);
+
+    if (!useCountdown) {
+      startRecording(
+        deviceSerial,
+        bitrateBps: bitrateBps,
+        timeLimitSeconds: timeLimitSeconds,
+      );
+      return;
+    }
+
+    _countdownTimer?.cancel();
+    int remaining = 3;
+    emit(
+      ScreenRecordingCountdown(
+        deviceSerial: deviceSerial,
+        remainingSeconds: remaining,
+      ),
+    );
+
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      remaining--;
+      if (remaining > 0) {
+        emit(
+          ScreenRecordingCountdown(
+            deviceSerial: deviceSerial,
+            remainingSeconds: remaining,
+          ),
+        );
+      } else {
+        timer.cancel();
+        _countdownTimer = null;
+        startRecording(
+          deviceSerial,
+          bitrateBps: bitrateBps,
+          timeLimitSeconds: timeLimitSeconds,
+        );
+      }
+    });
+  }
+
+  /// Starts a screen recording session on the target Android device immediately.
   Future<void> startRecording(
     String deviceSerial, {
     int? bitrateBps,
     int? timeLimitSeconds,
   }) async {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+
     if (state is ScreenRecordingActive || state is ScreenRecordingFinalizing) {
       return;
     }
@@ -97,28 +180,34 @@ class ScreenRecordingCubit extends Cubit<ScreenRecordingState> {
     }
   }
 
-  /// Cancels an ongoing recording without transferring to host.
+  /// Cancels an ongoing recording session or preparation without transferring.
   Future<void> cancelRecording() async {
-    if (state is! ScreenRecordingActive) return;
-
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
     _tickerTimer?.cancel();
     _tickerTimer = null;
 
-    final active = state as ScreenRecordingActive;
-    emit(const ScreenRecordingInitial());
-
-    try {
-      await repository.cancelRecording(
-        deviceSerial: active.deviceSerial,
-        remoteTempPath: active.remoteTempPath,
-      );
-    } catch (e) {
-      AppLogger.debug('Cancel recording failed: $e');
+    if (state is ScreenRecordingActive) {
+      final active = state as ScreenRecordingActive;
+      emit(const ScreenRecordingInitial());
+      try {
+        await repository.cancelRecording(
+          deviceSerial: active.deviceSerial,
+          remoteTempPath: active.remoteTempPath,
+        );
+      } catch (e) {
+        AppLogger.debug('Cancel recording failed: $e');
+      }
+      return;
     }
+
+    emit(const ScreenRecordingInitial());
   }
 
   /// Resets state back to [ScreenRecordingInitial].
   void reset() {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
     _tickerTimer?.cancel();
     _tickerTimer = null;
     emit(const ScreenRecordingInitial());
@@ -126,6 +215,7 @@ class ScreenRecordingCubit extends Cubit<ScreenRecordingState> {
 
   @override
   Future<void> close() {
+    _countdownTimer?.cancel();
     _tickerTimer?.cancel();
     if (state is ScreenRecordingActive) {
       final active = state as ScreenRecordingActive;

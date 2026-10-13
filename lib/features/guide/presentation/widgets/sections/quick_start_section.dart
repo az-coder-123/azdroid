@@ -66,7 +66,7 @@ class QuickStartSection extends StatelessWidget {
             ),
             GuideStepRow(
               number: '2',
-              text: 'Tap "Pair device with pairing code" (Ghép nối bằng mã ghép nối).',
+              text: 'Tap "Pair device with pairing code".',
             ),
             GuideStepRow(
               number: '3',

@@ -15,16 +15,20 @@ void main() {
   const testRemotePath = '/sdcard/wifidesk_rec_12345.mp4';
 
   final testRecording = ScreenRecordingEntity(
-    filePath: '/Users/mac/Downloads/WifiDesk_Recording_20261013_192000.mp4',
-    fileName: 'WifiDesk_Recording_20261013_192000.mp4',
-    fileSizeBytes: 1540000,
+    filePath: '/Users/mac/Downloads/rec.mp4',
+    fileName: 'rec.mp4',
+    fileSizeBytes: 1024,
     duration: const Duration(seconds: 15),
-    recordedAt: DateTime(2026, 10, 13, 19, 20),
+    recordedAt: DateTime(2026, 10, 13),
   );
 
-  setUpAll(() {
-    registerFallbackValue(Duration.zero);
-  });
+  final activeSeed = ScreenRecordingActive(
+    deviceSerial: testSerial,
+    remoteTempPath: testRemotePath,
+    startedAt: DateTime(2026),
+  );
+
+  setUpAll(() => registerFallbackValue(Duration.zero));
 
   setUp(() {
     mockRepository = MockScreenRecordingRepository();
@@ -104,18 +108,14 @@ void main() {
         ).thenAnswer((_) async => testRecording);
         return ScreenRecordingCubit(repository: mockRepository);
       },
-      seed: () => ScreenRecordingActive(
-        deviceSerial: testSerial,
-        remoteTempPath: testRemotePath,
-        startedAt: DateTime(2026, 10, 13, 19, 0),
-      ),
+      seed: () => activeSeed,
       act: (cubit) => cubit.stopRecording(),
       expect: () => [
         isA<ScreenRecordingFinalizing>(),
         isA<ScreenRecordingSuccess>().having(
           (s) => s.recording.fileName,
           'fileName',
-          'WifiDesk_Recording_20261013_192000.mp4',
+          'rec.mp4',
         ),
       ],
     );
@@ -133,11 +133,7 @@ void main() {
         ).thenAnswer((_) async => null);
         return ScreenRecordingCubit(repository: mockRepository);
       },
-      seed: () => ScreenRecordingActive(
-        deviceSerial: testSerial,
-        remoteTempPath: testRemotePath,
-        startedAt: DateTime(2026, 10, 13, 19, 0),
-      ),
+      seed: () => activeSeed,
       act: (cubit) => cubit.stopRecording(),
       expect: () => [
         isA<ScreenRecordingFinalizing>(),
@@ -160,11 +156,7 @@ void main() {
         ).thenAnswer((_) async {});
         return ScreenRecordingCubit(repository: mockRepository);
       },
-      seed: () => ScreenRecordingActive(
-        deviceSerial: testSerial,
-        remoteTempPath: testRemotePath,
-        startedAt: DateTime(2026, 10, 13, 19, 0),
-      ),
+      seed: () => activeSeed,
       act: (cubit) => cubit.cancelRecording(),
       expect: () => [isA<ScreenRecordingInitial>()],
       verify: (_) {
@@ -175,6 +167,70 @@ void main() {
           ),
         ).called(1);
       },
+    );
+
+    blocTest<ScreenRecordingCubit, ScreenRecordingState>(
+      'prepareRecording emits ScreenRecordingPreparing',
+      build: () => ScreenRecordingCubit(repository: mockRepository),
+      act: (cubit) => cubit.prepareRecording(testSerial),
+      expect: () => [
+        isA<ScreenRecordingPreparing>()
+            .having((s) => s.deviceSerial, 'deviceSerial', testSerial)
+            .having((s) => s.countdownEnabled, 'countdownEnabled', isTrue),
+      ],
+    );
+
+    blocTest<ScreenRecordingCubit, ScreenRecordingState>(
+      'prepareRecording toggles back to Initial if already preparing',
+      build: () => ScreenRecordingCubit(repository: mockRepository),
+      seed: () => const ScreenRecordingPreparing(deviceSerial: testSerial),
+      act: (cubit) => cubit.prepareRecording(testSerial),
+      expect: () => [isA<ScreenRecordingInitial>()],
+    );
+
+    blocTest<ScreenRecordingCubit, ScreenRecordingState>(
+      'toggleCountdown toggles countdownEnabled flag',
+      build: () => ScreenRecordingCubit(repository: mockRepository),
+      seed: () => const ScreenRecordingPreparing(
+        deviceSerial: testSerial,
+        countdownEnabled: true,
+      ),
+      act: (cubit) => cubit.toggleCountdown(),
+      expect: () => [
+        isA<ScreenRecordingPreparing>().having(
+          (s) => s.countdownEnabled,
+          'countdownEnabled',
+          isFalse,
+        ),
+      ],
+    );
+
+    blocTest<ScreenRecordingCubit, ScreenRecordingState>(
+      'cancelPreparation returns to ScreenRecordingInitial',
+      build: () => ScreenRecordingCubit(repository: mockRepository),
+      seed: () => const ScreenRecordingPreparing(deviceSerial: testSerial),
+      act: (cubit) => cubit.cancelPreparation(),
+      expect: () => [isA<ScreenRecordingInitial>()],
+    );
+
+    blocTest<ScreenRecordingCubit, ScreenRecordingState>(
+      'startWithCountdown without countdown starts recording immediately',
+      build: () {
+        when(
+          () => mockRepository.startRecording(
+            deviceSerial: testSerial,
+            bitrateBps: any(named: 'bitrateBps'),
+            timeLimitSeconds: any(named: 'timeLimitSeconds'),
+          ),
+        ).thenAnswer((_) async => testRemotePath);
+        return ScreenRecordingCubit(repository: mockRepository);
+      },
+      seed: () => const ScreenRecordingPreparing(
+        deviceSerial: testSerial,
+        countdownEnabled: false,
+      ),
+      act: (cubit) => cubit.startWithCountdown(testSerial),
+      expect: () => [isA<ScreenRecordingActive>()],
     );
 
     blocTest<ScreenRecordingCubit, ScreenRecordingState>(

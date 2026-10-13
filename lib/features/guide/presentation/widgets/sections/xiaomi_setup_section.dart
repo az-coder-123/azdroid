@@ -42,13 +42,10 @@ class XiaomiSetupSection extends StatelessWidget {
               number: '2',
               text: 'Open Settings ➔ Additional settings ➔ Developer options.',
             ),
-            const GuideStepRow(
-              number: '3',
-              text: 'Toggle ON: USB debugging (Gỡ lỗi USB).',
-            ),
+            const GuideStepRow(number: '3', text: 'Toggle ON: USB debugging.'),
             const GuideStepRow(
               number: '4',
-              text: 'Toggle ON: USB debugging (Security settings) / Gỡ lỗi USB (Cài đặt bảo mật).',
+              text: 'Toggle ON: USB debugging (Security settings).',
             ),
             Padding(
               padding: const EdgeInsets.only(left: 28, top: 4, bottom: 8),

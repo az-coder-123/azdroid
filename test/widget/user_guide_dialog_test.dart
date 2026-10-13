@@ -68,9 +68,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text(
-        'Toggle ON: USB debugging (Security settings) / Gỡ lỗi USB (Cài đặt bảo mật).',
-      ),
+      find.text('Toggle ON: USB debugging (Security settings).'),
       findsOneWidget,
     );
   });

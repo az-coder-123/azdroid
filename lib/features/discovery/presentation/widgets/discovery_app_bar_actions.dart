@@ -66,7 +66,7 @@ class DiscoveryAppBarActions extends StatelessWidget {
         Container(width: 1, height: 18, color: AppColors.border),
         const SizedBox(width: 6),
         IconButton(
-          tooltip: 'User Guide (Phím tắt & Hướng dẫn)',
+          tooltip: 'User Guide & Shortcuts',
           icon: const Icon(
             Icons.menu_book_rounded,
             size: 19,
@@ -77,7 +77,7 @@ class DiscoveryAppBarActions extends StatelessWidget {
         ),
         const SizedBox(width: 2),
         IconButton(
-          tooltip: 'Rescan Network (Quét lại mạng)',
+          tooltip: 'Rescan Network',
           icon: const Icon(
             Icons.refresh_rounded,
             size: 20,

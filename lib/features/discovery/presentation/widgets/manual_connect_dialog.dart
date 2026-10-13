@@ -149,7 +149,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                       controller: _ipController,
                       autofocus: true,
                       decoration: InputDecoration(
-                        labelText: 'Phone IP (IP Điện thoại)',
+                        labelText: 'Phone IP Address',
                         hintText: _hostMacIp != null
                             ? 'e.g. ${_hostMacIp!.substring(0, _hostMacIp!.lastIndexOf('.') + 1)}xxx'
                             : '192.168.1.100',
@@ -167,7 +167,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                       controller: _portController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Port (Cổng)',
+                        labelText: 'Port',
                         hintText: '5555',
                         helperText: 'Default 5555',
                         isDense: true,

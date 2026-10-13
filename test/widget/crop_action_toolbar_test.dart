@@ -25,8 +25,8 @@ void main() {
       );
 
       expect(find.text('Clipboard'), findsOneWidget);
-      expect(find.text('Lưu file'), findsOneWidget);
-      expect(find.text('Cả hai'), findsOneWidget);
+      expect(find.text('Save File'), findsOneWidget);
+      expect(find.text('Both'), findsOneWidget);
       expect(find.byIcon(Icons.close_rounded), findsOneWidget);
 
       // Tap Clipboard
@@ -34,13 +34,13 @@ void main() {
       await tester.pump();
       expect(selectedDestination, ScreenshotDestination.clipboard);
 
-      // Tap Lưu file
-      await tester.tap(find.text('Lưu file'));
+      // Tap Save File
+      await tester.tap(find.text('Save File'));
       await tester.pump();
       expect(selectedDestination, ScreenshotDestination.file);
 
-      // Tap Cả hai
-      await tester.tap(find.text('Cả hai'));
+      // Tap Both
+      await tester.tap(find.text('Both'));
       await tester.pump();
       expect(selectedDestination, ScreenshotDestination.both);
 

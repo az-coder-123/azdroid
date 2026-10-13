@@ -99,8 +99,8 @@
 - **Direct SurfaceFlinger & Sub-Region Cropping:** Normalizes selection coordinates ($0.0 \to 1.0$) and maps with pixel precision to raw Android device resolution via hardware-accelerated image pipeline.
 - **Interactive Floating Action Bar:** Upon completing area selection, an exquisite floating glassmorphism capsule appears anchored to the crop marquee offering instant destination choices:
   - **Clipboard:** Copies cropped PNG directly to macOS clipboard (`⌘V`) without saving temporary files to disk.
-  - **Lưu file:** Persists lossless PNG to `~/Downloads` with Finder and Open actions.
-  - **Cả hai:** Highlighted primary option that simultaneously saves to disk and copies to clipboard.
+  - **Save File:** Persists lossless PNG to `~/Downloads` with Finder and Open actions.
+  - **Both:** Highlighted primary option that simultaneously saves to disk and copies to clipboard.
   - Keyboard shortcuts: <kbd>C</kbd> (Clipboard), <kbd>S</kbd> (Save File), <kbd>Enter</kbd> (Both), <kbd>Esc</kbd> (Cancel).
 - **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via vertical dock buttons or shortcuts: <kbd>Cmd</kbd> + <kbd>S</kbd> (Full) and <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> (Area).
 
@@ -110,7 +110,9 @@
 
 ### 4.8 Hardware Screen Recording (Lossless MP4)
 - **On-Device Hardware Video Recording:** Directly invokes Android's native `screenrecord` binary to record video up to 180s in hardware H.264 MP4 without desktop rendering overhead.
-- **Live Elapsed Duration HUD:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot and 1-click stop action.
+- **Intentional Recording Preparation HUD:** Clicking the camera tool button or pressing <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> enters a preparation state with an Apple-style floating HUD rather than recording abruptly, featuring a 3-second countdown toggle, Start button, and quick cancel.
+- **Animated 3-2-1 Countdown Overlay:** Displays an animated pulsating circular dial over the phone display during the 3-second buffer, allowing users to prepare phone context or skip directly with "Start Now" or abort with <kbd>Esc</kbd>.
+- **Live Elapsed Duration & Dual Actions:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot, 1-click **STOP** (finalize & pull MP4), and **DISCARD** (purge temporary file without host disk clutter).
 - **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/WifiDesk_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
 
 ---

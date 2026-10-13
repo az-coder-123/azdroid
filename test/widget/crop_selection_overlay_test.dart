@@ -89,8 +89,8 @@ void main() {
 
         // Toolbar options appear
         expect(find.text('Clipboard'), findsOneWidget);
-        expect(find.text('Lưu file'), findsOneWidget);
-        expect(find.text('Cả hai'), findsOneWidget);
+        expect(find.text('Save File'), findsOneWidget);
+        expect(find.text('Both'), findsOneWidget);
 
         // Tap Clipboard option
         await tester.tap(find.text('Clipboard'));
@@ -127,8 +127,8 @@ void main() {
         await gesture2.up();
         await tester.pump();
 
-        // 3. Confirm with Lưu file
-        await tester.tap(find.text('Lưu file'));
+        // 3. Confirm with Save File
+        await tester.tap(find.text('Save File'));
         await tester.pump();
 
         verify(

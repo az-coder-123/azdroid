@@ -38,7 +38,7 @@ class CropActionToolbar extends StatelessWidget {
           _buildActionButton(
             icon: Icons.copy_rounded,
             label: 'Clipboard',
-            tooltip: 'Chỉ chép vào Clipboard (C)',
+            tooltip: 'Copy to Clipboard only (C)',
             onTap: () => onSelect(ScreenshotDestination.clipboard),
           ),
 
@@ -47,8 +47,8 @@ class CropActionToolbar extends StatelessWidget {
           // File only
           _buildActionButton(
             icon: Icons.download_rounded,
-            label: 'Lưu file',
-            tooltip: 'Lưu vào ~/Downloads (S)',
+            label: 'Save File',
+            tooltip: 'Save to ~/Downloads (S)',
             onTap: () => onSelect(ScreenshotDestination.file),
           ),
 
@@ -57,8 +57,8 @@ class CropActionToolbar extends StatelessWidget {
           // Both (Highlighted primary option)
           _buildPrimaryButton(
             icon: Icons.done_all_rounded,
-            label: 'Cả hai',
-            tooltip: 'Lưu file & Chép vào Clipboard (Enter)',
+            label: 'Both',
+            tooltip: 'Save File & Copy to Clipboard (Enter)',
             onTap: () => onSelect(ScreenshotDestination.both),
           ),
 
@@ -66,7 +66,7 @@ class CropActionToolbar extends StatelessWidget {
 
           // Cancel
           Tooltip(
-            message: 'Huỷ chọn (Esc)',
+            message: 'Cancel selection (Esc)',
             child: InkWell(
               onTap: onCancel,
               borderRadius: BorderRadius.circular(16.0),

@@ -5,11 +5,13 @@ import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cu
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/crop_selection_overlay.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/recording_countdown_overlay.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/video_display_viewport.dart';
 
 /// Wraps the remote video display viewport with all interactive surface overlays:
-/// mouse/touch input injection, drag-and-drop file transfer, and area crop marquee.
+/// mouse/touch input injection, drag-and-drop file transfer, area crop marquee,
+/// and screen recording countdown overlay.
 class InteractiveDisplayViewport extends StatelessWidget {
   const InteractiveDisplayViewport({
     super.key,
@@ -48,6 +50,7 @@ class InteractiveDisplayViewport extends StatelessWidget {
             ),
             if (isSelectingCropArea)
               CropSelectionOverlay(deviceSerial: deviceSerial),
+            RecordingCountdownOverlay(deviceSerial: deviceSerial),
           ],
         );
       },

@@ -56,8 +56,11 @@ class ViewportKeyEventHandler {
           final cubit = context.read<ScreenRecordingCubit>();
           if (cubit.state is ScreenRecordingActive) {
             cubit.stopRecording();
+          } else if (cubit.state is ScreenRecordingPreparing ||
+              cubit.state is ScreenRecordingCountdown) {
+            cubit.cancelPreparation();
           } else {
-            cubit.startRecording(deviceSerial);
+            cubit.prepareRecording(deviceSerial);
           }
           return KeyEventResult.handled;
         } catch (_) {}
@@ -89,12 +92,21 @@ class ViewportKeyEventHandler {
       }
     }
 
-    // Escape -> Cancel area crop selection or send Android Back
+    // Escape -> Cancel area crop, recording preparation, or send Android Back
     if (logicalKey == LogicalKeyboardKey.escape) {
       try {
         final screenshotCubit = context.read<ScreenshotCubit>();
         if (screenshotCubit.state is ScreenshotSelectingArea) {
           screenshotCubit.cancelAreaSelection();
+          return KeyEventResult.handled;
+        }
+      } catch (_) {}
+
+      try {
+        final recCubit = context.read<ScreenRecordingCubit>();
+        if (recCubit.state is ScreenRecordingPreparing ||
+            recCubit.state is ScreenRecordingCountdown) {
+          recCubit.cancelPreparation();
           return KeyEventResult.handled;
         }
       } catch (_) {}

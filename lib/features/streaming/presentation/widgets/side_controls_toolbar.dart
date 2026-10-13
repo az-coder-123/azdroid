@@ -136,6 +136,8 @@ class SideControlsToolbar extends StatelessWidget {
     return BlocBuilder<ScreenRecordingCubit, ScreenRecordingState>(
       builder: (context, state) {
         final isRecording = state is ScreenRecordingActive;
+        final isPreparing = state is ScreenRecordingPreparing;
+        final isCountdown = state is ScreenRecordingCountdown;
         final isFinalizing = state is ScreenRecordingFinalizing;
 
         if (isFinalizing) {
@@ -152,22 +154,43 @@ class SideControlsToolbar extends StatelessWidget {
           );
         }
 
+        final IconData icon;
+        final String tooltip;
+        final Color? color;
+        final VoidCallback onPressed;
+
+        if (isRecording) {
+          icon = Icons.stop_circle_rounded;
+          tooltip = 'Stop Recording (REC)';
+          color = AppColors.statusError;
+          onPressed = () =>
+              context.read<ScreenRecordingCubit>().stopRecording();
+        } else if (isCountdown) {
+          icon = Icons.hourglass_top_rounded;
+          tooltip = 'Counting down (Cancel)';
+          color = AppColors.statusError;
+          onPressed = () =>
+              context.read<ScreenRecordingCubit>().cancelPreparation();
+        } else if (isPreparing) {
+          icon = Icons.videocam_rounded;
+          tooltip = 'Cancel Recording Setup';
+          color = AppColors.statusError;
+          onPressed = () =>
+              context.read<ScreenRecordingCubit>().cancelPreparation();
+        } else {
+          icon = Icons.videocam_outlined;
+          tooltip = 'Record Screen (Cmd+Shift+R)';
+          color = null;
+          onPressed = () => context
+              .read<ScreenRecordingCubit>()
+              .prepareRecording(deviceSerial!);
+        }
+
         return _buildToolButton(
-          icon: isRecording
-              ? Icons.stop_circle_rounded
-              : Icons.videocam_outlined,
-          tooltip: isRecording
-              ? 'Stop Recording (REC)'
-              : 'Record Screen (Cmd+Shift+R)',
-          color: isRecording ? AppColors.statusError : null,
-          onPressed: () {
-            final cubit = context.read<ScreenRecordingCubit>();
-            if (isRecording) {
-              cubit.stopRecording();
-            } else {
-              cubit.startRecording(deviceSerial!);
-            }
-          },
+          icon: icon,
+          tooltip: tooltip,
+          color: color,
+          onPressed: onPressed,
         );
       },
     );

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/recording_setup_pill.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screen_recording_success_card.dart';
 
 /// Floating notification HUD banner providing live recording indicator and saved actions.
@@ -29,6 +30,10 @@ class ScreenRecordingFeedbackBanner extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        if (state is ScreenRecordingPreparing) {
+          return RecordingSetupPill(state: state);
+        }
+
         if (state is ScreenRecordingActive) {
           return _buildRecordingPill(context, state);
         }
@@ -90,13 +95,14 @@ class ScreenRecordingFeedbackBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
+          // Stop & Save
           InkWell(
             onTap: () => context.read<ScreenRecordingCubit>().stopRecording(),
             borderRadius: BorderRadius.circular(4),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
               decoration: BoxDecoration(
-                color: AppColors.statusError.withValues(alpha: 0.2),
+                color: AppColors.statusError.withValues(alpha: 0.22),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: const Text(
@@ -105,6 +111,32 @@ class ScreenRecordingFeedbackBanner extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   color: AppColors.statusError,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          // Discard / Cancel
+          Tooltip(
+            message: 'Discard recording (do not save)',
+            child: InkWell(
+              onTap: () =>
+                  context.read<ScreenRecordingCubit>().cancelRecording(),
+              borderRadius: BorderRadius.circular(4),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceElevated,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: const Text(
+                  'DISCARD',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ),

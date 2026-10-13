@@ -46,7 +46,7 @@ class PairingManualCodeTab extends StatelessWidget {
               ),
               const PairingStepItem(
                 number: '2',
-                text: 'Tap "Pair device with pairing code" (Ghép nối bằng mã ghép nối).',
+                text: 'Tap "Pair device with pairing code".',
               ),
               const PairingStepItem(
                 number: '3',
@@ -66,7 +66,7 @@ class PairingManualCodeTab extends StatelessWidget {
                 controller: ipController,
                 enabled: !isSubmitting,
                 decoration: InputDecoration(
-                  labelText: 'Phone IP (Địa chỉ IP điện thoại)',
+                  labelText: 'Phone IP Address',
                   hintText: hostMacIp != null
                       ? 'e.g. ${hostMacIp!.substring(0, hostMacIp!.lastIndexOf('.') + 1)}xxx'
                       : '192.168.1.100',
@@ -108,7 +108,7 @@ class PairingManualCodeTab extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
           decoration: const InputDecoration(
-            labelText: '6-Digit Pairing Code (Mã ghép nối)',
+            labelText: '6-Digit Pairing Code',
             hintText: '123456',
             counterText: '',
             isDense: true,
