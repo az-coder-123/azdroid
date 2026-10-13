@@ -5,6 +5,7 @@ import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 import 'package:wifi_desk/features/productivity/data/utils/image_crop_util.dart';
+import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
 
 /// Data source interface for capturing raw device screenshots.
@@ -13,6 +14,7 @@ abstract class ScreenshotDatasource {
     required String deviceSerial,
     String? customSaveDirectory,
     Rect? cropRectNormalized,
+    ScreenshotDestination destination = ScreenshotDestination.both,
   });
 }
 
@@ -32,15 +34,22 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
     required String deviceSerial,
     String? customSaveDirectory,
     Rect? cropRectNormalized,
+    ScreenshotDestination destination = ScreenshotDestination.both,
   }) async {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) {
       throw const SocketException('ADB executable not available on host');
     }
 
-    // Determine target save directory (defaulting to macOS ~/Downloads)
+    final isClipboardOnly = destination == ScreenshotDestination.clipboard;
+    final saveToFile = destination != ScreenshotDestination.clipboard;
+    final shouldCopyToClipboard = destination != ScreenshotDestination.file;
+
+    // Determine target save directory
     final home = Platform.environment['HOME'] ?? Directory.systemTemp.path;
-    final targetDir = Directory(customSaveDirectory ?? '$home/Downloads');
+    final targetDir = isClipboardOnly
+        ? Directory.systemTemp
+        : Directory(customSaveDirectory ?? '$home/Downloads');
     if (!await targetDir.exists()) {
       await targetDir.create(recursive: true);
     }
@@ -94,22 +103,28 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
         throw const FormatException('Captured screenshot produced 0 bytes');
       }
 
-      // Copy PNG directly to macOS system clipboard
+      // Copy PNG directly to macOS system clipboard if required
       var copiedToClipboard = false;
-      if (Platform.isMacOS) {
+      if (shouldCopyToClipboard && Platform.isMacOS) {
         copiedToClipboard = await _copyImageToMacClipboard(filePath);
       }
 
+      // If clipboard-only, remove temporary disk file
+      if (isClipboardOnly) {
+        await targetFile.delete();
+      }
+
       AppLogger.info(
-        'Screenshot captured: $filePath ($fileLength bytes, clipboard: $copiedToClipboard)',
+        'Screenshot captured ($destination): $fileName ($fileLength bytes, saved: $saveToFile, clipboard: $copiedToClipboard)',
       );
 
       return ScreenshotEntity(
-        filePath: filePath,
+        filePath: saveToFile ? filePath : '',
         fileName: fileName,
         fileSizeBytes: fileLength,
         capturedAt: now,
         copiedToClipboard: copiedToClipboard,
+        savedToFile: saveToFile,
       );
     } catch (e, stack) {
       AppLogger.warning(

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
 
@@ -26,10 +27,12 @@ class ScreenshotCubit extends Cubit<ScreenshotState> {
 
   /// Captures a screenshot from the remote Android device.
   /// If [cropRectNormalized] is provided, crops the screenshot to that region.
+  /// [destination] controls whether to save to disk, clipboard, or both.
   Future<void> captureScreenshot(
     String deviceSerial, {
     String? customSaveDirectory,
     Rect? cropRectNormalized,
+    ScreenshotDestination destination = ScreenshotDestination.both,
   }) async {
     if (state is ScreenshotCapturing) return;
 
@@ -40,6 +43,7 @@ class ScreenshotCubit extends Cubit<ScreenshotState> {
         deviceSerial: deviceSerial,
         customSaveDirectory: customSaveDirectory,
         cropRectNormalized: cropRectNormalized,
+        destination: destination,
       );
 
       if (screenshot != null) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/crop_selection_overlay.dart';
@@ -11,6 +12,10 @@ class MockScreenshotCubit extends Mock implements ScreenshotCubit {}
 void main() {
   late MockScreenshotCubit mockCubit;
   const testSerial = '192.168.1.100:5555';
+
+  setUpAll(() {
+    registerFallbackValue(ScreenshotDestination.both);
+  });
 
   setUp(() {
     mockCubit = MockScreenshotCubit();
@@ -23,6 +28,7 @@ void main() {
         any(),
         cropRectNormalized: any(named: 'cropRectNormalized'),
         customSaveDirectory: any(named: 'customSaveDirectory'),
+        destination: any(named: 'destination'),
       ),
     ).thenAnswer((_) async {});
   });
@@ -66,7 +72,7 @@ void main() {
     });
 
     testWidgets(
-      'drags to select bounding region and calls captureScreenshot on release',
+      'drags to select region, shows destination toolbar, and captures to clipboard',
       (tester) async {
         await tester.pumpWidget(createSubject());
 
@@ -80,10 +86,20 @@ void main() {
         await gesture.up();
         await tester.pump();
 
+        // Toolbar options appear
+        expect(find.text('Clipboard'), findsOneWidget);
+        expect(find.text('Lưu file'), findsOneWidget);
+        expect(find.text('Cả hai'), findsOneWidget);
+
+        // Tap Clipboard option
+        await tester.tap(find.text('Clipboard'));
+        await tester.pump();
+
         verify(
           () => mockCubit.captureScreenshot(
             testSerial,
             cropRectNormalized: any(named: 'cropRectNormalized'),
+            destination: ScreenshotDestination.clipboard,
           ),
         ).called(1);
       },

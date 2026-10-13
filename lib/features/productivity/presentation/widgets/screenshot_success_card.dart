@@ -60,9 +60,13 @@ class ScreenshotSuccessCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Text(
-                      'Screenshot Saved',
-                      style: TextStyle(
+                    Text(
+                      !screenshot.savedToFile
+                          ? 'Copied to Clipboard'
+                          : (screenshot.copiedToClipboard
+                                ? 'Saved & Copied'
+                                : 'Screenshot Saved'),
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
@@ -81,7 +85,7 @@ class ScreenshotSuccessCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: const Text(
-                          'Copied ⌘V',
+                          '⌘V Ready',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -94,7 +98,9 @@ class ScreenshotSuccessCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${screenshot.fileName} • $kbSize KB',
+                  screenshot.savedToFile
+                      ? '${screenshot.fileName} • $kbSize KB'
+                      : 'Image ready to paste (⌘V) • $kbSize KB',
                   style: AppTypography.caption.copyWith(
                     fontSize: 11,
                     color: AppColors.textSecondary,
@@ -102,23 +108,25 @@ class ScreenshotSuccessCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    _buildActionButton(
-                      icon: Icons.folder_open_rounded,
-                      label: 'Finder',
-                      onTap: () =>
-                          Process.run('open', ['-R', screenshot.filePath]),
-                    ),
-                    const SizedBox(width: 6),
-                    _buildActionButton(
-                      icon: Icons.visibility_outlined,
-                      label: 'Open',
-                      onTap: () => Process.run('open', [screenshot.filePath]),
-                    ),
-                  ],
-                ),
+                if (screenshot.savedToFile) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildActionButton(
+                        icon: Icons.folder_open_rounded,
+                        label: 'Finder',
+                        onTap: () =>
+                            Process.run('open', ['-R', screenshot.filePath]),
+                      ),
+                      const SizedBox(width: 6),
+                      _buildActionButton(
+                        icon: Icons.visibility_outlined,
+                        label: 'Open',
+                        onTap: () => Process.run('open', [screenshot.filePath]),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

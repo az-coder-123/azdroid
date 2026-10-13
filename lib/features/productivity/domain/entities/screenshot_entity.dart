@@ -8,6 +8,7 @@ class ScreenshotEntity extends Equatable {
     required this.fileSizeBytes,
     required this.capturedAt,
     this.copiedToClipboard = true,
+    this.savedToFile = true,
   });
 
   /// Absolute file system path where the PNG screenshot is saved.
@@ -25,6 +26,9 @@ class ScreenshotEntity extends Equatable {
   /// Whether the image was also successfully written to the macOS system clipboard.
   final bool copiedToClipboard;
 
+  /// Whether the image was persisted to disk.
+  final bool savedToFile;
+
   @override
   List<Object?> get props => [
     filePath,
@@ -32,5 +36,6 @@ class ScreenshotEntity extends Equatable {
     fileSizeBytes,
     capturedAt,
     copiedToClipboard,
+    savedToFile,
   ];
 }

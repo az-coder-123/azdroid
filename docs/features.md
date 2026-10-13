@@ -93,7 +93,11 @@
 - **Full & Custom Area Capture:** Supports both full-screen lossless capture and interactive region selection.
 - **Interactive Drag Marquee HUD:** Allows users to freely drag on the phone display to select position and size with live dimension indicators (`W × H px`), darkened cutout mask, and macOS corner reticles. Cancelable with <kbd>Esc</kbd> or right-click.
 - **Direct SurfaceFlinger & Sub-Region Cropping:** Normalizes selection coordinates ($0.0 \to 1.0$) and maps with pixel precision to raw Android device resolution via hardware-accelerated image pipeline.
-- **Auto-Save & Instant Paste:** Automatically saves PNG to `~/Downloads/WifiDesk_Screenshot_YYYYMMDD_HHMMSS.png` and copies directly to the macOS system clipboard (`⌘V`).
+- **Interactive Floating Action Bar:** Upon completing area selection, an exquisite floating glassmorphism capsule appears anchored to the crop marquee offering instant destination choices:
+  - **Clipboard:** Copies cropped PNG directly to macOS clipboard (`⌘V`) without saving temporary files to disk.
+  - **Lưu file:** Persists lossless PNG to `~/Downloads` with Finder and Open actions.
+  - **Cả hai:** Highlighted primary option that simultaneously saves to disk and copies to clipboard.
+  - Keyboard shortcuts: <kbd>C</kbd> (Clipboard), <kbd>S</kbd> (Save File), <kbd>Enter</kbd> (Both), <kbd>Esc</kbd> (Cancel).
 - **Interactive Floating Toast HUD:** Provides immediate preview with file size, 1-click **Finder** reveal (`open -R`), and **Open** viewer actions with auto-dismissal. Triggerable via vertical dock buttons or shortcuts: <kbd>Cmd</kbd> + <kbd>S</kbd> (Full) and <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> (Area).
 
 ### 4.7 Right-Side Vertical Action Dock

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
@@ -21,6 +22,10 @@ void main() {
     capturedAt: DateTime(2026, 10, 13, 18, 30),
     copiedToClipboard: true,
   );
+
+  setUpAll(() {
+    registerFallbackValue(ScreenshotDestination.both);
+  });
 
   setUp(() {
     mockRepository = MockScreenshotRepository();
@@ -146,6 +151,34 @@ void main() {
           () => mockRepository.captureScreenshot(
             deviceSerial: testSerial,
             cropRectNormalized: const Rect.fromLTWH(0.1, 0.2, 0.5, 0.4),
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<ScreenshotCubit, ScreenshotState>(
+      'captureScreenshot forwards destination to repository',
+      build: () {
+        when(
+          () => mockRepository.captureScreenshot(
+            deviceSerial: testSerial,
+            customSaveDirectory: any(named: 'customSaveDirectory'),
+            cropRectNormalized: any(named: 'cropRectNormalized'),
+            destination: any(named: 'destination'),
+          ),
+        ).thenAnswer((_) async => testScreenshot);
+        return ScreenshotCubit(repository: mockRepository);
+      },
+      act: (cubit) => cubit.captureScreenshot(
+        testSerial,
+        destination: ScreenshotDestination.clipboard,
+      ),
+      expect: () => [isA<ScreenshotCapturing>(), isA<ScreenshotSuccess>()],
+      verify: (_) {
+        verify(
+          () => mockRepository.captureScreenshot(
+            deviceSerial: testSerial,
+            destination: ScreenshotDestination.clipboard,
           ),
         ).called(1);
       },
