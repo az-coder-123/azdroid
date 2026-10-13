@@ -1,7 +1,7 @@
 # ⚡️ WifiDesk
 
 <p align="center">
-  <b>Silky-smooth, zero-latency Android screen mirroring and remote control for macOS over local Wi-Fi.</b>
+  <b>Silky-smooth, low-latency Android screen mirroring and remote control for macOS over local Wi-Fi.</b>
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
 
 **WifiDesk** is an open-source desktop application crafted with **Flutter Desktop** for **macOS**. 
 
-It allows users to **wirelessly mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over a local Wi-Fi network**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
+It enables users to **wirelessly mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over a local Wi-Fi network**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
 
 WifiDesk bridges two core principles:
 1. **Unrivaled Performance:** Powered by the robust, hardware-accelerated `scrcpy-server` engine (H.264/H.265 GPU encoding).
@@ -31,22 +31,45 @@ WifiDesk bridges two core principles:
 
 ## ✨ Key Highlights
 
-- 🚀 **Sub-20ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on the Android device; streaming raw NAL units over a local TCP socket.
-- 📶 **Zero-Config Wi-Fi Pairing:** Automated mDNS device discovery on your local network, with one-click pairing for Android 11+ Wireless Debugging (QR code / pairing PIN).
-- 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (including full Unicode and IME support).
+- 🚀 **Sub-20ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on Android; streaming raw NAL units over a local TCP socket.
+- 📶 **Zero-Config Wi-Fi Pairing:** Automated mDNS device discovery on your local network, with one-click pairing for Android 11+ Wireless Debugging.
+- 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (full Unicode and IME support).
 - 🍎 **Mac-First Productivity:**
   - **Bidirectional File Transfers & Explorer:** Send files/APKs via Finder sheet (<kbd>Cmd</kbd> + <kbd>U</kbd>) or drag-and-drop; browse phone storage and download files to Mac (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>) with quick folders.
   - **Lossless Screenshots (Full & Area Crop):** Capture full-screen (<kbd>Cmd</kbd> + <kbd>S</kbd>) or draggable area crop (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>), auto-saved to `~/Downloads` and copied to macOS clipboard (`⌘V`).
   - **Hardware Screen Recording:** Capture lossless MP4 video with countdown HUD & live timer (`REC 00:15`) via sidebar or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, auto-saved to `~/Downloads`.
-  - **Bidirectional Clipboard Sharing:** Instant synchronization between macOS pasteboard (`Cmd + C`) and the Android system clipboard.
-  - **Screen-Off Streaming:** Automatically powers off the physical phone screen during mirroring sessions to preserve battery life and prevent thermal throttling.
+  - **Bidirectional Clipboard Sharing:** Instant synchronization between macOS pasteboard (`Cmd + C`) and Android system clipboard.
+  - **Screen-Off Streaming:** Automatically powers off the physical phone screen during mirroring to save battery and prevent heat buildup.
   - **Menu Bar Companion:** Quick-access status bar icon for toggling device windows and monitoring latency, battery, and Wi-Fi health.
-- 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet without external servers, tracking, or cloud proxies.
-- 💸 **Truly Free & Open Source:** Zero advertising, zero analytics trackers, and no recurring subscriptions.
+- 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet without external servers or cloud proxies.
+- 💸 **Truly Free & Open Source:** Zero advertising, zero analytics trackers, and no subscriptions.
 
-👉 *For the user handbook, Xiaomi setup, and keyboard shortcuts, visit [docs/user-guide.md](docs/user-guide.md).*
-👉 *For detailed technical specifications, visit [docs/features.md](docs/features.md).*
+---
 
+## ⌨️ Essential Shortcuts
+
+| Shortcut | Action | Description |
+| :--- | :--- | :--- |
+| <kbd>Cmd</kbd> + <kbd>S</kbd> | Full Screenshot | Captures phone screen to `~/Downloads` & macOS clipboard |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag marquee to crop region on phone screen |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Lossless hardware MP4 video recording with countdown HUD |
+| <kbd>Cmd</kbd> + <kbd>U</kbd> | Send Files | Opens macOS Finder dialog to push files or install APKs |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Explorer to browse and pull files to Mac |
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Opens Unicode / Vietnamese input modal |
+| <kbd>Cmd</kbd> + <kbd>H</kbd> / <kbd>Backspace</kbd> | Home / Back | Android system navigation |
+
+---
+
+## 📚 Documentation Hub
+
+| Guide | Description |
+| :--- | :--- |
+| [📖 User Guide](docs/user-guide.md) | Getting started, first-time setup, and device permissions |
+| [📶 Pairing Guide](docs/pairing-guide.md) | Wireless pairing instructions for Android 11+ and USB fallback |
+| [⌨️ Shortcuts & Gestures](docs/shortcuts.md) | Complete mouse gestures and macOS keyboard shortcuts cheat sheet |
+| [⚡️ Features & Specs](docs/features.md) | Detailed technical specifications of the video pipeline and tools |
+| [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
+| [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 
 ---
 
@@ -74,8 +97,6 @@ flowchart LR
     M2 === C_SOCKET ===> A3
 ```
 
-👉 *For the full modular blueprint and design patterns, see [docs/architecture.md](docs/architecture.md).*
-
 ---
 
 ## 🛠️ Technology Stack
@@ -95,7 +116,7 @@ flowchart LR
 
 - **macOS:** macOS 12 Monterey or later.
 - **Flutter SDK:** Flutter 3.x+ with desktop support enabled.
-- **Android Device:** Android 5.0+ (Android 11+ recommended for wireless pairing without initial USB tethering).
+- **Android Device:** Android 5.0+ (Android 11+ recommended for wireless pairing).
 - **Android Platform Tools (ADB):** Install via Homebrew:
   ```bash
   brew install android-platform-tools
@@ -121,15 +142,19 @@ flutter run -d macos
 
 - [x] Initialized Flutter macOS Desktop project foundation
 - [x] Implemented modular Clean Architecture (Core, Discovery, Streaming, Control, Settings)
-- [x] Integrated Cubit state management with `flutter_bloc`
+- [x] Integrated Cubit/BLoC state management with `flutter_bloc`
 - [x] Established Apple-native design tokens & theme system
-- [x] Built comprehensive automated test suite (Unit, BLoC, Widget tests)
-- [x] Implement mDNS device discovery daemon and pairing assistant
-- [x] Integrate low-latency H.264 video pipeline via `scrcpy-server` and Flutter Texture
-- [x] Build mouse and keyboard input translation layer
-- [x] Implement bidirectional clipboard synchronization and drag-and-drop transfers
-- [x] Implement macOS Menu Bar companion and audio forwarding
-- [x] Professional macOS user guide handbook with split-view navigation & shortcuts
+- [x] Built comprehensive automated test suite (Unit, BLoC, Widget tests with 100% pass rate)
+- [x] Automated mDNS device discovery and wireless pairing assistant
+- [x] Low-latency H.264 video pipeline via `scrcpy-server` and macOS hardware texture
+- [x] Mouse, trackpad, and keyboard input translation layer with Unicode injector
+- [x] Lossless PNG full & draggable area crop screenshots with clipboard auto-copy
+- [x] Hardware MP4 screen recording with live HUD and 3-second countdown toggle
+- [x] Bidirectional file transfer: Finder push (<kbd>Cmd</kbd> + <kbd>U</kbd>) and Device File Explorer (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>)
+- [x] Dual-mode USB and Wi-Fi device merging with seamless wireless switching
+- [x] macOS Menu Bar companion and audio forwarding support
+- [ ] Virtual touch gestures mapping for mobile gaming
+- [ ] Multi-device simultaneous streaming dashboard
 
 ---
 
