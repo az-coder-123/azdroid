@@ -209,5 +209,27 @@ void main() {
         ),
       ],
     );
+
+    blocTest<DeviceFileManagerCubit, DeviceFileManagerState>(
+      'openExternalStorage loads external storage path when available',
+      build: () {
+        when(() => mockRepository.getExternalStorageDirectory(testSerial))
+            .thenAnswer((_) async => '/storage/3662-FF26/');
+        when(
+          () =>
+              mockRepository.listRemoteFiles(testSerial, '/storage/3662-FF26/'),
+        ).thenAnswer((_) async => [sampleFile1]);
+        return cubit;
+      },
+      act: (c) => c.openExternalStorage(testSerial),
+      expect: () => [
+        const DeviceFileManagerLoading(currentDirectory: '/storage/3662-FF26/'),
+        const DeviceFileManagerLoaded(
+          currentDirectory: '/storage/3662-FF26/',
+          files: [sampleFile1],
+          externalStoragePath: '/storage/3662-FF26/',
+        ),
+      ],
+    );
   });
 }

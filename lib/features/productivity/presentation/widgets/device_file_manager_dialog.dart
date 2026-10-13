@@ -16,16 +16,15 @@ class DeviceFileManagerDialog extends StatefulWidget {
   final String deviceSerial;
 
   /// Shows the [DeviceFileManagerDialog].
-  static Future<void> show(BuildContext context, String deviceSerial) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) => BlocProvider<DeviceFileManagerCubit>(
-        create: (_) => sl<DeviceFileManagerCubit>(),
-        child: DeviceFileManagerDialog(deviceSerial: deviceSerial),
-      ),
-    );
-  }
+  static Future<void> show(BuildContext context, String deviceSerial) =>
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => BlocProvider<DeviceFileManagerCubit>(
+          create: (_) => sl<DeviceFileManagerCubit>(),
+          child: DeviceFileManagerDialog(deviceSerial: deviceSerial),
+        ),
+      );
 
   @override
   State<DeviceFileManagerDialog> createState() =>
@@ -69,15 +68,12 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
             _buildHeader(context),
             _buildQuickFolderBar(context),
             BlocBuilder<DeviceFileManagerCubit, DeviceFileManagerState>(
-              builder: (context, state) {
-                if (state is DeviceFileManagerLoaded) {
-                  return DeviceFileManagerToolbar(
-                    deviceSerial: widget.deviceSerial,
-                    state: state,
-                  );
-                }
-                return const SizedBox.shrink();
-              },
+              builder: (context, state) => state is DeviceFileManagerLoaded
+                  ? DeviceFileManagerToolbar(
+                      deviceSerial: widget.deviceSerial,
+                      state: state,
+                    )
+                  : const SizedBox.shrink(),
             ),
             const Divider(height: 1, color: AppColors.border),
             Expanded(
@@ -138,9 +134,7 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
       builder: (context, state) {
         final currentDir = state is DeviceFileManagerLoaded
             ? state.currentDirectory
-            : state is DeviceFileManagerLoading
-            ? state.currentDirectory
-            : '';
+            : (state is DeviceFileManagerLoading ? state.currentDirectory : '');
         final extPath = state is DeviceFileManagerLoaded
             ? state.externalStoragePath
             : null;
@@ -165,10 +159,15 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
                   label: Text(folder.$1),
                   selected: isSelected,
                   onSelected: (_) {
-                    context.read<DeviceFileManagerCubit>().loadDirectory(
-                      widget.deviceSerial,
-                      directory: folder.$2,
-                    );
+                    final cubit = context.read<DeviceFileManagerCubit>();
+                    if (folder.$1 == 'SD Card') {
+                      cubit.openExternalStorage(widget.deviceSerial);
+                    } else {
+                      cubit.loadDirectory(
+                        widget.deviceSerial,
+                        directory: folder.$2,
+                      );
+                    }
                   },
                 ),
               );

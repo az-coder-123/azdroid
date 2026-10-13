@@ -24,6 +24,11 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
     return '$home/Downloads/WifiDesk';
   }
 
+  String? _cachedExternalStoragePath;
+
+  /// Returns the cached external storage directory if known.
+  String? get externalStoragePath => _cachedExternalStoragePath;
+
   /// Loads contents of the given [directory] on Android (defaults to `/sdcard/Download`).
   Future<void> loadDirectory(
     String deviceSerial, {
@@ -39,18 +44,15 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
         return a.name.toLowerCase().compareTo(b.name.toLowerCase());
       });
 
-      String? extPath;
-      if (state is DeviceFileManagerLoaded) {
-        extPath = (state as DeviceFileManagerLoaded).externalStoragePath;
-      }
-      extPath ??= await repository.getExternalStorageDirectory(deviceSerial);
+      _cachedExternalStoragePath ??= await repository
+          .getExternalStorageDirectory(deviceSerial);
 
       emit(
         DeviceFileManagerLoaded(
           currentDirectory: directory,
           files: items,
           selectedFiles: const {},
-          externalStoragePath: extPath,
+          externalStoragePath: _cachedExternalStoragePath,
         ),
       );
     } catch (e, stack) {
@@ -66,6 +68,15 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
         ),
       );
     }
+  }
+
+  /// Navigates directly to the external storage (MicroSD card) root directory.
+  Future<void> openExternalStorage(String deviceSerial) async {
+    _cachedExternalStoragePath ??= await repository.getExternalStorageDirectory(
+      deviceSerial,
+    );
+    final target = _cachedExternalStoragePath ?? '/storage/';
+    await loadDirectory(deviceSerial, directory: target);
   }
 
   /// Reloads the active directory.

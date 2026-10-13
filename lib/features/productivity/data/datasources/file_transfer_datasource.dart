@@ -84,7 +84,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
     String localPath,
   ) async {
     final lower = localPath.toLowerCase();
-    final isMedia = [
+    final isMedia = const {
       '.jpg',
       '.jpeg',
       '.png',
@@ -94,7 +94,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       '.mkv',
       '.mp3',
       '.wav',
-    ].any(lower.endsWith);
+    }.any(lower.endsWith);
 
     if (!isMedia) return;
 
@@ -170,15 +170,18 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       ], timeout: const Duration(seconds: 8));
 
       final stdoutStr = result.stdout.toString();
-      if (result.exitCode != 0 && stdoutStr.trim().isEmpty) return [];
+      if (result.exitCode != 0 && stdoutStr.trim().isEmpty) {
+        final err = result.stderr.toString().trim();
+        throw Exception(
+          err.isNotEmpty ? err : 'Error reading $remoteDirectory',
+        );
+      }
 
       final lines = stdoutStr.split('\n');
       final files = <RemoteFileModel>[];
       for (final line in lines) {
         final model = RemoteFileModel.fromLsLine(line, normDir);
-        if (model != null) {
-          files.add(model);
-        }
+        if (model != null) files.add(model);
       }
       return files;
     } catch (e, stack) {
@@ -187,7 +190,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         error: e,
         stackTrace: stack,
       );
-      return [];
+      rethrow;
     }
   }
 
@@ -210,11 +213,11 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       for (final line in lines) {
         final path = line.trim();
         final name = path.split('/').last;
-        if (name.isNotEmpty &&
-            !['emulated', 'self', 'sdcard0'].contains(name) &&
-            !name.startsWith('.')) {
-          return path.endsWith('/') ? path : '$path/';
-        }
+        final isExt =
+            name.isNotEmpty &&
+            !name.startsWith('.') &&
+            !const {'emulated', 'self', 'sdcard0'}.contains(name);
+        if (isExt) return path.endsWith('/') ? path : '$path/';
       }
     } catch (_) {}
     return null;
@@ -233,7 +236,6 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
           seconds: ProductivityConstants.apkInstallTimeoutSeconds,
         ),
       );
-
       final combined = '${result.stdout} ${result.stderr}'.toLowerCase();
       return result.exitCode == 0 || combined.contains('success');
     } catch (e, stack) {
