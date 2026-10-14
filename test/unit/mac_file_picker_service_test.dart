@@ -50,5 +50,23 @@ void main() {
       final result = await service.pickDirectory();
       expect(result, equals(folder));
     });
+
+    test('pickApkFile returns selected valid apk path', () async {
+      const apk = '/Users/test/Downloads/app.apk';
+      when(() => mockExecutor.run('osascript', any()))
+          .thenAnswer((_) async => ProcessResult(0, 0, apk, ''));
+
+      final result = await service.pickApkFile();
+      expect(result, equals(apk));
+    });
+
+    test('pickApkFile rejects non-apk file paths', () async {
+      const nonApk = '/Users/test/Downloads/app.zip';
+      when(() => mockExecutor.run('osascript', any()))
+          .thenAnswer((_) async => ProcessResult(0, 0, nonApk, ''));
+
+      final result = await service.pickApkFile();
+      expect(result, isNull);
+    });
   });
 }

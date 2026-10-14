@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/di/injection.dart';
 import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/device_log_dialog.dart';
@@ -226,6 +227,10 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                     DeviceFileManagerDialog.show(context, widget.device.serial),
                 onViewLogs: () =>
                     DeviceLogDialog.show(context, widget.device.serial),
+                onInstallApk: () => ApkInstallerDialog.show(
+                  context,
+                  deviceSerial: widget.device.serial,
+                ),
               ),
             ],
           ),

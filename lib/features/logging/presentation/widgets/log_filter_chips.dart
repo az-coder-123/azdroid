@@ -24,7 +24,9 @@ class LogFilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.22) : AppColors.surfaceElevated,
+          color: isSelected
+              ? color.withValues(alpha: 0.22)
+              : AppColors.surfaceElevated,
           borderRadius: BorderRadius.circular(6.0),
           border: Border.all(
             color: isSelected ? color : AppColors.borderSubtle,
@@ -69,9 +71,13 @@ class LogOptionToggle extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.accent.withValues(alpha: 0.25) : AppColors.surfaceElevated,
+            color: isActive
+                ? AppColors.accent.withValues(alpha: 0.25)
+                : AppColors.surfaceElevated,
             borderRadius: BorderRadius.circular(6.0),
-            border: Border.all(color: isActive ? AppColors.accent : AppColors.borderSubtle),
+            border: Border.all(
+              color: isActive ? AppColors.accent : AppColors.borderSubtle,
+            ),
           ),
           child: Text(
             label,

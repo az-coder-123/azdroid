@@ -13,6 +13,7 @@ import 'package:wifi_desk/features/productivity/presentation/cubit/screen_record
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
+import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
 
 /// Translates raw desktop keyboard events into Android navigation and key inputs.
@@ -93,6 +94,12 @@ class ViewportKeyEventHandler {
       if (logicalKey == LogicalKeyboardKey.keyF &&
           HardwareKeyboard.instance.isShiftPressed) {
         DeviceFileManagerDialog.show(context, deviceSerial);
+        return KeyEventResult.handled;
+      }
+
+      if (logicalKey == LogicalKeyboardKey.keyI &&
+          HardwareKeyboard.instance.isShiftPressed) {
+        ApkInstallerDialog.show(context, deviceSerial: deviceSerial);
         return KeyEventResult.handled;
       }
 

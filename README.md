@@ -36,6 +36,7 @@ WifiDesk bridges two core principles:
 - 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (full Unicode and IME support).
 - 🍎 **Mac-First Productivity:**
   - **Bidirectional File Transfers & Explorer:** Send files/APKs via Finder sheet (<kbd>Cmd</kbd> + <kbd>U</kbd>) or drag-and-drop; browse phone storage and download files to Mac (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>) with quick folders.
+  - **Professional APK Sideload & Manager:** Inspect APK metadata (App name, icon, package name, version, SDK target, file size), configure install flags (`-r`, `-g`, `-t`, `-d`), monitor live progress, get intelligent failure diagnosis (signature mismatches, OEM/MIUI USB restrictions), and 1-click launch or clean uninstall (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>).
   - **Real-Time Device Logcat Console:** Live logcat inspection with multi-tier filtering (Level `V/D/I/W/E/F`, Search, Regex, Tag, PID), bounded ring buffer, pause/freeze inspection, live disk recording, and snapshot export via sidebar or device card (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>).
   - **Lossless Screenshots (Full & Area Crop):** Capture full-screen (<kbd>Cmd</kbd> + <kbd>S</kbd>) or draggable area crop (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>), auto-saved to `~/Downloads` and copied to macOS clipboard (`⌘V`).
   - **Hardware Screen Recording:** Capture lossless MP4 video with countdown HUD & live timer (`REC 00:15`) via sidebar or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, auto-saved to `~/Downloads`.
@@ -54,6 +55,7 @@ WifiDesk bridges two core principles:
 | <kbd>Cmd</kbd> + <kbd>S</kbd> | Full Screenshot | Captures phone screen to `~/Downloads` & macOS clipboard |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag marquee to crop region on phone screen |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Lossless hardware MP4 video recording with countdown HUD |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | Install APK | Inspect, configure options & sideload Android APK packages |
 | <kbd>Cmd</kbd> + <kbd>U</kbd> | Send Files | Opens macOS Finder dialog to push files or install APKs |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Explorer to browse and pull files to Mac |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Opens real-time logcat inspection, filtering & recording console |

@@ -25,28 +25,37 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
     _streamSubscription?.cancel();
     _recordingTelemetryTimer?.cancel();
 
-    emit(DeviceLogStreaming(
-      deviceSerial: deviceSerial,
-      allEntries: const [],
-      filteredEntries: const [],
-      filter: const LogFilterCriteria(),
-      recordingStatus: repository.recordingStatus,
-      isPaused: false,
-      autoScroll: true,
-    ));
+    emit(
+      DeviceLogStreaming(
+        deviceSerial: deviceSerial,
+        allEntries: const [],
+        filteredEntries: const [],
+        filter: const LogFilterCriteria(),
+        recordingStatus: repository.recordingStatus,
+        isPaused: false,
+        autoScroll: true,
+      ),
+    );
 
     _recordingTelemetryTimer = Timer.periodic(
       const Duration(seconds: 1),
       (_) => _syncRecordingTelemetry(),
     );
 
-    _streamSubscription = repository.streamLogs(deviceSerial).listen(
-      _handleIncomingBatch,
-      onError: (Object error) {
-        AppLogger.warning('Logcat stream error: $error');
-        emit(DeviceLogError(message: error.toString(), deviceSerial: deviceSerial));
-      },
-    );
+    _streamSubscription = repository
+        .streamLogs(deviceSerial)
+        .listen(
+          _handleIncomingBatch,
+          onError: (Object error) {
+            AppLogger.warning('Logcat stream error: $error');
+            emit(
+              DeviceLogError(
+                message: error.toString(),
+                deviceSerial: deviceSerial,
+              ),
+            );
+          },
+        );
   }
 
   void _handleIncomingBatch(List<DeviceLogEntry> newBatch) {
@@ -56,21 +65,28 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
     final updatedAll = _appendBounded(current.allEntries, newBatch);
 
     if (current.isPaused) {
-      emit(current.copyWith(
-        allEntries: updatedAll,
-        recordingStatus: repository.recordingStatus,
-      ));
+      emit(
+        current.copyWith(
+          allEntries: updatedAll,
+          recordingStatus: repository.recordingStatus,
+        ),
+      );
       return;
     }
 
     final matchingNew = newBatch.where((e) => current.filter.matches(e));
-    final updatedFiltered = _appendBounded(current.filteredEntries, matchingNew);
+    final updatedFiltered = _appendBounded(
+      current.filteredEntries,
+      matchingNew,
+    );
 
-    emit(current.copyWith(
-      allEntries: updatedAll,
-      filteredEntries: updatedFiltered,
-      recordingStatus: repository.recordingStatus,
-    ));
+    emit(
+      current.copyWith(
+        allEntries: updatedAll,
+        filteredEntries: updatedFiltered,
+        recordingStatus: repository.recordingStatus,
+      ),
+    );
   }
 
   List<DeviceLogEntry> _appendBounded(
@@ -89,7 +105,9 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
     final current = state;
     if (current is! DeviceLogStreaming) return;
     if (current.isPaused) {
-      final reFiltered = current.allEntries.where(current.filter.matches).toList();
+      final reFiltered = current.allEntries
+          .where(current.filter.matches)
+          .toList();
       emit(current.copyWith(isPaused: false, filteredEntries: reFiltered));
     } else {
       emit(current.copyWith(isPaused: true));
@@ -159,11 +177,13 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
     if (current is! DeviceLogStreaming) return;
     clearConsole();
     await repository.clearDeviceBuffer(current.deviceSerial);
-    emit(current.copyWith(
-      allEntries: const [],
-      filteredEntries: const [],
-      feedbackMessage: () => 'Device logcat buffer cleared',
-    ));
+    emit(
+      current.copyWith(
+        allEntries: const [],
+        filteredEntries: const [],
+        feedbackMessage: () => 'Device logcat buffer cleared',
+      ),
+    );
   }
 
   /// Toggles real-time streaming to a local `.log` file.
@@ -176,20 +196,24 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
 
     if (current.recordingStatus.isRecording) {
       final finalStatus = await repository.stopRecordingToFile();
-      emit(current.copyWith(
-        recordingStatus: finalStatus,
-        feedbackMessage: () => 'Log saved to: ${finalStatus.targetFilePath}',
-      ));
+      emit(
+        current.copyWith(
+          recordingStatus: finalStatus,
+          feedbackMessage: () => 'Log saved to: ${finalStatus.targetFilePath}',
+        ),
+      );
     } else {
       final savedPath = await repository.startRecordingToFile(
         deviceSerial: current.deviceSerial,
         customDirectory: customDirectory,
         customFilePath: customFilePath,
       );
-      emit(current.copyWith(
-        recordingStatus: repository.recordingStatus,
-        feedbackMessage: () => 'Recording logs to: $savedPath',
-      ));
+      emit(
+        current.copyWith(
+          recordingStatus: repository.recordingStatus,
+          feedbackMessage: () => 'Recording logs to: $savedPath',
+        ),
+      );
     }
   }
 
@@ -206,10 +230,12 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
       entries: targetEntries,
       destinationPath: destinationPath,
     );
-    emit(current.copyWith(
-      feedbackMessage: () =>
-          'Exported ${targetEntries.length} logs to $destinationPath',
-    ));
+    emit(
+      current.copyWith(
+        feedbackMessage: () =>
+            'Exported ${targetEntries.length} logs to $destinationPath',
+      ),
+    );
   }
 
   void _syncRecordingTelemetry() {

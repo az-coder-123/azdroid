@@ -20,6 +20,7 @@ class SideControlsToolbar extends StatelessWidget {
     this.onSendFiles,
     this.onBrowseFiles,
     this.onViewLogs,
+    this.onInstallApk,
     this.deviceSerial,
   });
 
@@ -31,6 +32,7 @@ class SideControlsToolbar extends StatelessWidget {
   final VoidCallback? onSendFiles;
   final VoidCallback? onBrowseFiles;
   final VoidCallback? onViewLogs;
+  final VoidCallback? onInstallApk;
   final String? deviceSerial;
 
   @override
@@ -68,11 +70,14 @@ class SideControlsToolbar extends StatelessWidget {
               ),
               initialValue: session.bitrateMbps,
               onSelected: onSelectBitrate,
-              itemBuilder: (context) => const [
-                (4, '4 Mbps (Eco / Weak Wi-Fi)'),
-                (8, '8 Mbps (Standard 1080p)'),
-                (16, '16 Mbps (Ultra / 60+ FPS)'),
-              ].map((b) => PopupMenuItem(value: b.$1, child: Text(b.$2))).toList(),
+              itemBuilder: (context) =>
+                  const [
+                        (4, '4 Mbps (Eco / Weak Wi-Fi)'),
+                        (8, '8 Mbps (Standard 1080p)'),
+                        (16, '16 Mbps (Ultra / 60+ FPS)'),
+                      ]
+                      .map((b) => PopupMenuItem(value: b.$1, child: Text(b.$2)))
+                      .toList(),
             ),
 
             if (onScreenshot != null ||
@@ -150,6 +155,16 @@ class SideControlsToolbar extends StatelessWidget {
                   icon: Icons.terminal_rounded,
                   tooltip: 'Device Logcat Console (Cmd+Shift+L)',
                   onPressed: onViewLogs!,
+                ),
+              ],
+
+              // Sideload & Install APK Package
+              if (onInstallApk != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.install_mobile_rounded,
+                  tooltip: 'Install APK Package (Cmd+Shift+I)',
+                  onPressed: onInstallApk!,
                 ),
               ],
             ],

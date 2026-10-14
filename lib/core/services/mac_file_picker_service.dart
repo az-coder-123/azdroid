@@ -8,6 +8,9 @@ abstract class MacFilePickerService {
 
   /// Opens the native macOS Finder folder selection sheet.
   Future<String?> pickDirectory({String prompt});
+
+  /// Opens the native macOS Finder file selection sheet to pick an APK file.
+  Future<String?> pickApkFile({String prompt});
 }
 
 /// Concrete implementation utilizing macOS `osascript` to invoke native Apple Finder panels.
@@ -82,6 +85,39 @@ end try
     } catch (e, stack) {
       AppLogger.warning(
         'Failed to open macOS directory picker: $e',
+        error: e,
+        stackTrace: stack,
+      );
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> pickApkFile({
+    String prompt = 'Select Android APK package (.apk)',
+  }) async {
+    final script =
+        '''
+try
+  set theFile to choose file with prompt "$prompt"
+  return POSIX path of theFile
+on error
+  return ""
+end try
+''';
+
+    try {
+      final result = await _executor.run('osascript', ['-e', script]);
+      if (result.exitCode != 0) return null;
+
+      final output = result.stdout.toString().trim();
+      if (output.isEmpty) return null;
+      if (!output.toLowerCase().endsWith('.apk')) return null;
+
+      return output;
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Failed to open macOS APK file picker: $e',
         error: e,
         stackTrace: stack,
       );

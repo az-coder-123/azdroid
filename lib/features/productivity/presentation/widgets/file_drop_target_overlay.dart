@@ -4,6 +4,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 
 /// Wraps the viewport with a drag-and-drop listener detecting local files dropped from Finder.
@@ -32,10 +33,27 @@ class _FileDropTargetOverlayState extends State<FileDropTargetOverlay> {
       onDragDone: (detail) {
         setState(() => _isDragging = false);
         final paths = detail.files.map((f) => f.path).toList();
-        if (paths.isNotEmpty) {
+        if (paths.isEmpty) return;
+
+        final apkPaths = paths
+            .where((p) => p.toLowerCase().endsWith('.apk'))
+            .toList();
+        final otherPaths = paths
+            .where((p) => !p.toLowerCase().endsWith('.apk'))
+            .toList();
+
+        if (otherPaths.isNotEmpty) {
           context.read<FileTransferCubit>().transferFiles(
             widget.deviceSerial,
-            paths,
+            otherPaths,
+          );
+        }
+
+        if (apkPaths.isNotEmpty) {
+          ApkInstallerDialog.show(
+            context,
+            deviceSerial: widget.deviceSerial,
+            initialApkPath: apkPaths.first,
           );
         }
       },

@@ -26,6 +26,8 @@
 | <kbd>Cmd</kbd> + <kbd>S</kbd> | Full Screenshot | Lossless full-screen PNG saved to `~/Downloads` & copied to clipboard (`⌘V`) |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag marquee to crop region on phone screen; saves & copies to clipboard |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Starts / stops hardware MP4 recording saved to `~/Downloads` |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | Install APK | Opens APK Sideload & Manager dialog with metadata inspection |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Opens real-time logcat inspection, filtering & recording console |
 | <kbd>Cmd</kbd> + <kbd>U</kbd> | Send Files | Native macOS Finder file picker to send files/media/APKs to Android |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Manager dialog with quick folders & download to Mac |
 | <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send Unicode / Vietnamese text |

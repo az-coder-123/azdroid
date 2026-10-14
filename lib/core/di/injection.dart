@@ -6,6 +6,10 @@ import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
 import 'package:wifi_desk/core/services/network_info_service.dart';
 import 'package:wifi_desk/core/services/process_executor.dart';
 import 'package:wifi_desk/core/services/video_stream_native_service.dart';
+import 'package:wifi_desk/features/apk_installer/data/datasources/apk_installer_datasource.dart';
+import 'package:wifi_desk/features/apk_installer/data/datasources/apk_metadata_datasource.dart';
+import 'package:wifi_desk/features/apk_installer/data/repositories/apk_installer_repository_impl.dart';
+import 'package:wifi_desk/features/apk_installer/domain/repositories/apk_installer_repository.dart';
 import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
 import 'package:wifi_desk/features/audio/data/repositories/audio_repository_impl.dart';
 import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
@@ -201,6 +205,25 @@ Future<void> initDependencies() async {
       datasource: sl<LogcatStreamDatasource>(),
       fileRecorder: sl<LogFileRecorder>(),
       parser: sl<LogcatThreadtimeParser>(),
+    ),
+  );
+
+  // APK Installer services & repository
+  sl.registerLazySingleton<ApkMetadataDatasource>(
+    () => ApkMetadataDatasourceImpl(processExecutor: sl<ProcessExecutor>()),
+  );
+
+  sl.registerLazySingleton<ApkInstallerDatasource>(
+    () => ApkInstallerDatasourceImpl(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ApkInstallerRepository>(
+    () => ApkInstallerRepositoryImpl(
+      metadataDatasource: sl<ApkMetadataDatasource>(),
+      installerDatasource: sl<ApkInstallerDatasource>(),
     ),
   );
 
