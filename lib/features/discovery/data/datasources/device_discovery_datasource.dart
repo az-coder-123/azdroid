@@ -3,23 +3,15 @@ import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/network_subnet_scanner.dart';
 import 'package:wifi_desk/features/discovery/data/models/device_model.dart';
+import 'package:wifi_desk/features/discovery/data/services/usb_wifi_auto_handoff_service.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 
 /// Low-level data source interface for scanning and pinging Android endpoints.
 abstract class DeviceDiscoveryDatasource {
-  /// Queries ADB and scans the local Wi-Fi subnet for devices and mDNS services.
   Future<List<DeviceModel>> scanDevices();
-
-  /// Establishes the low-level ADB TCP transport connection.
   Future<bool> connect(String ipAddress, int port);
-
-  /// Closes the ADB transport connection for the given target (serial or ip:port).
   Future<bool> disconnect(String target);
-
-  /// Pairs with an Android 11+ device using wireless debugging pairing code.
   Future<bool> pair(String ipAddress, int port, String pairingCode);
-
-  /// Switches a USB device to wireless mode on [port] (default 5555).
   Future<bool> switchUsbToWifi(String serial, {int port = 5555});
 }
 
@@ -29,11 +21,13 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
     this.adbService,
     this.adbTcpipService,
     this.subnetScanner,
+    this.autoHandoffService,
   });
 
   final AdbService? adbService;
   final AdbTcpipService? adbTcpipService;
   final NetworkSubnetScanner? subnetScanner;
+  final UsbWifiAutoHandoffService? autoHandoffService;
 
   AdbService get _service => adbService ?? AdbService();
   AdbTcpipService get _tcpipService =>
@@ -43,6 +37,14 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
   Future<List<DeviceModel>> scanDevices() async {
     var attached = await _service.getAttachedDevices();
     final mdnsServices = await _service.getMdnsServices();
+
+    // Auto-provision attached USB devices for Wi-Fi mode
+    if (autoHandoffService != null) {
+      final provisioned = await autoHandoffService!.autoProvisionUsbDevices(attached);
+      if (provisioned) {
+        attached = await _service.getAttachedDevices();
+      }
+    }
 
     // Auto-discover Android devices on the local Wi-Fi subnet listening on port 5555
     if (subnetScanner != null) {

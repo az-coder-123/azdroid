@@ -20,6 +20,7 @@ import 'package:wifi_desk/features/control/domain/repositories/control_repositor
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/device_discovery_datasource.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/network_subnet_scanner.dart';
+import 'package:wifi_desk/features/discovery/data/services/usb_wifi_auto_handoff_service.dart';
 import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_repository_impl.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
@@ -93,11 +94,18 @@ Future<void> initDependencies() async {
     ),
   );
 
+  sl.registerLazySingleton<UsbWifiAutoHandoffService>(
+    () => UsbWifiAutoHandoffServiceImpl(
+      adbTcpipService: sl<AdbTcpipService>(),
+    ),
+  );
+
   sl.registerLazySingleton<DeviceDiscoveryDatasource>(
     () => DeviceDiscoveryDatasourceImpl(
       adbService: sl<AdbService>(),
       adbTcpipService: sl<AdbTcpipService>(),
       subnetScanner: sl<NetworkSubnetScanner>(),
+      autoHandoffService: sl<UsbWifiAutoHandoffService>(),
     ),
   );
 
