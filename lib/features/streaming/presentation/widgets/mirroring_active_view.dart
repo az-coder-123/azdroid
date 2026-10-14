@@ -5,6 +5,7 @@ import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/device_log_dialog.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
@@ -223,6 +224,8 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                 onSendFiles: _pickAndSendFiles,
                 onBrowseFiles: () =>
                     DeviceFileManagerDialog.show(context, widget.device.serial),
+                onViewLogs: () =>
+                    DeviceLogDialog.show(context, widget.device.serial),
               ),
             ],
           ),

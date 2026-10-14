@@ -19,6 +19,7 @@ class SideControlsToolbar extends StatelessWidget {
     this.onTextInject,
     this.onSendFiles,
     this.onBrowseFiles,
+    this.onViewLogs,
     this.deviceSerial,
   });
 
@@ -29,6 +30,7 @@ class SideControlsToolbar extends StatelessWidget {
   final VoidCallback? onTextInject;
   final VoidCallback? onSendFiles;
   final VoidCallback? onBrowseFiles;
+  final VoidCallback? onViewLogs;
   final String? deviceSerial;
 
   @override
@@ -66,20 +68,11 @@ class SideControlsToolbar extends StatelessWidget {
               ),
               initialValue: session.bitrateMbps,
               onSelected: onSelectBitrate,
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 4,
-                  child: Text('4 Mbps (Eco / Weak Wi-Fi)'),
-                ),
-                const PopupMenuItem(
-                  value: 8,
-                  child: Text('8 Mbps (Standard 1080p)'),
-                ),
-                const PopupMenuItem(
-                  value: 16,
-                  child: Text('16 Mbps (Ultra / 60+ FPS)'),
-                ),
-              ],
+              itemBuilder: (context) => const [
+                (4, '4 Mbps (Eco / Weak Wi-Fi)'),
+                (8, '8 Mbps (Standard 1080p)'),
+                (16, '16 Mbps (Ultra / 60+ FPS)'),
+              ].map((b) => PopupMenuItem(value: b.$1, child: Text(b.$2))).toList(),
             ),
 
             if (onScreenshot != null ||
@@ -149,6 +142,16 @@ class SideControlsToolbar extends StatelessWidget {
                   onPressed: onBrowseFiles!,
                 ),
               ],
+
+              // Real-time Android Logcat Console
+              if (onViewLogs != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.terminal_rounded,
+                  tooltip: 'Device Logcat Console (Cmd+Shift+L)',
+                  onPressed: onViewLogs!,
+                ),
+              ],
             ],
           ],
         ),
@@ -159,12 +162,7 @@ class SideControlsToolbar extends StatelessWidget {
   Widget _buildScreenRecordButton(BuildContext context) {
     return BlocBuilder<ScreenRecordingCubit, ScreenRecordingState>(
       builder: (context, state) {
-        final isRecording = state is ScreenRecordingActive;
-        final isPreparing = state is ScreenRecordingPreparing;
-        final isCountdown = state is ScreenRecordingCountdown;
-        final isFinalizing = state is ScreenRecordingFinalizing;
-
-        if (isFinalizing) {
+        if (state is ScreenRecordingFinalizing) {
           return const Padding(
             padding: EdgeInsets.all(8.0),
             child: SizedBox(
@@ -178,6 +176,10 @@ class SideControlsToolbar extends StatelessWidget {
           );
         }
 
+        final isRecording = state is ScreenRecordingActive;
+        final isPreparing = state is ScreenRecordingPreparing;
+        final isCountdown = state is ScreenRecordingCountdown;
+
         final IconData icon;
         final String tooltip;
         final Color? color;
@@ -189,15 +191,13 @@ class SideControlsToolbar extends StatelessWidget {
           color = AppColors.statusError;
           onPressed = () =>
               context.read<ScreenRecordingCubit>().stopRecording();
-        } else if (isCountdown) {
-          icon = Icons.hourglass_top_rounded;
-          tooltip = 'Counting down (Cancel)';
-          color = AppColors.statusError;
-          onPressed = () =>
-              context.read<ScreenRecordingCubit>().cancelPreparation();
-        } else if (isPreparing) {
-          icon = Icons.videocam_rounded;
-          tooltip = 'Cancel Recording Setup';
+        } else if (isCountdown || isPreparing) {
+          icon = isCountdown
+              ? Icons.hourglass_top_rounded
+              : Icons.videocam_rounded;
+          tooltip = isCountdown
+              ? 'Counting down (Cancel)'
+              : 'Cancel Recording Setup';
           color = AppColors.statusError;
           onPressed = () =>
               context.read<ScreenRecordingCubit>().cancelPreparation();

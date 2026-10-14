@@ -11,9 +11,19 @@ abstract class ProcessExecutor {
     bool includeParentEnvironment = true,
     Duration? timeout,
   });
+
+  /// Starts a system process and returns the running [Process] handle.
+  Future<Process> start(
+    String executable,
+    List<String> arguments, {
+    String? workingDirectory,
+    Map<String, String>? environment,
+    bool includeParentEnvironment = true,
+    ProcessStartMode mode = ProcessStartMode.normal,
+  });
 }
 
-/// Default implementation delegating to [Process.run].
+/// Default implementation delegating to [Process.run] and [Process.start].
 class DefaultProcessExecutor implements ProcessExecutor {
   const DefaultProcessExecutor();
 
@@ -47,5 +57,24 @@ class DefaultProcessExecutor implements ProcessExecutor {
     }
 
     return future;
+  }
+
+  @override
+  Future<Process> start(
+    String executable,
+    List<String> arguments, {
+    String? workingDirectory,
+    Map<String, String>? environment,
+    bool includeParentEnvironment = true,
+    ProcessStartMode mode = ProcessStartMode.normal,
+  }) {
+    return Process.start(
+      executable,
+      arguments,
+      workingDirectory: workingDirectory,
+      environment: environment,
+      includeParentEnvironment: includeParentEnvironment,
+      mode: mode,
+    );
   }
 }

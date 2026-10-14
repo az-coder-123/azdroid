@@ -171,7 +171,10 @@ class AdbService {
         message: combined.isNotEmpty ? combined : 'Connection refused.',
       );
     } catch (e) {
-      return AdbCommandResult(isSuccess: false, message: 'Failed to connect: $e');
+      return AdbCommandResult(
+        isSuccess: false,
+        message: 'Failed to connect: $e',
+      );
     }
   }
 
@@ -241,7 +244,10 @@ class AdbService {
             : 'Pairing failed. Check IP, port, and pairing code.',
       );
     } catch (e) {
-      return AdbCommandResult(isSuccess: false, message: 'Pairing exception: $e');
+      return AdbCommandResult(
+        isSuccess: false,
+        message: 'Pairing exception: $e',
+      );
     }
   }
 }

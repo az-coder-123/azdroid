@@ -1,0 +1,73 @@
+import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
+import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+
+/// Parses raw Android logcat lines (using `-v threadtime` format) into [DeviceLogEntry] instances.
+class LogcatThreadtimeParser {
+  const LogcatThreadtimeParser();
+
+  // Format: 10-14 10:48:15.836  1299  1421 D BatteryService: Message text...
+  static final RegExp _threadtimeRegex = RegExp(
+    r'^(\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3})\s+(\d+)\s+(\d+)\s+([VDIWEF])\s+([^:]+?)\s*:\s*(.*)$',
+  );
+
+  /// Parses a single line of logcat output.
+  DeviceLogEntry parseLine(String line, int monotonicId) {
+    final trimmed = line.trimRight();
+    final match = _threadtimeRegex.firstMatch(trimmed);
+
+    if (match != null) {
+      final timeStr = match.group(1)!;
+      final pid = int.tryParse(match.group(2)!) ?? 0;
+      final tid = int.tryParse(match.group(3)!) ?? 0;
+      final levelCode = match.group(4)!;
+      final tag = match.group(5)!.trim();
+      final message = match.group(6) ?? '';
+
+      return DeviceLogEntry(
+        id: monotonicId,
+        timestamp: _parseTimestamp(timeStr),
+        pid: pid,
+        tid: tid,
+        level: LogLevel.fromCode(levelCode),
+        tag: tag,
+        message: message,
+        rawLine: trimmed,
+      );
+    }
+
+    // Handle system notices (e.g. "--------- beginning of main") or unformatted stack traces
+    final isSystemMarker = trimmed.startsWith('--------- beginning of');
+    return DeviceLogEntry(
+      id: monotonicId,
+      timestamp: DateTime.now(),
+      pid: 0,
+      tid: 0,
+      level: isSystemMarker ? LogLevel.info : LogLevel.unknown,
+      tag: isSystemMarker ? 'System' : '',
+      message: trimmed,
+      rawLine: trimmed,
+    );
+  }
+
+  DateTime _parseTimestamp(String timeStr) {
+    try {
+      // timeStr example: "10-14 10:48:15.836"
+      final parts = timeStr.split(' ');
+      final dateParts = parts[0].split('-');
+      final timeParts = parts[1].split(':');
+      final secParts = timeParts[2].split('.');
+
+      final now = DateTime.now();
+      final month = int.parse(dateParts[0]);
+      final day = int.parse(dateParts[1]);
+      final hour = int.parse(timeParts[0]);
+      final minute = int.parse(timeParts[1]);
+      final second = int.parse(secParts[0]);
+      final millisecond = int.parse(secParts[1]);
+
+      return DateTime(now.year, month, day, hour, minute, second, millisecond);
+    } catch (_) {
+      return DateTime.now();
+    }
+  }
+}

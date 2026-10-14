@@ -19,6 +19,12 @@ import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:wifi_desk/features/logging/data/datasources/log_file_recorder.dart';
+import 'package:wifi_desk/features/logging/data/datasources/logcat_stream_datasource.dart';
+import 'package:wifi_desk/features/logging/data/models/logcat_threadtime_parser.dart';
+import 'package:wifi_desk/features/logging/data/repositories/device_log_repository_impl.dart';
+import 'package:wifi_desk/features/logging/domain/repositories/device_log_repository.dart';
+import 'package:wifi_desk/features/logging/presentation/cubit/device_log_cubit.dart';
 import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:wifi_desk/features/productivity/data/datasources/clipboard_datasource.dart';
 import 'package:wifi_desk/features/productivity/data/datasources/file_transfer_datasource.dart';
@@ -177,6 +183,27 @@ Future<void> initDependencies() async {
     ),
   );
 
+  // Logging data sources & repositories
+  sl.registerLazySingleton<LogcatStreamDatasource>(
+    () => LogcatStreamDatasource(
+      adbService: sl<AdbService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
+  sl.registerLazySingleton<LogFileRecorder>(() => LogFileRecorder());
+  sl.registerLazySingleton<LogcatThreadtimeParser>(
+    () => const LogcatThreadtimeParser(),
+  );
+
+  sl.registerLazySingleton<DeviceLogRepository>(
+    () => DeviceLogRepositoryImpl(
+      datasource: sl<LogcatStreamDatasource>(),
+      fileRecorder: sl<LogFileRecorder>(),
+      parser: sl<LogcatThreadtimeParser>(),
+    ),
+  );
+
   // Menu Bar companion service
   sl.registerLazySingleton<MenuBarCubit>(() => MenuBarCubit());
 
@@ -225,5 +252,9 @@ Future<void> initDependencies() async {
 
   sl.registerFactory<ScreenRecordingCubit>(
     () => ScreenRecordingCubit(repository: sl<ScreenRecordingRepository>()),
+  );
+
+  sl.registerFactory<DeviceLogCubit>(
+    () => DeviceLogCubit(repository: sl<DeviceLogRepository>()),
   );
 }
