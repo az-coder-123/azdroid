@@ -28,6 +28,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Dual-Connection Device Deduplication** | Device Discovery & Topology | Unify physical USB and Wi-Fi endpoints under single hardware identity using `ro.serialno`. | [dual-connection-device-deduplication.md](dual-connection-device-deduplication.md) |
 | **Background Polling UI Churn Prevention** | Flutter UI & BLoC Boundaries | Prevent spinner flashes and focus loss during background scans using `silent: true` and `buildWhen`. | [background-polling-ui-churn-prevention.md](background-polling-ui-churn-prevention.md) |
 | **Malformed UTF-8 in Logcat Streams** | Android Streams & Decoding | Use `Utf8Decoder(allowMalformed: true)` to prevent crash on non-UTF-8 driver binary dumps. | [logcat-stream-malformed-utf8-bytes.md](logcat-stream-malformed-utf8-bytes.md) |
+| **Multi-Device Subnet Discovery** | Device Discovery & Socket Probing | Sweep full subnet without early break and tune socket timeouts for Wi-Fi power-save latency. | [multi-device-subnet-discovery.md](multi-device-subnet-discovery.md) |
 
 ---
 
