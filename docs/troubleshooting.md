@@ -52,3 +52,11 @@
   1. Open phone **Settings ➔ Additional settings ➔ Developer options**.
   2. Enable **USB debugging (Security settings)** / *Gỡ lỗi USB (Cài đặt bảo mật)*.
   3. Accept the three 5-second security warnings. (Requires SIM card inserted or Mi Account).
+
+> 💡 **Deep Dive:** For technical root-cause analyses on MIUI security and IME fallback, see [docs/lessons-learned/xiaomi-miui-input-security-restrictions.md](lessons-learned/xiaomi-miui-input-security-restrictions.md).
+
+---
+
+## 💡 Engineering Case Studies & Post-Mortems
+For comprehensive low-level post-mortems covering video frame decoders, macOS sandbox entitlements, process signals, and device topology deduplication, refer to the [Engineering Lessons Learned Repository](lessons-learned/README.md).
+
