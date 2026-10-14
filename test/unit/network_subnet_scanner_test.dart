@@ -43,6 +43,18 @@ void main() {
       expect(ips, equals(['192.168.1.1', '192.168.1.3']));
     });
 
+    test('extractArpIps ignores incomplete entries', () {
+      const sampleArp = '''
+? (192.168.1.1) at cc:71:90:12:2a:40 on en0 ifscope [ethernet]
+? (192.168.1.6) at (incomplete) on en0 ifscope [ethernet]
+? (192.168.1.8) at (incomplete) on en0 ifscope [ethernet]
+? (192.168.1.10) at b6:f1:40:ac:4a:62 on en0 ifscope [ethernet]
+''';
+
+      final ips = scanner.extractArpIps(sampleArp, '192.168.1');
+      expect(ips, equals(['192.168.1.1', '192.168.1.10']));
+    });
+
     test(
       'findActiveSubnetEndpoints returns empty list when host IP is null',
       () async {

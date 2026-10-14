@@ -49,12 +49,16 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
       try {
         final activeIps = await subnetScanner!.findActiveSubnetEndpoints();
         var newlyConnected = false;
-        for (final ip in activeIps) {
+        for (final endpoint in activeIps) {
+          final parts = endpoint.split(':');
+          final ip = parts[0];
+          final port =
+              parts.length > 1 ? (int.tryParse(parts[1]) ?? 5555) : 5555;
           final alreadyAttached = attached.any(
             (d) => d.serial.startsWith('$ip:') || d.serial == ip,
           );
           if (!alreadyAttached) {
-            final res = await _service.connect(ip, 5555);
+            final res = await _service.connect(ip, port);
             if (res.isSuccess) {
               newlyConnected = true;
             }

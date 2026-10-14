@@ -31,7 +31,7 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
   @override
   Future<List<String>> findActiveSubnetEndpoints({
     int port = 5555,
-    bool fullSubnetSweep = false,
+    bool fullSubnetSweep = true,
   }) async {
     final hostIp = await networkInfoService?.getLocalIpAddress();
     if (hostIp == null || hostIp.isEmpty) return const [];
@@ -40,17 +40,17 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
     if (parts.length != 4) return const [];
     final subnetPrefix = '${parts[0]}.${parts[1]}.${parts[2]}';
 
-    final discoveredIps = <String>{};
+    final discoveredEndpoints = <String>{};
 
     // Stage 1: Fast ARP Table & Recent History Probing (~100-300ms)
     final priorityIps = await _collectPriorityIps(subnetPrefix, hostIp);
     if (priorityIps.isNotEmpty) {
-      final active = await _probeIpsInParallel(priorityIps, port);
-      discoveredIps.addAll(active);
+      final active = await _probePriorityIps(priorityIps, port);
+      discoveredEndpoints.addAll(active);
     }
 
-    // Stage 2: Deep Subnet Sweep (if no priority endpoints responded, or full sweep explicitly requested)
-    if (discoveredIps.isEmpty || fullSubnetSweep) {
+    // Stage 2: Deep Subnet Sweep across all 254 IPs (finds all remaining devices)
+    if (fullSubnetSweep) {
       final allSubnetIps = <String>[];
       for (var i = 1; i <= 254; i++) {
         final candidate = '$subnetPrefix.$i';
@@ -61,12 +61,12 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
       final active = await _probeIpsInBatches(
         allSubnetIps,
         port,
-        batchSize: 32,
+        batchSize: 48,
       );
-      discoveredIps.addAll(active);
+      discoveredEndpoints.addAll(active);
     }
 
-    return discoveredIps.toList();
+    return discoveredEndpoints.toList();
   }
 
   /// Gathers candidate IPs from macOS ARP cache and recently connected device history.
@@ -107,11 +107,13 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
     return candidates;
   }
 
-  /// Parses stdout of `arp -an` for IP addresses matching the specified subnet.
+  /// Parses stdout of `arp -an` for IP addresses matching the specified subnet,
+  /// ignoring (incomplete) entries with no resolved MAC hardware address.
   List<String> extractArpIps(String arpOutput, String subnetPrefix) {
     final ips = <String>[];
     final regex = RegExp(r'\(([\d\.]+)\)');
     for (final line in arpOutput.split('\n')) {
+      if (line.contains('(incomplete)')) continue;
       final match = regex.firstMatch(line);
       if (match != null) {
         final ip = match.group(1)!;
@@ -125,7 +127,31 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
     return ips;
   }
 
-  /// Probes a list of IPs concurrently with a short non-blocking TCP socket timeout.
+  /// Probes priority IPs on default [port] and alternative ADB ports (5554, 5556).
+  Future<List<String>> _probePriorityIps(
+    Iterable<String> ips,
+    int primaryPort,
+  ) async {
+    final results = <String>[];
+    await Future.wait(
+      ips.map((ip) async {
+        if (await probePort(ip, primaryPort)) {
+          results.add(ip);
+          return;
+        }
+        // Probe secondary ADB TCP ports if primary 5555 closed
+        for (final altPort in [5554, 5556, 5558]) {
+          if (await probePort(ip, altPort)) {
+            results.add('$ip:$altPort');
+            return;
+          }
+        }
+      }),
+    );
+    return results;
+  }
+
+  /// Probes a list of IPs concurrently with a non-blocking TCP socket timeout.
   Future<List<String>> _probeIpsInParallel(
     Iterable<String> ips,
     int port,
@@ -143,10 +169,11 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
   }
 
   /// Probes a larger list of IPs in controlled batches to avoid socket exhaustion.
+  /// Scans the entire list without premature breaks so all devices are discovered.
   Future<List<String>> _probeIpsInBatches(
     List<String> ips,
     int port, {
-    int batchSize = 32,
+    int batchSize = 48,
   }) async {
     final results = <String>[];
     for (var i = 0; i < ips.length; i += batchSize) {
@@ -154,10 +181,6 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
       final batch = ips.sublist(i, end);
       final active = await _probeIpsInParallel(batch, port);
       results.addAll(active);
-      if (results.isNotEmpty) {
-        // Early stop if an active device was detected on small networks
-        break;
-      }
     }
     return results;
   }
@@ -166,7 +189,7 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
   Future<bool> probePort(
     String ip,
     int port, {
-    Duration timeout = const Duration(milliseconds: 250),
+    Duration timeout = const Duration(milliseconds: 400),
   }) async {
     try {
       final socket = await Socket.connect(ip, port, timeout: timeout);
