@@ -70,6 +70,7 @@ WifiDesk bridges two core principles:
 | [⚡️ Features & Specs](docs/features.md) | Detailed technical specifications of the video pipeline and tools |
 | [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
+| [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and reusable edge-case solutions |
 
 ---
 

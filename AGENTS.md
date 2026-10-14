@@ -169,6 +169,10 @@ Before concluding any task or generating a commit, AI assistants must strictly e
    - Remove obsolete references or deprecated workflows immediately.
 3. **Strict SRP for Documentation Files:**
    - Every documentation file must adhere strictly to the Single Responsibility Principle. Never combine unrelated domains into one monolithic document. Structure documentation into modular, focused files (e.g., `docs/architecture.md`, `docs/pairing-guide.md`, `docs/troubleshooting.md`, `docs/shortcuts.md`).
+4. **Mandatory Engineering Lessons Learned & Case Studies (`docs/lessons-learned/`):**
+   - Whenever an intricate engineering bug, OS-level edge case, network routing anomaly, or platform quirk is investigated and resolved, the AI assistant **must record a dedicated case study** in `docs/lessons-learned/<issue-slug>.md`.
+   - Each lesson learned document must strictly follow SRP (< 250 lines) and the standard 5-part structure: *Context & Symptoms*, *Diagnostic Traces & Evidence*, *Root Cause Analysis*, *Architectural Solution*, and *Prevention & Reusability Checklist*.
+   - Always update the index table in `docs/lessons-learned/README.md` when adding a new case study.
 
 ---
 

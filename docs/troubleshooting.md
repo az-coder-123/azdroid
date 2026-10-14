@@ -28,6 +28,8 @@
   2. Run `adb tcpip 5555` (or click "Switch to Wi-Fi" on the USB card in WifiDesk) while the cable is attached.
   3. Unplug cable and connect via Direct IP (`<phone-ip>:5555`).
 
+> 💡 **Deep Dive:** For technical root-cause analyses and self-healing daemon architecture, see [docs/lessons-learned/mobile-hotspot-adb-routing.md](lessons-learned/mobile-hotspot-adb-routing.md).
+
 ---
 
 ## 🔒 2. Authorization & ADB Errors
