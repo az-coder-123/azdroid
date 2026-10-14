@@ -36,16 +36,12 @@ class AdbService {
 
   /// Locates and caches the active ADB executable path.
   Future<String?> resolveAdbPath() async {
-    if (_cachedAdbPath != null) {
-      return _cachedAdbPath;
-    }
+    if (_cachedAdbPath != null) return _cachedAdbPath;
 
-    // Try finding via /usr/bin/which
     try {
       final whichResult = await _executor.run('/usr/bin/which', ['adb']);
-      if (whichResult.exitCode == 0 &&
-          whichResult.stdout.toString().trim().isNotEmpty) {
-        final path = whichResult.stdout.toString().trim();
+      final path = whichResult.stdout.toString().trim();
+      if (whichResult.exitCode == 0 && path.isNotEmpty) {
         _cachedAdbPath = path;
         return path;
       }
@@ -70,10 +66,7 @@ class AdbService {
   }
 
   /// Checks if ADB is installed and reachable.
-  Future<bool> isAdbAvailable() async {
-    final path = await resolveAdbPath();
-    return path != null;
-  }
+  Future<bool> isAdbAvailable() async => (await resolveAdbPath()) != null;
 
   /// Lists all attached devices via `adb devices -l`.
   Future<List<AdbDevice>> getAttachedDevices() async {
@@ -141,17 +134,32 @@ class AdbService {
 
     try {
       final target = '$ipAddress:$port';
-      final result = await _executor.run(adb, [
+      var result = await _executor.run(adb, [
         'connect',
         target,
       ], timeout: const Duration(seconds: 8));
 
-      final out = result.stdout.toString().trim();
-      final err = result.stderr.toString().trim();
-      final combined = '$out $err'.trim();
+      var out = result.stdout.toString().trim();
+      var err = result.stderr.toString().trim();
+      var combined = '$out $err'.trim();
 
-      if (combined.toLowerCase().contains('connected to') ||
-          combined.toLowerCase().contains('already connected to')) {
+      // Auto-heal on stale network route ("No route to host") when switching Wi-Fi
+      if (combined.toLowerCase().contains('no route to host')) {
+        AppLogger.info('Stale ADB route for $target. Recycling ADB daemon...');
+        await _executor.run(adb, [
+          'kill-server',
+        ], timeout: const Duration(seconds: 4));
+        result = await _executor.run(adb, [
+          'connect',
+          target,
+        ], timeout: const Duration(seconds: 8));
+        out = result.stdout.toString().trim();
+        err = result.stderr.toString().trim();
+        combined = '$out $err'.trim();
+      }
+
+      final isConn = combined.toLowerCase().contains('connected to');
+      if (isConn) {
         return AdbCommandResult(
           isSuccess: true,
           message: out.isNotEmpty ? out : 'Connected successfully.',
@@ -163,10 +171,7 @@ class AdbService {
         message: combined.isNotEmpty ? combined : 'Connection refused.',
       );
     } catch (e) {
-      return AdbCommandResult(
-        isSuccess: false,
-        message: 'Failed to connect: $e',
-      );
+      return AdbCommandResult(isSuccess: false, message: 'Failed to connect: $e');
     }
   }
 
@@ -236,10 +241,7 @@ class AdbService {
             : 'Pairing failed. Check IP, port, and pairing code.',
       );
     } catch (e) {
-      return AdbCommandResult(
-        isSuccess: false,
-        message: 'Pairing exception: $e',
-      );
+      return AdbCommandResult(isSuccess: false, message: 'Pairing exception: $e');
     }
   }
 }

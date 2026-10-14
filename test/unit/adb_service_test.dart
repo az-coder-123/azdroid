@@ -105,6 +105,46 @@ galaxy-s24._adb._tcp.                  192.168.1.75:5555
     });
 
     test(
+      'connect auto-heals on No route to host by recycling adb server',
+      () async {
+        var callCount = 0;
+        when(
+          () => mockExecutor.run('/usr/local/bin/adb', [
+            'connect',
+            '192.168.43.148:5555',
+          ], timeout: any(named: 'timeout')),
+        ).thenAnswer((_) async {
+          callCount++;
+          if (callCount == 1) {
+            return ProcessResult(
+              1,
+              0,
+              "failed to connect to '192.168.43.148:5555': No route to host",
+              '',
+            );
+          }
+          return ProcessResult(1, 0, 'connected to 192.168.43.148:5555', '');
+        });
+
+        when(
+          () => mockExecutor.run('/usr/local/bin/adb', [
+            'kill-server',
+          ], timeout: any(named: 'timeout')),
+        ).thenAnswer((_) async => ProcessResult(1, 0, '', ''));
+
+        final result = await adbService.connect('192.168.43.148', 5555);
+
+        expect(result.isSuccess, isTrue);
+        expect(result.message, contains('connected to 192.168.43.148:5555'));
+        verify(
+          () => mockExecutor.run('/usr/local/bin/adb', [
+            'kill-server',
+          ], timeout: any(named: 'timeout')),
+        ).called(1);
+      },
+    );
+
+    test(
       'pair returns success when stdout contains Successfully paired',
       () async {
         when(
