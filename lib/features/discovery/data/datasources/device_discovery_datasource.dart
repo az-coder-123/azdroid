@@ -1,5 +1,7 @@
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
+import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:wifi_desk/features/discovery/data/datasources/network_subnet_scanner.dart';
 import 'package:wifi_desk/features/discovery/data/models/device_model.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 
@@ -23,10 +25,15 @@ abstract class DeviceDiscoveryDatasource {
 
 /// Production implementation leveraging [AdbService] to scan attached and mDNS devices.
 class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
-  const DeviceDiscoveryDatasourceImpl({this.adbService, this.adbTcpipService});
+  const DeviceDiscoveryDatasourceImpl({
+    this.adbService,
+    this.adbTcpipService,
+    this.subnetScanner,
+  });
 
   final AdbService? adbService;
   final AdbTcpipService? adbTcpipService;
+  final NetworkSubnetScanner? subnetScanner;
 
   AdbService get _service => adbService ?? AdbService();
   AdbTcpipService get _tcpipService =>
@@ -34,12 +41,32 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
 
   @override
   Future<List<DeviceModel>> scanDevices() async {
-    final attachedFuture = _service.getAttachedDevices();
-    final mdnsFuture = _service.getMdnsServices();
+    var attached = await _service.getAttachedDevices();
+    final mdnsServices = await _service.getMdnsServices();
 
-    final results = await Future.wait([attachedFuture, mdnsFuture]);
-    final attached = results[0] as List<AdbDevice>;
-    final mdnsServices = results[1] as List<AdbMdnsService>;
+    // Auto-discover Android devices on the local Wi-Fi subnet listening on port 5555
+    if (subnetScanner != null) {
+      try {
+        final activeIps = await subnetScanner!.findActiveSubnetEndpoints();
+        var newlyConnected = false;
+        for (final ip in activeIps) {
+          final alreadyAttached = attached.any(
+            (d) => d.serial.startsWith('$ip:') || d.serial == ip,
+          );
+          if (!alreadyAttached) {
+            final res = await _service.connect(ip, 5555);
+            if (res.isSuccess) {
+              newlyConnected = true;
+            }
+          }
+        }
+        if (newlyConnected) {
+          attached = await _service.getAttachedDevices();
+        }
+      } catch (e) {
+        AppLogger.debug('Subnet auto-discovery error: $e');
+      }
+    }
 
     final deviceMap = <String, DeviceModel>{};
 

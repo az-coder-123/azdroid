@@ -32,7 +32,7 @@ WifiDesk bridges two core principles:
 ## ✨ Key Highlights
 
 - 🚀 **Sub-20ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on Android; streaming raw NAL units over a local TCP socket.
-- 📶 **Dual-Mode Connectivity (Wi-Fi & USB):** Seamless plug-and-play USB cable connection with 1-click wireless switching, plus automated mDNS discovery and pairing for Android 11+ Wireless Debugging.
+- 📶 **Zero-Config Wi-Fi Auto-Discovery & Dual-Mode Connectivity:** Automatically scans and detects Android devices on the local Wi-Fi subnet (via macOS ARP cache & fast non-blocking TCP probing) without needing to manually type an IP address. Seamless plug-and-play USB cable connection with 1-click wireless switching, automated mDNS discovery for Android 11+ Wireless Debugging, and manual Direct IP fallback.
 - 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (full Unicode and IME support).
 - 🍎 **Mac-First Productivity:**
   - **Bidirectional File Transfers & Explorer:** Send files/APKs via Finder sheet (<kbd>Cmd</kbd> + <kbd>U</kbd>) or drag-and-drop; browse phone storage and download files to Mac (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>) with quick folders.

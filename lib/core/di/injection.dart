@@ -19,6 +19,7 @@ import 'package:wifi_desk/features/control/data/repositories/control_repository_
 import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/device_discovery_datasource.dart';
+import 'package:wifi_desk/features/discovery/data/datasources/network_subnet_scanner.dart';
 import 'package:wifi_desk/features/discovery/data/repositories/device_discovery_repository_impl.dart';
 import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
@@ -84,10 +85,19 @@ Future<void> initDependencies() async {
   );
 
   // Discovery data sources & repositories
+  sl.registerLazySingleton<NetworkSubnetScanner>(
+    () => NetworkSubnetScannerImpl(
+      networkInfoService: sl<NetworkInfoService>(),
+      historyService: sl<DeviceHistoryService>(),
+      processExecutor: sl<ProcessExecutor>(),
+    ),
+  );
+
   sl.registerLazySingleton<DeviceDiscoveryDatasource>(
     () => DeviceDiscoveryDatasourceImpl(
       adbService: sl<AdbService>(),
       adbTcpipService: sl<AdbTcpipService>(),
+      subnetScanner: sl<NetworkSubnetScanner>(),
     ),
   );
 

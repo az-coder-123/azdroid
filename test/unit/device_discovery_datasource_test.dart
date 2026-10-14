@@ -3,11 +3,14 @@ import 'package:mocktail/mocktail.dart';
 import 'package:wifi_desk/core/services/adb_service.dart';
 import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
 import 'package:wifi_desk/features/discovery/data/datasources/device_discovery_datasource.dart';
+import 'package:wifi_desk/features/discovery/data/datasources/network_subnet_scanner.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
 
 class MockAdbService extends Mock implements AdbService {}
 
 class MockAdbTcpipService extends Mock implements AdbTcpipService {}
+
+class MockNetworkSubnetScanner extends Mock implements NetworkSubnetScanner {}
 
 void main() {
   late MockAdbService mockAdbService;
@@ -128,6 +131,49 @@ void main() {
         isTrue,
       );
       expect(devices.any((d) => d.isDualConnected), isFalse);
+    });
+
+    test('automatically discovers and connects to subnet endpoints that are not yet attached', () async {
+      final mockScanner = MockNetworkSubnetScanner();
+      final customDatasource = DeviceDiscoveryDatasourceImpl(
+        adbService: mockAdbService,
+        adbTcpipService: mockTcpipService,
+        subnetScanner: mockScanner,
+      );
+
+      when(
+        () => mockScanner.findActiveSubnetEndpoints(
+          port: any(named: 'port'),
+          fullSubnetSweep: any(named: 'fullSubnetSweep'),
+        ),
+      ).thenAnswer((_) async => ['192.168.1.3']);
+
+      const newlyAttachedDevice = AdbDevice(
+        serial: '192.168.1.3:5555',
+        state: 'device',
+        product: 'lancelot_global',
+        model: 'M2004J19C',
+      );
+
+      var callCount = 0;
+      when(() => mockAdbService.getAttachedDevices()).thenAnswer((_) async {
+        callCount++;
+        return callCount == 1 ? [] : [newlyAttachedDevice];
+      });
+      when(() => mockAdbService.connect('192.168.1.3', 5555)).thenAnswer(
+        (_) async =>
+            const AdbCommandResult(isSuccess: true, message: 'connected'),
+      );
+
+      when(() => mockTcpipService.getHardwareSerial(any()))
+          .thenAnswer((_) async => null);
+
+      final devices = await customDatasource.scanDevices();
+
+      verify(() => mockAdbService.connect('192.168.1.3', 5555)).called(1);
+      expect(devices.length, equals(1));
+      expect(devices.first.ipAddress, equals('192.168.1.3'));
+      expect(devices.first.name, equals('M2004J19C'));
     });
   });
 }
