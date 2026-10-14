@@ -54,9 +54,9 @@ class LogcatStreamDatasource {
       ]);
       _activeProcess = process;
 
-      // Handle standard output stream
+      // Handle standard output stream with malformed byte recovery
       process.stdout
-          .transform(utf8.decoder)
+          .transform(const Utf8Decoder(allowMalformed: true))
           .transform(const LineSplitter())
           .listen(
             (line) {
@@ -70,7 +70,6 @@ class LogcatStreamDatasource {
                 error: error,
                 stackTrace: stack,
               );
-              if (!controller.isClosed) controller.addError(error);
             },
             onDone: () {
               AppLogger.info('Logcat stream finished for $serial');
@@ -79,9 +78,9 @@ class LogcatStreamDatasource {
             cancelOnError: false,
           );
 
-      // Handle stderr
+      // Handle stderr with malformed byte recovery
       process.stderr
-          .transform(utf8.decoder)
+          .transform(const Utf8Decoder(allowMalformed: true))
           .transform(const LineSplitter())
           .listen((errLine) {
             AppLogger.debug('[logcat stderr] $errLine');

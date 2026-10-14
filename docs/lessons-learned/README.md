@@ -27,6 +27,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Xiaomi MIUI Input Security Restrictions** | OEM Security & IME Injection | Guide users to enable USB Security Settings and fallback to clipboard broadcast for Unicode text. | [xiaomi-miui-input-security-restrictions.md](xiaomi-miui-input-security-restrictions.md) |
 | **Dual-Connection Device Deduplication** | Device Discovery & Topology | Unify physical USB and Wi-Fi endpoints under single hardware identity using `ro.serialno`. | [dual-connection-device-deduplication.md](dual-connection-device-deduplication.md) |
 | **Background Polling UI Churn Prevention** | Flutter UI & BLoC Boundaries | Prevent spinner flashes and focus loss during background scans using `silent: true` and `buildWhen`. | [background-polling-ui-churn-prevention.md](background-polling-ui-churn-prevention.md) |
+| **Malformed UTF-8 in Logcat Streams** | Android Streams & Decoding | Use `Utf8Decoder(allowMalformed: true)` to prevent crash on non-UTF-8 driver binary dumps. | [logcat-stream-malformed-utf8-bytes.md](logcat-stream-malformed-utf8-bytes.md) |
 
 ---
 
