@@ -32,9 +32,10 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
   Timer? _batchTimer;
   StreamController<List<DeviceLogEntry>>? _batchController;
 
-  final List<DeviceLogEntry> _pendingBatch = [];
+  final List<String> _pendingRawLines = [];
   final List<DeviceLogEntry> _ringBuffer = [];
   int _monotonicIdCounter = 0;
+  bool _isFlushing = false;
 
   @override
   LogFileRecordingStatus get recordingStatus => _fileRecorder.status;
@@ -55,27 +56,19 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
             // 1. Asynchronous write to local file if recording is active
             _fileRecorder.writeLine(rawLine);
 
-            // 2. Parse entry and enqueue to pending batch
-            _monotonicIdCounter++;
-            final entry = _parser.parseLine(rawLine, _monotonicIdCounter);
-            _pendingBatch.add(entry);
-
-            // Maintain in-memory ring buffer
-            _ringBuffer.add(entry);
-            if (_ringBuffer.length > maxBufferEntries) {
-              _ringBuffer.removeRange(0, _ringBuffer.length - maxBufferEntries);
-            }
+            // 2. Enqueue raw line for concurrent background parsing
+            _pendingRawLines.add(rawLine);
 
             // If batch grows large rapidly, flush early to prevent memory pressure
-            if (_pendingBatch.length >= 200) {
+            if (_pendingRawLines.length >= 200) {
               _flushPendingBatch();
             }
           },
           onError: (Object error) {
             if (!controller.isClosed) controller.addError(error);
           },
-          onDone: () {
-            _flushPendingBatch();
+          onDone: () async {
+            await _flushPendingBatch();
             if (!controller.isClosed) controller.close();
           },
         );
@@ -83,22 +76,54 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
     return controller.stream;
   }
 
-  void _flushPendingBatch() {
-    if (_pendingBatch.isEmpty ||
+  Future<void> _flushPendingBatch() async {
+    if (_pendingRawLines.isEmpty ||
         _batchController == null ||
-        _batchController!.isClosed) {
+        _batchController!.isClosed ||
+        _isFlushing) {
       return;
     }
 
-    final batchToEmit = List<DeviceLogEntry>.from(_pendingBatch);
-    _pendingBatch.clear();
-    _batchController!.add(batchToEmit);
+    _isFlushing = true;
+    final linesToProcess = List<String>.from(_pendingRawLines);
+    _pendingRawLines.clear();
+
+    final startingId = _monotonicIdCounter + 1;
+    _monotonicIdCounter += linesToProcess.length;
+
+    try {
+      final parsedEntries = await _parser.parseBatchAsync(
+        linesToProcess,
+        startingId,
+      );
+
+      // Maintain in-memory ring buffer
+      _ringBuffer.addAll(parsedEntries);
+      if (_ringBuffer.length > maxBufferEntries) {
+        _ringBuffer.removeRange(0, _ringBuffer.length - maxBufferEntries);
+      }
+
+      if (_batchController != null && !_batchController!.isClosed) {
+        _batchController!.add(parsedEntries);
+      }
+    } catch (e, stack) {
+      AppLogger.warning(
+        'Logcat batch parsing failed: $e',
+        error: e,
+        stackTrace: stack,
+      );
+    } finally {
+      _isFlushing = false;
+      if (_pendingRawLines.length >= 200) {
+        _flushPendingBatch();
+      }
+    }
   }
 
   @override
   Future<void> clearDeviceBuffer(String deviceSerial) async {
     _ringBuffer.clear();
-    _pendingBatch.clear();
+    _pendingRawLines.clear();
     await _datasource.clearLogcat(deviceSerial);
   }
 
@@ -178,6 +203,6 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
     stopStream();
     _fileRecorder.stopRecording();
     _ringBuffer.clear();
-    _pendingBatch.clear();
+    _pendingRawLines.clear();
   }
 }

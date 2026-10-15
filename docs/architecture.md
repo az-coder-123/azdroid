@@ -60,7 +60,8 @@ lib/
 │   │   ├── productivity_constants.dart     # Clipboard sync & file transfer parameters
 │   │   └── socket_config.dart              # Network ports, timeouts
 │   ├── di/                                 # Dependency Injection container
-│   │   └── injection.dart                  # Service locator configuration (GetIt)
+│   │   ├── modules/                        # Feature-scoped DI registration modules
+│   │   └── injection.dart                  # Modular service locator entrypoint (GetIt)
 │   ├── services/                           # System process & native bridge services
 │   │   ├── adb_service.dart                # ADB CLI & mDNS daemon controller
 │   │   ├── network_info_service.dart       # Host machine Wi-Fi IPv4 address resolution

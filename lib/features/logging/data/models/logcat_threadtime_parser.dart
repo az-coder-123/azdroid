@@ -1,5 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
 import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+
+/// Data payload passed to background isolate for concurrent batch parsing.
+class LogcatBatchPayload {
+  const LogcatBatchPayload({required this.lines, required this.startingId});
+
+  final List<String> lines;
+  final int startingId;
+}
+
+/// Top-level function executed inside Dart background isolate.
+List<DeviceLogEntry> parseLogcatBatchInIsolate(LogcatBatchPayload payload) {
+  const parser = LogcatThreadtimeParser();
+  return parser.parseLines(payload.lines, payload.startingId);
+}
 
 /// Parses raw Android logcat lines (using `-v threadtime` format) into [DeviceLogEntry] instances.
 class LogcatThreadtimeParser {
@@ -9,6 +24,33 @@ class LogcatThreadtimeParser {
   static final RegExp _threadtimeRegex = RegExp(
     r'^(\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3})\s+(\d+)\s+(\d+)\s+([VDIWEF])\s+([^:]+?)\s*:\s*(.*)$',
   );
+
+  /// Parses multiple logcat lines sequentially into a list of [DeviceLogEntry].
+  List<DeviceLogEntry> parseLines(List<String> lines, int startingId) {
+    var currentId = startingId;
+    final results = <DeviceLogEntry>[];
+    for (final line in lines) {
+      results.add(parseLine(line, currentId++));
+    }
+    return results;
+  }
+
+  /// Parses multiple lines asynchronously, offloading to a background isolate via [compute]
+  /// when the line count meets or exceeds [isolateThreshold] (default 50 lines).
+  Future<List<DeviceLogEntry>> parseBatchAsync(
+    List<String> lines,
+    int startingId, {
+    int isolateThreshold = 50,
+  }) async {
+    if (lines.isEmpty) return const [];
+    if (lines.length < isolateThreshold) {
+      return parseLines(lines, startingId);
+    }
+    return compute(
+      parseLogcatBatchInIsolate,
+      LogcatBatchPayload(lines: lines, startingId: startingId),
+    );
+  }
 
   /// Parses a single line of logcat output.
   DeviceLogEntry parseLine(String line, int monotonicId) {

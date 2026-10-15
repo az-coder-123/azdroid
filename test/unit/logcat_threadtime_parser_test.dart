@@ -58,5 +58,53 @@ void main() {
       expect(entry.tag, '');
       expect(entry.message, line);
     });
+
+    test('parseLines parses sequential batch with monotonic IDs', () {
+      final lines = [
+        '10-14 10:48:15.100  100  101 I TagA: message 1',
+        '10-14 10:48:15.200  100  101 W TagB: message 2',
+      ];
+      final entries = parser.parseLines(lines, 10);
+
+      expect(entries.length, 2);
+      expect(entries[0].id, 10);
+      expect(entries[0].tag, 'TagA');
+      expect(entries[1].id, 11);
+      expect(entries[1].tag, 'TagB');
+    });
+
+    test('parseBatchAsync handles small list synchronously inline', () async {
+      final lines = ['10-14 10:48:15.100  100  101 I TagA: inline msg'];
+      final entries = await parser.parseBatchAsync(
+        lines,
+        5,
+        isolateThreshold: 50,
+      );
+
+      expect(entries.length, 1);
+      expect(entries[0].id, 5);
+      expect(entries[0].message, 'inline msg');
+    });
+
+    test(
+      'parseBatchAsync offloads large list to isolate when exceeding threshold',
+      () async {
+        final lines = List.generate(
+          60,
+          (i) => '10-14 10:48:15.100  100  101 I TagIsolate: log item $i',
+        );
+        final entries = await parser.parseBatchAsync(
+          lines,
+          1,
+          isolateThreshold: 50,
+        );
+
+        expect(entries.length, 60);
+        expect(entries.first.id, 1);
+        expect(entries.first.tag, 'TagIsolate');
+        expect(entries.last.id, 60);
+        expect(entries.last.message, 'log item 59');
+      },
+    );
   });
 }
