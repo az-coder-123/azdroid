@@ -10,7 +10,7 @@
 |:---|:---|:---|:---:|:---:|:---:|
 | **BL-01** | `logging` (Logcat) | macOS Native Keyboard Shortcuts (`Cmd+F`, `Cmd+K`, `Space`, `Cmd+Down`, `Esc`) | High | v1.1 | ✅ Completed |
 | **BL-02** | `logging` (Logcat) | Search Term Visual Highlighting in Log Messages | Medium | v1.1 | ✅ Completed |
-| **BL-03** | `streaming` / `productivity` | Direct Drag & Drop into Mirroring Viewport (APK install & media transfer) | High | v1.2 | ⏳ Backlog |
+| **BL-03** | `streaming` / `productivity` | Direct Drag & Drop into Mirroring Viewport (APK install & media transfer) | High | v1.2 | ✅ Completed |
 | **BL-04** | `productivity` (Clipboard) | Background Real-time Two-Way Clipboard Synchronization Daemon | High | v1.2 | ⏳ Backlog |
 | **BL-05** | `streaming` (Audio) | Scrcpy v2.0+ Audio Forwarding Socket Pipeline (Android 10+) | Medium | v1.3 | ⏳ Backlog |
 | **BL-06** | `architecture` (Clean Code) | Modularize Large Widget & Cubit Files (`device_log_cubit`, `apk_installer_dialog`, `log_filter_bar`) | Medium | Technical Debt | ⏳ In Progress |

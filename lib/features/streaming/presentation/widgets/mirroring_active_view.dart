@@ -10,6 +10,7 @@ import 'package:wifi_desk/features/logging/presentation/widgets/device_log_dialo
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screen_recording_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/screenshot_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/transfer_status_banner.dart';
@@ -41,110 +42,112 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        if (!_isZenMode)
-          SafeArea(
-            child: Column(
-              children: [
-                // Top Non-overlapping Telemetry Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                  child: StreamTelemetryHeader(
-                    session: widget.state.session,
-                    isZenMode: _isZenMode,
-                    onToggleZenMode: () => setState(() => _isZenMode = true),
-                    onClose: () => context.read<StreamingCubit>().stopSession(),
-                  ),
-                ),
-
-                // Dedicated Central Display Viewport with Side Controls Toolbar
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 4.0,
+    return FileDropTargetOverlay(
+      deviceSerial: widget.device.serial,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (!_isZenMode)
+            SafeArea(
+              child: Column(
+                children: [
+                  // Top Non-overlapping Telemetry Header
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: StreamTelemetryHeader(
+                      session: widget.state.session,
+                      isZenMode: _isZenMode,
+                      onToggleZenMode: () => setState(() => _isZenMode = true),
+                      onClose: context.read<StreamingCubit>().stopSession,
                     ),
-                    child: _buildCentralViewport(context),
+                  ),
+
+                  // Dedicated Central Display Viewport with Side Controls Toolbar
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 4.0,
+                      ),
+                      child: _buildCentralViewport(context),
+                    ),
+                  ),
+
+                  // Bottom Non-overlapping Controls Toolbar
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                    child: FloatingControlsToolbar(
+                      session: widget.state.session,
+                      onBack: context.read<StreamingCubit>().sendBack,
+                      onHome: context.read<StreamingCubit>().sendHome,
+                      onAppSwitch: context.read<StreamingCubit>().sendAppSwitch,
+                      onRotate: context.read<StreamingCubit>().rotateScreen,
+                      onToggleScreenOff: context
+                          .read<StreamingCubit>()
+                          .toggleScreenOff,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else ...[
+            // Zen Mode: Full-window display viewport
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InteractiveDisplayViewport(
+                session: widget.state.session,
+                deviceSerial: widget.device.serial,
+                rotationDegrees: widget.state.rotationDegrees,
+              ),
+            ),
+
+            // Exit Zen Mode Floating Action
+            Positioned(
+              top: 16,
+              right: 16,
+              child: IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: const Icon(
+                    Icons.fullscreen_exit_rounded,
+                    size: 20,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-
-                // Bottom Non-overlapping Controls Toolbar
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                  child: FloatingControlsToolbar(
-                    session: widget.state.session,
-                    onBack: () => context.read<StreamingCubit>().sendBack(),
-                    onHome: () => context.read<StreamingCubit>().sendHome(),
-                    onAppSwitch: () =>
-                        context.read<StreamingCubit>().sendAppSwitch(),
-                    onRotate: () =>
-                        context.read<StreamingCubit>().rotateScreen(),
-                    onToggleScreenOff: () =>
-                        context.read<StreamingCubit>().toggleScreenOff(),
-                  ),
-                ),
-              ],
+                tooltip: 'Exit Zen Mode',
+                onPressed: () => setState(() => _isZenMode = false),
+              ),
             ),
-          )
-        else ...[
-          // Zen Mode: Full-window display viewport
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InteractiveDisplayViewport(
-              session: widget.state.session,
-              deviceSerial: widget.device.serial,
-              rotationDegrees: widget.state.rotationDegrees,
-            ),
-          ),
+          ],
 
-          // Exit Zen Mode Floating Action
+          // Top-Right Transfer Notification Banner
           Positioned(
             top: 16,
-            right: 16,
-            child: IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.surface.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: const Icon(
-                  Icons.fullscreen_exit_rounded,
-                  size: 20,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              tooltip: 'Exit Zen Mode',
-              onPressed: () => setState(() => _isZenMode = false),
+            right: _isZenMode ? 64 : 16,
+            child: const TransferStatusBanner(),
+          ),
+
+          // Bottom-Right Feedback Toast Banners
+          Positioned(
+            bottom: _isZenMode ? 24 : 76,
+            right: 24,
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ScreenRecordingFeedbackBanner(),
+                SizedBox(height: 8),
+                ScreenshotFeedbackBanner(),
+              ],
             ),
           ),
         ],
-
-        // Top-Right Transfer Notification Banner
-        Positioned(
-          top: 16,
-          right: _isZenMode ? 64 : 16,
-          child: const TransferStatusBanner(),
-        ),
-
-        // Bottom-Right Feedback Toast Banners
-        Positioned(
-          bottom: _isZenMode ? 24 : 76,
-          right: 24,
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ScreenRecordingFeedbackBanner(),
-              SizedBox(height: 8),
-              ScreenshotFeedbackBanner(),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -194,8 +197,6 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
             children: [
               if (canCenterSymmetrically)
                 const SizedBox(width: reservedSidebarSpace),
-
-              // The Real-Time Phone Display Viewport
               SizedBox(
                 width: phoneDisplayW,
                 height: phoneDisplayH,
@@ -205,33 +206,8 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                   rotationDegrees: widget.state.rotationDegrees,
                 ),
               ),
-
               const SizedBox(width: gap),
-
-              // Vertical Actions Sidebar placed on the right
-              SideControlsToolbar(
-                session: widget.state.session,
-                deviceSerial: widget.device.serial,
-                onSelectBitrate: (b) =>
-                    context.read<StreamingCubit>().updateBitrate(b),
-                onScreenshot: () => context
-                    .read<ScreenshotCubit>()
-                    .captureScreenshot(widget.device.serial),
-                onCropScreenshot: () => context
-                    .read<ScreenshotCubit>()
-                    .startAreaSelection(widget.device.serial),
-                onTextInject: () =>
-                    QuickTextInputDialog.show(context, widget.device.serial),
-                onSendFiles: _pickAndSendFiles,
-                onBrowseFiles: () =>
-                    DeviceFileManagerDialog.show(context, widget.device.serial),
-                onViewLogs: () =>
-                    DeviceLogDialog.show(context, widget.device.serial),
-                onInstallApk: () => ApkInstallerDialog.show(
-                  context,
-                  deviceSerial: widget.device.serial,
-                ),
-              ),
+              _buildSideControls(context),
             ],
           ),
         );
@@ -239,9 +215,25 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
     );
   }
 
+  Widget _buildSideControls(BuildContext context) {
+    final s = widget.device.serial;
+    return SideControlsToolbar(
+      session: widget.state.session,
+      deviceSerial: s,
+      onSelectBitrate: (b) => context.read<StreamingCubit>().updateBitrate(b),
+      onScreenshot: () => context.read<ScreenshotCubit>().captureScreenshot(s),
+      onCropScreenshot: () =>
+          context.read<ScreenshotCubit>().startAreaSelection(s),
+      onTextInject: () => QuickTextInputDialog.show(context, s),
+      onSendFiles: _pickAndSendFiles,
+      onBrowseFiles: () => DeviceFileManagerDialog.show(context, s),
+      onViewLogs: () => DeviceLogDialog.show(context, s),
+      onInstallApk: () => ApkInstallerDialog.show(context, deviceSerial: s),
+    );
+  }
+
   Future<void> _pickAndSendFiles() async {
-    final picker = sl<MacFilePickerService>();
-    final files = await picker.pickFiles();
+    final files = await sl<MacFilePickerService>().pickFiles();
     if (files.isNotEmpty && mounted) {
       context.read<FileTransferCubit>().transferFiles(
         widget.device.serial,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,14 +9,25 @@ import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer
 
 /// Cubit managing drag-and-drop file transfers and APK sideloading.
 class FileTransferCubit extends Cubit<FileTransferState> {
-  FileTransferCubit({required this.repository})
-    : super(const FileTransferInitial());
+  FileTransferCubit({
+    required this.repository,
+    this.autoResetDuration = const Duration(seconds: 4),
+  }) : super(const FileTransferInitial());
 
   final FileTransferRepository repository;
+  final Duration? autoResetDuration;
+  Timer? _autoResetTimer;
 
   /// Resets state back to initial idle.
   void reset() {
+    _autoResetTimer?.cancel();
     emit(const FileTransferInitial());
+  }
+
+  @override
+  Future<void> close() {
+    _autoResetTimer?.cancel();
+    return super.close();
   }
 
   /// Processes and pushes a batch of local file paths to the connected Android device.
@@ -76,6 +88,14 @@ class FileTransferCubit extends Cubit<FileTransferState> {
         );
         if (!isClosed) {
           emit(FileTransferSuccess(completedTransfer: updated));
+          if (autoResetDuration != null) {
+            _autoResetTimer?.cancel();
+            _autoResetTimer = Timer(autoResetDuration!, () {
+              if (!isClosed && state is FileTransferSuccess) {
+                emit(const FileTransferInitial());
+              }
+            });
+          }
         }
       } else {
         final failed = transfer.copyWith(

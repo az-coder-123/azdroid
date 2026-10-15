@@ -79,5 +79,44 @@ void main() {
           cubit.transferFiles(testSerial, ['/Users/mac/failed.doc']),
       expect: () => [isA<FileTransferActive>(), isA<FileTransferFailure>()],
     );
+
+    test('autoResetDuration automatically resets state to initial after completion', () async {
+      when(() => mockRepository.pushFile(testSerial, '/Users/mac/test.png'))
+          .thenAnswer((_) async => true);
+
+      final cubit = FileTransferCubit(
+        repository: mockRepository,
+        autoResetDuration: const Duration(milliseconds: 30),
+      );
+
+      await cubit.transferFiles(testSerial, ['/Users/mac/test.png']);
+      expect(cubit.state, isA<FileTransferSuccess>());
+
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(cubit.state, isA<FileTransferInitial>());
+
+      await cubit.close();
+    });
+
+    test(
+      'reset() immediately emits FileTransferInitial and cancels timer',
+      () async {
+        when(() => mockRepository.pushFile(testSerial, '/Users/mac/test.png'))
+            .thenAnswer((_) async => true);
+
+        final cubit = FileTransferCubit(
+          repository: mockRepository,
+          autoResetDuration: const Duration(seconds: 10),
+        );
+
+        await cubit.transferFiles(testSerial, ['/Users/mac/test.png']);
+        expect(cubit.state, isA<FileTransferSuccess>());
+
+        cubit.reset();
+        expect(cubit.state, isA<FileTransferInitial>());
+
+        await cubit.close();
+      },
+    );
   });
 }
