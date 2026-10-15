@@ -11,6 +11,10 @@
 
 The **APK Sideload & Package Manager** provides an end-to-end workflow for inspecting, configuring, installing, and managing Android application packages (`.apk`) directly from macOS.
 
+<p align="center">
+  <img src="../images/deskdroid_apk_installer.png" alt="DeskDroid APK Sideload & Manager Modal" width="480">
+</p>
+
 ```mermaid
 flowchart TD
     Drop["Select APK or Drag & Drop"] --> Parse["AAPT2 Metadata Inspection\n(Extract icon, name, package, SDKs)"]

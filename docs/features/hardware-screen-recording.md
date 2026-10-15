@@ -11,6 +11,10 @@
 
 DeskDroid provides lossless on-device video recording without placing computational capture burden on your Mac. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
 
+<p align="center">
+  <img src="../images/deskdroid_screen_recording.png" alt="DeskDroid Hardware Screen Recording HUD" width="480">
+</p>
+
 ```mermaid
 flowchart TD
     Trigger["Shortcut Cmd + Shift + R or Dock Button"] --> Prep["Preparation HUD\n(3s Countdown Toggle & Controls)"]
