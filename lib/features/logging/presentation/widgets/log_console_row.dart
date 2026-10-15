@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
+import 'package:wifi_desk/features/logging/presentation/utils/log_search_highlighter.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_level_badge.dart';
 
 /// Single logcat row item rendering color-coded timestamp, PID:TID, level, tag,
@@ -15,6 +16,9 @@ class LogConsoleRow extends StatelessWidget {
     required this.softWrap,
     required this.onTap,
     required this.onToggleBookmark,
+    this.searchQuery = '',
+    this.caseSensitive = false,
+    this.isRegex = false,
   });
 
   final DeviceLogEntry entry;
@@ -23,6 +27,9 @@ class LogConsoleRow extends StatelessWidget {
   final bool softWrap;
   final VoidCallback onTap;
   final VoidCallback onToggleBookmark;
+  final String searchQuery;
+  final bool caseSensitive;
+  final bool isRegex;
 
   @override
   Widget build(BuildContext context) {
@@ -86,31 +93,47 @@ class LogConsoleRow extends StatelessWidget {
             const SizedBox(width: 8),
             SizedBox(
               width: 120,
-              child: Text(
-                entry.tag,
+              child: Text.rich(
+                TextSpan(
+                  children: LogSearchHighlighter.buildSpans(
+                    text: entry.tag,
+                    query: searchQuery,
+                    baseStyle: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: entry.level.color,
+                    ),
+                    highlightColor: AppColors.statusWarning,
+                    caseSensitive: caseSensitive,
+                    isRegex: isRegex,
+                  ),
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: entry.level.color,
-                ),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                entry.message,
+              child: Text.rich(
+                TextSpan(
+                  children: LogSearchHighlighter.buildSpans(
+                    text: entry.message,
+                    query: searchQuery,
+                    baseStyle: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                      color: entry.level.color == AppColors.textSecondary
+                          ? AppColors.textPrimary
+                          : entry.level.color.withValues(alpha: 0.95),
+                    ),
+                    highlightColor: AppColors.statusWarning,
+                    caseSensitive: caseSensitive,
+                    isRegex: isRegex,
+                  ),
+                ),
                 maxLines: softWrap ? 6 : 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  color: entry.level.color == AppColors.textSecondary
-                      ? AppColors.textPrimary
-                      : entry.level.color.withValues(alpha: 0.95),
-                ),
               ),
             ),
             IconButton(

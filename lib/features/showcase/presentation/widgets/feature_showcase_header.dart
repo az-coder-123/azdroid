@@ -46,7 +46,10 @@ class FeatureShowcaseHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('WifiDesk Features Showcase', style: AppTypography.title),
+                const Text(
+                  'WifiDesk Features Showcase',
+                  style: AppTypography.title,
+                ),
                 if (!isCompact)
                   const Text(
                     'Overview of display mirroring, remote control, and productivity tools',

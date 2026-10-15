@@ -38,8 +38,9 @@ class _FeatureShowcaseDialogState extends State<FeatureShowcaseDialog> {
         final q = _searchQuery.toLowerCase().trim();
         final matchTitle = f.title.toLowerCase().contains(q);
         final matchSub = f.subtitle.toLowerCase().contains(q);
-        final matchHighlights =
-            f.highlights.any((h) => h.toLowerCase().contains(q));
+        final matchHighlights = f.highlights.any(
+          (h) => h.toLowerCase().contains(q),
+        );
         final matchBadge = f.badgeText.toLowerCase().contains(q);
         return matchTitle || matchSub || matchHighlights || matchBadge;
       }
@@ -195,19 +196,9 @@ class _FeatureShowcaseDialogState extends State<FeatureShowcaseDialog> {
       child: isCompact
           ? Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                countText,
-                const SizedBox(height: 6),
-                actions,
-              ],
+              children: [countText, const SizedBox(height: 6), actions],
             )
-          : Row(
-              children: [
-                countText,
-                const Spacer(),
-                actions,
-              ],
-            ),
+          : Row(children: [countText, const Spacer(), actions]),
     );
   }
 }

@@ -93,3 +93,59 @@ class LogOptionToggle extends StatelessWidget {
     );
   }
 }
+
+/// Compact toggle chip for filtering starred / bookmarked log entries.
+class LogBookmarkFilterChip extends StatelessWidget {
+  const LogBookmarkFilterChip({
+    super.key,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        decoration: BoxDecoration(
+          color: isActive
+              ? AppColors.statusWarning.withValues(alpha: 0.18)
+              : AppColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(6.0),
+          border: Border.all(
+            color: isActive ? AppColors.statusWarning : AppColors.borderSubtle,
+            width: isActive ? 1.0 : 0.75,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isActive ? Icons.star_rounded : Icons.star_outline_rounded,
+              size: 14,
+              color: isActive
+                  ? AppColors.statusWarning
+                  : AppColors.textSecondary,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              'Starred',
+              style: TextStyle(
+                fontSize: 11.0,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                color: isActive
+                    ? AppColors.statusWarning
+                    : AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

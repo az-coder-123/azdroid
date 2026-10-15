@@ -11,10 +11,11 @@ import 'package:wifi_desk/features/logging/presentation/widgets/log_action_foote
 import 'package:wifi_desk/features/logging/presentation/widgets/log_console_table.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_detail_drawer.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_filter_bar.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
 
 /// Modal dialog providing real-time Android logcat inspection, multi-tier filtering,
-/// and non-blocking local disk persistence.
-class DeviceLogDialog extends StatelessWidget {
+/// native keyboard shortcuts, and non-blocking local disk persistence.
+class DeviceLogDialog extends StatefulWidget {
   const DeviceLogDialog({super.key, required this.deviceSerial});
 
   final String deviceSerial;
@@ -29,6 +30,19 @@ class DeviceLogDialog extends StatelessWidget {
         child: DeviceLogDialog(deviceSerial: deviceSerial),
       ),
     );
+  }
+
+  @override
+  State<DeviceLogDialog> createState() => _DeviceLogDialogState();
+}
+
+class _DeviceLogDialogState extends State<DeviceLogDialog> {
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -73,60 +87,69 @@ class DeviceLogDialog extends StatelessWidget {
                 );
               }
 
-              return Column(
-                children: [
-                  _buildHeader(context, state),
-                  LogFilterBar(
-                    filter: state.filter,
-                    tagCounts: state.tagCounts,
-                    pidCounts: state.pidCounts,
-                    pidPrimaryTags: state.pidPrimaryTags,
-                  ),
-                  Expanded(
-                    child: LogConsoleTable(
-                      entries: state.filteredEntries,
-                      autoScroll: state.autoScroll,
-                      isPaused: state.isPaused,
-                      searchQuery: state.filter.textQuery,
-                      selectedEntry: state.selectedEntry,
-                      bookmarkedIds: state.bookmarkedIds,
-                      softWrap: state.softWrap,
-                      onToggleBookmark: (id) =>
-                          context.read<DeviceLogCubit>().toggleBookmark(id),
-                      onSelectEntry: (entry) =>
-                          context.read<DeviceLogCubit>().selectEntry(entry),
-                      onScrollToBottom: () {
-                        if (!state.autoScroll) {
-                          context.read<DeviceLogCubit>().toggleAutoScroll();
-                        }
-                      },
+              final cubit = context.read<DeviceLogCubit>();
+
+              return LogcatShortcutHandler(
+                searchFocusNode: _searchFocusNode,
+                hasSelectedEntry: state.selectedEntry != null,
+                onClearConsole: cubit.clearConsole,
+                onTogglePause: cubit.togglePause,
+                onScrollToBottom: () {
+                  if (!state.autoScroll) cubit.toggleAutoScroll();
+                },
+                onCloseDetail: () => cubit.selectEntry(null),
+                onCloseDialog: () => Navigator.of(context).pop(),
+                child: Column(
+                  children: [
+                    _buildHeader(context, state),
+                    LogFilterBar(
+                      filter: state.filter,
+                      tagCounts: state.tagCounts,
+                      pidCounts: state.pidCounts,
+                      pidPrimaryTags: state.pidPrimaryTags,
+                      searchFocusNode: _searchFocusNode,
                     ),
-                  ),
-                  if (state.selectedEntry != null)
-                    LogDetailDrawer(
-                      entry: state.selectedEntry!,
-                      isBookmarked: state.bookmarkedIds.contains(
-                        state.selectedEntry!.id,
+                    Expanded(
+                      child: LogConsoleTable(
+                        entries: state.filteredEntries,
+                        autoScroll: state.autoScroll,
+                        isPaused: state.isPaused,
+                        searchQuery: state.filter.textQuery,
+                        caseSensitive: state.filter.caseSensitive,
+                        isRegex: state.filter.isRegex,
+                        selectedEntry: state.selectedEntry,
+                        bookmarkedIds: state.bookmarkedIds,
+                        softWrap: state.softWrap,
+                        onToggleBookmark: (id) => cubit.toggleBookmark(id),
+                        onSelectEntry: (entry) => cubit.selectEntry(entry),
+                        onScrollToBottom: () {
+                          if (!state.autoScroll) cubit.toggleAutoScroll();
+                        },
                       ),
-                      onToggleBookmark: () => context
-                          .read<DeviceLogCubit>()
-                          .toggleBookmark(state.selectedEntry!.id),
-                      onExcludeTag: () => context
-                          .read<DeviceLogCubit>()
-                          .excludeTag(state.selectedEntry!.tag),
-                      onClose: () =>
-                          context.read<DeviceLogCubit>().selectEntry(null),
                     ),
-                  LogActionFooter(
-                    totalEntries: state.allEntries.length,
-                    filteredEntries: state.filteredEntries.length,
-                    recordingStatus: state.recordingStatus,
-                    isPaused: state.isPaused,
-                    autoScroll: state.autoScroll,
-                    softWrap: state.softWrap,
-                    onExportSnapshot: () => _handleExportSnapshot(context),
-                  ),
-                ],
+                    if (state.selectedEntry != null)
+                      LogDetailDrawer(
+                        entry: state.selectedEntry!,
+                        isBookmarked: state.bookmarkedIds.contains(
+                          state.selectedEntry!.id,
+                        ),
+                        onToggleBookmark: () =>
+                            cubit.toggleBookmark(state.selectedEntry!.id),
+                        onExcludeTag: () =>
+                            cubit.excludeTag(state.selectedEntry!.tag),
+                        onClose: () => cubit.selectEntry(null),
+                      ),
+                    LogActionFooter(
+                      totalEntries: state.allEntries.length,
+                      filteredEntries: state.filteredEntries.length,
+                      recordingStatus: state.recordingStatus,
+                      isPaused: state.isPaused,
+                      autoScroll: state.autoScroll,
+                      softWrap: state.softWrap,
+                      onExportSnapshot: () => _handleExportSnapshot(context),
+                    ),
+                  ],
+                ),
               );
             },
           ),
@@ -146,7 +169,7 @@ class DeviceLogDialog extends StatelessWidget {
         children: [
           const Icon(Icons.terminal_rounded, size: 20, color: AppColors.accent),
           const SizedBox(width: 10),
-          Text('Device Logcat Console', style: AppTypography.title),
+          const Text('Device Logcat Console', style: AppTypography.title),
           const SizedBox(width: 12),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -156,7 +179,7 @@ class DeviceLogDialog extends StatelessWidget {
               border: Border.all(color: AppColors.borderSubtle),
             ),
             child: Text(
-              deviceSerial,
+              widget.deviceSerial,
               style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 11,
@@ -171,7 +194,7 @@ class DeviceLogDialog extends StatelessWidget {
               size: 20,
               color: AppColors.textSecondary,
             ),
-            tooltip: 'Close Console',
+            tooltip: 'Close Console (Esc)',
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -192,7 +215,7 @@ class DeviceLogDialog extends StatelessWidget {
             color: AppColors.statusError,
           ),
           const SizedBox(height: 16),
-          Text('Logcat Stream Failed', style: AppTypography.subtitle),
+          const Text('Logcat Stream Failed', style: AppTypography.subtitle),
           const SizedBox(height: 8),
           Text(
             state.message,
@@ -204,8 +227,9 @@ class DeviceLogDialog extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () =>
-                context.read<DeviceLogCubit>().startLogging(deviceSerial),
+            onPressed: () => context.read<DeviceLogCubit>().startLogging(
+              widget.deviceSerial,
+            ),
             icon: const Icon(Icons.refresh_rounded, size: 16),
             label: const Text('Retry Connection'),
           ),
@@ -216,14 +240,10 @@ class DeviceLogDialog extends StatelessWidget {
 
   void _handleExportSnapshot(BuildContext context) {
     final home = Platform.environment['HOME'] ?? '';
-    final sanitizedSerial = deviceSerial.replaceAll(
-      RegExp(r'[^a-zA-Z0-9_-]'),
-      '_',
-    );
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final safe = widget.deviceSerial.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_');
+    final ts = DateTime.now().millisecondsSinceEpoch;
     final path =
-        '$home/Downloads/wifidesk_logs/logcat_snapshot_${sanitizedSerial}_$timestamp.log';
-
+        '$home/Downloads/wifidesk_logs/logcat_snapshot_${safe}_$ts.log';
     context.read<DeviceLogCubit>().exportLogs(destinationPath: path);
   }
 }

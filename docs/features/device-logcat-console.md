@@ -53,3 +53,17 @@ Switch instantly between common developer workflows using the Preset dropdown:
 ### 5. Adaptive Soft-Wrap & Continuous Disk Recording
 - **Performance Toggle:** Switch between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering.
 - **Live File Recording:** Stream logs directly to a timestamped file on macOS disk (`~/Downloads/WifiDesk_Logcat_*.txt`).
+
+### 6. macOS Native Keyboard Shortcuts & Navigation
+Ergonomic keyboard bindings orchestrated via `LogcatShortcutHandler`:
+- <kbd>Cmd</kbd> + <kbd>F</kbd> / <kbd>Ctrl</kbd> + <kbd>F</kbd>: Instantly focus the search input field.
+- <kbd>Cmd</kbd> + <kbd>K</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd>: Clear the in-memory console buffer (`cubit.clearConsole()`).
+- <kbd>Space</kbd>: Pause / resume the live stream (safely inhibited while actively typing in any text input).
+- <kbd>Cmd</kbd> + <kbd>Down</kbd> / <kbd>Ctrl</kbd> + <kbd>Down</kbd>: Instantly jump to the latest log entries and re-engage auto-scroll.
+- <kbd>Esc</kbd>: Context-sensitive back navigation: Unfocus search field if focused $\rightarrow$ Close Detail Drawer if open $\rightarrow$ Dismiss the Console Dialog.
+
+### 7. Search Query In-Line Match Highlighting
+- **Multi-Column Highlight:** Visual match highlighting across both `Tag` and `Message` columns via `LogSearchHighlighter`.
+- **Contrast & Styling:** Amber highlight badge (`AppColors.statusWarning.withValues(alpha: 0.38)`), bold weight, and crisp high-contrast white text.
+- **Search Modes:** Fully honors active Case-Sensitive (`Aa`) and Regex (`.*`) toggles with safe error boundaries for invalid patterns.
+

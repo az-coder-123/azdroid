@@ -18,12 +18,14 @@ class LogFilterBar extends StatefulWidget {
     this.tagCounts = const {},
     this.pidCounts = const {},
     this.pidPrimaryTags = const {},
+    this.searchFocusNode,
   });
 
   final LogFilterCriteria filter;
   final Map<String, int> tagCounts;
   final Map<int, int> pidCounts;
   final Map<int, String> pidPrimaryTags;
+  final FocusNode? searchFocusNode;
 
   @override
   State<LogFilterBar> createState() => _LogFilterBarState();
@@ -125,51 +127,9 @@ class _LogFilterBarState extends State<LogFilterBar> {
                   onTap: cubit.toggleCaseSensitive,
                 ),
                 const SizedBox(width: 8),
-                InkWell(
+                LogBookmarkFilterChip(
+                  isActive: widget.filter.bookmarksOnly,
                   onTap: cubit.toggleBookmarksOnly,
-                  borderRadius: BorderRadius.circular(4),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: widget.filter.bookmarksOnly
-                          ? AppColors.statusWarning.withValues(alpha: 0.18)
-                          : AppColors.surfaceElevated,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: widget.filter.bookmarksOnly
-                            ? AppColors.statusWarning
-                            : AppColors.border,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          widget.filter.bookmarksOnly
-                              ? Icons.star_rounded
-                              : Icons.star_outline_rounded,
-                          size: 14,
-                          color: widget.filter.bookmarksOnly
-                              ? AppColors.statusWarning
-                              : AppColors.textSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Starred',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: widget.filter.bookmarksOnly
-                                ? AppColors.statusWarning
-                                : AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
                 const SizedBox(width: 8),
                 LogPresetDropdown(
@@ -192,13 +152,14 @@ class _LogFilterBarState extends State<LogFilterBar> {
                   height: 32,
                   child: TextField(
                     controller: _searchController,
+                    focusNode: widget.searchFocusNode,
                     onChanged: cubit.updateSearch,
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textPrimary,
                     ),
                     decoration: _inputDecoration(
-                      hint: 'Search message, exception, stack trace...',
+                      hint: 'Search message, exception, stack trace... (⌘F)',
                       prefixIcon: Icons.search,
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(

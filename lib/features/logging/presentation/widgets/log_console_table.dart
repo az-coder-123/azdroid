@@ -17,6 +17,8 @@ class LogConsoleTable extends StatefulWidget {
     this.bookmarkedIds = const {},
     this.onToggleBookmark,
     this.softWrap = false,
+    this.caseSensitive = false,
+    this.isRegex = false,
   });
 
   final List<DeviceLogEntry> entries;
@@ -29,6 +31,8 @@ class LogConsoleTable extends StatefulWidget {
   final Set<int> bookmarkedIds;
   final ValueChanged<int>? onToggleBookmark;
   final bool softWrap;
+  final bool caseSensitive;
+  final bool isRegex;
 
   @override
   State<LogConsoleTable> createState() => _LogConsoleTableState();
@@ -159,6 +163,9 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
                 isSelected: widget.selectedEntry?.id == entry.id,
                 isBookmarked: widget.bookmarkedIds.contains(entry.id),
                 softWrap: widget.softWrap,
+                searchQuery: widget.searchQuery,
+                caseSensitive: widget.caseSensitive,
+                isRegex: widget.isRegex,
                 onTap: () => widget.onSelectEntry?.call(entry),
                 onToggleBookmark: () => widget.onToggleBookmark?.call(entry.id),
               );

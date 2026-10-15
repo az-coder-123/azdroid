@@ -59,7 +59,9 @@ class LogActionFooter extends StatelessWidget {
               size: 18,
               color: isPaused ? AppColors.accent : AppColors.textPrimary,
             ),
-            tooltip: isPaused ? 'Resume stream' : 'Pause stream',
+            tooltip: isPaused
+                ? 'Resume stream (Space)'
+                : 'Pause stream (Space)',
             onPressed: cubit.togglePause,
           ),
           IconButton(
@@ -71,8 +73,8 @@ class LogActionFooter extends StatelessWidget {
               color: autoScroll ? AppColors.accent : AppColors.textSecondary,
             ),
             tooltip: autoScroll
-                ? 'Auto-scroll enabled'
-                : 'Auto-scroll disabled',
+                ? 'Auto-scroll enabled (⌘↓)'
+                : 'Auto-scroll disabled (⌘↓)',
             onPressed: cubit.toggleAutoScroll,
           ),
           IconButton(
@@ -90,7 +92,7 @@ class LogActionFooter extends StatelessWidget {
               size: 18,
               color: AppColors.textPrimary,
             ),
-            tooltip: 'Clear in-memory console',
+            tooltip: 'Clear in-memory console (⌘K)',
             onPressed: cubit.clearConsole,
           ),
           IconButton(

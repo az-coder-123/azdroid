@@ -162,5 +162,68 @@ void main() {
         expect(find.byType(LogConsoleRow), findsNWidgets(3));
       },
     );
+
+    testWidgets('Search query highlights matches in LogConsoleRow', (
+      tester,
+    ) async {
+      final entries = [
+        DeviceLogEntry(
+          id: 1,
+          timestamp: DateTime(2026, 10, 15, 12, 0, 0),
+          pid: 1000,
+          tid: 2000,
+          level: LogLevel.info,
+          tag: 'ConnectivityService',
+          message: 'Network CONNECTIVITY_CHANGE dispatched',
+          rawLine: '...',
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 1000,
+              height: 600,
+              child: LogConsoleTable(
+                entries: entries,
+                autoScroll: true,
+                isPaused: false,
+                searchQuery: 'CONNECTIVITY_CHANGE',
+                softWrap: false,
+                onScrollToBottom: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final rowFinder = find.byType(LogConsoleRow);
+      expect(rowFinder, findsOneWidget);
+
+      final richTextFinders = find.descendant(
+        of: rowFinder,
+        matching: find.byType(RichText),
+      );
+      expect(richTextFinders, findsWidgets);
+
+      bool foundHighlightedSpan = false;
+      for (final element in richTextFinders.evaluate()) {
+        final richText = element.widget as RichText;
+        richText.text.visitChildren((childSpan) {
+          if (childSpan is TextSpan &&
+              childSpan.text == 'CONNECTIVITY_CHANGE' &&
+              childSpan.style?.fontWeight == FontWeight.bold) {
+            foundHighlightedSpan = true;
+            return false;
+          }
+          return true;
+        });
+        if (foundHighlightedSpan) break;
+      }
+
+      expect(foundHighlightedSpan, isTrue);
+    });
   });
 }
