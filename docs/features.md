@@ -120,6 +120,31 @@
 - **Real-Time Transfer Progress & Size HUD:** Floating dynamic banner displays file names, human-readable file sizes (e.g., `14.5 MB`), multi-item counters (`Item 1 of 3`), and dismissible completion badges.
 - **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`, and auto-detected `💳 SD Card`), full MicroSD card / external storage volume detection (`/storage/<UUID>/`), storage root navigation (`/storage/`), breadcrumb path display with <kbd>← Back</kbd> navigation, instant search filtering, multi-criteria sorting (Date, Size, Name), "Select All" bulk controls, vibrant file-type badges, formatted total selection sizes, and batch download to `~/Downloads/WifiDesk` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
 
+### 4.10 Professional APK Sideload & Package Manager
+- **Comprehensive Metadata Inspection:** Inspect APK package details prior to installation, including App Name, Package ID (`applicationId`), App Icon, Version Name, Version Code, Minimum & Target Android SDK levels, and precise file size.
+- **Granular Installation Flags:** Configure standard Android installation switches with 1-click toggles: `-r` (reinstall/keep data), `-g` (grant all runtime permissions), `-t` (allow test packages), and `-d` (allow version downgrade).
+- **Intelligent Failure Diagnosis:** Automatically diagnoses common sideload errors and provides actionable resolution steps (e.g., signature mismatches `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, storage constraints `INSTALL_FAILED_INSUFFICIENT_STORAGE`, or Xiaomi MIUI USB security restrictions).
+- **Post-Install Actions:** Quick 1-click **Launch App** (`monkey` / `am start`) and **Clean Uninstall** (`pm uninstall`) without manual device interaction. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>.
+
+### 4.11 Real-Time Device Logcat Console & Advanced Debugging
+- **High-Throughput Streaming Engine:** Real-time logcat streaming with bounded ring buffer (5,000 in-memory entries) and malformed UTF-8 byte resilience (`Utf8Decoder(allowMalformed: true)`). Triggerable via device card or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>.
+- **Multi-Tier Filtering Pipeline:**
+  - **Log Levels:** Color-coded priority badges (`V`, `D`, `I`, `W`, `E`, `F`).
+  - **Search & Regex:** Live case-insensitive substring search or full regular expression pattern matching.
+  - **Dynamic Tag & PID Autocomplete:** Dropdown menus dynamically populated from live logs and active Android processes.
+  - **Negation & Exclude Tags:** Multi-tag exclusion (`-tag` chips) to filter out noisy subsystems with 1-click deletion and "Clear all" control.
+- **Filter Presets:** Instant 1-click filter profiles for common debugging scenarios:
+  - `All`: Full unfiltered stream.
+  - `Crashes & ANRs`: High-priority errors and crash dumps (`Level >= Error`).
+  - `Network & HTTP`: Network traffic logs (`OkHttp`, `Retrofit`, `Volley`, `cronet`).
+  - `Audio & Media`: Audio/video pipelines (`AudioTrack`, `ExoPlayer`, `MediaCodec`).
+  - `Android System`: OS core subsystems (`ActivityManager`, `WindowManager`).
+  - `Starred Only`: Isolate developer-flagged lines.
+- **Bookmarking & Star Logs:** 1-click star toggle on console rows and the inspector drawer to bookmark critical logs, filterable with the dedicated **Starred** chip.
+- **Side Detail Drawer & Stack Trace Viewer:** 420px slide-out inspector displaying detailed log entry metadata, Java/Kotlin exception stack trace syntax highlighting, and an automatic **Format JSON** pretty-print toggle.
+- **Adaptive Soft-Wrap vs. High-Performance Fixed Extent:** Toggle between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering for long log lines.
+- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file on macOS disk (`~/Downloads/WifiDesk_Logcat_*.txt`).
+
 ---
 
 

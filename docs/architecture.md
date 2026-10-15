@@ -182,6 +182,45 @@ lib/
 │   │       │   └── xiaomi_setup_section.dart
 │   │       ├── guide_sidebar.dart
 │   │       └── user_guide_dialog.dart
+│   ├── apk_installer/                      # Professional APK inspection & sideloading
+│   │   ├── domain/
+│   │   │   ├── entities/apk_metadata_entity.dart
+│   │   │   └── repositories/apk_installer_repository.dart
+│   │   ├── data/
+│   │   │   ├── datasources/aapt2_metadata_datasource.dart
+│   │   │   └── repositories/apk_installer_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── cubit/apk_installer_cubit.dart
+│   │       ├── cubit/apk_installer_state.dart
+│   │       └── widgets/apk_installer_dialog.dart
+│   ├── logging/                            # Real-time device logcat streaming & debugging
+│   │   ├── domain/
+│   │   │   ├── entities/device_log_entry.dart
+│   │   │   ├── entities/log_filter_criteria.dart
+│   │   │   ├── entities/log_filter_preset.dart
+│   │   │   ├── entities/log_level.dart
+│   │   │   └── repositories/device_log_repository.dart
+│   │   ├── data/
+│   │   │   ├── datasources/logcat_stream_datasource.dart
+│   │   │   └── repositories/device_log_repository_impl.dart
+│   │   └── presentation/
+│   │       ├── cubit/device_log_cubit.dart
+│   │       ├── cubit/device_log_state.dart
+│   │       └── widgets/
+│   │           ├── device_log_dialog.dart
+│   │           ├── log_action_footer.dart
+│   │           ├── log_console_row.dart
+│   │           ├── log_console_table.dart
+│   │           ├── log_detail_drawer.dart
+│   │           ├── log_exclude_tags_bar.dart
+│   │           ├── log_filter_bar.dart
+│   │           ├── log_level_chip.dart
+│   │           ├── log_pid_dropdown_menu.dart
+│   │           ├── log_pid_filter_input.dart
+│   │           ├── log_preset_dropdown.dart
+│   │           ├── log_stack_trace_view.dart
+│   │           ├── log_tag_dropdown_menu.dart
+│   │           └── log_tag_filter_input.dart
 │   └── settings/                           # User preferences & stream quality
 │       └── domain/entities/app_settings_entity.dart
 └── main.dart                               # Entrypoint with DI & MultiBlocProvider

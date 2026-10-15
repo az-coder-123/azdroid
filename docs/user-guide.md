@@ -91,6 +91,8 @@ WifiDesk provides 3 connection pathways:
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>: Hardware MP4 Screen Recording.
 - <kbd>Cmd</kbd> + <kbd>U</kbd>: Send Files / APK from macOS Finder.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>: Open Android File Explorer.
+- <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>: Open APK Sideload & Package Manager.
+- <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>: Open Real-Time Device Logcat Console.
 - <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector (Direct Unicode & Vietnamese accents).
 - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate display 90 degrees.
 - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn phone screen off/on (`--turn-screen-off`).
@@ -104,9 +106,25 @@ WifiDesk provides 3 connection pathways:
 - Drag files, photos, or documents directly from Finder onto the stream to push to `/sdcard/Download/`.
 - Sideload `.apk` packages automatically upon drop or selection.
 
+### APK Sideload & Package Manager
+- Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> or click the package icon on the vertical dock.
+- Select any `.apk` file to inspect package name, version, SDK requirements, and file size.
+- Configure install flags (`-r`, `-g`, `-t`, `-d`) and click **Install APK**.
+- Provides 1-click **Launch App** and **Uninstall** upon completion with automated error diagnosis for permission or signature conflicts.
+
 ### Device File Explorer & Pull to Mac
-- Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> or click the folder icon on the side dock to browse Android storage (`Downloads`, `DCIM`, `Screenshots`, `Movies`).
+- Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> or click the folder icon on the side dock to browse Android storage (`Downloads`, `DCIM`, `Screenshots`, `Movies`, and `SD Card`).
 - Select files and download them directly to `~/Downloads/WifiDesk` with 1-click Finder reveal.
+
+### Real-Time Device Logcat Console & Debugging
+- Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> or click **Logs** on any device card to launch the live Logcat Console.
+- **Filter Presets:** Use the Preset dropdown menu (top-left) to switch between *All*, *Crashes & ANRs*, *Network & HTTP*, *Audio & Media*, *Android System*, or *Starred Only*.
+- **Multi-Tier Filtering:** Filter by minimum priority level (`V`, `D`, `I`, `W`, `E`, `F`), text query, regular expressions, dynamic Tag, and PID.
+- **Exclude Tags:** Exclude spammy system tags by clicking **Exclude Tag** in the drawer or managing `-tag` chips with 1-click removal.
+- **Bookmarking (Star Logs):** Click the star icon on any log row to bookmark it. Toggle the **Starred** filter chip to isolate flagged logs during testing.
+- **Detail Drawer & Stack Trace Viewer:** Click any log row to open the side inspector drawer. View full metadata, colored Java/Kotlin stack traces, and click **Format JSON** to pretty-print JSON payloads.
+- **Toggle Soft-Wrap:** Click the wrap icon in the footer to toggle between multi-line text wrapping and single-line fixed-extent virtualized scrolling (60 FPS).
+- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `~/Downloads/WifiDesk_Logcat_*.txt`.
 
 ### Bidirectional Clipboard Sync
 - Text copied on macOS (<kbd>Cmd</kbd> + <kbd>C</kbd>) is automatically synced to the Android clipboard.
