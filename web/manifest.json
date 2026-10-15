@@ -1,6 +1,6 @@
 {
-    "name": "wifi_desk",
-    "short_name": "wifi_desk",
+    "name": "DeskDroid",
+    "short_name": "DeskDroid",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

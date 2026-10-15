@@ -5,10 +5,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/az-coder-123/wifi-desk/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/az-coder-123/desk-droid/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://flutter.dev"><img src="https://img.shields.io/badge/built%20with-Flutter-02569B.svg?logo=flutter" alt="Built with Flutter"></a>
-  <a href="https://github.com/az-coder-123/wifi-desk/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Android-black.svg?logo=apple" alt="Platforms"></a>
-  <a href="https://github.com/az-coder-123/wifi-desk/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/az-coder-123/desk-droid/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Android-black.svg?logo=apple" alt="Platforms"></a>
+  <a href="https://github.com/az-coder-123/desk-droid/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
 <p align="center">
@@ -139,8 +139,8 @@ flowchart LR
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/az-coder-123/wifi-desk.git
-cd wifi-desk
+git clone https://github.com/az-coder-123/desk-droid.git
+cd desk-droid
 
 # 2. Fetch dependencies
 flutter pub get
