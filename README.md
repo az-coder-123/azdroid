@@ -201,6 +201,7 @@ flutter run -d macos
 | [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
+| [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices |
 
 ---
 
