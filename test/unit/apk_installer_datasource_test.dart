@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/apk_installer/data/datasources/apk_installer_datasource.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/apk_installer/data/datasources/apk_installer_datasource.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
 
 class MockProcessExecutor extends Mock implements ProcessExecutor {}
 

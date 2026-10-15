@@ -1,7 +1,7 @@
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
-import 'package:wifi_desk/features/productivity/data/datasources/file_transfer_datasource.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/remote_file_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/features/productivity/data/datasources/file_transfer_datasource.dart';
+import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 
 /// Concrete implementation of [FileTransferRepository] pushing/pulling files and sideloading APKs.
 class FileTransferRepositoryImpl implements FileTransferRepository {

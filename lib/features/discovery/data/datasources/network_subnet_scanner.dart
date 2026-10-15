@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/device_history_service.dart';
-import 'package:wifi_desk/core/services/network_info_service.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/device_history_service.dart';
+import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Contract for scanning local Wi-Fi subnet and ARP cache to discover active Android endpoints.
 abstract class NetworkSubnetScanner {

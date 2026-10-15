@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/productivity/data/utils/image_crop_util.dart';
+import 'package:desk_droid/features/productivity/data/utils/image_crop_util.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

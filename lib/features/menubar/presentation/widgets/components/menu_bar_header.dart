@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Top header for the menu bar companion popover, rendering app branding and live status pill.
 class MenuBarHeader extends StatelessWidget {
@@ -30,7 +30,7 @@ class MenuBarHeader extends StatelessWidget {
               const SizedBox(width: 8),
               const Flexible(
                 child: Text(
-                  'WifiDesk Companion',
+                  'DeskDroid Companion',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

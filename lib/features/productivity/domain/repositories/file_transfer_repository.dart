@@ -1,4 +1,4 @@
-import 'package:wifi_desk/features/productivity/domain/entities/remote_file_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 
 /// Abstract contract governing bidirectional file transfer, remote file browsing, and APK sideloading.
 abstract class FileTransferRepository {

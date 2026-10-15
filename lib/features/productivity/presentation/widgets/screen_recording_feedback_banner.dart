@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/recording_setup_pill.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/screen_recording_success_card.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/recording_setup_pill.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/screen_recording_success_card.dart';
 
 /// Floating notification HUD banner providing live recording indicator and saved actions.
 class ScreenRecordingFeedbackBanner extends StatelessWidget {

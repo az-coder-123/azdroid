@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/productivity/data/datasources/file_transfer_datasource.dart';
-import 'package:wifi_desk/features/productivity/data/repositories/file_transfer_repository_impl.dart';
+import 'package:desk_droid/features/productivity/data/datasources/file_transfer_datasource.dart';
+import 'package:desk_droid/features/productivity/data/repositories/file_transfer_repository_impl.dart';
 
 class MockFileTransferDatasource extends Mock
     implements FileTransferDatasource {}

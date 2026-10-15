@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
 
 /// Translucent card presenting captured screenshot metadata and fast macOS Finder actions.
 class ScreenshotSuccessCard extends StatelessWidget {

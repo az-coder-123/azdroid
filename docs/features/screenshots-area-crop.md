@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-WifiDesk includes a lossless image capture system engineered with macOS desktop ergonomics. Developers and designers can capture pixel-perfect full-screen screenshots or draw an interactive 8-point regional crop box with live dimension overlays.
+DeskDroid includes a lossless image capture system engineered with macOS desktop ergonomics. Developers and designers can capture pixel-perfect full-screen screenshots or draw an interactive 8-point regional crop box with live dimension overlays.
 
 ```mermaid
 flowchart TD
@@ -26,7 +26,7 @@ flowchart TD
 
 ### 1. Full Lossless Screenshot (<kbd>Cmd</kbd> + <kbd>S</kbd>)
 - **Direct Framebuffer Capture:** Captures the current Android frame via ADB SurfaceFlinger screencap in lossless PNG format.
-- **Dual Destination:** Automatically saves the image to `~/Downloads/WifiDesk_Screenshot_*.png` and simultaneously copies it to the macOS clipboard (`⌘V`).
+- **Dual Destination:** Automatically saves the image to `~/Downloads/DeskDroid_Screenshot_*.png` and simultaneously copies it to the macOS clipboard (`⌘V`).
 
 ### 2. Interactive Area Crop Marquee (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>)
 - **Interactive Drag Marquee:** Click and drag anywhere on the phone display to frame the region of interest.

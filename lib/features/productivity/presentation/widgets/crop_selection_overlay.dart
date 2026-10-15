@@ -3,14 +3,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/utils/crop_handle_helper.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/crop_action_toolbar.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/crop_dimension_badge.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/crop_instruction_pill.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/crop_mask_painter.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/utils/crop_handle_helper.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/crop_action_toolbar.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/crop_dimension_badge.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/crop_instruction_pill.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/crop_mask_painter.dart';
 
 /// Interactive draggable overlay displayed over the phone viewport when
 /// regional screenshot mode is active, supporting 8-point resize and translation.

@@ -9,7 +9,7 @@
 
 ## 1. Context & Symptoms
 
-While resizing the WifiDesk window or viewing the **Device Logcat Console** on displays constrained to `~720px` width (such as laptop split-screen or compact window geometry), Flutter's rendering engine threw a layout assertion failure:
+While resizing the DeskDroid window or viewing the **Device Logcat Console** on displays constrained to `~720px` width (such as laptop split-screen or compact window geometry), Flutter's rendering engine threw a layout assertion failure:
 
 ```text
 ══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════

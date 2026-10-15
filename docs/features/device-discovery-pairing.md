@@ -8,11 +8,11 @@
 
 ## 📌 Overview
 
-WifiDesk provides frictionless, zero-configuration device discovery and multi-path connection capabilities. Users do not need to manually discover their phone's IP address or type complex terminal commands.
+DeskDroid provides frictionless, zero-configuration device discovery and multi-path connection capabilities. Users do not need to manually discover their phone's IP address or type complex terminal commands.
 
 ```mermaid
 flowchart TD
-    Start["Launch WifiDesk"] --> Scan["1. Fast Subnet TCP & ARP Probe\n(Scans local subnet for active ADB ports)"]
+    Start["Launch DeskDroid"] --> Scan["1. Fast Subnet TCP & ARP Probe\n(Scans local subnet for active ADB ports)"]
     Start --> mDNS["2. mDNS Bonjour Service Listener\n(_adb-tls-connect._tcp / _adb._tcp)"]
     Start --> USB["3. USB-to-Wi-Fi Auto-Handoff\n(Detects connected USB cable & provisions adb tcpip)"]
     

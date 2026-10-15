@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/user_guide_dialog.dart';
-import 'package:wifi_desk/features/showcase/data/app_features_catalog.dart';
-import 'package:wifi_desk/features/showcase/domain/entities/app_feature_item.dart';
-import 'package:wifi_desk/features/showcase/presentation/widgets/feature_card.dart';
-import 'package:wifi_desk/features/showcase/presentation/widgets/feature_category_bar.dart';
-import 'package:wifi_desk/features/showcase/presentation/widgets/feature_showcase_header.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
+import 'package:desk_droid/features/showcase/data/app_features_catalog.dart';
+import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_card.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_category_bar.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_header.dart';
 
-/// Modal dialog presenting a modern, categorized showcase of all WifiDesk features.
+/// Modal dialog presenting a modern, categorized showcase of all DeskDroid features.
 class FeatureShowcaseDialog extends StatefulWidget {
   const FeatureShowcaseDialog({super.key});
 

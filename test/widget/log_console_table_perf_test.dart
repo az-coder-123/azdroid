@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_console_row.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_console_table.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_console_row.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_console_table.dart';
 
 void main() {
   group('LogConsoleTable Performance & Interaction Tests', () {

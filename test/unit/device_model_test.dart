@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/discovery/data/models/device_model.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/data/models/device_model.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 
 void main() {
   group('DeviceModel', () {

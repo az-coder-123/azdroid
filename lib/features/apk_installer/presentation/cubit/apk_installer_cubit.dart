@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
-import 'package:wifi_desk/features/apk_installer/domain/repositories/apk_installer_repository.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/cubit/apk_installer_state.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
+import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
 
 /// Cubit managing APK package inspection, installation workflow, and remote launch.
 class ApkInstallerCubit extends Cubit<ApkInstallerState> {

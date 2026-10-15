@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/constants/control_constants.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/constants/control_constants.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Data representing an active on-screen touch ripple.
 class TouchPoint {

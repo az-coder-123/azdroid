@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_file_recording_status.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_footer_actions.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_footer_actions.dart';
 
 /// Bottom footer bar displaying buffer telemetry, recording indicator, and action buttons.
 class LogActionFooter extends StatelessWidget {

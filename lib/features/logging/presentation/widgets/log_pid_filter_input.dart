@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_pid_dropdown_menu.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_tag_dropdown_menu.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_pid_dropdown_menu.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_tag_dropdown_menu.dart';
 
 /// Process ID (PID) filter input field providing number input, live autocomplete,
 /// and a dropdown selector of all active processes detected in the log buffer.

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screen_recording_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
 
 /// Base state for device screen recording lifecycle.
 sealed class ScreenRecordingState extends Equatable {

@@ -1,5 +1,5 @@
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 
 /// Contract defining low-latency video streaming and session lifecycle operations.
 abstract class StreamingRepository {

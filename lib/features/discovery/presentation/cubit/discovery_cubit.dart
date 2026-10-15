@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/device_history_service.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/device_history_service.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_state.dart';
 
 /// Cubit managing the device scanning, auto-discovery daemon, and connection state.
 class DiscoveryCubit extends Cubit<DiscoveryState> {

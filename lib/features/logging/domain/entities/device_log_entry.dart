@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 
 /// Represents a single parsed Android logcat entry.
 class DeviceLogEntry extends Equatable {

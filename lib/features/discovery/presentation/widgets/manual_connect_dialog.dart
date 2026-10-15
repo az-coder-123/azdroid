@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/constants/socket_config.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/network_info_service.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
+import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
 
 /// Simple modal dialog allowing manual IP and port input for direct connection.
 class ManualConnectDialog extends StatefulWidget {

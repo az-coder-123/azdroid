@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:wifi_desk/core/constants/socket_config.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
 
 /// Represents a parsed video frame packet demuxed from the raw TCP stream.
 class VideoFramePacket {

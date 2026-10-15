@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 
 /// Filter parameters applied to incoming Android log streams.
 class LogFilterCriteria extends Equatable {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state_view.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/empty_state_view.dart';
 
 void main() {
   testWidgets(

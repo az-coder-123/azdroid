@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_command_snippet.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/user_guide_dialog.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_command_snippet.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 
 void main() {
   Widget createSubject() {
@@ -23,7 +23,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Header verification
-      expect(find.text('WifiDesk User Guide'), findsOneWidget);
+      expect(find.text('DeskDroid User Guide'), findsOneWidget);
       expect(
         find.text(
           'Complete handbook for wireless mirroring & remote control on macOS',

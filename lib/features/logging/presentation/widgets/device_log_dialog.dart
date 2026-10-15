@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/logging/presentation/cubit/device_log_cubit.dart';
-import 'package:wifi_desk/features/logging/presentation/cubit/device_log_state.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_action_footer.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_console_table.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_detail_drawer.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_filter_bar.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/logging/presentation/cubit/device_log_cubit.dart';
+import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_action_footer.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_console_table.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_detail_drawer.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/log_filter_bar.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
 
 /// Modal dialog providing real-time Android logcat inspection, multi-tier filtering,
 /// native keyboard shortcuts, and non-blocking local disk persistence.
@@ -243,7 +243,7 @@ class _DeviceLogDialogState extends State<DeviceLogDialog> {
     final safe = widget.deviceSerial.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_');
     final ts = DateTime.now().millisecondsSinceEpoch;
     final path =
-        '$home/Downloads/wifidesk_logs/logcat_snapshot_${safe}_$ts.log';
+        '$home/Downloads/deskdroid_logs/logcat_snapshot_${safe}_$ts.log';
     context.read<DeviceLogCubit>().exportLogs(destinationPath: path);
   }
 }

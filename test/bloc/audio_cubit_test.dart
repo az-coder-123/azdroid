@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/audio/domain/entities/audio_stream_entity.dart';
-import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
-import 'package:wifi_desk/features/audio/presentation/cubit/audio_cubit.dart';
-import 'package:wifi_desk/features/audio/presentation/cubit/audio_state.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
+import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
 
 class MockAudioRepository extends Mock implements AudioRepository {}
 

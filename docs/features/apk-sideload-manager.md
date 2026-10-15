@@ -40,7 +40,7 @@ Customize Android package manager behavior with 1-click toggles:
 - **`-d` (Allow Downgrade):** Allows installing an APK with a lower version code than the currently installed version.
 
 ### 3. Intelligent Failure Diagnosis
-When an installation fails, WifiDesk automatically analyzes the raw ADB error string and presents actionable solutions:
+When an installation fails, DeskDroid automatically analyzes the raw ADB error string and presents actionable solutions:
 - **`INSTALL_FAILED_UPDATE_INCOMPATIBLE`:** Explains that the signing certificate does not match the installed version; offers 1-click clean uninstall of the older package.
 - **`INSTALL_FAILED_INSUFFICIENT_STORAGE`:** Identifies storage constraints on the target device.
 - **`INSTALL_FAILED_USER_RESTRICTED`:** Specifically diagnoses Xiaomi MIUI / HyperOS USB installation blocks and directs the user to enable **"Install via USB"** in Developer Options.

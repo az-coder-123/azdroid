@@ -8,7 +8,7 @@
 
 ## 📌 Overview
 
-WifiDesk transforms your Mac trackpad, mouse, and keyboard into native Android input controllers. Mouse pointer actions and trackpad gestures are normalized and injected with millisecond responsiveness over binary socket channels.
+DeskDroid transforms your Mac trackpad, mouse, and keyboard into native Android input controllers. Mouse pointer actions and trackpad gestures are normalized and injected with millisecond responsiveness over binary socket channels.
 
 ```mermaid
 flowchart LR

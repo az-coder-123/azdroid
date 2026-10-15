@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_file_recording_status.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
-import 'package:wifi_desk/features/logging/presentation/cubit/device_log_state.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
 
 void main() {
   group('DeviceLogStreaming computed getters', () {

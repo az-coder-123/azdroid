@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
 
 /// Card displaying an individual onboarding step in the Discovery empty state launchpad.
 class EmptyStateStepCard extends StatelessWidget {

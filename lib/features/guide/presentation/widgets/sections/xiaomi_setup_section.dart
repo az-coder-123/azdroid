@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_callout.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_card.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_section_header.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_step_row.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_callout.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_card.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_section_header.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_step_row.dart';
 
 /// Specific instructions for Xiaomi / MIUI / HyperOS permission setup (Redmi 9, etc.).
 class XiaomiSetupSection extends StatelessWidget {

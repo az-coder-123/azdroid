@@ -1,4 +1,4 @@
-import 'package:wifi_desk/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 
 /// Abstract contract governing remote mouse, touch, gesture, and keyboard input injection.
 abstract class ControlRepository {

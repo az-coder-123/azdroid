@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 
 /// Compact badge widget rendering an Android logcat severity indicator.
 class LogLevelBadge extends StatelessWidget {

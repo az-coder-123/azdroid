@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Subtle HUD badge showing mouse and keyboard shortcuts in the mirroring viewport.
 class ControlShortcutHelpBadge extends StatelessWidget {

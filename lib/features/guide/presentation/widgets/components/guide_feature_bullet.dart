@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
 
 /// Single bullet feature row with colored icon and text.
 class GuideFeatureBullet extends StatelessWidget {

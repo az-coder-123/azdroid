@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/services/device_history_service.dart';
-import 'package:wifi_desk/core/services/network_info_service.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state/empty_state_radar_icon.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state/empty_state_step_card.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state/recent_devices_chips.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state/usb_quick_switch_banner.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/services/device_history_service.dart';
+import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/empty_state_radar_icon.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/empty_state_step_card.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/recent_devices_chips.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/usb_quick_switch_banner.dart';
 
 /// Clean and interactive onboarding launchpad displayed when no devices are detected.
 class EmptyStateView extends StatefulWidget {

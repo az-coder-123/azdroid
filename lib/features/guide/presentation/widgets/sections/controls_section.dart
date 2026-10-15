@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_card.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_gesture_item.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_section_header.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_shortcut_item.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_card.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_gesture_item.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_section_header.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_shortcut_item.dart';
 
 /// Guide detailing mouse, trackpad gestures and macOS keyboard shortcuts.
 class ControlsSection extends StatelessWidget {

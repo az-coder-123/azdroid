@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/clipboard_item_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/productivity/domain/entities/clipboard_item_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
 
 /// Lightweight background daemon monitoring macOS and Android clipboards
 /// for real-time bidirectional synchronization with echo-loop prevention.

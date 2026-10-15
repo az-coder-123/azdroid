@@ -1,4 +1,4 @@
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 
 /// Contract defining the device discovery, connectivity, and pairing operations.
 abstract class DeviceDiscoveryRepository {

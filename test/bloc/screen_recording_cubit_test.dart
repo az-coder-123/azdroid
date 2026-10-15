@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screen_recording_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/screen_recording_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
 
 class MockScreenRecordingRepository extends Mock
     implements ScreenRecordingRepository {}
@@ -12,7 +12,7 @@ class MockScreenRecordingRepository extends Mock
 void main() {
   late MockScreenRecordingRepository mockRepository;
   const testSerial = '192.168.1.100:5555';
-  const testRemotePath = '/sdcard/wifidesk_rec_12345.mp4';
+  const testRemotePath = '/sdcard/deskdroid_rec_12345.mp4';
 
   final testRecording = ScreenRecordingEntity(
     filePath: '/Users/mac/Downloads/rec.mp4',

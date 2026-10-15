@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
-import 'package:wifi_desk/features/audio/presentation/cubit/audio_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
+import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
 
 /// Cubit managing audio forwarding lifecycle, volume attenuation, and mute states.
 class AudioCubit extends Cubit<AudioState> {

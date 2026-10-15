@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Floating badge displaying the active width and height dimensions of the selection.
 class CropDimensionBadge extends StatelessWidget {

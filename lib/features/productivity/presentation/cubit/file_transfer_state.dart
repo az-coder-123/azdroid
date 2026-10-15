@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/file_transfer_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/file_transfer_entity.dart';
 
 /// Base state for drag-and-drop file transfers and APK sideloading.
 sealed class FileTransferState extends Equatable {

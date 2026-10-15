@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/control_constants.dart';
-import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
-import 'package:wifi_desk/features/control/presentation/bloc/control_event.dart';
-import 'package:wifi_desk/features/control/presentation/bloc/control_state.dart';
+import 'package:desk_droid/core/constants/control_constants.dart';
+import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_state.dart';
 
 /// BLoC orchestrating remote input injection, gesture debouncing, and keyboard state.
 class ControlBloc extends Bloc<ControlEvent, ControlState> {

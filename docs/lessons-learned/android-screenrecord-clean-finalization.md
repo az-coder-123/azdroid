@@ -7,7 +7,7 @@
 
 ## 1. Context & Symptoms
 
-WifiDesk provides lossless hardware screen recording by invoking Android's native `screenrecord` binary over ADB:
+DeskDroid provides lossless hardware screen recording by invoking Android's native `screenrecord` binary over ADB:
 - When users clicked "Stop Recording", the resulting MP4 pulled from the device was frequently **corrupted or unplayable in macOS QuickTime Player and Finder**:
   ```text
   This file isn’t compatible with QuickTime Player.

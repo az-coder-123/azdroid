@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/services/network_info_service.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.dart';
-import 'package:wifi_desk/main.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:desk_droid/main.dart';
 
 class MockDeviceDiscoveryRepository extends Mock
     implements DeviceDiscoveryRepository {}
@@ -41,12 +41,12 @@ void main() {
   });
 
   testWidgets(
-    'WifiDeskApp renders DiscoveryPage with title, empty state and actions',
+    'DeskDroidApp renders DiscoveryPage with title, empty state and actions',
     (WidgetTester tester) async {
-      await tester.pumpWidget(const WifiDeskApp());
+      await tester.pumpWidget(const DeskDroidApp());
 
       // Initially loading
-      expect(find.text('WifiDesk'), findsOneWidget);
+      expect(find.text('DeskDroid'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsWidgets);
 
       // Wait for discoverDevices to resolve
@@ -63,7 +63,7 @@ void main() {
     },
   );
 
-  testWidgets('WifiDeskApp renders device cards when devices are discovered', (
+  testWidgets('DeskDroidApp renders device cards when devices are discovered', (
     WidgetTester tester,
   ) async {
     const testDevice = DeviceEntity(
@@ -79,7 +79,7 @@ void main() {
     when(() => mockRepository.discoverDevices())
         .thenAnswer((_) async => [testDevice]);
 
-    await tester.pumpWidget(const WifiDeskApp());
+    await tester.pumpWidget(const DeskDroidApp());
     await tester.pump();
 
     expect(find.text('Discovered Devices (1)'), findsOneWidget);

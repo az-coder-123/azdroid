@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/apk_installer/data/datasources/apk_metadata_datasource.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/apk_installer/data/datasources/apk_metadata_datasource.dart';
 
 class MockProcessExecutor extends Mock implements ProcessExecutor {}
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Categories classifying features in WifiDesk for intuitive browsing.
+/// Categories classifying features in DeskDroid for intuitive browsing.
 enum FeatureCategory {
   all(label: 'All Features', icon: Icons.apps_rounded),
   displayAndControl(
@@ -23,7 +23,7 @@ enum FeatureCategory {
   final IconData icon;
 }
 
-/// Entity describing an individual feature in the WifiDesk application.
+/// Entity describing an individual feature in the DeskDroid application.
 class AppFeatureItem {
   const AppFeatureItem({
     required this.id,

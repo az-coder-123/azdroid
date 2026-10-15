@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/discovery/domain/repositories/device_discovery_repository.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_state.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_state.dart';
 
 class MockDeviceDiscoveryRepository extends Mock
     implements DeviceDiscoveryRepository {}

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/crop_selection_overlay.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/crop_selection_overlay.dart';
 
 class MockScreenshotCubit extends Mock implements ScreenshotCubit {}
 

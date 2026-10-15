@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_info_entity.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_result.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
 
 /// Base state for APK installation lifecycle.
 abstract class ApkInstallerState extends Equatable {

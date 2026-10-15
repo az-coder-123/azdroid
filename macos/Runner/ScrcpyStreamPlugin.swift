@@ -52,7 +52,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(
-      name: "com.wifidesk/video_stream",
+      name: "com.deskdroid/video_stream",
       binaryMessenger: registrar.messenger
     )
     let instance = ScrcpyStreamPlugin(textures: registrar.textures)
@@ -65,7 +65,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
   @objc public static func register(with controller: FlutterViewController) {
     streamLog("Registering via FlutterViewController...")
     let channel = FlutterMethodChannel(
-      name: "com.wifidesk/video_stream",
+      name: "com.deskdroid/video_stream",
       binaryMessenger: controller.engine.binaryMessenger
     )
     let instance = ScrcpyStreamPlugin(textures: controller.engine)
@@ -129,7 +129,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       self?.runStreamLoop(host: host, port: port)
     }
     self.streamThread = thread
-    thread.name = "com.wifidesk.scrcpy_stream"
+    thread.name = "com.deskdroid.scrcpy_stream"
     thread.start()
 
     result(id)

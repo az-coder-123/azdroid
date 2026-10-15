@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
 
 /// Card presenting inspected APK metadata (app name, package, version, SDK, size).
 class ApkInfoCard extends StatelessWidget {

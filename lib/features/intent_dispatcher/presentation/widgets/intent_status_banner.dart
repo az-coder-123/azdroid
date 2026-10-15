@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/cubit/intent_dispatcher_state.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/cubit/intent_dispatcher_state.dart';
 
 /// Renders success and error feedback banners for dispatched intents.
 class IntentStatusBanner extends StatelessWidget {

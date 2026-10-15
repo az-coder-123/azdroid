@@ -1,5 +1,5 @@
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Contract for native macOS file and directory picker interactions.
 abstract class MacFilePickerService {

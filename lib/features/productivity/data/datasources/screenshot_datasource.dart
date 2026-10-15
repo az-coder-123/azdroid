@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/productivity/data/utils/image_crop_util.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/productivity/data/utils/image_crop_util.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
 
 /// Data source interface for capturing raw device screenshots.
 abstract class ScreenshotDatasource {
@@ -61,7 +61,7 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
     final h = now.hour.toString().padLeft(2, '0');
     final min = now.minute.toString().padLeft(2, '0');
     final s = now.second.toString().padLeft(2, '0');
-    final fileName = 'WifiDesk_Screenshot_$y$m${d}_$h$min$s.png';
+    final fileName = 'DeskDroid_Screenshot_$y$m${d}_$h$min$s.png';
     final filePath = '${targetDir.path}/$fileName';
     final targetFile = File(filePath);
 

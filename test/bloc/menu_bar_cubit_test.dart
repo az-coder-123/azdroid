@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
-import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_state.dart';
+import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
+import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_state.dart';
 
 void main() {
   group('MenuBarCubit', () {

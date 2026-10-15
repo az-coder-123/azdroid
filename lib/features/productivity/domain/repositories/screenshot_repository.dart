@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
 
 /// Contract for capturing display screenshot artifacts.
 abstract class ScreenshotRepository {

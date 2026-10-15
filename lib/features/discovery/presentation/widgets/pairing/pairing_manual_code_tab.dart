@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_step_item.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_step_item.dart';
 
 /// Tab view for manual 6-digit PIN input with Phone IP and pairing port fields.
 class PairingManualCodeTab extends StatelessWidget {

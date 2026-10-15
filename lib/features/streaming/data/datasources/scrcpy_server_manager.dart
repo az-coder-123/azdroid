@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:wifi_desk/core/constants/socket_config.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Manages scrcpy-server deployment, persistent daemon execution, and socket tunnels.
 class ScrcpyServerManager {

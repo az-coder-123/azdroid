@@ -1,4 +1,4 @@
-import 'package:wifi_desk/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
 
 /// Abstract contract managing audio stream lifecycle, volume, and playback state.
 abstract class AudioRepository {

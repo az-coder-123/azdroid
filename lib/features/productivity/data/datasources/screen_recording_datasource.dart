@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screen_recording_entity.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
 
 /// Data source interface for capturing device screen recordings.
 abstract class ScreenRecordingDatasource {
@@ -50,7 +50,7 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
     }
 
     final ts = DateTime.now().millisecondsSinceEpoch;
-    final remotePath = '/sdcard/wifidesk_rec_$ts.mp4';
+    final remotePath = '/sdcard/deskdroid_rec_$ts.mp4';
     final bitrate = (bitrateBps ?? 8000000).toString();
     final timeLimit = (timeLimitSeconds ?? 180).toString();
 
@@ -116,7 +116,7 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
     final h = now.hour.toString().padLeft(2, '0');
     final min = now.minute.toString().padLeft(2, '0');
     final s = now.second.toString().padLeft(2, '0');
-    final fileName = 'WifiDesk_Recording_$y$m${d}_$h$min$s.mp4';
+    final fileName = 'DeskDroid_Recording_$y$m${d}_$h$min$s.mp4';
     final filePath = '${targetDir.path}/$fileName';
 
     try {

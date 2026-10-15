@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:wifi_desk/core/models/adb_command_result.dart';
-import 'package:wifi_desk/core/models/adb_device.dart';
-import 'package:wifi_desk/core/models/adb_mdns_service.dart';
-import 'package:wifi_desk/core/services/adb_output_parser.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/models/adb_command_result.dart';
+import 'package:desk_droid/core/models/adb_device.dart';
+import 'package:desk_droid/core/models/adb_mdns_service.dart';
+import 'package:desk_droid/core/services/adb_output_parser.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
-export 'package:wifi_desk/core/models/adb_command_result.dart';
-export 'package:wifi_desk/core/models/adb_device.dart';
-export 'package:wifi_desk/core/models/adb_mdns_service.dart';
-export 'package:wifi_desk/core/services/adb_output_parser.dart';
+export 'package:desk_droid/core/models/adb_command_result.dart';
+export 'package:desk_droid/core/models/adb_device.dart';
+export 'package:desk_droid/core/models/adb_mdns_service.dart';
+export 'package:desk_droid/core/services/adb_output_parser.dart';
 
 /// Service managing ADB interaction, mDNS queries, and device pairing.
 class AdbService {

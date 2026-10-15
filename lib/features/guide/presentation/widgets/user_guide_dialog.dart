@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/guide/domain/models/guide_category.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/guide_sidebar.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/sections/controls_section.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/sections/productivity_section.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/sections/quick_start_section.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/sections/troubleshooting_section.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/sections/xiaomi_setup_section.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/guide/domain/models/guide_category.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/guide_sidebar.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/sections/controls_section.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/sections/productivity_section.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/sections/quick_start_section.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/sections/troubleshooting_section.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/sections/xiaomi_setup_section.dart';
 
-/// Modal dialog orchestrator for the WifiDesk user guide, presenting a macOS-native
+/// Modal dialog orchestrator for the DeskDroid user guide, presenting a macOS-native
 /// two-column split view with categorized documentation tabs.
 class UserGuideDialog extends StatefulWidget {
   const UserGuideDialog({super.key});
@@ -132,7 +132,7 @@ class _UserGuideDialogState extends State<UserGuideDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'WifiDesk User Guide',
+                            'DeskDroid User Guide',
                             style: AppTypography.title,
                           ),
                           Text(

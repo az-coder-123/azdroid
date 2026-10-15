@@ -1,5 +1,5 @@
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_file_recording_status.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 
 /// Contract for managing Android real-time logcat streaming and local recording.
 abstract class DeviceLogRepository {

@@ -1,4 +1,4 @@
-# WifiDesk — User Guide & Setup Handbook
+# DeskDroid — User Guide & Setup Handbook
 
 > Complete handbook for macOS tool requirements, Android device configuration, wireless screen mirroring, touch injection, and productivity features.
 
@@ -7,23 +7,23 @@
 ## 🛠️ 1. Required Tools & Prerequisites
 
 ### 1.1 macOS Host Preparation
-WifiDesk is engineered to require minimal host dependencies. The **only external requirement** on macOS is the Android Debug Bridge (`adb`):
+DeskDroid is engineered to require minimal host dependencies. The **only external requirement** on macOS is the Android Debug Bridge (`adb`):
 
 - **Installing ADB via Homebrew (Recommended):**
   ```bash
   brew install android-platform-tools
   ```
 - **If Android Studio is already installed:**
-  WifiDesk automatically detects ADB inside your Android SDK (`~/Library/Android/sdk/platform-tools/adb`). No extra installation is needed.
+  DeskDroid automatically detects ADB inside your Android SDK (`~/Library/Android/sdk/platform-tools/adb`). No extra installation is needed.
 - **Automated Path Discovery:**
-  WifiDesk searches standard locations automatically without manual configuration:
+  DeskDroid searches standard locations automatically without manual configuration:
   - Apple Silicon Homebrew: `/opt/homebrew/bin/adb`
   - Intel Mac Homebrew: `/usr/local/bin/adb`
   - Android SDK: `~/Library/Android/sdk/platform-tools/adb`
   - Current shell `$PATH` via `which adb`
 
 > [!NOTE]
-> You do **not** need to install `scrcpy` or `ffmpeg`. The `scrcpy-server.jar` daemon is bundled inside WifiDesk, and video rendering uses native macOS **Apple VideoToolbox** GPU acceleration.
+> You do **not** need to install `scrcpy` or `ffmpeg`. The `scrcpy-server.jar` daemon is bundled inside DeskDroid, and video rendering uses native macOS **Apple VideoToolbox** GPU acceleration.
 
 ### 1.2 Android Device Preparation
 
@@ -53,24 +53,24 @@ When connecting for the first time via USB or Wi-Fi, an authorization dialog app
 
 ## 🚀 2. Connection Methods
 
-WifiDesk provides 3 connection pathways:
+DeskDroid provides 3 connection pathways:
 
 ### Method 1: 1-Click USB to Wi-Fi Switch (Easiest & Most Reliable)
 1. Plug your phone into your Mac via USB cable.
 2. Allow USB Debugging on your phone.
 3. Your phone immediately appears under **Discovered Devices**.
-4. Click **"Wi-Fi Mode"** on the device card. WifiDesk automatically switches ADB to wireless TCP mode (`adb tcpip 5555`) and establishes the wireless connection.
+4. Click **"Wi-Fi Mode"** on the device card. DeskDroid automatically switches ADB to wireless TCP mode (`adb tcpip 5555`) and establishes the wireless connection.
 5. Unplug the USB cable! Mirroring continues smoothly over Wi-Fi.
 
 ### Method 2: Wireless 6-Digit PIN Pairing (Android 11+ Cable-Free)
 1. On your phone: Go to **Settings ➔ Developer Options ➔ Wireless Debugging**.
 2. Tap **"Pair device with pairing code"** (*Ghép nối bằng mã ghép nối*).
-3. On WifiDesk: Click **"Pair with Wi-Fi Code"** on the top toolbar.
+3. On DeskDroid: Click **"Pair with Wi-Fi Code"** on the top toolbar.
 4. Enter the IP, port, and 6-digit code shown on your phone screen, then click **Pair & Connect**.
 
 ### Method 3: Direct IP Connection
 1. Find your phone's local IP address under **Settings ➔ Wi-Fi ➔ Current Network Details** (e.g. `192.168.1.35`).
-2. Click **"Direct IP"** on WifiDesk, enter the IP address (port defaults to 5555), and click **Connect**.
+2. Click **"Direct IP"** on DeskDroid, enter the IP address (port defaults to 5555), and click **Connect**.
 
 ---
 
@@ -114,7 +114,7 @@ WifiDesk provides 3 connection pathways:
 
 ### Device File Explorer & Pull to Mac
 - Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> or click the folder icon on the side dock to browse Android storage (`Downloads`, `DCIM`, `Screenshots`, `Movies`, and `SD Card`).
-- Select files and download them directly to `~/Downloads/WifiDesk` with 1-click Finder reveal.
+- Select files and download them directly to `~/Downloads/DeskDroid` with 1-click Finder reveal.
 
 ### Real-Time Device Logcat Console & Debugging
 - Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> or click **Logs** on any device card to launch the live Logcat Console.
@@ -124,7 +124,7 @@ WifiDesk provides 3 connection pathways:
 - **Bookmarking (Star Logs):** Click the star icon on any log row to bookmark it. Toggle the **Starred** filter chip to isolate flagged logs during testing.
 - **Detail Drawer & Stack Trace Viewer:** Click any log row to open the side inspector drawer. View full metadata, colored Java/Kotlin stack traces, and click **Format JSON** to pretty-print JSON payloads.
 - **Toggle Soft-Wrap:** Click the wrap icon in the footer to toggle between multi-line text wrapping and single-line fixed-extent virtualized scrolling (60 FPS).
-- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `~/Downloads/WifiDesk_Logcat_*.txt`.
+- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `~/Downloads/DeskDroid_Logcat_*.txt`.
 
 ### Bidirectional Clipboard Sync
 - Text copied on macOS (<kbd>Cmd</kbd> + <kbd>C</kbd>) is automatically synced to the Android clipboard.

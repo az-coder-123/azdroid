@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screen_recording_entity.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 
 /// Translucent card presenting captured screen recording details and macOS QuickTime / Finder actions.
 class ScreenRecordingSuccessCard extends StatelessWidget {

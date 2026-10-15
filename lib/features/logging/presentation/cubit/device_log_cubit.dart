@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
-import 'package:wifi_desk/features/logging/domain/repositories/device_log_repository.dart';
-import 'package:wifi_desk/features/logging/presentation/cubit/device_log_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/domain/repositories/device_log_repository.dart';
+import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
 
 /// Cubit managing real-time Android logcat stream ingestion, multi-tier filtering,
 /// disk persistence, and viewport pause states.

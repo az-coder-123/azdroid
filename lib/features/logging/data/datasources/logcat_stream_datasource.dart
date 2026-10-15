@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Datasource responsible for managing low-level ADB logcat processes and streaming raw stdout lines.
 class LogcatStreamDatasource {

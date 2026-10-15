@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
-import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
-import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
+import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
 
 class MockControlRepository extends Mock implements ControlRepository {}
 

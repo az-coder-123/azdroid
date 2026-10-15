@@ -1,6 +1,6 @@
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Dedicated service responsible for switching USB-connected Android devices to wireless TCP/IP mode.
 class AdbTcpipService {

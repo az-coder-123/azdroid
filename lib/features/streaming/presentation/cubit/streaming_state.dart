@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 
 /// Base class for all states emitted by [StreamingCubit].
 sealed class StreamingState extends Equatable {

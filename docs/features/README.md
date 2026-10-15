@@ -1,6 +1,6 @@
-# WifiDesk — Feature Documentation Catalog
+# DeskDroid — Feature Documentation Catalog
 
-> Comprehensive, modular catalog of all capabilities, developer tools, and macOS productivity enhancements implemented in **WifiDesk**.
+> Comprehensive, modular catalog of all capabilities, developer tools, and macOS productivity enhancements implemented in **DeskDroid**.
 
 ---
 

@@ -1,6 +1,6 @@
-import 'package:wifi_desk/core/models/adb_device.dart';
-import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:desk_droid/core/models/adb_device.dart';
+import 'package:desk_droid/core/services/adb_tcpip_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
 
 /// Contract for automatically provisioning Wi-Fi mode when an authorized USB device is attached.
 abstract class UsbWifiAutoHandoffService {

@@ -1,9 +1,9 @@
-import 'package:wifi_desk/core/constants/apk_installer_constants.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_result.dart';
+import 'package:desk_droid/core/constants/apk_installer_constants.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
 
 /// Contract for ADB package operations (install, launch, uninstall).
 abstract class ApkInstallerDatasource {

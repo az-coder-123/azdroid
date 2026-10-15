@@ -1,8 +1,8 @@
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/productivity/data/models/remote_file_model.dart';
+import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/productivity/data/models/remote_file_model.dart';
 
 /// Abstract datasource contract for ADB file push, pull, remote listing, and APK installation.
 abstract class FileTransferDatasource {

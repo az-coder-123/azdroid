@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
-import 'package:wifi_desk/features/streaming/domain/repositories/streaming_repository.dart';
-import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 
 /// Cubit managing the display mirroring session lifecycle, viewport controls, and navigation input.
 class StreamingCubit extends Cubit<StreamingState> {

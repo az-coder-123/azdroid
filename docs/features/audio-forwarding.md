@@ -8,7 +8,7 @@
 
 ## 📌 Overview
 
-WifiDesk routes system audio from Android directly to macOS speakers or connected headphones with low latency. Audio is captured natively on the device and forwarded alongside the video stream over an independent high-throughput socket.
+DeskDroid routes system audio from Android directly to macOS speakers or connected headphones with low latency. Audio is captured natively on the device and forwarded alongside the video stream over an independent high-throughput socket.
 
 ```mermaid
 flowchart LR

@@ -8,7 +8,7 @@
 ## 1. Context & Symptoms
 
 When multiple Android devices were active on the same local Wi-Fi subnet (e.g., `192.168.1.0/24`):
-1. WifiDesk auto-detected the first Android device (e.g., `192.168.1.3:5555`).
+1. DeskDroid auto-detected the first Android device (e.g., `192.168.1.3:5555`).
 2. Any subsequent Android devices on the same subnet (e.g., at other IP addresses) failed to appear in the discovered device list.
 3. Users reported: *"Not all Android devices on this Wi-Fi network are discovered (1 device missing)."*
 

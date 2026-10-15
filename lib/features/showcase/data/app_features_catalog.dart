@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 
-/// Curated registry of all built-in WifiDesk features with user-friendly English descriptions.
+/// Curated registry of all built-in DeskDroid features with user-friendly English descriptions.
 class AppFeaturesCatalog {
   const AppFeaturesCatalog._();
 

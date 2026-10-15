@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Dropdown menu button displaying all active Android log modules and their line counts.
 class LogTagDropdownMenu extends StatelessWidget {

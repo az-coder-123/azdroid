@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-WifiDesk provides lossless on-device video recording without placing computational capture burden on your Mac. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
+DeskDroid provides lossless on-device video recording without placing computational capture burden on your Mac. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
 
 ```mermaid
 flowchart TD
@@ -17,7 +17,7 @@ flowchart TD
     Prep --> Countdown["Animated 3-2-1 Countdown Overlay"]
     Countdown --> Record["Android Hardware screenrecord\n(Up to 180s Lossless H.264 MP4)"]
     Record --> HUD["Live Status HUD (REC 00:15)\n(STOP / DISCARD Controls)"]
-    HUD --> Pull["Auto-Pull to ~/Downloads/WifiDesk_Recording_*.mp4"]
+    HUD --> Pull["Auto-Pull to ~/Downloads/DeskDroid_Recording_*.mp4"]
     Pull --> Complete["Preview Card with Finder & Play Actions"]
 ```
 
@@ -44,5 +44,5 @@ flowchart TD
   - **DISCARD:** Immediately terminates the process and deletes the temporary device file, leaving zero host disk clutter.
 
 ### 5. Auto-Pull to macOS & Quick Actions
-- **Timestamped File Naming:** Automatically pulls the finished video to `~/Downloads/WifiDesk_Recording_YYYYMMDD_HHMMSS.mp4`.
+- **Timestamped File Naming:** Automatically pulls the finished video to `~/Downloads/DeskDroid_Recording_YYYYMMDD_HHMMSS.mp4`.
 - **Interactive Completion Card:** Displays a preview card offering 1-click **Reveal in Finder** (`open -R`) and **Play** actions.

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/features/menubar/domain/entities/menu_bar_status_entity.dart';
-import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_state.dart';
+import 'package:desk_droid/features/menubar/domain/entities/menu_bar_status_entity.dart';
+import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_state.dart';
 
 /// Cubit managing the macOS Menu Bar companion status item and window visibility.
 class MenuBarCubit extends Cubit<MenuBarState> {

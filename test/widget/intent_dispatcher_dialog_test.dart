@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/repositories/intent_repository.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/repositories/intent_repository.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
 
 class MockIntentRepository extends Mock implements IntentRepository {}
 

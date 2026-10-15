@@ -1,9 +1,9 @@
-import 'package:wifi_desk/core/constants/audio_constants.dart';
-import 'package:wifi_desk/core/constants/socket_config.dart';
-import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
-import 'package:wifi_desk/features/audio/domain/entities/audio_stream_entity.dart';
-import 'package:wifi_desk/features/audio/domain/repositories/audio_repository.dart';
-import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:desk_droid/core/constants/audio_constants.dart';
+import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/features/audio/data/datasources/audio_socket_datasource.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
+import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 
 /// Concrete implementation of [AudioRepository] managing audio tunnels and playback controls.
 class AudioRepositoryImpl implements AudioRepository {

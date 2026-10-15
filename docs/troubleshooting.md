@@ -1,4 +1,4 @@
-# WifiDesk — Troubleshooting & Common Issues Guide
+# DeskDroid — Troubleshooting & Common Issues Guide
 
 > Step-by-step solutions for network connectivity, ADB daemon authorization, and Xiaomi permission bottlenecks.
 
@@ -11,21 +11,21 @@
   1. Mac and phone are on different subnets, or the router has AP Isolation enabled.
   2. Switching from Home Wi-Fi (`192.168.1.x`) to Mobile Hotspot (`192.168.43.x`) leaves stale socket routes on the existing background ADB daemon on macOS (`EHOSTUNREACH`).
 - **Solution:**
-  1. WifiDesk now features automatic self-healing: attempting a connection automatically recycles the ADB daemon when a stale route is encountered.
+  1. DeskDroid now features automatic self-healing: attempting a connection automatically recycles the ADB daemon when a stale route is encountered.
   2. If connecting from CLI, run `adb kill-server && adb connect <phone-ip>:5555`.
   3. Ensure both devices share the subnet (e.g., `192.168.43.xxx`).
 
 ### ❌ Device Not Discovered Automatically on Mobile Hotspot (`192.168.43.x`)
 - **Root Cause:** Android Mobile Hotspot tethering interfaces filter Multicast / mDNS packets (UDP 5353), preventing auto-discovery broadcast.
 - **Solution:**
-  1. Click **"Manual Connect"** in WifiDesk.
+  1. Click **"Manual Connect"** in DeskDroid.
   2. Enter the phone's hotspot IP (e.g., `192.168.43.148` or `192.168.43.1`) and port `5555`.
 
 ### ❌ Connection Drops When USB Cable Is Unplugged or Network Changes
 - **Root Cause:** Android 10 and older devices reset ADB TCP/IP port 5555 whenever network connectivity changes.
 - **Solution:**
   1. Plug in USB cable with USB Debugging enabled.
-  2. Run `adb tcpip 5555` (or click "Switch to Wi-Fi" on the USB card in WifiDesk) while the cable is attached.
+  2. Run `adb tcpip 5555` (or click "Switch to Wi-Fi" on the USB card in DeskDroid) while the cable is attached.
   3. Unplug cable and connect via Direct IP (`<phone-ip>:5555`).
 
 > 💡 **Deep Dive:** For technical root-cause analyses and self-healing daemon architecture, see [docs/lessons-learned/mobile-hotspot-adb-routing.md](lessons-learned/mobile-hotspot-adb-routing.md).

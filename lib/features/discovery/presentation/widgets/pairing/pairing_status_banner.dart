@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_state.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/pairing_state.dart';
 
 /// Feedback banner rendering active error or pairing success message.
 class PairingStatusBanner extends StatelessWidget {

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/app_constants.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_cubit.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/discovery_state.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/device_card.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/discovery_app_bar_actions.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state_view.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/manual_connect_dialog.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing_dialog.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/user_guide_dialog.dart';
-import 'package:wifi_desk/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
-import 'package:wifi_desk/features/streaming/presentation/pages/mirroring_page.dart';
+import 'package:desk_droid/core/constants/app_constants.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_state.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/device_card.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/discovery_app_bar_actions.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/empty_state_view.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/manual_connect_dialog.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing_dialog.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
+import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
 
-/// Main landing page of WifiDesk hosting the device discovery and pairing dashboard.
+/// Main landing page of DeskDroid hosting the device discovery and pairing dashboard.
 class DiscoveryPage extends StatefulWidget {
   const DiscoveryPage({super.key});
 

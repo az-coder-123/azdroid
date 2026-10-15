@@ -1,12 +1,12 @@
 # Engineering Lessons Learned & Technical Post-Mortems
 
-> A curated repository of real-world edge cases, operating system quirks, networking anomalies, and reusable architectural solutions discovered during WifiDesk development.
+> A curated repository of real-world edge cases, operating system quirks, networking anomalies, and reusable architectural solutions discovered during DeskDroid development.
 
 ---
 
 ## 🎯 Purpose & Philosophy
 
-As an advanced desktop mirroring and remote control utility bridging macOS and Android, WifiDesk interfaces directly with low-level kernel routing, daemon socket lifetimes, USB/Wi-Fi switching, and device permissions.
+As an advanced desktop mirroring and remote control utility bridging macOS and Android, DeskDroid interfaces directly with low-level kernel routing, daemon socket lifetimes, USB/Wi-Fi switching, and device permissions.
 
 Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is diagnosed and resolved, it must be documented here to:
 1. **Prevent Regressions:** Ensure future development does not inadvertently reintroduce known antipatterns.
@@ -44,7 +44,7 @@ Every new case study added to this directory must adhere strictly to the followi
    - Keep the file compact and readable (< 250 lines).
 2. **Mandatory 5-Section Structure:**
    - **1. Context & Symptoms:** What failed? Exact error messages, error codes, and observable UI state.
-   - **2. Diagnostic Traces & Evidence:** Exact terminal commands, log snippets (`wifidesk_dart.log`), and reproduction steps.
+   - **2. Diagnostic Traces & Evidence:** Exact terminal commands, log snippets (`deskdroid_dart.log`), and reproduction steps.
    - **3. Root Cause Analysis:** Deep technical explanation of why the failure occurred (OS kernel, networking, daemon state, etc.).
    - **4. Architectural Solution:** How it was resolved in code, design patterns used, and code references.
    - **5. Prevention & Reusability Checklist:** Rules of thumb for engineers to reuse or avoid in other features.

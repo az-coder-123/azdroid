@@ -3,11 +3,11 @@ import 'dart:ui';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/screenshot_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
 
 class MockScreenshotRepository extends Mock implements ScreenshotRepository {}
 
@@ -16,8 +16,8 @@ void main() {
   const testSerial = '192.168.1.100:5555';
 
   final testScreenshot = ScreenshotEntity(
-    filePath: '/Users/mac/Downloads/WifiDesk_Screenshot_20261013_183000.png',
-    fileName: 'WifiDesk_Screenshot_20261013_183000.png',
+    filePath: '/Users/mac/Downloads/DeskDroid_Screenshot_20261013_183000.png',
+    fileName: 'DeskDroid_Screenshot_20261013_183000.png',
     fileSizeBytes: 245000,
     capturedAt: DateTime(2026, 10, 13, 18, 30),
     copiedToClipboard: true,
@@ -55,7 +55,7 @@ void main() {
         isA<ScreenshotSuccess>().having(
           (s) => s.screenshot.fileName,
           'fileName',
-          'WifiDesk_Screenshot_20261013_183000.png',
+          'DeskDroid_Screenshot_20261013_183000.png',
         ),
       ],
       verify: (_) {

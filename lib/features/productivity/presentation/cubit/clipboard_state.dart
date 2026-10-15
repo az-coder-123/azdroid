@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/clipboard_item_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/clipboard_item_entity.dart';
 
 /// Base state for clipboard synchronization.
 sealed class ClipboardState extends Equatable {

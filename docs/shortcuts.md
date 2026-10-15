@@ -1,4 +1,4 @@
-# WifiDesk — Mouse Gestures & macOS Keyboard Shortcuts
+# DeskDroid — Mouse Gestures & macOS Keyboard Shortcuts
 
 > Complete reference for navigation keys, trackpad gestures, and input injection.
 

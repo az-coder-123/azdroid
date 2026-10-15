@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
 
 /// Card allowing users to configure installation flags (-r, -g, -t, -d).
 class ApkInstallOptionsCard extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 
 /// Card widget rendering an individual feature with icon, badge, highlights, and pro tips.
 class FeatureCard extends StatelessWidget {

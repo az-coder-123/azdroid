@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/guide/domain/models/guide_category.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/guide/domain/models/guide_category.dart';
 
 /// Navigation sidebar for the user guide dialog, rendering category tabs and platform footer.
 class GuideSidebar extends StatelessWidget {
@@ -116,7 +116,7 @@ class GuideSidebar extends StatelessWidget {
                       SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          'WifiDesk • macOS Client',
+                          'DeskDroid • macOS Client',
                           style: TextStyle(
                             fontSize: 11,
                             color: AppColors.textTertiary,

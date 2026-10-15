@@ -7,7 +7,7 @@
 
 ## 1. Context & Symptoms
 
-To detect newly plugged USB devices, mDNS Wi-Fi announcements, and battery level updates, WifiDesk runs periodic background scans (e.g., every 5 seconds) via `DiscoveryCubit`:
+To detect newly plugged USB devices, mDNS Wi-Fi announcements, and battery level updates, DeskDroid runs periodic background scans (e.g., every 5 seconds) via `DiscoveryCubit`:
 - **Full-Screen Loading Flashes:** Every 5 seconds, the main device dashboard was replaced by a full-screen `CircularProgressIndicator` for 300-500ms, causing unbearable visual flickering.
 - **Focus Destruction:** If a user was actively typing into a modal dialog (such as the Manual Connect IP field or pairing code inputs), the periodic scan tore down the underlying view, stealing keyboard focus and clearing active inputs.
 - **Unnecessary CPU Spikes:** macOS Activity Monitor reported continuous 25-35% CPU usage even when the app was idle on the home screen.

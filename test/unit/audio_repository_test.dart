@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/constants/audio_constants.dart';
-import 'package:wifi_desk/core/constants/socket_config.dart';
-import 'package:wifi_desk/features/audio/data/datasources/audio_socket_datasource.dart';
-import 'package:wifi_desk/features/audio/data/repositories/audio_repository_impl.dart';
-import 'package:wifi_desk/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:desk_droid/core/constants/audio_constants.dart';
+import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/features/audio/data/datasources/audio_socket_datasource.dart';
+import 'package:desk_droid/features/audio/data/repositories/audio_repository_impl.dart';
+import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 
 class MockScrcpyServerManager extends Mock implements ScrcpyServerManager {}
 

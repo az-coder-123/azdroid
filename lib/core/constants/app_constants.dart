@@ -1,13 +1,13 @@
-/// General application-wide constants for WifiDesk.
+/// General application-wide constants for DeskDroid.
 class AppConstants {
   const AppConstants._();
 
   /// The official application display name.
-  static const String appName = 'WifiDesk';
+  static const String appName = 'DeskDroid';
 
   /// Short marketing tagline for desktop window headers and about dialogs.
   static const String appTagline =
-      'Low-Latency Android Screen Mirroring & Control for macOS';
+      'High-Performance Android Screen Mirroring & Workstation for macOS';
 
   /// Standard application version string.
   static const String appVersion = '1.0.0';

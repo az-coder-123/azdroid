@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/apk_installer/domain/repositories/apk_installer_repository.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/cubit/apk_installer_cubit.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/cubit/apk_installer_state.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_info_card.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_install_options_card.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_install_progress_card.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_install_result_card.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_picker_drop_zone.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/services/mac_file_picker_service.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
+import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_cubit.dart';
+import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_info_card.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_options_card.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_progress_card.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_result_card.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_picker_drop_zone.dart';
 
 /// Modal dialog providing professional APK inspection, options configuration, and sideloading.
 class ApkInstallerDialog extends StatelessWidget {

@@ -1,12 +1,12 @@
-# WifiDesk — Modular Architecture Documentation
+# DeskDroid — Modular Architecture Documentation
 
-> Technical blueprint and design patterns implemented in **WifiDesk** adhering to Clean Architecture, SOLID principles, and strict modular feature boundaries.
+> Technical blueprint and design patterns implemented in **DeskDroid** adhering to Clean Architecture, SOLID principles, and strict modular feature boundaries.
 
 ---
 
 ## 🏛️ High-Level Architectural Pattern
 
-WifiDesk follows a **Feature-Driven Clean Architecture** powered by the **BLoC / Cubit** reactive state management pattern.
+DeskDroid follows a **Feature-Driven Clean Architecture** powered by the **BLoC / Cubit** reactive state management pattern.
 
 ```mermaid
 flowchart TD

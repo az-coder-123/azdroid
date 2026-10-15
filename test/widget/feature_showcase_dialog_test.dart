@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/user_guide_dialog.dart';
-import 'package:wifi_desk/features/showcase/data/app_features_catalog.dart';
-import 'package:wifi_desk/features/showcase/domain/entities/app_feature_item.dart';
-import 'package:wifi_desk/features/showcase/presentation/widgets/feature_card.dart';
-import 'package:wifi_desk/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
+import 'package:desk_droid/features/showcase/data/app_features_catalog.dart';
+import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_card.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
 
 void main() {
   group('FeatureShowcaseDialog Widget Tests', () {
@@ -16,7 +16,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('WifiDesk Features Showcase'), findsOneWidget);
+      expect(find.text('DeskDroid Features Showcase'), findsOneWidget);
       expect(find.text('All Features'), findsOneWidget);
       expect(find.text('Display & Control'), findsOneWidget);
       expect(find.text('Developer Tools'), findsOneWidget);
@@ -104,7 +104,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.text('WifiDesk Features Showcase'), findsOneWidget);
+        expect(find.text('DeskDroid Features Showcase'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );

@@ -1,4 +1,4 @@
-# ⚡️ WifiDesk
+# ⚡️ DeskDroid
 
 <p align="center">
   <b>Silky-smooth, low-latency Android screen mirroring and remote control for macOS over Wi-Fi & USB.</b>
@@ -12,18 +12,18 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/wifidesk_mirroring_preview.png" alt="WifiDesk Live Mirroring & Controls on macOS" width="520">
+  <img src="docs/images/deskdroid_mirroring_preview.png" alt="DeskDroid Live Mirroring & Controls on macOS" width="520">
 </p>
 
 ---
 
 ## 📖 Overview
 
-**WifiDesk** is an open-source desktop application crafted with **Flutter Desktop** for **macOS**. 
+**DeskDroid** is an open-source desktop application crafted with **Flutter Desktop** for **macOS**. 
 
 It enables users to **mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over local Wi-Fi or USB cable**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
 
-WifiDesk bridges two core principles:
+DeskDroid bridges two core principles:
 1. **Unrivaled Performance:** Powered by the robust, hardware-accelerated `scrcpy-server` engine (H.264/H.265 GPU encoding).
 2. **Native macOS Polish:** Packaged inside a modern, refined Apple-native interface crafted with Flutter.
 
@@ -93,7 +93,7 @@ flowchart LR
         C_SOCKET["TCP / UDP Control Events (Input Packets)"]
     end
 
-    subgraph MacApp ["💻 macOS (WifiDesk App - Flutter)"]
+    subgraph MacApp ["💻 macOS (DeskDroid App - Flutter)"]
         M1["Flutter UI & Menu Bar"] --> M2["Mouse & Keyboard Event Listener"]
         M3["Hardware Video Decoder (Texture Registry)"] --> M1
     end
@@ -126,7 +126,7 @@ flowchart LR
   brew install android-platform-tools
   ```
   > [!NOTE]
-  > If Android Studio is already installed, ADB is detected automatically. You do **not** need to install `scrcpy` or `ffmpeg`—all server components are bundled inside WifiDesk, and video is decoded via native Apple VideoToolbox.
+  > If Android Studio is already installed, ADB is detected automatically. You do **not** need to install `scrcpy` or `ffmpeg`—all server components are bundled inside DeskDroid, and video is decoded via native Apple VideoToolbox.
 
 #### 2. Android Device (Phone / Tablet)
 - **OS Version:** Android 5.0+ (Android 11+ recommended for cable-free wireless pairing).

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_faq_item.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_section_header.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_faq_item.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_section_header.dart';
 
 /// Troubleshooting and FAQ section covering connection errors and fixes.
 class TroubleshootingSection extends StatelessWidget {

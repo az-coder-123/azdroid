@@ -1,11 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/repositories/intent_repository.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/cubit/intent_dispatcher_state.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/repositories/intent_repository.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/cubit/intent_dispatcher_state.dart';
 
 class MockIntentRepository extends Mock implements IntentRepository {}
 

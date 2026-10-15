@@ -9,7 +9,7 @@ class AppLogger {
 
   static void _logToFile(String line) {
     try {
-      File('/tmp/wifidesk_dart.log').writeAsStringSync(
+      File('/tmp/deskdroid_dart.log').writeAsStringSync(
         '${DateTime.now().toIso8601String()} $line\n',
         mode: FileMode.append,
         flush: true,
@@ -18,14 +18,14 @@ class AppLogger {
   }
 
   /// Logs informational system messages.
-  static void info(String message, {String tag = 'WifiDesk'}) {
+  static void info(String message, {String tag = 'DeskDroid'}) {
     developer.log(message, name: tag, level: 800);
     debugPrint('[$tag] $message');
     _logToFile('INFO [$tag] $message');
   }
 
   /// Logs debug messages during development.
-  static void debug(String message, {String tag = 'WifiDesk'}) {
+  static void debug(String message, {String tag = 'DeskDroid'}) {
     if (kDebugMode) {
       developer.log(message, name: tag, level: 500);
       debugPrint('[$tag] $message');
@@ -36,7 +36,7 @@ class AppLogger {
   /// Logs warnings and recoverable failures with optional error and stack trace.
   static void warning(
     String message, {
-    String tag = 'WifiDesk',
+    String tag = 'DeskDroid',
     Object? error,
     StackTrace? stackTrace,
   }) {
@@ -54,7 +54,7 @@ class AppLogger {
   /// Logs critical errors and boundary exceptions with required error details.
   static void error(
     String message, {
-    String tag = 'WifiDesk',
+    String tag = 'DeskDroid',
     Object? error,
     StackTrace? stackTrace,
   }) {

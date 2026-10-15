@@ -1,12 +1,12 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_info_entity.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_result.dart';
-import 'package:wifi_desk/features/apk_installer/domain/repositories/apk_installer_repository.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/cubit/apk_installer_cubit.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/cubit/apk_installer_state.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
+import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
+import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_cubit.dart';
+import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
 
 class MockApkInstallerRepository extends Mock
     implements ApkInstallerRepository {}

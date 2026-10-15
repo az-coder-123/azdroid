@@ -1,4 +1,4 @@
-import 'package:wifi_desk/features/productivity/domain/entities/remote_file_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 
 /// Data transfer model for remote Android filesystem items.
 class RemoteFileModel extends RemoteFileEntity {

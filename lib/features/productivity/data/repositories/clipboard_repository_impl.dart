@@ -1,5 +1,5 @@
-import 'package:wifi_desk/features/productivity/data/datasources/clipboard_datasource.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:desk_droid/features/productivity/data/datasources/clipboard_datasource.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
 
 /// Concrete implementation of [ClipboardRepository] managing bidirectional text syncing.
 class ClipboardRepositoryImpl implements ClipboardRepository {

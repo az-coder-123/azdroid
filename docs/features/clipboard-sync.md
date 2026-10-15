@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-WifiDesk provides seamless bidirectional clipboard synchronization between macOS and Android. Any text copied on your Mac is instantly pasteable on Android, and text selected and copied on Android is immediately available in the macOS pasteboard.
+DeskDroid provides seamless bidirectional clipboard synchronization between macOS and Android. Any text copied on your Mac is instantly pasteable on Android, and text selected and copied on Android is immediately available in the macOS pasteboard.
 
 ```mermaid
 flowchart LR
@@ -26,7 +26,7 @@ flowchart LR
 
 ### 1. Real-Time Two-Way Background Daemon
 - **Background Daemon:** `ClipboardSyncDaemon` runs a non-intrusive 2-second background loop monitoring both macOS pasteboard and Android clipboard without user interaction.
-- **Mac to Android:** When you copy text, URLs, API keys, or verification codes on macOS, WifiDesk immediately forwards the string to Android clipboard.
+- **Mac to Android:** When you copy text, URLs, API keys, or verification codes on macOS, DeskDroid immediately forwards the string to Android clipboard.
 - **Android to Mac:** When you select and copy text on the phone, the daemon detects the clipboard change and pushes the text to the macOS clipboard, ready for <kbd>Cmd</kbd> + <kbd>V</kbd>.
 
 ### 2. Dual Strategy & Broad Android Compatibility

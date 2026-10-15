@@ -1,8 +1,8 @@
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
 
 /// Abstract datasource contract executing `am start` commands via ADB.
 abstract class IntentDatasource {

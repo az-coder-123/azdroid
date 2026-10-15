@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
 
 /// Entity representing a previously connected device entry for quick 1-click reconnect.
 class RecentDevice extends Equatable {
@@ -51,7 +51,7 @@ abstract class DeviceHistoryService {
   Future<void> removeRecentDevice(String id);
 }
 
-/// Concrete local file-based implementation storing entries at ~/Library/Application Support/WifiDesk/history.json.
+/// Concrete local file-based implementation storing entries at ~/Library/Application Support/DeskDroid/history.json.
 class DeviceHistoryServiceImpl implements DeviceHistoryService {
   DeviceHistoryServiceImpl({this.customFilePath});
 
@@ -63,7 +63,7 @@ class DeviceHistoryServiceImpl implements DeviceHistoryService {
       return File(customFilePath!);
     }
     final home = Platform.environment['HOME'] ?? '';
-    final dirPath = '$home/Library/Application Support/WifiDesk';
+    final dirPath = '$home/Library/Application Support/DeskDroid';
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
       dir.createSync(recursive: true);

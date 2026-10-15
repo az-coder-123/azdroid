@@ -1,4 +1,4 @@
-import 'package:wifi_desk/features/productivity/domain/entities/screen_recording_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
 
 /// Contract for managing Android screen recording lifecycle.
 abstract class ScreenRecordingRepository {

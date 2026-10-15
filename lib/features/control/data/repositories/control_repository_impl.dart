@@ -1,8 +1,8 @@
-import 'package:wifi_desk/core/constants/android_key_codes.dart';
-import 'package:wifi_desk/core/constants/control_constants.dart';
-import 'package:wifi_desk/features/control/data/datasources/control_datasource.dart';
-import 'package:wifi_desk/features/control/domain/entities/input_event_entity.dart';
-import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
+import 'package:desk_droid/core/constants/android_key_codes.dart';
+import 'package:desk_droid/core/constants/control_constants.dart';
+import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
 
 /// Concrete implementation of [ControlRepository] translating normalized coordinates and events to native device actions.
 class ControlRepositoryImpl implements ControlRepository {

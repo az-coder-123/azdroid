@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 
 void main() {
   group('LogFilterCriteria', () {

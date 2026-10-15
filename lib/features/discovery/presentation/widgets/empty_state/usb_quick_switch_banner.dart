@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
 
 /// Helpful tip banner informing users about switching to wireless mode via a 1-time USB cable connection.
 class UsbQuickSwitchBanner extends StatelessWidget {

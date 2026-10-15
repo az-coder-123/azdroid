@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Preset template defining common Android Intent and Deep Link configurations.
 class IntentPreset {
@@ -51,7 +51,7 @@ class IntentPresetsBar extends StatelessWidget {
       label: 'Custom App Link',
       icon: Icons.link_rounded,
       action: 'android.intent.action.VIEW',
-      dataUri: 'myapp://product/456?ref=wifidesk',
+      dataUri: 'myapp://product/456?ref=deskdroid',
     ),
   ];
 

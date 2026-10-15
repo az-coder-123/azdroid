@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Interactive editor widget for adding, inspecting, and removing typed Intent extras.
 class IntentExtrasEditor extends StatefulWidget {

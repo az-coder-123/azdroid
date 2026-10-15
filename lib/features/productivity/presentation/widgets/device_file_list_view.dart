@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/remote_file_entity.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
 
 /// List view displaying remote Android directory contents with checkboxes and vibrant file icons.
 class DeviceFileListView extends StatelessWidget {

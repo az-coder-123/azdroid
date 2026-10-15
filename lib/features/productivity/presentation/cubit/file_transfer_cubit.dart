@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/file_transfer_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_state.dart';
+import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/features/productivity/domain/entities/file_transfer_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_state.dart';
 
 /// Cubit managing drag-and-drop file transfers and APK sideloading.
 class FileTransferCubit extends Cubit<FileTransferState> {

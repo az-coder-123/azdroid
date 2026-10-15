@@ -1,4 +1,4 @@
-# WifiDesk Product Backlog & Deferred Feature Proposals
+# DeskDroid Product Backlog & Deferred Feature Proposals
 
 > Curated record of prioritized feature proposals and architectural enhancements identified during development and code audits, cataloged for future sprint planning.
 

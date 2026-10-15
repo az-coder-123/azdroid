@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/audio/presentation/cubit/audio_cubit.dart';
-import 'package:wifi_desk/features/audio/presentation/cubit/audio_state.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
 
 /// Interactive audio control button providing mute toggle and slider volume adjustment.
 class AudioControlsWidget extends StatelessWidget {

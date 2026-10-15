@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Abstract datasource for host macOS pasteboard and Android device clipboard interactions.
 abstract class ClipboardDatasource {

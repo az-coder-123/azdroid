@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/screen_recording_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
 
 /// Cubit managing screen recording sessions, timers, and output artifacts.
 class ScreenRecordingCubit extends Cubit<ScreenRecordingState> {

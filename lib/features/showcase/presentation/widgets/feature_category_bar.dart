@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 
 /// Horizontal category selector bar rendering macOS-native styled pill filters.
 class FeatureCategoryBar extends StatelessWidget {

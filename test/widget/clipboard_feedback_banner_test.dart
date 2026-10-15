@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/clipboard_feedback_banner.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/clipboard_feedback_banner.dart';
 
 class MockClipboardRepository extends Mock implements ClipboardRepository {}
 

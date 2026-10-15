@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Reusable action button row with hover feedback for the menu bar companion popover.
 class MenuBarActionButton extends StatelessWidget {

@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/constants/android_key_codes.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/control/domain/entities/input_event_entity.dart';
-import 'package:wifi_desk/features/control/domain/repositories/control_repository.dart';
-import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
-import 'package:wifi_desk/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
+import 'package:desk_droid/core/constants/android_key_codes.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
+import 'package:desk_droid/features/control/presentation/widgets/input_gesture_viewport_overlay.dart';
 
 class MockControlRepository extends Mock implements ControlRepository {}
 

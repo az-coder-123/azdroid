@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/logging/data/datasources/log_file_recorder.dart';
+import 'package:desk_droid/features/logging/data/datasources/log_file_recorder.dart';
 
 void main() {
   late LogFileRecorder recorder;
@@ -41,8 +41,8 @@ void main() {
       final content = file.readAsStringSync();
       expect(content, contains('Line 1: System initialized'));
       expect(content, contains('Line 2: Camera hal bound'));
-      expect(content, contains('WifiDesk Real-time Logcat Session Started'));
-      expect(content, contains('WifiDesk Logcat Session Ended'));
+      expect(content, contains('DeskDroid Real-time Logcat Session Started'));
+      expect(content, contains('DeskDroid Logcat Session Ended'));
     });
 
     test(

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/remote_file_entity.dart';
+import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 
 /// Available sorting criteria for the Android file explorer.
 enum FileSortOption { nameAsc, nameDesc, dateDesc, dateAsc, sizeDesc, sizeAsc }

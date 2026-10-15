@@ -1,4 +1,4 @@
-# WifiDesk — Wireless Pairing Guide
+# DeskDroid — Wireless Pairing Guide
 
 > Step-by-step wireless discovery, 1-click USB switch, and 6-digit PIN pairing instructions for Android devices.
 
@@ -8,7 +8,7 @@
 
 When configuring wireless connections, distinguish between these two addresses:
 
-1. **Host Mac IP (Shown in WifiDesk Pairing Dialog):**
+1. **Host Mac IP (Shown in DeskDroid Pairing Dialog):**
    - The local IP address of your Mac on your Wi-Fi network (e.g. `192.168.1.15`).
    - Displayed in the top banner of the Pairing Dialog so you can verify that your Mac and phone are on the same local subnet.
 2. **Phone IP (Shown in Android Settings):**
@@ -27,11 +27,11 @@ When configuring wireless connections, distinguish between these two addresses:
 
 1. Plug your phone into your Mac with a USB cable.
 2. Tap **"Allow USB debugging"** on your phone screen when prompted.
-3. WifiDesk immediately detects your phone under **Discovered Devices**.
+3. DeskDroid immediately detects your phone under **Discovered Devices**.
 4. Click the **"Wi-Fi Mode"** button on the device card.
-   - WifiDesk automatically queries the phone's internal Wi-Fi IP address via `adb shell ip`.
-   - WifiDesk switches the ADB daemon to TCP mode (`adb tcpip 5555`).
-   - WifiDesk connects wirelessly (`adb connect <phone-ip>:5555`).
+   - DeskDroid automatically queries the phone's internal Wi-Fi IP address via `adb shell ip`.
+   - DeskDroid switches the ADB daemon to TCP mode (`adb tcpip 5555`).
+   - DeskDroid connects wirelessly (`adb connect <phone-ip>:5555`).
 5. Unplug the USB cable! Your phone remains connected wirelessly.
 
 > [!TIP]
@@ -49,18 +49,18 @@ When configuring wireless connections, distinguish between these two addresses:
    - **Device IP address** (e.g., `192.168.1.35`)
    - **Pairing Port** (e.g., `37129` — note: this is the *pairing* port, not port 5555)
    - **6-Digit Pairing Code** (e.g., `123456`)
-4. On WifiDesk: Click **"Pair with Wi-Fi Code"** on the macOS top bar or empty state screen.
+4. On DeskDroid: Click **"Pair with Wi-Fi Code"** on the macOS top bar or empty state screen.
 5. Enter the IP, port, and 6-digit code.
 6. Click **"Pair & Connect"**.
 
 > [!IMPORTANT]
-> Keep the pairing pop-up visible on your phone screen until WifiDesk confirms successful pairing. Closing the pop-up on your phone cancels the temporary pairing PIN.
+> Keep the pairing pop-up visible on your phone screen until DeskDroid confirms successful pairing. Closing the pop-up on your phone cancels the temporary pairing PIN.
 
 ---
 
 ## ⚡️ Method 3: Direct IP Connection & Recent Devices
 
-1. **Recent Devices:** If you previously connected to a device, WifiDesk persists it in `history.json`. Click any device chip under **"Recent Devices"** on the empty state screen to reconnect in 1 click!
+1. **Recent Devices:** If you previously connected to a device, DeskDroid persists it in `history.json`. Click any device chip under **"Recent Devices"** on the empty state screen to reconnect in 1 click!
 2. **Direct IP:** Click **"Direct IP"**, enter your phone IP and port (default: 5555), and click **Connect**.
 
 ---

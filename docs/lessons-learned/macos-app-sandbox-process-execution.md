@@ -27,8 +27,8 @@ When developing Flutter macOS desktop applications that invoke host CLI tools (s
    ```
 2. **System Log (`log stream` / Console.app):**
    ```text
-   kernel: Sandbox: WifiDesk(pid) deny(1) process-fork
-   kernel: Sandbox: WifiDesk(pid) deny(1) file-read-data /opt/homebrew/bin/adb
+   kernel: Sandbox: DeskDroid(pid) deny(1) process-fork
+   kernel: Sandbox: DeskDroid(pid) deny(1) file-read-data /opt/homebrew/bin/adb
    ```
 3. **Behavioral Divergence:**
    Running commands in standalone zsh succeeded without issue, whereas executing the exact same command inside the Flutter desktop Runner resulted in immediate permission denials.
@@ -46,7 +46,7 @@ The macOS App Sandbox strictly enforces:
 3. **Socket Binding Constraints:** Sandboxed apps require explicit network entitlements (`network.client`, `network.server`) to listen or connect over TCP/UDP.
 
 ### B. Developer Utility vs App Store Distribution
-WifiDesk is designed as a power-user developer tool requiring direct integration with the host system's Android SDK, ADB daemon, Homebrew toolchain, and local networking. Because it is distributed as an open-source utility and standalone DMG (not distributed via the restricted Mac App Store), retaining App Sandbox imposes severe operational barriers with zero functional benefit.
+DeskDroid is designed as a power-user developer tool requiring direct integration with the host system's Android SDK, ADB daemon, Homebrew toolchain, and local networking. Because it is distributed as an open-source utility and standalone DMG (not distributed via the restricted Mac App Store), retaining App Sandbox imposes severe operational barriers with zero functional benefit.
 
 ---
 

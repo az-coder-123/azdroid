@@ -1,6 +1,6 @@
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_info_entity.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_result.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
 
 /// Contract for APK package inspection, sideloading, and remote lifecycle control.
 abstract class ApkInstallerRepository {

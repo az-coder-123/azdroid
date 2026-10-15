@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
 
 /// Base state for audio forwarding.
 sealed class AudioState extends Equatable {

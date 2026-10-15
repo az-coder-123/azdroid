@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 
 /// Floating telemetry header displaying real-time stream performance metrics.
 class StreamTelemetryHeader extends StatelessWidget {

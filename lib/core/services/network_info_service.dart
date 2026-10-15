@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
 
 /// Abstract service providing host machine local network information.
 abstract class NetworkInfoService {

@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/logging/data/datasources/log_file_recorder.dart';
-import 'package:wifi_desk/features/logging/data/datasources/logcat_stream_datasource.dart';
-import 'package:wifi_desk/features/logging/data/models/logcat_threadtime_parser.dart';
-import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_file_recording_status.dart';
-import 'package:wifi_desk/features/logging/domain/repositories/device_log_repository.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/logging/data/datasources/log_file_recorder.dart';
+import 'package:desk_droid/features/logging/data/datasources/logcat_stream_datasource.dart';
+import 'package:desk_droid/features/logging/data/models/logcat_threadtime_parser.dart';
+import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
+import 'package:desk_droid/features/logging/domain/repositories/device_log_repository.dart';
 
 /// Implementation of [DeviceLogRepository] providing batched logcat streaming,
 /// bounded in-memory caching, and non-blocking real-time file recording.
@@ -160,7 +160,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
 
       final buffer = StringBuffer();
       buffer.writeln(
-        '=== WifiDesk Exported Logs: ${DateTime.now().toIso8601String()} ===',
+        '=== DeskDroid Exported Logs: ${DateTime.now().toIso8601String()} ===',
       );
       buffer.writeln('Total Entries: ${entries.length}\n');
       for (final entry in entries) {

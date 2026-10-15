@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 
 /// Base class for all remote control input injection events.
 sealed class ControlEvent extends Equatable {

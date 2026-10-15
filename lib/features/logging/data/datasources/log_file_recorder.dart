@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_file_recording_status.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 
 /// Manages asynchronous, non-blocking disk persistence for active logcat streams.
 class LogFileRecorder {
@@ -34,8 +34,8 @@ class LogFileRecorder {
         '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}';
 
     final baseDir = home.isNotEmpty
-        ? '$home/Downloads/wifidesk_logs'
-        : 'wifidesk_logs';
+        ? '$home/Downloads/deskdroid_logs'
+        : 'deskdroid_logs';
     return '$baseDir/logcat_${sanitizedSerial}_$timestamp.log';
   }
 
@@ -60,7 +60,7 @@ class LogFileRecorder {
 
       // Header marker
       final header =
-          '=== WifiDesk Real-time Logcat Session Started: ${DateTime.now().toIso8601String()} ===\n';
+          '=== DeskDroid Real-time Logcat Session Started: ${DateTime.now().toIso8601String()} ===\n';
       _activeSink!.write(header);
       _bytesWritten += utf8.encode(header).length;
 
@@ -99,7 +99,7 @@ class LogFileRecorder {
     if (sink != null) {
       try {
         sink.writeln(
-          '=== WifiDesk Logcat Session Ended: ${DateTime.now().toIso8601String()} ===',
+          '=== DeskDroid Logcat Session Ended: ${DateTime.now().toIso8601String()} ===',
         );
         await sink.flush();
         await sink.close();

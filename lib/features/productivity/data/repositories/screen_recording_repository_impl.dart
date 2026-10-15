@@ -1,6 +1,6 @@
-import 'package:wifi_desk/features/productivity/data/datasources/screen_recording_datasource.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screen_recording_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/screen_recording_repository.dart';
+import 'package:desk_droid/features/productivity/data/datasources/screen_recording_datasource.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
 
 /// Implementation of [ScreenRecordingRepository] delegating to [ScreenRecordingDatasource].
 class ScreenRecordingRepositoryImpl implements ScreenRecordingRepository {

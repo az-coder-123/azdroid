@@ -1,7 +1,7 @@
-import 'package:wifi_desk/features/intent_dispatcher/data/datasources/intent_datasource.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
-import 'package:wifi_desk/features/intent_dispatcher/domain/repositories/intent_repository.dart';
+import 'package:desk_droid/features/intent_dispatcher/data/datasources/intent_datasource.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
+import 'package:desk_droid/features/intent_dispatcher/domain/repositories/intent_repository.dart';
 
 /// Concrete repository implementation managing intent execution.
 class IntentRepositoryImpl implements IntentRepository {

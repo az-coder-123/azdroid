@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_state.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_list_view.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_toolbar.dart';
+import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/device_file_list_view.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/device_file_manager_toolbar.dart';
 
 /// Modal dialog allowing users to browse, search, and download Android files to macOS Finder.
 class DeviceFileManagerDialog extends StatefulWidget {

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/android_key_codes.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/services/mac_file_picker_service.dart';
-import 'package:wifi_desk/features/control/domain/entities/input_event_entity.dart';
-import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
-import 'package:wifi_desk/features/control/presentation/bloc/control_event.dart';
-import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
-import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
-import 'package:wifi_desk/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
+import 'package:desk_droid/core/constants/android_key_codes.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/services/mac_file_picker_service.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
+import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
+import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
 
 /// Translates raw desktop keyboard events into Android navigation and key inputs.
 class ViewportKeyEventHandler {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
 
 void main() {
   group('LogcatShortcutHandler Widget Tests', () {

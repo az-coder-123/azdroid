@@ -13,7 +13,7 @@ class ScreenRecordingEntity extends Equatable {
   /// Absolute file system path where the MP4 video is saved on macOS host.
   final String filePath;
 
-  /// Base file name (e.g. WifiDesk_Recording_20261013_192000.mp4).
+  /// Base file name (e.g. DeskDroid_Recording_20261013_192000.mp4).
   final String fileName;
 
   /// Size of the saved MP4 file in bytes.

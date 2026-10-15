@@ -1,5 +1,5 @@
-import 'package:wifi_desk/core/models/adb_device.dart';
-import 'package:wifi_desk/core/models/adb_mdns_service.dart';
+import 'package:desk_droid/core/models/adb_device.dart';
+import 'package:desk_droid/core/models/adb_mdns_service.dart';
 
 /// Pure parser responsible for converting stdout lines from ADB CLI commands into typed models.
 class AdbOutputParser {

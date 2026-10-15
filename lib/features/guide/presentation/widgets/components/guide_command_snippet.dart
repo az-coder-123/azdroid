@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Interactive terminal command box with 1-click copy to clipboard and visual feedback.
 class GuideCommandSnippet extends StatefulWidget {

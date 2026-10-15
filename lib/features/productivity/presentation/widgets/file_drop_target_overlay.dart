@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 
 /// Wraps the viewport with a drag-and-drop listener detecting local files dropped from Finder.
 class FileDropTargetOverlay extends StatefulWidget {

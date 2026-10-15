@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Animated central hero icon with concentric radar pulse ripples when scanning.
 class EmptyStateRadarIcon extends StatefulWidget {

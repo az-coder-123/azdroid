@@ -1,6 +1,6 @@
-# WifiDesk — Technical Specifications & Feature Documentation
+# DeskDroid — Technical Specifications & Feature Documentation
 
-> Comprehensive specification and architectural breakdown of the **WifiDesk** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS over local Wi-Fi.
+> Comprehensive specification and architectural breakdown of the **DeskDroid** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS over local Wi-Fi.
 >
 > 💡 **Dedicated Specifications:** Each feature is thoroughly documented in its own dedicated file adhering to the Single Responsibility Principle. Browse the [Features Directory](features/README.md) for individual specifications.
 
@@ -115,12 +115,12 @@
 - **Intentional Recording Preparation HUD:** Clicking the camera tool button or pressing <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> enters a preparation state with an Apple-style floating HUD rather than recording abruptly, featuring a 3-second countdown toggle, Start button, and quick cancel.
 - **Animated 3-2-1 Countdown Overlay:** Displays an animated pulsating circular dial over the phone display during the 3-second buffer, allowing users to prepare phone context or skip directly with "Start Now" or abort with <kbd>Esc</kbd>.
 - **Live Elapsed Duration & Dual Actions:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot, 1-click **STOP** (finalize & pull MP4), and **DISCARD** (purge temporary file without host disk clutter).
-- **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/WifiDesk_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
+- **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/DeskDroid_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
 
 ### 4.9 Bidirectional File Transfer & Device File Explorer
 - **macOS to Android Push:** Send arbitrary files, photos, videos, documents, or APKs to the Android device via native Apple Finder file selection dialog or drag-and-drop. APKs are automatically installed; media files trigger an Android MediaScanner broadcast to appear instantly in the Gallery. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>U</kbd>.
 - **Real-Time Transfer Progress & Size HUD:** Floating dynamic banner displays file names, human-readable file sizes (e.g., `14.5 MB`), multi-item counters (`Item 1 of 3`), and dismissible completion badges.
-- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`, and auto-detected `💳 SD Card`), full MicroSD card / external storage volume detection (`/storage/<UUID>/`), storage root navigation (`/storage/`), breadcrumb path display with <kbd>← Back</kbd> navigation, instant search filtering, multi-criteria sorting (Date, Size, Name), "Select All" bulk controls, vibrant file-type badges, formatted total selection sizes, and batch download to `~/Downloads/WifiDesk` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
+- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`, and auto-detected `💳 SD Card`), full MicroSD card / external storage volume detection (`/storage/<UUID>/`), storage root navigation (`/storage/`), breadcrumb path display with <kbd>← Back</kbd> navigation, instant search filtering, multi-criteria sorting (Date, Size, Name), "Select All" bulk controls, vibrant file-type badges, formatted total selection sizes, and batch download to `~/Downloads/DeskDroid` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
 
 ### 4.10 Professional APK Sideload & Package Manager
 - **Comprehensive Metadata Inspection:** Inspect APK package details prior to installation, including App Name, Package ID (`applicationId`), App Icon, Version Name, Version Code, Minimum & Target Android SDK levels, and precise file size.
@@ -145,7 +145,7 @@
 - **Bookmarking & Star Logs:** 1-click star toggle on console rows and the inspector drawer to bookmark critical logs, filterable with the dedicated **Starred** chip.
 - **Side Detail Drawer & Stack Trace Viewer:** 420px slide-out inspector displaying detailed log entry metadata, Java/Kotlin exception stack trace syntax highlighting, and an automatic **Format JSON** pretty-print toggle.
 - **Adaptive Soft-Wrap vs. High-Performance Fixed Extent:** Toggle between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering for long log lines.
-- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file on macOS disk (`~/Downloads/WifiDesk_Logcat_*.txt`).
+- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file on macOS disk (`~/Downloads/DeskDroid_Logcat_*.txt`).
 
 ---
 

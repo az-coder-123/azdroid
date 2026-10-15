@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:wifi_desk/core/services/adb_service.dart';
-import 'package:wifi_desk/core/services/adb_tcpip_service.dart';
-import 'package:wifi_desk/features/discovery/data/datasources/device_discovery_datasource.dart';
-import 'package:wifi_desk/features/discovery/data/datasources/network_subnet_scanner.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/adb_tcpip_service.dart';
+import 'package:desk_droid/features/discovery/data/datasources/device_discovery_datasource.dart';
+import 'package:desk_droid/features/discovery/data/datasources/network_subnet_scanner.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 
 class MockAdbService extends Mock implements AdbService {}
 

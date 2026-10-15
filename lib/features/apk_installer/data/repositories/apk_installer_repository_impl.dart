@@ -1,9 +1,9 @@
-import 'package:wifi_desk/features/apk_installer/data/datasources/apk_installer_datasource.dart';
-import 'package:wifi_desk/features/apk_installer/data/datasources/apk_metadata_datasource.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_info_entity.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_options.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_install_result.dart';
-import 'package:wifi_desk/features/apk_installer/domain/repositories/apk_installer_repository.dart';
+import 'package:desk_droid/features/apk_installer/data/datasources/apk_installer_datasource.dart';
+import 'package:desk_droid/features/apk_installer/data/datasources/apk_metadata_datasource.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
+import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
 
 /// Concrete implementation coordinating APK metadata extraction and ADB installation.
 class ApkInstallerRepositoryImpl implements ApkInstallerRepository {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/core/theme/app_theme.dart';
-import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
-import 'package:wifi_desk/features/menubar/presentation/widgets/menu_bar_companion_popover.dart';
+import 'package:desk_droid/core/theme/app_theme.dart';
+import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
+import 'package:desk_droid/features/menubar/presentation/widgets/menu_bar_companion_popover.dart';
 
 void main() {
   Widget createSubject(MenuBarCubit cubit) {
@@ -27,7 +27,7 @@ void main() {
       await tester.pumpWidget(createSubject(cubit));
       await tester.pumpAndSettle();
 
-      expect(find.text('WifiDesk Companion'), findsOneWidget);
+      expect(find.text('DeskDroid Companion'), findsOneWidget);
       expect(find.text('Idle'), findsOneWidget);
       expect(find.text('Hide Mirroring Window'), findsOneWidget);
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/audio/presentation/widgets/audio_controls_widget.dart';
-import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/audio/presentation/widgets/audio_controls_widget.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 
 /// Floating HUD toolbar providing quick access to Android navigation and core stream controls.
 class FloatingControlsToolbar extends StatelessWidget {

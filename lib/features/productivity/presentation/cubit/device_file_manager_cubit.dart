@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/file_transfer_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
 
 /// Cubit managing remote Android filesystem exploration and pulling files to macOS.
 class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
@@ -21,7 +21,7 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
   /// Default local storage folder for downloaded files on Mac host.
   static String get defaultDownloadDirectory {
     final home = Platform.environment['HOME'] ?? '';
-    return '$home/Downloads/WifiDesk';
+    return '$home/Downloads/DeskDroid';
   }
 
   String? _cachedExternalStoragePath;

@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/clipboard_item_entity.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
-import 'package:wifi_desk/features/productivity/domain/services/clipboard_sync_daemon.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/productivity/domain/entities/clipboard_item_entity.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:desk_droid/features/productivity/domain/services/clipboard_sync_daemon.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_state.dart';
 
 /// Cubit managing bidirectional clipboard synchronization and its background daemon.
 class ClipboardCubit extends Cubit<ClipboardState> {

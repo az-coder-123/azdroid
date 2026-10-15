@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/features/productivity/domain/entities/screenshot_destination.dart';
-import 'package:wifi_desk/features/productivity/domain/repositories/screenshot_repository.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_state.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
+import 'package:desk_droid/features/productivity/domain/repositories/screenshot_repository.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
 
 /// Cubit managing screenshot capture operations and feedback states.
 class ScreenshotCubit extends Cubit<ScreenshotState> {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/menubar/presentation/cubit/menu_bar_cubit.dart';
-import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
-import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
-import 'package:wifi_desk/features/streaming/presentation/widgets/mirroring_active_view.dart';
-import 'package:wifi_desk/features/streaming/presentation/widgets/mirroring_status_fallback.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_active_view.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_status_fallback.dart';
 
 /// Interactive mirroring view managing stream lifecycle and delegating active UI to [MirroringActiveView].
 class MirroringView extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 
 /// Base class for all states emitted by [DiscoveryCubit].
 sealed class DiscoveryState extends Equatable {

@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-The **Device Logcat Console** is a developer inspection and diagnostic cockpit built directly into WifiDesk. It captures real-time Android logcat streams over wireless ADB with advanced filtering, stack trace colorization, line bookmarking, and continuous recording.
+The **Device Logcat Console** is a developer inspection and diagnostic cockpit built directly into DeskDroid. It captures real-time Android logcat streams over wireless ADB with advanced filtering, stack trace colorization, line bookmarking, and continuous recording.
 
 ```mermaid
 flowchart TD
@@ -52,7 +52,7 @@ Switch instantly between common developer workflows using the Preset dropdown:
 
 ### 5. Adaptive Soft-Wrap & Continuous Disk Recording
 - **Performance Toggle:** Switch between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering.
-- **Live File Recording:** Stream logs directly to a timestamped file on macOS disk (`~/Downloads/WifiDesk_Logcat_*.txt`).
+- **Live File Recording:** Stream logs directly to a timestamped file on macOS disk (`~/Downloads/DeskDroid_Logcat_*.txt`).
 
 ### 6. macOS Native Keyboard Shortcuts & Navigation
 Ergonomic keyboard bindings orchestrated via `LogcatShortcutHandler`:

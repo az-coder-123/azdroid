@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
 
 /// Abstract contract for native video streaming and texture lifecycle governance.
 abstract class IVideoStreamNativeService {
@@ -16,7 +16,7 @@ abstract class IVideoStreamNativeService {
 /// Production implementation communicating with macOS Runner via platform channel.
 class VideoStreamNativeService implements IVideoStreamNativeService {
   VideoStreamNativeService({MethodChannel? channel})
-    : _channel = channel ?? const MethodChannel('com.wifidesk/video_stream');
+    : _channel = channel ?? const MethodChannel('com.deskdroid/video_stream');
 
   final MethodChannel _channel;
 

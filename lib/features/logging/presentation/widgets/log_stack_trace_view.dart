@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Formatted stack trace viewer highlighting exception headers, causes, and caller frames.
 class LogStackTraceView extends StatelessWidget {

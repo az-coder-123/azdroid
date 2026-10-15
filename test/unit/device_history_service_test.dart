@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wifi_desk/core/services/device_history_service.dart';
+import 'package:desk_droid/core/services/device_history_service.dart';
 
 void main() {
   late Directory tempDir;
@@ -9,7 +9,7 @@ void main() {
   late DeviceHistoryServiceImpl historyService;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('wifidesk_test_');
+    tempDir = Directory.systemTemp.createTempSync('deskdroid_test_');
     historyFilePath = '${tempDir.path}/history.json';
     historyService = DeviceHistoryServiceImpl(customFilePath: historyFilePath);
   });

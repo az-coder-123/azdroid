@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:wifi_desk/core/constants/socket_config.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
+import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
 
 /// Abstract datasource for connecting to the scrcpy audio streaming TCP socket.
 abstract class AudioSocketDatasource {

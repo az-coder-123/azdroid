@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/core/theme/app_typography.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_card.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_feature_bullet.dart';
-import 'package:wifi_desk/features/guide/presentation/widgets/components/guide_section_header.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_card.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_feature_bullet.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/components/guide_section_header.dart';
 
 /// Guide detailing productivity features: Finder drag & drop, clipboard sync, and audio forwarding.
 class ProductivitySection extends StatelessWidget {
@@ -26,7 +26,7 @@ class ProductivitySection extends StatelessWidget {
           title: 'Drag & Drop Transfers & APK Sideloading',
           children: [
             Text(
-              'Drag files directly from macOS Finder and drop them anywhere onto the WifiDesk screen:',
+              'Drag files directly from macOS Finder and drop them anywhere onto the DeskDroid screen:',
               style: AppTypography.body,
             ),
             SizedBox(height: 10),

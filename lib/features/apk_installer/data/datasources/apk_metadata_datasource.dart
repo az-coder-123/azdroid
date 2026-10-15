@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:wifi_desk/core/constants/apk_installer_constants.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/process_executor.dart';
-import 'package:wifi_desk/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:desk_droid/core/constants/apk_installer_constants.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
 
 /// Contract for extracting metadata from local APK files.
 abstract class ApkMetadataDatasource {

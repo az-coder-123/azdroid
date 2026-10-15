@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/device_log_dialog.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/logging/presentation/widgets/device_log_dialog.dart';
 
 /// Interactive button group for device actions (Connect, Mirror, Disconnect, Pair, Wi-Fi Mode).
 class DeviceCardActions extends StatefulWidget {

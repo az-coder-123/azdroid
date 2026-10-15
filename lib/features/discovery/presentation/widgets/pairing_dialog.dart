@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/di/injection.dart';
-import 'package:wifi_desk/core/services/app_logger.dart';
-import 'package:wifi_desk/core/services/network_info_service.dart';
-import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_cubit.dart';
-import 'package:wifi_desk/features/discovery/presentation/cubit/pairing_state.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_dialog_header.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_manual_code_tab.dart';
-import 'package:wifi_desk/features/discovery/presentation/widgets/pairing/pairing_status_banner.dart';
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/pairing_state.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_dialog_header.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_manual_code_tab.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_status_banner.dart';
 
 /// Modal dialog providing interactive step-by-step wireless pairing for Android 11+
 /// using authentic 6-digit Wi-Fi pairing code and port entry.

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
+import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 
 /// Predefined or user-defined log filter preset with quick activation.
 class LogFilterPreset extends Equatable {
