@@ -8,8 +8,8 @@
 
 | Asset | Platform | File Size | SHA-256 Checksum |
 | :--- | :--- | :--- | :--- |
-| **[`DeskDroid-v1.0.0-macOS.zip`](DeskDroid-v1.0.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | `18M` | `28138bdb695047c3ffe6901c7f3b0793c5dbacc11af6079d7ccf3563659d23aa` |
-| **[`DeskDroid-macOS-latest.zip`](DeskDroid-macOS-latest.zip)** | macOS 12.0+ (Latest Snapshot) | `18M` | `28138bdb695047c3ffe6901c7f3b0793c5dbacc11af6079d7ccf3563659d23aa` |
+| **[`DeskDroid-v1.0.0-macOS.zip`](DeskDroid-v1.0.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | `18M` | `3183e63b6f0c581c85f5010501e16562bb1ac4caa60406669c269197e9866432` |
+| **[`DeskDroid-macOS-latest.zip`](DeskDroid-macOS-latest.zip)** | macOS 12.0+ (Latest Snapshot) | `18M` | `3183e63b6f0c581c85f5010501e16562bb1ac4caa60406669c269197e9866432` |
 
 ---
 
