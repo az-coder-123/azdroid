@@ -12,6 +12,7 @@ import 'package:wifi_desk/features/discovery/presentation/widgets/empty_state_vi
 import 'package:wifi_desk/features/discovery/presentation/widgets/manual_connect_dialog.dart';
 import 'package:wifi_desk/features/discovery/presentation/widgets/pairing_dialog.dart';
 import 'package:wifi_desk/features/guide/presentation/widgets/user_guide_dialog.dart';
+import 'package:wifi_desk/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
 import 'package:wifi_desk/features/streaming/presentation/pages/mirroring_page.dart';
 
 /// Main landing page of WifiDesk hosting the device discovery and pairing dashboard.
@@ -54,10 +55,13 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     );
   }
 
-  void _startMirroring(DeviceEntity device) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => MirroringPage(device: device)),
-    );
+  void _startMirroring(DeviceEntity device) => Navigator.of(context).push(
+    MaterialPageRoute<void>(builder: (_) => MirroringPage(device: device)),
+  );
+
+  Future<void> _connectAndMirror(DeviceEntity device) async {
+    await context.read<DiscoveryCubit>().connect(device);
+    if (mounted) _startMirroring(device);
   }
 
   Future<void> _switchUsbToWifi(DeviceEntity device) async {
@@ -121,6 +125,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
           DiscoveryAppBarActions(
             onPairDevice: _openPairingDialog,
             onDirectIp: _openManualConnectDialog,
+            onShowcase: () => FeatureShowcaseDialog.show(context),
             onUserGuide: () => UserGuideDialog.show(context),
             onRescan: () => context.read<DiscoveryCubit>().scanDevices(),
           ),
@@ -141,6 +146,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
               onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
               onPairPressed: () => _openPairingDialog(),
               onGuidePressed: () => UserGuideDialog.show(context),
+              onShowcasePressed: () => FeatureShowcaseDialog.show(context),
             );
           }
 
@@ -211,10 +217,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                         final device = state.devices[index];
                         return DeviceCard(
                           device: device,
-                          onConnect: (d) async {
-                            await context.read<DiscoveryCubit>().connect(d);
-                            if (context.mounted) _startMirroring(d);
-                          },
+                          onConnect: _connectAndMirror,
                           onDisconnect: (id) =>
                               context.read<DiscoveryCubit>().disconnect(id),
                           onPair: (d) => _openPairingDialog(d),
@@ -235,10 +238,8 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             onScanPressed: () => context.read<DiscoveryCubit>().scanDevices(),
             onPairPressed: () => _openPairingDialog(),
             onGuidePressed: () => UserGuideDialog.show(context),
-            onRecentSelected: (d) async {
-              await context.read<DiscoveryCubit>().connect(d);
-              if (context.mounted) _startMirroring(d);
-            },
+            onShowcasePressed: () => FeatureShowcaseDialog.show(context),
+            onRecentSelected: _connectAndMirror,
           );
         },
       ),

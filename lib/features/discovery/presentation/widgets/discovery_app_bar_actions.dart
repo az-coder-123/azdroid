@@ -7,12 +7,14 @@ class DiscoveryAppBarActions extends StatelessWidget {
     super.key,
     required this.onPairDevice,
     required this.onDirectIp,
+    required this.onShowcase,
     required this.onUserGuide,
     required this.onRescan,
   });
 
   final VoidCallback onPairDevice;
   final VoidCallback onDirectIp;
+  final VoidCallback onShowcase;
   final VoidCallback onUserGuide;
   final VoidCallback onRescan;
 
@@ -65,6 +67,17 @@ class DiscoveryAppBarActions extends StatelessWidget {
         const SizedBox(width: 6),
         Container(width: 1, height: 18, color: AppColors.border),
         const SizedBox(width: 6),
+        IconButton(
+          tooltip: 'Features Showcase',
+          icon: const Icon(
+            Icons.auto_awesome_rounded,
+            size: 19,
+            color: AppColors.accent,
+          ),
+          splashRadius: 20,
+          onPressed: onShowcase,
+        ),
+        const SizedBox(width: 2),
         IconButton(
           tooltip: 'User Guide & Shortcuts',
           icon: const Icon(

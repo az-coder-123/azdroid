@@ -19,6 +19,7 @@ class EmptyStateView extends StatefulWidget {
     this.onPairPressed,
     this.onPairWithQrPressed,
     this.onGuidePressed,
+    this.onShowcasePressed,
     this.onRecentSelected,
   });
 
@@ -27,6 +28,7 @@ class EmptyStateView extends StatefulWidget {
   final VoidCallback? onPairPressed;
   final VoidCallback? onPairWithQrPressed;
   final VoidCallback? onGuidePressed;
+  final VoidCallback? onShowcasePressed;
   final ValueChanged<DeviceEntity>? onRecentSelected;
 
   VoidCallback? get effectivePairPressed =>
@@ -192,6 +194,17 @@ class _EmptyStateViewState extends State<EmptyStateView> {
               backgroundColor: AppColors.surface,
               side: const BorderSide(color: AppColors.accent, width: 1.2),
             ),
+          ),
+        if (widget.onShowcasePressed != null)
+          TextButton.icon(
+            onPressed: widget.onShowcasePressed,
+            icon: const Icon(
+              Icons.auto_awesome_rounded,
+              size: 16,
+              color: AppColors.accent,
+            ),
+            label: const Text('Explore Features'),
+            style: TextButton.styleFrom(foregroundColor: AppColors.accent),
           ),
         if (widget.onGuidePressed != null)
           TextButton.icon(
