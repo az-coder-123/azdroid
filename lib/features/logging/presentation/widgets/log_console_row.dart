@@ -102,10 +102,8 @@ class LogConsoleRow extends StatelessWidget {
             Expanded(
               child: Text(
                 entry.message,
-                maxLines: softWrap ? null : 1,
-                overflow: softWrap
-                    ? TextOverflow.visible
-                    : TextOverflow.ellipsis,
+                maxLines: softWrap ? 6 : 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 11,

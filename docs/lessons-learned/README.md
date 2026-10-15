@@ -30,6 +30,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Malformed UTF-8 in Logcat Streams** | Android Streams & Decoding | Use `Utf8Decoder(allowMalformed: true)` to prevent crash on non-UTF-8 driver binary dumps. | [logcat-stream-malformed-utf8-bytes.md](logcat-stream-malformed-utf8-bytes.md) |
 | **Multi-Device Subnet Discovery** | Device Discovery & Socket Probing | Sweep full subnet without early break and tune socket timeouts for Wi-Fi power-save latency. | [multi-device-subnet-discovery.md](multi-device-subnet-discovery.md) |
 | **Android adbd Port Lifecycle** | Android OS Security & TCP Lifecycle | Understand ephemeral TCP lifetimes and implement zero-click USB-to-Wi-Fi auto-provisioning. | [android-adbd-tcpip-port-lifecycle.md](android-adbd-tcpip-port-lifecycle.md) |
+| **Logcat Soft-Wrap Sliver Jank** | Flutter Layout & Virtualized Slivers | Eliminate 10s UI freeze on dynamic extents via adaptive reverse sliver and bounded row lines. | [logcat-soft-wrap-sliver-layout-jank.md](logcat-soft-wrap-sliver-layout-jank.md) |
 
 ---
 

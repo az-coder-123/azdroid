@@ -53,9 +53,13 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
 
     final diff = widget.entries.length - _prevEntryCount;
     _prevEntryCount = widget.entries.length;
+    final isReversed = widget.entries.length >= 25;
 
-    if (widget.autoScroll && _isNearBottom && diff > 0) {
-      _scrollToEnd();
+    if (widget.softWrap != oldWidget.softWrap &&
+        (_isNearBottom || widget.autoScroll)) {
+      _scrollToBottom(isReversed);
+    } else if (widget.autoScroll && _isNearBottom && diff > 0) {
+      _scrollToBottom(isReversed);
       _unseenNewCount = 0;
     } else if (!_isNearBottom && diff > 0) {
       setState(() {
@@ -66,9 +70,15 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
 
   void _handleScroll() {
     if (!_scrollController.hasClients) return;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final nearBottom = (maxScroll - currentScroll) < 60;
+    final isReversed = widget.entries.length >= 25;
+    final bool nearBottom;
+    if (isReversed) {
+      nearBottom = _scrollController.position.pixels < 60;
+    } else {
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.position.pixels;
+      nearBottom = (maxScroll - currentScroll) < 60;
+    }
 
     if (nearBottom != _isNearBottom) {
       setState(() {
@@ -78,9 +88,14 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
     }
   }
 
-  void _scrollToEnd() {
+  void _scrollToBottom(bool isReversed) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
+      if (!_scrollController.hasClients) return;
+      if (isReversed) {
+        if (_scrollController.position.pixels != 0.0) {
+          _scrollController.jumpTo(0.0);
+        }
+      } else {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
@@ -121,16 +136,24 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
       );
     }
 
+    final isReversed = widget.entries.length >= 25;
+
     return Stack(
       children: [
-        SelectionArea(
+        Scrollbar(
+          controller: _scrollController,
+          thumbVisibility: true,
           child: ListView.builder(
+            key: ValueKey('log_table_${isReversed}_${widget.softWrap}'),
             controller: _scrollController,
+            reverse: isReversed,
             itemCount: widget.entries.length,
             physics: const ClampingScrollPhysics(),
             itemExtent: widget.softWrap ? null : 26.0,
             itemBuilder: (context, index) {
-              final entry = widget.entries[index];
+              final entry = isReversed
+                  ? widget.entries[widget.entries.length - 1 - index]
+                  : widget.entries[index];
               return LogConsoleRow(
                 entry: entry,
                 isSelected: widget.selectedEntry?.id == entry.id,
@@ -154,7 +177,15 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
               elevation: 4,
               child: InkWell(
                 onTap: () {
-                  _scrollToEnd();
+                  if (isReversed) {
+                    _scrollController.animateTo(
+                      0.0,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeOut,
+                    );
+                  } else {
+                    _scrollToBottom(false);
+                  }
                   widget.onScrollToBottom();
                   setState(() => _unseenNewCount = 0);
                 },
