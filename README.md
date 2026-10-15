@@ -202,10 +202,41 @@ flutter run -d macos
 
 ---
 
-## 🤝 Contributing & License
+## 🤝 Community, Contributing & License
 
-Contributions are welcome! Please open a PR or submit an issue on [GitHub](https://github.com/az-coder-123/desk-droid). Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🤝 Contributing</h3>
+      <p>Contributions, feature requests, and bug reports are warmly welcome! DeskDroid thrives on community feedback.</p>
+      <p>
+        <a href="https://github.com/az-coder-123/desk-droid/issues"><img src="https://img.shields.io/badge/Issues-Report%20Bug-red?style=flat-square&logo=github" alt="Report Bug"></a>
+        <a href="https://github.com/az-coder-123/desk-droid/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git" alt="PRs Welcome"></a>
+        <a href="https://github.com/az-coder-123/desk-droid/stargazers"><img src="https://img.shields.io/badge/Star-DeskDroid-yellow?style=flat-square&logo=github" alt="Star DeskDroid"></a>
+      </p>
+      <ul>
+        <li>Found a bug? Submit a detailed <a href="https://github.com/az-coder-123/desk-droid/issues/new">GitHub Issue</a>.</li>
+        <li>Have a feature idea? Share it in <a href="https://github.com/az-coder-123/desk-droid/issues">Feature Requests</a>.</li>
+        <li>Want to contribute code? Fork, branch, and open a Pull Request.</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <h3>📄 License & Freedom</h3>
+      <p>DeskDroid is 100% free, open-source, and privacy-respecting software released under the <b>MIT License</b>.</p>
+      <p>
+        <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License"></a>
+        <img src="https://img.shields.io/badge/Privacy-100%25%20P2P-success?style=flat-square" alt="100% P2P">
+        <img src="https://img.shields.io/badge/Telemetry-Zero-lightgrey?style=flat-square" alt="Zero Telemetry">
+      </p>
+      <p>You are free to use, modify, distribute, and integrate this software into personal or commercial workflows. See <a href="LICENSE">LICENSE</a> for full legal terms.</p>
+    </td>
+  </tr>
+</table>
 
 <p align="center">
-  Maintained with ❤️ by <b><a href="https://github.com/az-coder-123">az-coder-123</a></b>
+  <a href="https://github.com/az-coder-123"><img src="https://github.com/az-coder-123.png" width="56" height="56" style="border-radius:50%;" alt="az-coder-123 avatar"></a>
+  <br>
+  Crafted with ❤️ by <b><a href="https://github.com/az-coder-123">az-coder-123</a></b>
+  <br>
+  <sub>If you find DeskDroid useful, please star ⭐️ the project on <a href="https://github.com/az-coder-123/desk-droid">GitHub</a> to support continuous development!</sub>
 </p>
