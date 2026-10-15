@@ -1,0 +1,2 @@
+28138bdb695047c3ffe6901c7f3b0793c5dbacc11af6079d7ccf3563659d23aa  DeskDroid-v1.0.0-macOS.zip
+28138bdb695047c3ffe6901c7f3b0793c5dbacc11af6079d7ccf3563659d23aa  DeskDroid-macOS-latest.zip
