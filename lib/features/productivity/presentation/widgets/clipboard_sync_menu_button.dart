@@ -62,6 +62,13 @@ class ClipboardSyncMenuButton extends StatelessWidget {
                   Icon(Icons.upload_rounded, size: 16, color: AppColors.accent),
                   SizedBox(width: 8),
                   Expanded(child: Text('Push Mac ➔ Android')),
+                  Text(
+                    '⌘⇧C',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -76,6 +83,13 @@ class ClipboardSyncMenuButton extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   Expanded(child: Text('Pull Android ➔ Mac')),
+                  Text(
+                    '⌘⇧V',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),

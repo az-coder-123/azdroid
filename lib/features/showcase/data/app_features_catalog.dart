@@ -107,6 +107,23 @@ class AppFeaturesCatalog {
       docFileName: 'file-transfer-explorer.md',
     ),
     AppFeatureItem(
+      id: 'clipboard_sync',
+      title: 'Two-Way Clipboard Synchronization',
+      subtitle:
+          'Real-time background clipboard daemon between macOS and Android',
+      category: FeatureCategory.productivity,
+      icon: Icons.content_paste_go_rounded,
+      badgeText: 'Live 2-Way Sync',
+      badgeColor: AppColors.statusSuccess,
+      highlights: [
+        'Automatic background sync daemon detects copied text on both Mac and Android.',
+        'Bidirectional echo-loop prevention ensures zero repetitive ping-pong copying.',
+        'Desktop shortcuts: Cmd+Shift+C (Push to Phone) and Cmd+Shift+V (Pull to Mac).',
+      ],
+      proTip: 'Toggle or pause auto-sync from the clipboard icon on the right dock at any time.',
+      docFileName: 'clipboard-sync.md',
+    ),
+    AppFeatureItem(
       id: 'apk_installer',
       title: '1-Click APK Sideload & Manager',
       subtitle: 'Install Android application packages instantly without terminal commands',

@@ -8,6 +8,7 @@ import 'package:wifi_desk/features/control/domain/entities/input_event_entity.da
 import 'package:wifi_desk/features/control/presentation/bloc/control_bloc.dart';
 import 'package:wifi_desk/features/control/presentation/bloc/control_event.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
+import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
@@ -95,6 +96,22 @@ class ViewportKeyEventHandler {
           HardwareKeyboard.instance.isShiftPressed) {
         DeviceFileManagerDialog.show(context, deviceSerial);
         return KeyEventResult.handled;
+      }
+
+      if (logicalKey == LogicalKeyboardKey.keyC &&
+          HardwareKeyboard.instance.isShiftPressed) {
+        try {
+          context.read<ClipboardCubit>().syncHostToDevice(deviceSerial);
+          return KeyEventResult.handled;
+        } catch (_) {}
+      }
+
+      if (logicalKey == LogicalKeyboardKey.keyV &&
+          HardwareKeyboard.instance.isShiftPressed) {
+        try {
+          context.read<ClipboardCubit>().syncDeviceToHost(deviceSerial);
+          return KeyEventResult.handled;
+        } catch (_) {}
       }
 
       if (logicalKey == LogicalKeyboardKey.keyI &&

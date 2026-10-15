@@ -96,5 +96,53 @@ void main() {
       act: (cubit) => cubit.toggleAutoSync(testSerial),
       expect: () => [const ClipboardInitial(autoSyncEnabled: false)],
     );
+
+    test(
+      'autoResetDuration automatically resets state to initial after sync',
+      () async {
+        when(() => mockRepository.getHostClipboard())
+            .thenAnswer((_) async => 'Auto Reset Text');
+        when(
+          () =>
+              mockRepository.setDeviceClipboard(testSerial, 'Auto Reset Text'),
+        ).thenAnswer((_) async => true);
+
+        final cubit = ClipboardCubit(
+          repository: mockRepository,
+          autoResetDuration: const Duration(milliseconds: 30),
+        );
+
+        await cubit.syncHostToDevice(testSerial);
+        expect(cubit.state, isA<ClipboardSynced>());
+
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        expect(cubit.state, isA<ClipboardInitial>());
+
+        await cubit.close();
+      },
+    );
+
+    test(
+      'reset() immediately emits ClipboardInitial and cancels auto-reset timer',
+      () async {
+        when(() => mockRepository.getHostClipboard())
+            .thenAnswer((_) async => 'Text');
+        when(() => mockRepository.setDeviceClipboard(testSerial, 'Text'))
+            .thenAnswer((_) async => true);
+
+        final cubit = ClipboardCubit(
+          repository: mockRepository,
+          autoResetDuration: const Duration(seconds: 10),
+        );
+
+        await cubit.syncHostToDevice(testSerial);
+        expect(cubit.state, isA<ClipboardSynced>());
+
+        cubit.reset();
+        expect(cubit.state, isA<ClipboardInitial>());
+
+        await cubit.close();
+      },
+    );
   });
 }

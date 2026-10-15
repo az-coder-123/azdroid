@@ -63,7 +63,7 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
     if (adb == null) return null;
 
     try {
-      // Android 10+ standard command service
+      // 1. Try Android cmd clipboard
       final result = await _executor.run(adb, [
         '-s',
         deviceSerial,
@@ -75,8 +75,33 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
 
       if (result.exitCode == 0) {
         final text = result.stdout.toString().trim();
-        return text.isNotEmpty ? text : null;
+        if (text.isNotEmpty &&
+            !text.contains('No shell command implementation') &&
+            !text.startsWith('Error:')) {
+          return text;
+        }
       }
+
+      // 2. Fallback: Try Clipper broadcast get
+      final clipperResult = await _executor.run(adb, [
+        '-s',
+        deviceSerial,
+        'shell',
+        'am',
+        'broadcast',
+        '-a',
+        'clipper.get',
+      ], timeout: const Duration(seconds: 3));
+
+      if (clipperResult.exitCode == 0) {
+        final out = clipperResult.stdout.toString();
+        final match = RegExp(r'data="([^"]*)"').firstMatch(out);
+        if (match != null && match.group(1) != null) {
+          final text = match.group(1)!.trim();
+          return text.isNotEmpty ? text : null;
+        }
+      }
+
       return null;
     } catch (e, stack) {
       AppLogger.warning(
@@ -94,7 +119,7 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
     if (adb == null) return false;
 
     try {
-      // Set clipboard on Android via cmd clipboard set or input text fallback
+      // 1. Try Android cmd clipboard
       final result = await _executor.run(adb, [
         '-s',
         deviceSerial,
@@ -105,7 +130,29 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
         text,
       ], timeout: const Duration(seconds: 3));
 
-      return result.exitCode == 0;
+      if (result.exitCode == 0 &&
+          !result.stdout.toString().contains(
+            'No shell command implementation',
+          ) &&
+          !result.stderr.toString().contains('Error')) {
+        return true;
+      }
+
+      // 2. Fallback: Try Clipper broadcast set
+      final clipperResult = await _executor.run(adb, [
+        '-s',
+        deviceSerial,
+        'shell',
+        'am',
+        'broadcast',
+        '-a',
+        'clipper.set',
+        '--es',
+        'text',
+        text,
+      ], timeout: const Duration(seconds: 3));
+
+      return clipperResult.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(
         'Failed to write device clipboard for $deviceSerial',

@@ -1,78 +1,86 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wifi_desk/core/constants/productivity_constants.dart';
 import 'package:wifi_desk/core/services/app_logger.dart';
 import 'package:wifi_desk/features/productivity/domain/entities/clipboard_item_entity.dart';
 import 'package:wifi_desk/features/productivity/domain/repositories/clipboard_repository.dart';
+import 'package:wifi_desk/features/productivity/domain/services/clipboard_sync_daemon.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/clipboard_state.dart';
 
-/// Cubit managing bidirectional clipboard synchronization between macOS and Android.
+/// Cubit managing bidirectional clipboard synchronization and its background daemon.
 class ClipboardCubit extends Cubit<ClipboardState> {
-  ClipboardCubit({required this.repository}) : super(const ClipboardInitial());
+  ClipboardCubit({
+    required this.repository,
+    this.autoResetDuration = const Duration(seconds: 4),
+    this.daemonBuilder,
+  }) : super(const ClipboardInitial());
 
   final ClipboardRepository repository;
-  Timer? _autoSyncTimer;
-  String? _lastKnownHostText;
+  final Duration? autoResetDuration;
+  final ClipboardSyncDaemon Function(ClipboardRepository, String)?
+  daemonBuilder;
 
-  /// Starts background polling to synchronize new macOS copies to Android.
+  ClipboardSyncDaemon? _daemon;
+  Timer? _autoResetTimer;
+
+  /// Starts real-time bidirectional background sync daemon.
   void startPeriodicSync(String deviceSerial) {
-    _autoSyncTimer?.cancel();
+    stopPeriodicSync();
     if (!state.autoSyncEnabled) return;
 
-    _autoSyncTimer = Timer.periodic(
-      const Duration(
-        seconds: ProductivityConstants.clipboardSyncIntervalSeconds,
-      ),
-      (_) => _checkAndSyncHostClipboard(deviceSerial),
-    );
+    final builder = daemonBuilder;
+    _daemon = builder != null
+        ? builder(repository, deviceSerial)
+        : ClipboardSyncDaemon(
+            repository: repository,
+            deviceSerial: deviceSerial,
+            onSynced: _handleDaemonSynced,
+            onError: (err) => AppLogger.debug('Clipboard daemon error: $err'),
+          );
+
+    _daemon?.start();
   }
 
-  /// Cancels active auto-sync polling.
+  /// Cancels active auto-sync polling daemon.
   void stopPeriodicSync() {
-    _autoSyncTimer?.cancel();
-    _autoSyncTimer = null;
+    _daemon?.stop();
+    _daemon = null;
   }
 
   /// Toggles automatic background synchronization on or off.
   void toggleAutoSync(String deviceSerial) {
     final newEnabled = !state.autoSyncEnabled;
+    emit(ClipboardInitial(autoSyncEnabled: newEnabled));
+
     if (newEnabled) {
-      emit(ClipboardInitial(autoSyncEnabled: newEnabled));
       startPeriodicSync(deviceSerial);
     } else {
       stopPeriodicSync();
-      emit(ClipboardInitial(autoSyncEnabled: newEnabled));
     }
   }
 
-  Future<void> _checkAndSyncHostClipboard(String deviceSerial) async {
-    try {
-      final currentHost = await repository.getHostClipboard();
-      if (currentHost != null &&
-          currentHost.isNotEmpty &&
-          currentHost != _lastKnownHostText) {
-        _lastKnownHostText = currentHost;
-        final success = await repository.setDeviceClipboard(
-          deviceSerial,
-          currentHost,
-        );
-        if (success && !isClosed) {
-          emit(
-            ClipboardSynced(
-              lastItem: ClipboardItemEntity(
-                text: currentHost,
-                source: ClipboardSource.host,
-                timestamp: DateTime.now(),
-              ),
-              autoSyncEnabled: state.autoSyncEnabled,
-            ),
-          );
-        }
+  /// Resets state back to initial idle without changing autoSyncEnabled.
+  void reset() {
+    _autoResetTimer?.cancel();
+    emit(ClipboardInitial(autoSyncEnabled: state.autoSyncEnabled));
+  }
+
+  void _handleDaemonSynced(ClipboardItemEntity item) {
+    if (isClosed) return;
+    emit(
+      ClipboardSynced(lastItem: item, autoSyncEnabled: state.autoSyncEnabled),
+    );
+    _scheduleAutoReset();
+  }
+
+  void _scheduleAutoReset() {
+    if (autoResetDuration == null) return;
+    _autoResetTimer?.cancel();
+    _autoResetTimer = Timer(autoResetDuration!, () {
+      if (!isClosed && state is ClipboardSynced) {
+        emit(ClipboardInitial(autoSyncEnabled: state.autoSyncEnabled));
       }
-    } catch (e) {
-      AppLogger.debug('Clipboard background sync poll tick error: $e');
-    }
+    });
   }
 
   /// Manually synchronizes current macOS pasteboard text to Android.
@@ -102,19 +110,22 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         deviceSerial,
         hostText,
       );
+
       if (success) {
-        _lastKnownHostText = hostText;
+        _daemon?.recordHostSync(hostText);
         if (!isClosed) {
+          final item = ClipboardItemEntity(
+            text: hostText,
+            source: ClipboardSource.host,
+            timestamp: DateTime.now(),
+          );
           emit(
             ClipboardSynced(
-              lastItem: ClipboardItemEntity(
-                text: hostText,
-                source: ClipboardSource.host,
-                timestamp: DateTime.now(),
-              ),
+              lastItem: item,
               autoSyncEnabled: state.autoSyncEnabled,
             ),
           );
+          _scheduleAutoReset();
         }
       } else {
         if (!isClosed) {
@@ -167,19 +178,21 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       }
 
       await repository.setHostClipboard(deviceText);
-      _lastKnownHostText = deviceText;
+      _daemon?.recordDeviceSync(deviceText);
 
       if (!isClosed) {
+        final item = ClipboardItemEntity(
+          text: deviceText,
+          source: ClipboardSource.device,
+          timestamp: DateTime.now(),
+        );
         emit(
           ClipboardSynced(
-            lastItem: ClipboardItemEntity(
-              text: deviceText,
-              source: ClipboardSource.device,
-              timestamp: DateTime.now(),
-            ),
+            lastItem: item,
             autoSyncEnabled: state.autoSyncEnabled,
           ),
         );
+        _scheduleAutoReset();
       }
     } catch (e, stack) {
       AppLogger.warning(
@@ -200,7 +213,8 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   @override
   Future<void> close() {
-    _autoSyncTimer?.cancel();
+    _autoResetTimer?.cancel();
+    _daemon?.dispose();
     return super.close();
   }
 }

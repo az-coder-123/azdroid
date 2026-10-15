@@ -9,7 +9,7 @@ class ProductivityConstants {
   static const String apkExtension = '.apk';
 
   /// Interval in seconds for background periodic clipboard sync polling.
-  static const int clipboardSyncIntervalSeconds = 4;
+  static const int clipboardSyncIntervalSeconds = 2;
 
   /// Timeout in seconds when pushing standard files via ADB.
   static const int filePushTimeoutSeconds = 60;

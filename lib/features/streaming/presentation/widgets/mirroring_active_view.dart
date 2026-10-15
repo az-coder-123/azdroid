@@ -11,9 +11,8 @@ import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/screen_recording_feedback_banner.dart';
-import 'package:wifi_desk/features/productivity/presentation/widgets/screenshot_feedback_banner.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/transfer_status_banner.dart';
+import 'package:wifi_desk/features/streaming/presentation/widgets/mirroring_feedback_stack.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:wifi_desk/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:wifi_desk/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
@@ -136,15 +135,7 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
           Positioned(
             bottom: _isZenMode ? 24 : 76,
             right: 24,
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                ScreenRecordingFeedbackBanner(),
-                SizedBox(height: 8),
-                ScreenshotFeedbackBanner(),
-              ],
-            ),
+            child: const MirroringFeedbackStack(),
           ),
         ],
       ),
