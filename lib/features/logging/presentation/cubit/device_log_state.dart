@@ -53,6 +53,21 @@ class DeviceLogStreaming extends DeviceLogState {
   /// Ephemeral feedback toast/banner message.
   final String? feedbackMessage;
 
+  /// Map of unique non-empty tags present in [allEntries] with their line counts,
+  /// sorted by frequency descending.
+  Map<String, int> get tagCounts {
+    final counts = <String, int>{};
+    for (final e in allEntries) {
+      final t = e.tag.trim();
+      if (t.isNotEmpty) {
+        counts[t] = (counts[t] ?? 0) + 1;
+      }
+    }
+    final sorted = counts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return Map.fromEntries(sorted);
+  }
+
   DeviceLogStreaming copyWith({
     String? deviceSerial,
     List<DeviceLogEntry>? allEntries,

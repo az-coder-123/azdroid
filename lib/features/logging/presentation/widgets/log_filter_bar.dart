@@ -5,12 +5,18 @@ import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.d
 import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
 import 'package:wifi_desk/features/logging/presentation/cubit/device_log_cubit.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_filter_chips.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/log_tag_filter_input.dart';
 
 /// Top filtering toolbar providing level toggles, search text, regex, and tag/pid filters.
 class LogFilterBar extends StatefulWidget {
-  const LogFilterBar({super.key, required this.filter});
+  const LogFilterBar({
+    super.key,
+    required this.filter,
+    this.tagCounts = const {},
+  });
 
   final LogFilterCriteria filter;
+  final Map<String, int> tagCounts;
 
   @override
   State<LogFilterBar> createState() => _LogFilterBarState();
@@ -39,6 +45,10 @@ class _LogFilterBarState extends State<LogFilterBar> {
     if (widget.filter.textQuery != _searchController.text &&
         !_searchController.value.isComposingRangeValid) {
       _searchController.text = widget.filter.textQuery;
+    }
+    if (widget.filter.tagFilter != _tagController.text &&
+        !_tagController.value.isComposingRangeValid) {
+      _tagController.text = widget.filter.tagFilter;
     }
   }
 
@@ -142,16 +152,12 @@ class _LogFilterBarState extends State<LogFilterBar> {
                 flex: 2,
                 child: SizedBox(
                   height: 32,
-                  child: TextField(
+                  child: LogTagFilterInput(
                     controller: _tagController,
+                    tagCounts: widget.tagCounts,
                     onChanged: (tag) => cubit.updateFilter(
                       widget.filter.copyWith(tagFilter: tag),
                     ),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textPrimary,
-                    ),
-                    decoration: _inputDecoration(hint: 'Tag (e.g. Activity)'),
                   ),
                 ),
               ),

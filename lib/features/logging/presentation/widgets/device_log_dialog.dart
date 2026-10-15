@@ -75,7 +75,10 @@ class DeviceLogDialog extends StatelessWidget {
               return Column(
                 children: [
                   _buildHeader(context, state),
-                  LogFilterBar(filter: state.filter),
+                  LogFilterBar(
+                    filter: state.filter,
+                    tagCounts: state.tagCounts,
+                  ),
                   Expanded(
                     child: LogConsoleTable(
                       entries: state.filteredEntries,
