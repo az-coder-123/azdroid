@@ -1,0 +1,31 @@
+# WifiDesk — Feature Documentation Catalog
+
+> Comprehensive, modular catalog of all capabilities, developer tools, and macOS productivity enhancements implemented in **WifiDesk**.
+
+---
+
+## 🧭 Feature Matrix
+
+| # | Feature | Subsystem | Trigger / Shortcut | Documentation |
+| :-: | :--- | :--- | :--- | :--- |
+| **01** | **Device Discovery & Wireless Pairing** | `lib/features/discovery/` | Auto / Toolbar buttons | [device-discovery-pairing.md](device-discovery-pairing.md) |
+| **02** | **Wireless Display & Low-Latency Streaming** | `lib/features/streaming/` | Auto on device connect | [wireless-display-streaming.md](wireless-display-streaming.md) |
+| **03** | **Remote Input & Gesture Control** | `lib/features/control/` | Pointer / Keyboard input | [remote-input-control.md](remote-input-control.md) |
+| **04** | **Device Logcat Console & Debugging** | `lib/features/logging/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | [device-logcat-console.md](device-logcat-console.md) |
+| **05** | **APK Sideload & Package Manager** | `lib/features/apk_installer/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | [apk-sideload-manager.md](apk-sideload-manager.md) |
+| **06** | **File Transfer & Device File Explorer** | `lib/features/productivity/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | [file-transfer-explorer.md](file-transfer-explorer.md) |
+| **07** | **Hardware Screen Recording** | `lib/features/streaming/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | [hardware-screen-recording.md](hardware-screen-recording.md) |
+| **08** | **Lossless Screenshots & Area Crop** | `lib/features/streaming/` | <kbd>Cmd</kbd> + <kbd>S</kbd> / <kbd>Shift</kbd> | [screenshots-area-crop.md](screenshots-area-crop.md) |
+| **09** | **Audio Forwarding** | `lib/features/audio/` | Auto during stream | [audio-forwarding.md](audio-forwarding.md) |
+| **10** | **Bidirectional Clipboard Sync** | `lib/features/productivity/` | <kbd>Cmd</kbd> + <kbd>C</kbd> / <kbd>V</kbd> | [clipboard-sync.md](clipboard-sync.md) |
+| **11** | **Screen-Off Streaming** | `lib/features/streaming/` | <kbd>Cmd</kbd> + <kbd>O</kbd> | [screen-off-streaming.md](screen-off-streaming.md) |
+| **12** | **Menu Bar Companion** | `lib/features/menubar/` | macOS Status Bar icon | [menu-bar-companion.md](menu-bar-companion.md) |
+
+---
+
+## 🏛️ Architectural Cohesion
+
+Each feature in this catalog strictly adheres to **Clean Architecture** and the **Single Responsibility Principle (SRP)**:
+- **Presentation Layer:** Pure declarative widgets driven by reactive `Cubit` / `Bloc` state management (`lib/features/<feature>/presentation/`).
+- **Domain Layer:** Pure business entities and abstract repository contracts with zero UI or framework dependencies (`lib/features/<feature>/domain/`).
+- **Data Layer:** Concrete repositories, ADB bridges, native sockets, and platform channel bindings (`lib/features/<feature>/data/`).

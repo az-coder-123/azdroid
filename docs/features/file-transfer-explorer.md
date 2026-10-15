@@ -1,0 +1,46 @@
+# Feature: Bidirectional File Transfer & Device File Explorer
+
+> **Subsystem:** `lib/features/productivity/`  
+> **Key Interfaces:** `FileTransferRepository`, `FileTransferDatasource`  
+> **Presentation:** `FileTransferCubit`, `DeviceFileManagerCubit`, `DeviceFileManagerDialog`, `FileDropTargetOverlay`  
+> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>U</kbd> (Push) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> (Explorer)
+
+---
+
+## 📌 Overview
+
+WifiDesk provides full two-way file sharing between macOS and Android. Users can push arbitrary files to the phone via drag-and-drop or explore and pull files from internal storage and MicroSD cards back to macOS.
+
+```mermaid
+flowchart LR
+    Mac["macOS Finder\n(Files / Photos / APKs)"] -->|Cmd + U / Drag & Drop| Push["ADB Push\n(/sdcard/Download/)"]
+    Push --> MediaScan["Android MediaScanner Broadcast\n(Immediate Gallery Reveal)"]
+    
+    AndroidStorage["Android Storage & SD Card\n(/sdcard/ & /storage/<UUID>/)"] -->|Cmd + Shift + F| Explorer["Device File Explorer\n(Multi-select & Search)"]
+    Explorer -->|Batch Download| MacDownloads["~/Downloads/WifiDesk/\n(1-Click Finder Reveal)"]
+```
+
+---
+
+## ⚡️ Key Capabilities
+
+### 1. macOS to Android Push (<kbd>Cmd</kbd> + <kbd>U</kbd> & Drag-and-Drop)
+- **Direct Drag & Drop:** Drag images, documents, audio files, or APKs directly from macOS Finder and drop them onto the mirroring viewport.
+- **Finder Sheet Selection:** Press <kbd>Cmd</kbd> + <kbd>U</kbd> or click the upload icon to open the native macOS file selection sheet.
+- **Automated Media Indexing:** Media files (JPEG, PNG, MP4, MP3) automatically trigger an Android `MediaScannerConnection` broadcast upon transfer so they appear immediately in Google Photos / Gallery.
+- **Transfer Status Banner:** A floating dynamic banner displays live transfer progress, current item indicators (`Item 2 of 5`), file sizes, and completion status.
+
+### 2. Android Device File Explorer (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>)
+- **Storage Navigation:** Interactive modal file manager to browse phone directories with breadcrumb navigation.
+- **Quick Access Folders:** Quick shortcuts for common storage paths:
+  - `Downloads` (`/sdcard/Download`)
+  - `Camera` (`/sdcard/DCIM/Camera`)
+  - `Screenshots` (`/sdcard/Pictures/Screenshots`)
+  - `Movies` (`/sdcard/Movies`)
+- **MicroSD & External Storage Detection:** Automatically scans `/storage/` for external UUID mount points (e.g. `/storage/0000-0000/`) and renders an ergonomic **💳 SD Card** quick shortcut.
+
+### 3. File Search, Sorting & Batch Download
+- **Instant Search:** Real-time client-side name filtering across current directory contents.
+- **Multi-Criteria Sorting:** Sort files by Date Modified, File Size, or Name in ascending/descending order.
+- **Bulk Selection:** "Select All" toggle with checkbox multi-selection and cumulative size display.
+- **Batch Pull to Mac:** Downloads selected files to `~/Downloads/WifiDesk/` with 1-click **Reveal in Finder** (`open -R`).

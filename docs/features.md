@@ -1,6 +1,8 @@
 # WifiDesk — Technical Specifications & Feature Documentation
 
 > Comprehensive specification and architectural breakdown of the **WifiDesk** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS over local Wi-Fi.
+>
+> 💡 **Dedicated Specifications:** Each feature is thoroughly documented in its own dedicated file adhering to the Single Responsibility Principle. Browse the [Features Directory](features/README.md) for individual specifications.
 
 ---
 
