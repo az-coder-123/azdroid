@@ -78,5 +78,17 @@ void main() {
       // entry2 has 'FATAL', so it shouldn't match with caseSensitive: true
       expect(criteria.matches(entry2), isFalse);
     });
+
+    test('filters by bookmarksOnly when bookmarkedIds provided', () {
+      const criteria = LogFilterCriteria(bookmarksOnly: true);
+      expect(criteria.matches(entry1, bookmarkedIds: {1}), isTrue);
+      expect(criteria.matches(entry2, bookmarkedIds: {1}), isFalse);
+    });
+
+    test('filters out excluded tags', () {
+      const criteria = LogFilterCriteria(excludeTags: {'AndroidRuntime'});
+      expect(criteria.matches(entry1), isTrue);
+      expect(criteria.matches(entry2), isFalse);
+    });
   });
 }

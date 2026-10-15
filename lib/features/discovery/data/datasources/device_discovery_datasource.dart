@@ -40,7 +40,9 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
 
     // Auto-provision attached USB devices for Wi-Fi mode
     if (autoHandoffService != null) {
-      final provisioned = await autoHandoffService!.autoProvisionUsbDevices(attached);
+      final provisioned = await autoHandoffService!.autoProvisionUsbDevices(
+        attached,
+      );
       if (provisioned) {
         attached = await _service.getAttachedDevices();
       }
@@ -54,8 +56,9 @@ class DeviceDiscoveryDatasourceImpl implements DeviceDiscoveryDatasource {
         for (final endpoint in activeIps) {
           final parts = endpoint.split(':');
           final ip = parts[0];
-          final port =
-              parts.length > 1 ? (int.tryParse(parts[1]) ?? 5555) : 5555;
+          final port = parts.length > 1
+              ? (int.tryParse(parts[1]) ?? 5555)
+              : 5555;
           final alreadyAttached = attached.any(
             (d) => d.serial.startsWith('$ip:') || d.serial == ip,
           );

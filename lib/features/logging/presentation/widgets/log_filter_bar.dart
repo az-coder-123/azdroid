@@ -4,7 +4,10 @@ import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.dart';
 import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
 import 'package:wifi_desk/features/logging/presentation/cubit/device_log_cubit.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/log_exclude_tags_bar.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_filter_chips.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/log_pid_filter_input.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/log_preset_dropdown.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_tag_filter_input.dart';
 
 /// Top filtering toolbar providing level toggles, search text, regex, and tag/pid filters.
@@ -13,10 +16,14 @@ class LogFilterBar extends StatefulWidget {
     super.key,
     required this.filter,
     this.tagCounts = const {},
+    this.pidCounts = const {},
+    this.pidPrimaryTags = const {},
   });
 
   final LogFilterCriteria filter;
   final Map<String, int> tagCounts;
+  final Map<int, int> pidCounts;
+  final Map<int, String> pidPrimaryTags;
 
   @override
   State<LogFilterBar> createState() => _LogFilterBarState();
@@ -49,6 +56,11 @@ class _LogFilterBarState extends State<LogFilterBar> {
     if (widget.filter.tagFilter != _tagController.text &&
         !_tagController.value.isComposingRangeValid) {
       _tagController.text = widget.filter.tagFilter;
+    }
+    final currentPidStr = widget.filter.pidFilter?.toString() ?? '';
+    if (currentPidStr != _pidController.text &&
+        !_pidController.value.isComposingRangeValid) {
+      _pidController.text = currentPidStr;
     }
   }
 
@@ -112,6 +124,60 @@ class _LogFilterBarState extends State<LogFilterBar> {
                   isActive: widget.filter.caseSensitive,
                   onTap: cubit.toggleCaseSensitive,
                 ),
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: cubit.toggleBookmarksOnly,
+                  borderRadius: BorderRadius.circular(4),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: widget.filter.bookmarksOnly
+                          ? AppColors.statusWarning.withValues(alpha: 0.18)
+                          : AppColors.surfaceElevated,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: widget.filter.bookmarksOnly
+                            ? AppColors.statusWarning
+                            : AppColors.border,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          widget.filter.bookmarksOnly
+                              ? Icons.star_rounded
+                              : Icons.star_outline_rounded,
+                          size: 14,
+                          color: widget.filter.bookmarksOnly
+                              ? AppColors.statusWarning
+                              : AppColors.textSecondary,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Starred',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: widget.filter.bookmarksOnly
+                                ? AppColors.statusWarning
+                                : AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                LogPresetDropdown(
+                  currentFilter: widget.filter,
+                  onPresetSelected: (preset) {
+                    cubit.updateFilter(preset.criteria);
+                  },
+                ),
               ],
             ),
           ),
@@ -163,26 +229,24 @@ class _LogFilterBarState extends State<LogFilterBar> {
               ),
               const SizedBox(width: 8),
               SizedBox(
-                width: 90,
+                width: 125,
                 height: 32,
-                child: TextField(
+                child: LogPidFilterInput(
                   controller: _pidController,
-                  keyboardType: TextInputType.number,
-                  onChanged: (val) {
-                    final pid = int.tryParse(val.trim());
-                    cubit.updateFilter(
-                      widget.filter.copyWith(pidFilter: () => pid),
-                    );
-                  },
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textPrimary,
+                  pidCounts: widget.pidCounts,
+                  pidPrimaryTags: widget.pidPrimaryTags,
+                  onChanged: (pid) => cubit.updateFilter(
+                    widget.filter.copyWith(pidFilter: () => pid),
                   ),
-                  decoration: _inputDecoration(hint: 'PID'),
                 ),
               ),
             ],
           ),
+          if (widget.filter.excludeTags.isNotEmpty)
+            LogExcludeTagsBar(
+              excludeTags: widget.filter.excludeTags,
+              availableTags: widget.tagCounts,
+            ),
         ],
       ),
     );

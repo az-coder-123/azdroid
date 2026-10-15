@@ -9,6 +9,7 @@ import 'package:wifi_desk/features/logging/presentation/cubit/device_log_cubit.d
 import 'package:wifi_desk/features/logging/presentation/cubit/device_log_state.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_action_footer.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_console_table.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/log_detail_drawer.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/log_filter_bar.dart';
 
 /// Modal dialog providing real-time Android logcat inspection, multi-tier filtering,
@@ -78,6 +79,8 @@ class DeviceLogDialog extends StatelessWidget {
                   LogFilterBar(
                     filter: state.filter,
                     tagCounts: state.tagCounts,
+                    pidCounts: state.pidCounts,
+                    pidPrimaryTags: state.pidPrimaryTags,
                   ),
                   Expanded(
                     child: LogConsoleTable(
@@ -85,6 +88,13 @@ class DeviceLogDialog extends StatelessWidget {
                       autoScroll: state.autoScroll,
                       isPaused: state.isPaused,
                       searchQuery: state.filter.textQuery,
+                      selectedEntry: state.selectedEntry,
+                      bookmarkedIds: state.bookmarkedIds,
+                      softWrap: state.softWrap,
+                      onToggleBookmark: (id) =>
+                          context.read<DeviceLogCubit>().toggleBookmark(id),
+                      onSelectEntry: (entry) =>
+                          context.read<DeviceLogCubit>().selectEntry(entry),
                       onScrollToBottom: () {
                         if (!state.autoScroll) {
                           context.read<DeviceLogCubit>().toggleAutoScroll();
@@ -92,12 +102,28 @@ class DeviceLogDialog extends StatelessWidget {
                       },
                     ),
                   ),
+                  if (state.selectedEntry != null)
+                    LogDetailDrawer(
+                      entry: state.selectedEntry!,
+                      isBookmarked: state.bookmarkedIds.contains(
+                        state.selectedEntry!.id,
+                      ),
+                      onToggleBookmark: () => context
+                          .read<DeviceLogCubit>()
+                          .toggleBookmark(state.selectedEntry!.id),
+                      onExcludeTag: () => context
+                          .read<DeviceLogCubit>()
+                          .excludeTag(state.selectedEntry!.tag),
+                      onClose: () =>
+                          context.read<DeviceLogCubit>().selectEntry(null),
+                    ),
                   LogActionFooter(
                     totalEntries: state.allEntries.length,
                     filteredEntries: state.filteredEntries.length,
                     recordingStatus: state.recordingStatus,
                     isPaused: state.isPaused,
                     autoScroll: state.autoScroll,
+                    softWrap: state.softWrap,
                     onExportSnapshot: () => _handleExportSnapshot(context),
                   ),
                 ],

@@ -74,7 +74,9 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
       return;
     }
 
-    final matchingNew = newBatch.where((e) => current.filter.matches(e));
+    final matchingNew = newBatch.where(
+      (e) => current.filter.matches(e, bookmarkedIds: current.bookmarkedIds),
+    );
     final updatedFiltered = _appendBounded(
       current.filteredEntries,
       matchingNew,
@@ -106,7 +108,10 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
     if (current is! DeviceLogStreaming) return;
     if (current.isPaused) {
       final reFiltered = current.allEntries
-          .where(current.filter.matches)
+          .where(
+            (e) =>
+                current.filter.matches(e, bookmarkedIds: current.bookmarkedIds),
+          )
           .toList();
       emit(current.copyWith(isPaused: false, filteredEntries: reFiltered));
     } else {
@@ -121,11 +126,79 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
     emit(current.copyWith(autoScroll: !current.autoScroll));
   }
 
+  /// Toggles line wrapping in the log console table.
+  void toggleSoftWrap() {
+    final current = state;
+    if (current is! DeviceLogStreaming) return;
+    emit(current.copyWith(softWrap: !current.softWrap));
+  }
+
+  /// Selects or deselects an entry for inspection in the detail drawer.
+  void selectEntry(DeviceLogEntry? entry) {
+    final current = state;
+    if (current is! DeviceLogStreaming) return;
+    if (current.selectedEntry == entry) {
+      emit(current.copyWith(selectedEntry: () => null));
+    } else {
+      emit(current.copyWith(selectedEntry: () => entry));
+    }
+  }
+
+  /// Toggles star/bookmark on an entry ID.
+  void toggleBookmark(int id) {
+    final current = state;
+    if (current is! DeviceLogStreaming) return;
+    final updated = Set<int>.from(current.bookmarkedIds);
+    updated.contains(id) ? updated.remove(id) : updated.add(id);
+    final filtered = current.allEntries
+        .where((e) => current.filter.matches(e, bookmarkedIds: updated))
+        .toList();
+    emit(current.copyWith(bookmarkedIds: updated, filteredEntries: filtered));
+  }
+
+  /// Toggles filtering only bookmarked/starred entries.
+  void toggleBookmarksOnly() {
+    final current = state;
+    if (current is! DeviceLogStreaming) return;
+    updateFilter(
+      current.filter.copyWith(bookmarksOnly: !current.filter.bookmarksOnly),
+    );
+  }
+
+  /// Adds a tag to the excluded tags set.
+  void excludeTag(String tag) {
+    final current = state;
+    if (current is! DeviceLogStreaming || tag.trim().isEmpty) return;
+    final updated = Set<String>.from(current.filter.excludeTags)
+      ..add(tag.trim());
+    updateFilter(current.filter.copyWith(excludeTags: updated));
+  }
+
+  /// Removes a tag from the excluded tags set.
+  void removeExcludeTag(String tag) {
+    final current = state;
+    if (current is! DeviceLogStreaming) return;
+    final updated = Set<String>.from(current.filter.excludeTags)
+      ..remove(tag.trim());
+    updateFilter(current.filter.copyWith(excludeTags: updated));
+  }
+
+  /// Clears all excluded tags.
+  void clearExcludeTags() {
+    final current = state;
+    if (current is! DeviceLogStreaming) return;
+    updateFilter(current.filter.copyWith(excludeTags: const {}));
+  }
+
   /// Updates active filter criteria and re-evaluates visible logs.
   void updateFilter(LogFilterCriteria newFilter) {
     final current = state;
     if (current is! DeviceLogStreaming) return;
-    final filtered = current.allEntries.where(newFilter.matches).toList();
+    final filtered = current.allEntries
+        .where(
+          (e) => newFilter.matches(e, bookmarkedIds: current.bookmarkedIds),
+        )
+        .toList();
     emit(current.copyWith(filter: newFilter, filteredEntries: filtered));
   }
 

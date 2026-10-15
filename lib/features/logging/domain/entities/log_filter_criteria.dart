@@ -11,6 +11,8 @@ class LogFilterCriteria extends Equatable {
     this.caseSensitive = false,
     this.tagFilter = '',
     this.pidFilter,
+    this.bookmarksOnly = false,
+    this.excludeTags = const {},
   });
 
   /// Set of active log levels to display. If empty, all levels are allowed.
@@ -31,9 +33,33 @@ class LogFilterCriteria extends Equatable {
   /// Specific process ID filter.
   final int? pidFilter;
 
+  /// Whether to only show bookmarked/starred entries.
+  final bool bookmarksOnly;
+
+  /// Set of tags to exclude/suppress from output.
+  final Set<String> excludeTags;
+
   /// Evaluates whether an entry passes the current filter criteria.
-  bool matches(DeviceLogEntry entry) {
-    // 1. Level check
+  bool matches(DeviceLogEntry entry, {Set<int>? bookmarkedIds}) {
+    // 0. Bookmarks check
+    if (bookmarksOnly && !(bookmarkedIds?.contains(entry.id) ?? false)) {
+      return false;
+    }
+
+    // 1. Excluded tags check
+    if (excludeTags.isNotEmpty) {
+      final entryTag = caseSensitive
+          ? entry.tag.trim()
+          : entry.tag.trim().toLowerCase();
+      for (final ex in excludeTags) {
+        final target = caseSensitive ? ex.trim() : ex.trim().toLowerCase();
+        if (target.isNotEmpty && entryTag == target) {
+          return false;
+        }
+      }
+    }
+
+    // 2. Level check
     if (selectedLevels.isNotEmpty && !selectedLevels.contains(entry.level)) {
       return false;
     }
@@ -84,6 +110,8 @@ class LogFilterCriteria extends Equatable {
     bool? caseSensitive,
     String? tagFilter,
     int? Function()? pidFilter,
+    bool? bookmarksOnly,
+    Set<String>? excludeTags,
   }) {
     return LogFilterCriteria(
       selectedLevels: selectedLevels ?? this.selectedLevels,
@@ -92,6 +120,8 @@ class LogFilterCriteria extends Equatable {
       caseSensitive: caseSensitive ?? this.caseSensitive,
       tagFilter: tagFilter ?? this.tagFilter,
       pidFilter: pidFilter != null ? pidFilter() : this.pidFilter,
+      bookmarksOnly: bookmarksOnly ?? this.bookmarksOnly,
+      excludeTags: excludeTags ?? this.excludeTags,
     );
   }
 
@@ -103,5 +133,7 @@ class LogFilterCriteria extends Equatable {
     caseSensitive,
     tagFilter,
     pidFilter,
+    bookmarksOnly,
+    excludeTags,
   ];
 }

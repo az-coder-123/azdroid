@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
-import 'package:wifi_desk/features/logging/presentation/widgets/log_level_badge.dart';
+import 'package:wifi_desk/features/logging/presentation/widgets/log_console_row.dart';
 
 /// Virtualized console log table rendering color-coded logcat entries with auto-scrolling.
 class LogConsoleTable extends StatefulWidget {
@@ -13,6 +12,11 @@ class LogConsoleTable extends StatefulWidget {
     required this.isPaused,
     required this.searchQuery,
     required this.onScrollToBottom,
+    this.selectedEntry,
+    this.onSelectEntry,
+    this.bookmarkedIds = const {},
+    this.onToggleBookmark,
+    this.softWrap = false,
   });
 
   final List<DeviceLogEntry> entries;
@@ -20,6 +24,11 @@ class LogConsoleTable extends StatefulWidget {
   final bool isPaused;
   final String searchQuery;
   final VoidCallback onScrollToBottom;
+  final DeviceLogEntry? selectedEntry;
+  final ValueChanged<DeviceLogEntry>? onSelectEntry;
+  final Set<int> bookmarkedIds;
+  final ValueChanged<int>? onToggleBookmark;
+  final bool softWrap;
 
   @override
   State<LogConsoleTable> createState() => _LogConsoleTableState();
@@ -119,10 +128,17 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
             controller: _scrollController,
             itemCount: widget.entries.length,
             physics: const ClampingScrollPhysics(),
-            itemExtent: 26.0,
+            itemExtent: widget.softWrap ? null : 26.0,
             itemBuilder: (context, index) {
               final entry = widget.entries[index];
-              return _buildLogRow(entry);
+              return LogConsoleRow(
+                entry: entry,
+                isSelected: widget.selectedEntry?.id == entry.id,
+                isBookmarked: widget.bookmarkedIds.contains(entry.id),
+                softWrap: widget.softWrap,
+                onTap: () => widget.onSelectEntry?.call(entry),
+                onToggleBookmark: () => widget.onToggleBookmark?.call(entry.id),
+              );
             },
           ),
         ),
@@ -172,92 +188,6 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildLogRow(DeviceLogEntry entry) {
-    final timeStr =
-        '${entry.timestamp.hour.toString().padLeft(2, '0')}:'
-        '${entry.timestamp.minute.toString().padLeft(2, '0')}:'
-        '${entry.timestamp.second.toString().padLeft(2, '0')}.'
-        '${entry.timestamp.millisecond.toString().padLeft(3, '0')}';
-
-    return Container(
-      color: entry.level.rowBackgroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      alignment: Alignment.centerLeft,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 84,
-            child: Text(
-              timeStr,
-              style: const TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          SizedBox(
-            width: 76,
-            child: Text(
-              '${entry.pid}:${entry.tid}',
-              style: const TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          LogLevelBadge(level: entry.level, compact: true),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 120,
-            child: Text(
-              entry.tag,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: entry.level.color,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              entry.message,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-                color: entry.level.color == AppColors.textSecondary
-                    ? AppColors.textPrimary
-                    : entry.level.color.withValues(alpha: 0.95),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.copy_rounded,
-              size: 12,
-              color: AppColors.textSecondary,
-            ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
-            tooltip: 'Copy line',
-            onPressed: () =>
-                Clipboard.setData(ClipboardData(text: entry.rawLine)),
-          ),
-        ],
-      ),
     );
   }
 }

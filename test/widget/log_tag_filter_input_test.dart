@@ -60,41 +60,47 @@ void main() {
       expect(controller.text, equals('Flutter'));
     });
 
-    testWidgets('clear button appears when text is not empty and clears input on tap', (tester) async {
-      await tester.pumpWidget(buildTestWidget(initialText: 'Finsky'));
+    testWidgets(
+      'clear button appears when text is not empty and clears input on tap',
+      (tester) async {
+        await tester.pumpWidget(buildTestWidget(initialText: 'Finsky'));
 
-      expect(find.byIcon(Icons.clear), findsOneWidget);
+        expect(find.byIcon(Icons.clear), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.clear));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(Icons.clear));
+        await tester.pumpAndSettle();
 
-      expect(controller.text, isEmpty);
-      expect(lastChangedTag, equals(''));
-    });
+        expect(controller.text, isEmpty);
+        expect(lastChangedTag, equals(''));
+      },
+    );
 
-    testWidgets('opening dropdown menu displays modules with line counts and selecting tag works', (tester) async {
-      await tester.pumpWidget(buildTestWidget());
+    testWidgets(
+      'opening dropdown menu displays modules with line counts and selecting tag works',
+      (tester) async {
+        await tester.pumpWidget(buildTestWidget());
 
-      // Open the dropdown menu
-      await tester.tap(find.byType(PopupMenuButton<String>));
-      await tester.pumpAndSettle();
+        // Open the dropdown menu
+        await tester.tap(find.byType(PopupMenuButton<String>));
+        await tester.pumpAndSettle();
 
-      // Verify menu entries
-      expect(find.text('All Tags / Reset'), findsOneWidget);
-      expect(find.text('Finsky'), findsOneWidget);
-      expect(find.text('142'), findsOneWidget);
-      expect(find.text('camerahalserver'), findsOneWidget);
-      expect(find.text('28'), findsOneWidget);
-      expect(find.text('ThermalInfo'), findsOneWidget);
-      expect(find.text('15'), findsOneWidget);
+        // Verify menu entries
+        expect(find.text('All Tags / Reset'), findsOneWidget);
+        expect(find.text('Finsky'), findsOneWidget);
+        expect(find.text('142'), findsOneWidget);
+        expect(find.text('camerahalserver'), findsOneWidget);
+        expect(find.text('28'), findsOneWidget);
+        expect(find.text('ThermalInfo'), findsOneWidget);
+        expect(find.text('15'), findsOneWidget);
 
-      // Select 'camerahalserver'
-      await tester.tap(find.text('camerahalserver'));
-      await tester.pumpAndSettle();
+        // Select 'camerahalserver'
+        await tester.tap(find.text('camerahalserver'));
+        await tester.pumpAndSettle();
 
-      expect(controller.text, equals('camerahalserver'));
-      expect(lastChangedTag, equals('camerahalserver'));
-    });
+        expect(controller.text, equals('camerahalserver'));
+        expect(lastChangedTag, equals('camerahalserver'));
+      },
+    );
 
     testWidgets('selecting All Tags resets the input', (tester) async {
       await tester.pumpWidget(buildTestWidget(initialText: 'ThermalInfo'));

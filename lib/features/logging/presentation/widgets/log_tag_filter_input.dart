@@ -117,7 +117,10 @@ class _LogTagFilterInputState extends State<LogTagFilterInput> {
               controller: controller,
               focusNode: focusNode,
               onChanged: widget.onChanged,
-              style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textPrimary,
+              ),
               decoration: InputDecoration(
                 hintText: 'Tag (e.g. Activity)',
                 hintStyle: const TextStyle(
@@ -140,7 +143,10 @@ class _LogTagFilterInputState extends State<LogTagFilterInput> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
+                  borderSide: const BorderSide(
+                    color: AppColors.accent,
+                    width: 1.5,
+                  ),
                 ),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,

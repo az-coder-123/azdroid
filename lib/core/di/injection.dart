@@ -95,9 +95,7 @@ Future<void> initDependencies() async {
   );
 
   sl.registerLazySingleton<UsbWifiAutoHandoffService>(
-    () => UsbWifiAutoHandoffServiceImpl(
-      adbTcpipService: sl<AdbTcpipService>(),
-    ),
+    () => UsbWifiAutoHandoffServiceImpl(adbTcpipService: sl<AdbTcpipService>()),
   );
 
   sl.registerLazySingleton<DeviceDiscoveryDatasource>(

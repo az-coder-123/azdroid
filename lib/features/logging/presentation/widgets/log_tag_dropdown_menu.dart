@@ -112,10 +112,12 @@ class LogTagDropdownMenu extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w400,
-                        color:
-                            isSelected ? AppColors.accent : AppColors.textPrimary,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: isSelected
+                            ? AppColors.accent
+                            : AppColors.textPrimary,
                       ),
                     ),
                   ),

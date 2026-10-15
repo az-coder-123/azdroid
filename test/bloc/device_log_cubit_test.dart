@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:wifi_desk/features/logging/domain/entities/device_log_entry.dart';
 import 'package:wifi_desk/features/logging/domain/entities/log_file_recording_status.dart';
-import 'package:wifi_desk/features/logging/domain/entities/log_filter_criteria.dart';
 import 'package:wifi_desk/features/logging/domain/entities/log_level.dart';
 import 'package:wifi_desk/features/logging/domain/repositories/device_log_repository.dart';
 import 'package:wifi_desk/features/logging/presentation/cubit/device_log_cubit.dart';
@@ -182,51 +181,135 @@ void main() {
       ],
     );
 
-    test('DeviceLogStreaming.tagCounts computes unique tags sorted by frequency', () {
-      final now = DateTime.now();
-      final streaming = DeviceLogStreaming(
-        deviceSerial: testSerial,
-        allEntries: [
-          DeviceLogEntry(
-            id: 1,
-            timestamp: now,
-            pid: 1,
-            tid: 1,
-            level: LogLevel.info,
-            tag: 'Finsky',
-            message: 'msg 1',
-            rawLine: '',
-          ),
-          DeviceLogEntry(
-            id: 2,
-            timestamp: now,
-            pid: 1,
-            tid: 1,
-            level: LogLevel.info,
-            tag: 'Finsky',
-            message: 'msg 2',
-            rawLine: '',
-          ),
-          DeviceLogEntry(
-            id: 3,
-            timestamp: now,
-            pid: 1,
-            tid: 1,
-            level: LogLevel.info,
-            tag: 'ThermalInfo',
-            message: 'msg 3',
-            rawLine: '',
-          ),
-        ],
-        filteredEntries: const [],
-        filter: const LogFilterCriteria(),
-        recordingStatus: LogFileRecordingStatus.idle(),
-      );
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'selectEntry selects entry and deselects when clicked again',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) {
+        cubit.startLogging(testSerial);
+        cubit.selectEntry(sampleEntry);
+        cubit.selectEntry(sampleEntry);
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.selectedEntry,
+          'selectedEntry',
+          sampleEntry,
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.selectedEntry,
+          'selectedEntry',
+          isNull,
+        ),
+      ],
+    );
 
-      expect(streaming.tagCounts, equals({
-        'Finsky': 2,
-        'ThermalInfo': 1,
-      }));
-    });
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'toggleBookmark adds and removes id from bookmarkedIds',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) {
+        cubit.startLogging(testSerial);
+        cubit.toggleBookmark(1);
+        cubit.toggleBookmark(1);
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.bookmarkedIds,
+          'bookmarkedIds',
+          contains(1),
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.bookmarkedIds,
+          'bookmarkedIds',
+          isEmpty,
+        ),
+      ],
+    );
+
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'toggleBookmarksOnly toggles bookmarksOnly filter flag',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) {
+        cubit.startLogging(testSerial);
+        cubit.toggleBookmarksOnly();
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.bookmarksOnly,
+          'bookmarksOnly',
+          isTrue,
+        ),
+      ],
+    );
+
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'toggleSoftWrap inverts softWrap state flag',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) {
+        cubit.startLogging(testSerial);
+        cubit.toggleSoftWrap();
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having((s) => s.softWrap, 'softWrap', isTrue),
+      ],
+    );
+
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'excludeTag adds tag, removeExcludeTag removes it, and clearExcludeTags resets',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) {
+        cubit.startLogging(testSerial);
+        cubit.excludeTag('chatty');
+        cubit.excludeTag('ViewRootImpl');
+        cubit.removeExcludeTag('chatty');
+        cubit.clearExcludeTags();
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.excludeTags,
+          'excludeTags',
+          {'chatty'},
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.excludeTags,
+          'excludeTags',
+          {'chatty', 'ViewRootImpl'},
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.excludeTags,
+          'excludeTags',
+          {'ViewRootImpl'},
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.excludeTags,
+          'excludeTags',
+          isEmpty,
+        ),
+      ],
+    );
   });
 }

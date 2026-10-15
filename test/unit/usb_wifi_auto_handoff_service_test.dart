@@ -37,26 +37,37 @@ void main() {
       verifyNever(() => mockTcpipService.switchUsbToWifi(any()));
     });
 
-    test('auto-provisions authorized USB device only once per attachment', () async {
-      const usbDevice = AdbDevice(
-        serial: 'USB_SERIAL_123',
-        state: 'device',
-        model: 'Moto G',
-      );
+    test(
+      'auto-provisions authorized USB device only once per attachment',
+      () async {
+        const usbDevice = AdbDevice(
+          serial: 'USB_SERIAL_123',
+          state: 'device',
+          model: 'Moto G',
+        );
 
-      when(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123'))
-          .thenAnswer((_) async => const AdbCommandResult(isSuccess: true, message: 'ok'));
+        when(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123'))
+            .thenAnswer(
+              (_) async =>
+                  const AdbCommandResult(isSuccess: true, message: 'ok'),
+            );
 
-      // First run: should provision
-      final firstRun = await handoffService.autoProvisionUsbDevices([usbDevice]);
-      expect(firstRun, isTrue);
-      verify(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123')).called(1);
+        // First run: should provision
+        final firstRun = await handoffService.autoProvisionUsbDevices([
+          usbDevice,
+        ]);
+        expect(firstRun, isTrue);
+        verify(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123'))
+            .called(1);
 
-      // Second run: should skip already provisioned serial
-      final secondRun = await handoffService.autoProvisionUsbDevices([usbDevice]);
-      expect(secondRun, isFalse);
-      verifyNoMoreInteractions(mockTcpipService);
-    });
+        // Second run: should skip already provisioned serial
+        final secondRun = await handoffService.autoProvisionUsbDevices([
+          usbDevice,
+        ]);
+        expect(secondRun, isFalse);
+        verifyNoMoreInteractions(mockTcpipService);
+      },
+    );
 
     test('re-provisions if device was disconnected and reconnects', () async {
       const usbDevice = AdbDevice(
@@ -65,8 +76,9 @@ void main() {
         model: 'Moto G',
       );
 
-      when(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123'))
-          .thenAnswer((_) async => const AdbCommandResult(isSuccess: true, message: 'ok'));
+      when(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123')).thenAnswer(
+        (_) async => const AdbCommandResult(isSuccess: true, message: 'ok'),
+      );
 
       // Provision initially
       await handoffService.autoProvisionUsbDevices([usbDevice]);
@@ -75,9 +87,12 @@ void main() {
       await handoffService.autoProvisionUsbDevices([]);
 
       // Device re-attached: should provision again
-      final reconnected = await handoffService.autoProvisionUsbDevices([usbDevice]);
+      final reconnected = await handoffService.autoProvisionUsbDevices([
+        usbDevice,
+      ]);
       expect(reconnected, isTrue);
-      verify(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123')).called(2);
+      verify(() => mockTcpipService.switchUsbToWifi('USB_SERIAL_123'))
+          .called(2);
     });
   });
 }

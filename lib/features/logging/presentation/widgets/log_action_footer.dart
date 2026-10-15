@@ -13,6 +13,7 @@ class LogActionFooter extends StatelessWidget {
     required this.recordingStatus,
     required this.isPaused,
     required this.autoScroll,
+    this.softWrap = false,
     required this.onExportSnapshot,
   });
 
@@ -21,6 +22,7 @@ class LogActionFooter extends StatelessWidget {
   final LogFileRecordingStatus recordingStatus;
   final bool isPaused;
   final bool autoScroll;
+  final bool softWrap;
   final VoidCallback onExportSnapshot;
 
   @override
@@ -72,6 +74,15 @@ class LogActionFooter extends StatelessWidget {
                 ? 'Auto-scroll enabled'
                 : 'Auto-scroll disabled',
             onPressed: cubit.toggleAutoScroll,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.wrap_text_rounded,
+              size: 18,
+              color: softWrap ? AppColors.accent : AppColors.textSecondary,
+            ),
+            tooltip: softWrap ? 'Disable soft wrap' : 'Enable soft wrap',
+            onPressed: cubit.toggleSoftWrap,
           ),
           IconButton(
             icon: const Icon(
