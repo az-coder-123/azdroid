@@ -1,7 +1,7 @@
 # ⚡️ DeskDroid
 
 <p align="center">
-  <b>Silky-smooth, low-latency Android screen mirroring and remote control for macOS over Wi-Fi & USB.</b>
+  <b>Silky-smooth, low-latency Android screen mirroring and developer workstation for macOS over Wi-Fi & USB.</b>
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/deskdroid_mirroring_preview.png" alt="DeskDroid Live Mirroring & Controls on macOS" width="520">
+  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="DeskDroid Live Mirroring & Controls on macOS" width="560">
 </p>
 
 ---
@@ -24,8 +24,56 @@
 It enables users to **mirror an Android device screen onto a Mac and seamlessly interact with it using a mouse and keyboard over local Wi-Fi or USB cable**—delivering glass-to-glass latency under 20ms and fluid refresh rates up to 60–120 FPS.
 
 DeskDroid bridges two core principles:
-1. **Unrivaled Performance:** Powered by the robust, hardware-accelerated `scrcpy-server` engine (H.264/H.265 GPU encoding).
-2. **Native macOS Polish:** Packaged inside a modern, refined Apple-native interface crafted with Flutter.
+1. **Unrivaled Performance:** Powered by the robust, hardware-accelerated `scrcpy-server` engine (H.264/H.265 GPU encoding with Apple VideoToolbox hardware decoding).
+2. **Native macOS Polish:** Packaged inside a modern, refined Apple-native interface crafted with Flutter and Clean Architecture.
+
+---
+
+## 📸 Visual Feature Tour
+
+### 📱 1. Device Discovery & Interactive Feature Showcase
+
+<table>
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <img src="docs/images/deskdroid_device_discovery.png" alt="Device Discovery Dashboard" width="100%">
+      <br><b>Zero-Config Device Discovery</b>
+      <br><sub>Automated Wi-Fi subnet scanning, pairing code assistant, and 1-click USB-to-wireless switching.</sub>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <img src="docs/images/deskdroid_features_showcase.png" alt="Built-in Feature Showcase" width="100%">
+      <br><b>Built-in Feature Showcase</b>
+      <br><sub>Interactive, categorized capability browser with performance badges, highlights, and pro tips.</sub>
+    </td>
+  </tr>
+</table>
+
+### ⚡️ 2. Ultra-Low Latency Streaming & Ergonomic Controls
+
+<p align="center">
+  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="Real-time Mirroring Viewport with Dock Controls" width="560">
+</p>
+
+- 🟢 **Non-Overlapping Telemetry HUD:** Live connection status, ping latency (`16ms`), frame rate (`60 FPS`), bitrate (`8 Mbps`), and Zen mode toggle.
+- 🎛️ **Quick Tools Dock (Right Sidebar):** Instant access to stream quality bitrate, full screenshots, area crop, screen recording, text injection, clipboard sync, file push, file explorer, device logcat console, APK sideloading, and intent dispatching.
+- 🧭 **System Navigation Bar (Bottom):** Android Back, Home, App Switcher, Rotation lock, Screen-Off toggle, and volume controls.
+
+### 🛠️ 3. Mac-First Productivity & File Management
+
+<table>
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <img src="docs/images/deskdroid_area_crop.png" alt="Interactive Area Screenshot Crop" width="100%">
+      <br><b>Interactive Area Crop (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>)</b>
+      <br><sub>Lossless PNG capture with 8 draggable handles, live dimension badge, and auto-copy to macOS clipboard.</sub>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <img src="docs/images/deskdroid_file_explorer.png" alt="Android File Explorer" width="100%">
+      <br><b>Device File Explorer (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>)</b>
+      <br><sub>Finder-style two-way file explorer with quick folder chips (Downloads, Camera, Screenshots) and batch download.</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -34,15 +82,16 @@ DeskDroid bridges two core principles:
 - 🚀 **Sub-20ms Glass-to-Glass Latency:** Hardware-accelerated GPU capture and encoding directly on Android; streaming raw NAL units over a local TCP socket.
 - 📶 **Zero-Config Wi-Fi Auto-Discovery & Dual-Mode Connectivity:** Automatically scans and detects Android devices on the local Wi-Fi subnet (via macOS ARP cache & fast non-blocking TCP probing) without needing to manually type an IP address. Seamless plug-and-play USB cable connection with 1-click wireless switching, automated mDNS discovery for Android 11+ Wireless Debugging, and manual Direct IP fallback.
 - 🖱️ **Fluid Remote Input:** Precise mouse gestures, natural trackpad inertial scrolling, and direct international keyboard input (full Unicode and IME support).
-- 🍎 **Mac-First Productivity:**
+- 🍎 **Mac-First Productivity & Developer Tools:**
   - **Bidirectional File Transfers & Explorer:** Send files/APKs via Finder sheet (<kbd>Cmd</kbd> + <kbd>U</kbd>) or drag-and-drop; browse phone storage and download files to Mac (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>) with quick folders.
   - **Professional APK Sideload & Manager:** Inspect APK metadata (App name, icon, package name, version, SDK target, file size), configure install flags (`-r`, `-g`, `-t`, `-d`), monitor live progress, get intelligent failure diagnosis (signature mismatches, OEM/MIUI USB restrictions), and 1-click launch or clean uninstall (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>).
+  - **Deep Link & Intent Dispatcher:** Fire Android Intents, custom URL schemes, and deep links with 1-click presets (HTTPS Web, Play Store, Geo Maps, Tel dialer) and typed Intent Extras (`--es`, `--ei`, `--ez`) via <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>.
   - **Real-Time Device Logcat Console:** Live logcat inspection with multi-tier filtering (Level `V/D/I/W/E/F`, Search, Regex, Tag, PID, and Tag Exclusions), preset profiles (Crashes & ANRs, Network, Audio/Media), line bookmarking (Star Logs), inspector detail drawer with stack trace colorization & JSON pretty-print, toggleable soft-wrap, bounded ring buffer, pause/freeze inspection, live disk recording, and snapshot export via sidebar or device card (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>).
   - **Lossless Screenshots (Full & Area Crop):** Capture full-screen (<kbd>Cmd</kbd> + <kbd>S</kbd>) or draggable area crop (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>), auto-saved to `~/Downloads` and copied to macOS clipboard (`⌘V`).
   - **Hardware Screen Recording:** Capture lossless MP4 video with countdown HUD & live timer (`REC 00:15`) via sidebar or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, auto-saved to `~/Downloads`.
-  - **Bidirectional Clipboard Sharing:** Instant synchronization between macOS pasteboard (`Cmd + C`) and Android system clipboard.
-  - **Screen-Off Streaming:** Automatically powers off the physical phone screen during mirroring to save battery and prevent heat buildup.
-  - **Menu Bar Companion:** Quick-access status bar icon for toggling device windows and monitoring latency, battery, and Wi-Fi health.
+  - **Two-Way Background Clipboard Synchronization:** Continuous background daemon synchronizes copied text between macOS pasteboard (`Cmd + C`) and Android clipboard without infinite feedback loops.
+  - **Screen-Off Streaming:** Powers down the physical phone display during mirroring to reduce device heat by up to 70% and conserve battery while remaining completely interactive on Mac.
+  - **Menu Bar Companion:** Quick-access status bar popover for toggling device windows and monitoring latency, FPS, and connection health.
 - 🔒 **100% Private & P2P:** Audio, video, and control streams are routed strictly across your local Wi-Fi subnet or direct USB link without external servers or cloud proxies.
 - 💸 **Truly Free & Open Source:** Zero advertising, zero analytics trackers, and no subscriptions.
 
@@ -56,10 +105,11 @@ DeskDroid bridges two core principles:
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag marquee to crop region on phone screen |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Lossless hardware MP4 video recording with countdown HUD |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | Install APK | Inspect, configure options & sideload Android APK packages |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> | Intent Dispatcher | Fire deep link URLs and Android intents with typed extras |
 | <kbd>Cmd</kbd> + <kbd>U</kbd> | Send Files | Opens macOS Finder dialog to push files or install APKs |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Explorer to browse and pull files to Mac |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Opens real-time logcat inspection, filtering & recording console |
-| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Opens Unicode / Vietnamese input modal |
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Opens Unicode / international text input modal |
 | <kbd>Cmd</kbd> + <kbd>H</kbd> / <kbd>Backspace</kbd> | Home / Back | Android system navigation |
 
 ---
@@ -71,7 +121,7 @@ DeskDroid bridges two core principles:
 | [📖 User Guide](docs/user-guide.md) | Getting started, first-time setup, and device permissions |
 | [📶 Pairing Guide](docs/pairing-guide.md) | Wireless pairing instructions for Android 11+ and USB fallback |
 | [⌨️ Shortcuts & Gestures](docs/shortcuts.md) | Complete mouse gestures and macOS keyboard shortcuts cheat sheet |
-| [⚡️ Features & Specs](docs/features.md) | Detailed technical specifications of the video pipeline and tools |
+| [⚡️ Features Catalog](docs/features/README.md) | Comprehensive modular documentation across all 13 built-in features |
 | [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and reusable edge-case solutions |
@@ -136,7 +186,6 @@ flowchart LR
 
 ### Build & Run
 
-
 ```bash
 # 1. Clone the repository
 git clone https://github.com/az-coder-123/desk-droid.git
@@ -164,8 +213,10 @@ flutter run -d macos
 - [x] Lossless PNG full & draggable area crop screenshots with clipboard auto-copy
 - [x] Hardware MP4 screen recording with live HUD and 3-second countdown toggle
 - [x] Bidirectional file transfer: Finder push (<kbd>Cmd</kbd> + <kbd>U</kbd>) and Device File Explorer (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>)
+- [x] Deep Link & Intent Dispatcher (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>) with typed extras
 - [x] Dual-mode USB and Wi-Fi device merging with seamless wireless switching
 - [x] macOS Menu Bar companion and audio forwarding support
+- [x] Interactive in-app feature showcase catalog and visual documentation
 - [ ] Virtual touch gestures mapping for mobile gaming
 - [ ] Multi-device simultaneous streaming dashboard
 
