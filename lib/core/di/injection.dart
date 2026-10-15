@@ -4,6 +4,7 @@ import 'package:wifi_desk/core/di/modules/audio_di.dart';
 import 'package:wifi_desk/core/di/modules/control_di.dart';
 import 'package:wifi_desk/core/di/modules/core_di.dart';
 import 'package:wifi_desk/core/di/modules/discovery_di.dart';
+import 'package:wifi_desk/core/di/modules/intent_dispatcher_di.dart';
 import 'package:wifi_desk/core/di/modules/logging_di.dart';
 import 'package:wifi_desk/core/di/modules/menubar_di.dart';
 import 'package:wifi_desk/core/di/modules/productivity_di.dart';
@@ -22,5 +23,6 @@ Future<void> initDependencies() async {
   registerAudioDependencies(sl);
   registerLoggingDependencies(sl);
   registerApkInstallerDependencies(sl);
+  registerIntentDispatcherDependencies(sl);
   registerMenuBarDependencies(sl);
 }

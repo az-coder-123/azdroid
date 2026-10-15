@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wifi_desk/core/theme/app_colors.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_cubit.dart';
-import 'package:wifi_desk/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:wifi_desk/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
+import 'package:wifi_desk/features/productivity/presentation/widgets/screen_record_button.dart';
 import 'package:wifi_desk/features/streaming/domain/entities/stream_session_entity.dart';
 
 /// Vertical actions toolbar placed beside the real-time phone display
 /// providing fast access to quality bitrate settings, screenshots, screen recording,
-/// text injection, and clipboard sync.
+/// text injection, file transfer, APK installation, and intent dispatching.
 class SideControlsToolbar extends StatelessWidget {
   const SideControlsToolbar({
     super.key,
@@ -21,6 +19,7 @@ class SideControlsToolbar extends StatelessWidget {
     this.onBrowseFiles,
     this.onViewLogs,
     this.onInstallApk,
+    this.onDispatchIntent,
     this.deviceSerial,
   });
 
@@ -33,6 +32,7 @@ class SideControlsToolbar extends StatelessWidget {
   final VoidCallback? onBrowseFiles;
   final VoidCallback? onViewLogs;
   final VoidCallback? onInstallApk;
+  final VoidCallback? onDispatchIntent;
   final String? deviceSerial;
 
   @override
@@ -109,7 +109,7 @@ class SideControlsToolbar extends StatelessWidget {
               // Screen Recording Toggle
               if (deviceSerial != null) ...[
                 const SizedBox(height: 4),
-                _buildScreenRecordButton(context),
+                ScreenRecordButton(deviceSerial: deviceSerial!),
               ],
 
               // Quick Text Injection (Unicode / IME)
@@ -167,71 +167,20 @@ class SideControlsToolbar extends StatelessWidget {
                   onPressed: onInstallApk!,
                 ),
               ],
+
+              // Deep Link & Intent Dispatcher
+              if (onDispatchIntent != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.alt_route_rounded,
+                  tooltip: 'Deep Link & Intent Dispatcher (Cmd+Shift+D)',
+                  onPressed: onDispatchIntent!,
+                ),
+              ],
             ],
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildScreenRecordButton(BuildContext context) {
-    return BlocBuilder<ScreenRecordingCubit, ScreenRecordingState>(
-      builder: (context, state) {
-        if (state is ScreenRecordingFinalizing) {
-          return const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: AppColors.accent,
-              ),
-            ),
-          );
-        }
-
-        final isRecording = state is ScreenRecordingActive;
-        final isPreparing = state is ScreenRecordingPreparing;
-        final isCountdown = state is ScreenRecordingCountdown;
-
-        final IconData icon;
-        final String tooltip;
-        final Color? color;
-        final VoidCallback onPressed;
-
-        if (isRecording) {
-          icon = Icons.stop_circle_rounded;
-          tooltip = 'Stop Recording (REC)';
-          color = AppColors.statusError;
-          onPressed = () =>
-              context.read<ScreenRecordingCubit>().stopRecording();
-        } else if (isCountdown || isPreparing) {
-          icon = isCountdown
-              ? Icons.hourglass_top_rounded
-              : Icons.videocam_rounded;
-          tooltip = isCountdown
-              ? 'Counting down (Cancel)'
-              : 'Cancel Recording Setup';
-          color = AppColors.statusError;
-          onPressed = () =>
-              context.read<ScreenRecordingCubit>().cancelPreparation();
-        } else {
-          icon = Icons.videocam_outlined;
-          tooltip = 'Record Screen (Cmd+Shift+R)';
-          color = null;
-          onPressed = () => context
-              .read<ScreenRecordingCubit>()
-              .prepareRecording(deviceSerial!);
-        }
-
-        return _buildToolButton(
-          icon: icon,
-          tooltip: tooltip,
-          color: color,
-          onPressed: onPressed,
-        );
-      },
     );
   }
 

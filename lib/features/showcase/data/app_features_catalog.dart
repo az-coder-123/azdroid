@@ -204,5 +204,21 @@ class AppFeaturesCatalog {
       proTip: 'Click the status bar item to verify network latency without disrupting your workflow.',
       docFileName: 'menu-bar-companion.md',
     ),
+    AppFeatureItem(
+      id: 'intent_dispatcher',
+      title: 'Deep Link & Intent Dispatcher',
+      subtitle: 'Fire custom Android intents, schemes, and deep links with typed extras',
+      category: FeatureCategory.devTools,
+      icon: Icons.alt_route_rounded,
+      badgeText: 'URL Schemes & Extras',
+      badgeColor: AppColors.accent,
+      highlights: [
+        'Quick preset templates for Web URLs, Google Play Market, Geo Maps, and Tel dialer.',
+        'Supports custom app URL schemes, package targeting, and specific activity components.',
+        'Interactive key-value Intent Extras editor supporting String, Integer, and Boolean types.',
+      ],
+      proTip: 'Press Cmd+Shift+D while mirroring to open the Intent Dispatcher instantly.',
+      docFileName: 'deep-link-intent-dispatcher.md',
+    ),
   ];
 }

@@ -20,6 +20,7 @@
 | **10** | **Bidirectional Clipboard Sync** | `lib/features/productivity/` | <kbd>Cmd</kbd> + <kbd>C</kbd> / <kbd>V</kbd> | [clipboard-sync.md](clipboard-sync.md) |
 | **11** | **Screen-Off Streaming** | `lib/features/streaming/` | <kbd>Cmd</kbd> + <kbd>O</kbd> | [screen-off-streaming.md](screen-off-streaming.md) |
 | **12** | **Menu Bar Companion** | `lib/features/menubar/` | macOS Status Bar icon | [menu-bar-companion.md](menu-bar-companion.md) |
+| **13** | **Deep Link & Intent Dispatcher** | `lib/features/intent_dispatcher/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> | [deep-link-intent-dispatcher.md](deep-link-intent-dispatcher.md) |
 
 ---
 

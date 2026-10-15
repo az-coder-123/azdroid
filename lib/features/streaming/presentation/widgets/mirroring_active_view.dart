@@ -6,6 +6,7 @@ import 'package:wifi_desk/core/theme/app_colors.dart';
 import 'package:wifi_desk/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:wifi_desk/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:wifi_desk/features/discovery/domain/entities/device_entity.dart';
+import 'package:wifi_desk/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
 import 'package:wifi_desk/features/logging/presentation/widgets/device_log_dialog.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:wifi_desk/features/productivity/presentation/cubit/screenshot_cubit.dart';
@@ -220,6 +221,7 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       onBrowseFiles: () => DeviceFileManagerDialog.show(context, s),
       onViewLogs: () => DeviceLogDialog.show(context, s),
       onInstallApk: () => ApkInstallerDialog.show(context, deviceSerial: s),
+      onDispatchIntent: () => IntentDispatcherDialog.show(context, s),
     );
   }
 
