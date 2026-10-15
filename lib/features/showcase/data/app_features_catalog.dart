@@ -91,6 +91,22 @@ class AppFeaturesCatalog {
       docFileName: 'file-transfer-explorer.md',
     ),
     AppFeatureItem(
+      id: 'viewport_drag_drop',
+      title: 'Direct Viewport Drag & Drop',
+      subtitle: 'Drop files, folders, or APKs directly onto the screen for instant transfer',
+      category: FeatureCategory.productivity,
+      icon: Icons.file_download_outlined,
+      badgeText: 'Zero-Click Drop',
+      badgeColor: AppColors.accentLight,
+      highlights: [
+        'Drop photos, videos, and folders to push directly to /sdcard/Download/.',
+        'Drop .apk packages for zero-click background installation without modal interruption.',
+        'Real-time frosted-glass hover highlight with self-dismissing transfer HUD.',
+      ],
+      proTip: 'Drag-and-drop covers 100% of the window in both Standard and Zen modes.',
+      docFileName: 'file-transfer-explorer.md',
+    ),
+    AppFeatureItem(
       id: 'apk_installer',
       title: '1-Click APK Sideload & Manager',
       subtitle: 'Install Android application packages instantly without terminal commands',

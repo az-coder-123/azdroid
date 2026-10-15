@@ -24,8 +24,9 @@ void main() {
       expect(find.text('Connectivity & System'), findsOneWidget);
 
       // Verify feature count
+      final total = AppFeaturesCatalog.allFeatures.length;
       expect(find.byType(FeatureCard), findsWidgets);
-      expect(find.text('Showing 10 of 10 features'), findsOneWidget);
+      expect(find.text('Showing $total of $total features'), findsOneWidget);
     });
 
     testWidgets('Filtering by category updates the displayed cards', (
@@ -43,8 +44,9 @@ void main() {
       final devCount = AppFeaturesCatalog.allFeatures
           .where((f) => f.category == FeatureCategory.devTools)
           .length;
+      final total = AppFeaturesCatalog.allFeatures.length;
 
-      expect(find.text('Showing $devCount of 10 features'), findsOneWidget);
+      expect(find.text('Showing $devCount of $total features'), findsOneWidget);
       expect(find.text('Professional Logcat Console'), findsOneWidget);
       expect(find.text('1-Click APK Sideload & Manager'), findsOneWidget);
     });
@@ -55,12 +57,21 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      final total = AppFeaturesCatalog.allFeatures.length;
+
       // Search for "Screen-Off"
       await tester.enterText(find.byType(TextField), 'Screen-Off');
       await tester.pumpAndSettle();
 
       expect(find.text('Screen-Off Mirroring'), findsOneWidget);
-      expect(find.text('Showing 1 of 10 features'), findsOneWidget);
+      expect(find.text('Showing 1 of $total features'), findsOneWidget);
+
+      // Search for "Drag & Drop"
+      await tester.enterText(find.byType(TextField), 'Drag & Drop');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Direct Viewport Drag & Drop'), findsOneWidget);
+      expect(find.text('Showing 1 of $total features'), findsOneWidget);
 
       // Search for nonexistent term
       await tester.enterText(find.byType(TextField), 'NonexistentXYZ');
