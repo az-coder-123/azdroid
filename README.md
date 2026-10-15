@@ -13,6 +13,14 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.0.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.0.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download DeskDroid for macOS"></a>
+  &nbsp;
+  <a href="https://github.com/az-coder-123/desk-droid/tree/main/RELEASE"><img src="https://img.shields.io/badge/All_Releases_%26_Checksums-gray?style=for-the-badge&logo=github&logoColor=white" alt="All Releases & Checksums"></a>
+  <br>
+  <sub>Universal Binary (18 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
+</p>
+
+<p align="center">
   <img src="docs/images/deskdroid_mirroring_workspace.png" alt="DeskDroid - Android screen mirroring workspace on macOS with low latency 60 FPS display and trackpad controls" width="580">
 </p>
 
