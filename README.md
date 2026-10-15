@@ -234,9 +234,7 @@ flutter run -d macos
 </table>
 
 <p align="center">
-  <a href="https://github.com/az-coder-123"><img src="https://github.com/az-coder-123.png" width="56" height="56" style="border-radius:50%;" alt="az-coder-123 avatar"></a>
-  <br>
-  Crafted with ❤️ by <b><a href="https://github.com/az-coder-123">az-coder-123</a></b>
-  <br>
-  <sub>If you find DeskDroid useful, please star ⭐️ the project on <a href="https://github.com/az-coder-123/desk-droid">GitHub</a> to support continuous development!</sub>
+  <a href="https://github.com/az-coder-123"><img src="https://github.com/az-coder-123.png" width="24" height="24" align="middle" style="border-radius:50%; vertical-align:middle;" alt="az-coder-123"></a>
+  &nbsp;
+  Developed and maintained by <b><a href="https://github.com/az-coder-123">az-coder-123</a></b>
 </p>
