@@ -1,8 +1,12 @@
 import 'dart:io';
 
 part 'mcp_adb_app_ops.dart';
+part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
+part 'mcp_adb_input_ops.dart';
 part 'mcp_adb_resolver.dart';
+part 'mcp_adb_system_ops.dart';
+part 'mcp_adb_ui_ops.dart';
 
 /// Pure Dart ADB client for DeskDroid MCP Server.
 /// Operates without UI or Flutter framework dependencies.
@@ -44,54 +48,15 @@ class McpAdbClient {
     return res.stdout.toString().trim();
   }
 
-  Future<List<int>?> captureScreenshotBytes(String serial) async {
-    final adb = await resolveAdb();
-    if (adb == null) return null;
+  // --- Input & Gesture Operations ---
+  Future<List<int>?> captureScreenshotBytes(String serial) =>
+      McpAdbInputOps.captureScreenshotBytes(this, serial);
 
-    final res = await Process.run(adb, [
-      '-s',
-      serial,
-      'exec-out',
-      'screencap',
-      '-p',
-    ], stdoutEncoding: null);
-    if (res.exitCode == 0 && res.stdout is List<int>) {
-      return res.stdout as List<int>;
-    }
-    return null;
-  }
+  Future<Point<int>> getDisplaySize(String serial) =>
+      McpAdbInputOps.getDisplaySize(this, serial);
 
-  Future<Point<int>> getDisplaySize(String serial) async {
-    final res = await run(['-s', serial, 'shell', 'wm', 'size']);
-    final out = res.stdout.toString();
-    final match = RegExp(r'Physical size:\s*(\d+)x(\d+)').firstMatch(out);
-    if (match != null) {
-      final w = int.parse(match.group(1)!);
-      final h = int.parse(match.group(2)!);
-      return Point(w, h);
-    }
-    return const Point(1080, 2400); // Standard mobile fallback
-  }
-
-  Future<bool> tap(String serial, double x, double y) async {
-    int targetX = x.round();
-    int targetY = y.round();
-    if (x >= 0.0 && x <= 1.0 && y >= 0.0 && y <= 1.0) {
-      final size = await getDisplaySize(serial);
-      targetX = (x * size.x).round();
-      targetY = (y * size.y).round();
-    }
-    final res = await run([
-      '-s',
-      serial,
-      'shell',
-      'input',
-      'tap',
-      '$targetX',
-      '$targetY',
-    ]);
-    return res.exitCode == 0;
-  }
+  Future<bool> tap(String serial, double x, double y) =>
+      McpAdbInputOps.tap(this, serial, x, y);
 
   Future<bool> swipe(
     String serial,
@@ -100,51 +65,15 @@ class McpAdbClient {
     double ex,
     double ey,
     int durationMs,
-  ) async {
-    int startX = sx.round();
-    int startY = sy.round();
-    int endX = ex.round();
-    int endY = ey.round();
-    if (sx >= 0.0 && sx <= 1.0) {
-      final size = await getDisplaySize(serial);
-      startX = (sx * size.x).round();
-      startY = (sy * size.y).round();
-      endX = (ex * size.x).round();
-      endY = (ey * size.y).round();
-    }
-    final res = await run([
-      '-s',
-      serial,
-      'shell',
-      'input',
-      'swipe',
-      '$startX',
-      '$startY',
-      '$endX',
-      '$endY',
-      '$durationMs',
-    ]);
-    return res.exitCode == 0;
-  }
+  ) => McpAdbInputOps.swipe(this, serial, sx, sy, ex, ey, durationMs);
 
-  Future<bool> typeText(String serial, String text) async {
-    final escaped = text.replaceAll(' ', '%s');
-    final res = await run(['-s', serial, 'shell', 'input', 'text', escaped]);
-    return res.exitCode == 0;
-  }
+  Future<bool> typeText(String serial, String text) =>
+      McpAdbInputOps.typeText(this, serial, text);
 
-  Future<bool> pressKey(String serial, int keyCode) async {
-    final res = await run([
-      '-s',
-      serial,
-      'shell',
-      'input',
-      'keyevent',
-      '$keyCode',
-    ]);
-    return res.exitCode == 0;
-  }
+  Future<bool> pressKey(String serial, int keyCode) =>
+      McpAdbInputOps.pressKey(this, serial, keyCode);
 
+  // --- Command & Diagnostic Operations ---
   Future<String> dispatchIntent(
     String serial,
     String action, {
@@ -152,60 +81,36 @@ class McpAdbClient {
     String? package,
     String? component,
     Map<String, dynamic>? extras,
-  }) async {
-    final cmd = ['-s', serial, 'shell', 'am', 'start', '-a', action];
-    if (dataUri != null && dataUri.isNotEmpty) {
-      cmd.addAll(['-d', dataUri]);
-    }
-    if (package != null && package.isNotEmpty) {
-      cmd.addAll(['-p', package]);
-    }
-    if (component != null && component.isNotEmpty) {
-      cmd.addAll(['-n', component]);
-    }
-    if (extras != null) {
-      extras.forEach((key, value) {
-        if (value is bool) {
-          cmd.addAll(['--ez', key, value.toString()]);
-        } else if (value is int) {
-          cmd.addAll(['--ei', key, value.toString()]);
-        } else {
-          cmd.addAll(['--es', key, value.toString()]);
-        }
-      });
-    }
-    final res = await run(cmd);
-    return res.stdout.toString().trim();
-  }
+  }) => McpAdbCmdOps.dispatchIntent(
+    this,
+    serial,
+    action,
+    dataUri: dataUri,
+    package: package,
+    component: component,
+    extras: extras,
+  );
 
-  Future<String> getLogcat(String serial, {String? tag, int limit = 50}) async {
-    final cmd = ['-s', serial, 'logcat', '-d', '-t', '$limit'];
-    if (tag != null && tag.isNotEmpty) {
-      cmd.addAll(['-s', '$tag:*']);
-    }
-    final res = await run(cmd);
-    return res.stdout.toString().trim();
-  }
+  Future<String> getLogcat(String serial, {String? tag, int limit = 50}) =>
+      McpAdbCmdOps.getLogcat(this, serial, tag: tag, limit: limit);
 
   Future<bool> installApk(
     String serial,
     String apkPath, {
     bool reinstall = true,
     bool grantPermissions = true,
-  }) async {
-    final cmd = ['-s', serial, 'install'];
-    if (reinstall) cmd.add('-r');
-    if (grantPermissions) cmd.add('-g');
-    cmd.add(apkPath);
-    final res = await run(cmd);
-    return res.exitCode == 0;
-  }
+  }) => McpAdbCmdOps.installApk(
+    this,
+    serial,
+    apkPath,
+    reinstall: reinstall,
+    grantPermissions: grantPermissions,
+  );
 
-  Future<String> shell(String serial, String command) async {
-    final res = await run(['-s', serial, 'shell', command]);
-    return 'Exit: ${res.exitCode}\n${res.stdout}\n${res.stderr}'.trim();
-  }
+  Future<String> shell(String serial, String command) =>
+      McpAdbCmdOps.shell(this, serial, command);
 
+  // --- App Lifecycle Operations ---
   Future<Map<String, String>?> getCurrentApp(String serial) =>
       McpAdbAppOps.getCurrentApp(this, serial);
 
@@ -229,6 +134,7 @@ class McpAdbClient {
     query: query,
   );
 
+  // --- Device & File Transfer Operations ---
   Future<Map<String, dynamic>> getDeviceInfo(String serial) =>
       McpAdbDeviceOps.getDeviceInfo(this, serial);
 
@@ -243,4 +149,78 @@ class McpAdbClient {
 
   Future<bool> pullFile(String serial, String remotePath, String localPath) =>
       McpAdbDeviceOps.pullFile(this, serial, remotePath, localPath);
+
+  // --- UI Semantic & Accessibility Operations ---
+  Future<String> dumpHierarchy(String serial) =>
+      McpAdbUiOps.dumpHierarchy(this, serial);
+
+  Future<Map<String, dynamic>?> findElement(
+    String serial, {
+    String? text,
+    String? resourceId,
+    String? contentDesc,
+  }) => McpAdbUiOps.findElement(
+    this,
+    serial,
+    text: text,
+    resourceId: resourceId,
+    contentDesc: contentDesc,
+  );
+
+  Future<bool> clickElement(
+    String serial, {
+    String? text,
+    String? resourceId,
+    String? contentDesc,
+  }) => McpAdbUiOps.clickElement(
+    this,
+    serial,
+    text: text,
+    resourceId: resourceId,
+    contentDesc: contentDesc,
+  );
+
+  // --- System, Radio & Settings Operations ---
+  Future<bool> toggleWifi(String serial, bool enable) =>
+      McpAdbSystemOps.toggleWifi(this, serial, enable);
+
+  Future<bool> toggleAirplaneMode(String serial, bool enable) =>
+      McpAdbSystemOps.toggleAirplaneMode(this, serial, enable);
+
+  Future<bool> grantPermission(
+    String serial,
+    String packageName,
+    String permission,
+  ) => McpAdbSystemOps.grantPermission(this, serial, packageName, permission);
+
+  Future<bool> revokePermission(
+    String serial,
+    String packageName,
+    String permission,
+  ) => McpAdbSystemOps.revokePermission(this, serial, packageName, permission);
+
+  Future<bool> setVolume(
+    String serial, {
+    required int stream,
+    required int volumeIndex,
+  }) => McpAdbSystemOps.setVolume(
+    this,
+    serial,
+    stream: stream,
+    volumeIndex: volumeIndex,
+  );
+
+  Future<bool> wakeOrSleep(String serial, bool wake) =>
+      McpAdbSystemOps.wakeOrSleep(this, serial, wake);
+
+  Future<String> openSettings(
+    String serial, {
+    String? action,
+    String? packageName,
+  }) => McpAdbSystemOps.openSettings(
+    this,
+    serial,
+    action: action,
+    packageName: packageName,
+  );
 }

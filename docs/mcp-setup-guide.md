@@ -1,12 +1,12 @@
 # 🤖 DeskDroid MCP Server — AI Agent Integration Guide
 
-> Connect **DeskDroid** to **Claude Desktop**, **Cursor**, and **Antigravity** via the **Model Context Protocol (MCP)** to allow AI assistants to see, control, test, and automate real Android devices over Wi-Fi and USB.
+> Connect **DeskDroid** to **Claude Desktop**, **Cursor**, and **Antigravity** via the **Model Context Protocol (MCP)** to allow AI assistants to see, control, inspect, test, and automate real Android devices over Wi-Fi and USB.
 
 ---
 
 ## ⚡️ Overview
 
-DeskDroid provides a built-in **Model Context Protocol (MCP)** server over standard I/O (`stdio`). This bridges multimodal AI agents directly with your connected Android devices at hardware-accelerated speeds.
+DeskDroid provides a built-in **Model Context Protocol (MCP)** server over standard I/O (`stdio`). This bridges multimodal AI agents directly with your connected Android devices with zero UI overhead.
 
 ---
 
@@ -59,7 +59,7 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 
 ---
 
-## 🛠️ Published MCP Tools (20 Tools)
+## 🛠️ Published MCP Tools (30 Tools)
 
 ### 1. Touch & System Navigation
 | Tool Name | Parameters | Purpose |
@@ -75,7 +75,14 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 | **`android_install_apk`** | `apkPath`, `reinstall`, `grantPermissions` | Sideloads an APK package onto the device. |
 | **`android_shell_command`** | `command`, `deviceSerial` | Runs raw ADB shell commands for advanced diagnostics. |
 
-### 2. Application Lifecycle & Package Governance
+### 2. UI Semantic Inspection & Accessibility
+| Tool Name | Parameters | Purpose |
+| :--- | :--- | :--- |
+| **`android_dump_hierarchy`** | `deviceSerial` | Dumps the complete active window UI accessibility XML (classes, IDs, text, bounds). |
+| **`android_find_element`** | `text`, `resourceId`, `contentDesc`, `deviceSerial` | Queries the UI tree and returns exact bounds and center tap coordinates. |
+| **`android_click_element`** | `text`, `resourceId`, `contentDesc`, `deviceSerial` | Locates an on-screen element by query and taps its center coordinates in one shot. |
+
+### 3. Application Lifecycle & Package Governance
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_get_current_app`** | `deviceSerial` | Identifies currently focused foreground package and active Activity. |
@@ -84,7 +91,7 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 | **`android_clear_app_data`** | `package`, `deviceSerial` | Clears app cache and user data (resets app to fresh install state). |
 | **`android_list_packages`** | `thirdPartyOnly`, `query`, `deviceSerial` | Searches and lists installed applications on the device. |
 
-### 3. Device Telemetry, Clipboard & File Transfers
+### 4. Device Telemetry, Clipboard & File Transfers
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_get_device_info`** | `deviceSerial` | Reports hardware model, manufacturer, Android OS, display resolution, and battery level. |
@@ -93,20 +100,31 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 | **`android_push_file`** | `localPath`, `remotePath`, `deviceSerial` | Uploads a file from Mac host to the Android filesystem. |
 | **`android_pull_file`** | `remotePath`, `localPath`, `deviceSerial` | Downloads a file or capture from Android device to Mac host. |
 
+### 5. Connectivity, Audio, Permissions & System Controls
+| Tool Name | Parameters | Purpose |
+| :--- | :--- | :--- |
+| **`android_toggle_wifi`** | `enable`, `deviceSerial` | Enables or disables the device Wi-Fi radio. |
+| **`android_toggle_airplane_mode`** | `enable`, `deviceSerial` | Enables or disables Airplane mode. |
+| **`android_grant_permission`** | `package`, `permission`, `deviceSerial` | Grants a runtime permission to an application (e.g. notifications, camera). |
+| **`android_revoke_permission`** | `package`, `permission`, `deviceSerial` | Revokes a runtime permission from an application. |
+| **`android_set_volume`** | `stream`, `volumeIndex`, `deviceSerial` | Adjusts audio volume level (Media, Ring, Alarm, Notification). |
+| **`android_wake_screen`** | `wake`, `deviceSerial` | Wakes the screen or puts the device to sleep. |
+| **`android_open_settings`** | `action`, `package`, `deviceSerial` | Opens specific Android system settings or App Info details page. |
+
 ---
 
 ## 💡 Example AI Assistant Prompts
 
-Once configured, your AI assistant can execute end-to-end mobile automation autonomously:
+Once configured, your AI assistant can execute complex mobile workflows autonomously:
 
-1. **Automated Regression & UI Verification:**
-   > *"Launch `com.example.app`, take a screenshot, verify that the Login button is rendered, tap it at (0.5, 0.8), and check that no crash appears in logcat."*
-2. **Two-Factor Authentication & Clipboard Helper:**
+1. **Semantic UI Navigation (No Coordinate Guessing):**
+   > *"Find the element with text 'Đăng nhập' or ID 'btn_login' and click it. Then dump the new hierarchy to confirm we reached the dashboard."*
+2. **Permission Setup & Clean Run:**
+   > *"Grant `android.permission.POST_NOTIFICATIONS` to `com.example.app`, clear app cache, and launch the application."*
+3. **Network Resilience Testing:**
+   > *"Turn off Wi-Fi on the phone, trigger a payment checkout in the app, verify that the 'Offline - check connection' snackbar appears, and then re-enable Wi-Fi."*
+4. **Automated Two-Factor Authentication:**
    > *"Check the Android clipboard for any 6-digit OTP code, and if found, paste it into the Mac browser."*
-3. **App State Reset & Clean Installation:**
-   > *"Clear the app data for `com.myapp.beta`, install the new build `/Users/long/builds/app-release.apk`, and verify the initial onboarding screen."*
-4. **Device Diagnostics:**
-   > *"Get the device telemetry: check if the battery is above 50% and confirm the Android OS version before running the stress test suite."*
 
 ---
 
