@@ -1,0 +1,17 @@
+{
+  "name": "android_get_cpu_usage",
+  "description": "Samples CPU consumption for a specific package or top 10 system processes.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Optional package name to filter CPU consumption for."
+      }
+    }
+  }
+}

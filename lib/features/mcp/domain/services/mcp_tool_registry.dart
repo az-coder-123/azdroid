@@ -9,7 +9,7 @@ import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_system_tool
 class McpToolRegistry {
   const McpToolRegistry();
 
-  /// Returns the complete catalog of 50 MCP tools for AI agents.
+  /// Returns the complete catalog of 52 MCP tools for AI agents.
   List<McpToolDefinition> getTools() {
     return [
       ...McpBasicTools.tools,

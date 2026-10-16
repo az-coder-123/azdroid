@@ -1,8 +1,11 @@
 part of 'mcp_adb_client.dart';
 
-/// Static operations for UI hierarchy inspection, element querying, and semantic clicking.
+/// Static operations for UI hierarchy inspection, semantic tree parsing, and element querying.
 class McpAdbUiOps {
   const McpAdbUiOps._();
+
+  static const _parser = McpSemanticTreeParser();
+  static final Map<String, List<McpSemanticElement>> _cachedElements = {};
 
   /// Captures the active window UI hierarchy XML using uiautomator dump.
   static Future<String> dumpHierarchy(
@@ -10,20 +13,81 @@ class McpAdbUiOps {
     String serial,
   ) async {
     const tmpXml = '/data/local/tmp/window_dump.xml';
-    final dumpRes = await client.run([
+
+    // Attempt compressed dump first for efficiency.
+    var dumpRes = await client.run([
       '-s',
       serial,
       'shell',
       'uiautomator',
       'dump',
+      '--compressed',
       tmpXml,
     ]);
+
+    // Fallback to standard dump if --compressed is not supported.
     if (dumpRes.exitCode != 0) {
-      return 'Error: Failed to dump UI hierarchy: ${dumpRes.stderr}';
+      dumpRes = await client.run([
+        '-s',
+        serial,
+        'shell',
+        'uiautomator',
+        'dump',
+        tmpXml,
+      ]);
     }
 
     final catRes = await client.run(['-s', serial, 'shell', 'cat', tmpXml]);
-    return catRes.stdout.toString().trim();
+    final content = catRes.stdout.toString().trim();
+
+    // Verify valid XML payload regardless of vendor stderr notices.
+    if (content.contains('<hierarchy') || content.contains('<?xml')) {
+      return content;
+    }
+
+    return 'Error: Failed to dump UI hierarchy: ${dumpRes.stderr}';
+  }
+
+  /// Extracts a pruned, token-efficient semantic tree digest and caches elements.
+  static Future<String> getSemanticTree(
+    McpAdbClient client,
+    String serial,
+  ) async {
+    final xml = await dumpHierarchy(client, serial);
+    if (xml.startsWith('Error:')) return xml;
+
+    final size = await client.getDisplaySize(serial);
+    final elements = _parser.parse(
+      xml,
+      screenWidth: size.x,
+      screenHeight: size.y,
+    );
+    _cachedElements[serial] = elements;
+
+    return _parser.formatDigest(elements);
+  }
+
+  /// Taps an element by its 1-based sequential ID from the cached semantic tree.
+  static Future<bool> clickElementById(
+    McpAdbClient client,
+    String serial,
+    int id,
+  ) async {
+    var elements = _cachedElements[serial];
+    if (elements == null || elements.isEmpty) {
+      // Refresh tree if cache is empty
+      await getSemanticTree(client, serial);
+      elements = _cachedElements[serial];
+    }
+
+    final target = elements?.where((e) => e.id == id).firstOrNull;
+    if (target == null) return false;
+
+    return await client.tap(
+      serial,
+      target.centerX.toDouble(),
+      target.centerY.toDouble(),
+    );
   }
 
   /// Parses UI hierarchy XML and searches for the first element matching text, ID, or description.
@@ -37,63 +101,22 @@ class McpAdbUiOps {
     final xml = await dumpHierarchy(client, serial);
     if (xml.startsWith('Error:')) return null;
 
-    final nodeRegex = RegExp(
-      r'text="([^"]*)"[^>]*resource-id="([^"]*)"[^>]*class="([^"]*)"[^>]*package="([^"]*)"[^>]*content-desc="([^"]*)"[^>]*clickable="([^"]*)"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"',
+    final size = await client.getDisplaySize(serial);
+    final elements = _parser.parse(
+      xml,
+      screenWidth: size.x,
+      screenHeight: size.y,
+    );
+    _cachedElements[serial] = elements;
+
+    final match = _parser.findByQuery(
+      elements,
+      text: text,
+      resourceId: resourceId,
+      contentDesc: contentDesc,
     );
 
-    final size = await client.getDisplaySize(serial);
-
-    for (final match in nodeRegex.allMatches(xml)) {
-      final nodeText = match.group(1) ?? '';
-      final nodeId = match.group(2) ?? '';
-      final nodeClass = match.group(3) ?? '';
-      final nodePkg = match.group(4) ?? '';
-      final nodeDesc = match.group(5) ?? '';
-      final clickable = match.group(6) == 'true';
-      final left = int.parse(match.group(7)!);
-      final top = int.parse(match.group(8)!);
-      final right = int.parse(match.group(9)!);
-      final bottom = int.parse(match.group(10)!);
-
-      bool matches = false;
-      if (text != null &&
-          text.isNotEmpty &&
-          nodeText.toLowerCase().contains(text.toLowerCase())) {
-        matches = true;
-      } else if (resourceId != null &&
-          resourceId.isNotEmpty &&
-          nodeId.toLowerCase().contains(resourceId.toLowerCase())) {
-        matches = true;
-      } else if (contentDesc != null &&
-          contentDesc.isNotEmpty &&
-          nodeDesc.toLowerCase().contains(contentDesc.toLowerCase())) {
-        matches = true;
-      }
-
-      if (matches) {
-        final centerX = (left + right) ~/ 2;
-        final centerY = (top + bottom) ~/ 2;
-        final normX = size.x > 0
-            ? double.parse((centerX / size.x).toStringAsFixed(4))
-            : 0.0;
-        final normY = size.y > 0
-            ? double.parse((centerY / size.y).toStringAsFixed(4))
-            : 0.0;
-
-        return {
-          'text': nodeText,
-          'resourceId': nodeId,
-          'class': nodeClass,
-          'package': nodePkg,
-          'contentDesc': nodeDesc,
-          'clickable': clickable,
-          'bounds': '[$left,$top][$right,$bottom]',
-          'centerPixels': {'x': centerX, 'y': centerY},
-          'normalized': {'x': normX, 'y': normY},
-        };
-      }
-    }
-    return null;
+    return match?.toMap();
   }
 
   /// Locates an element matching criteria and taps its center coordinates.

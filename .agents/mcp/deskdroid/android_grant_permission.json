@@ -1,0 +1,25 @@
+{
+  "name": "android_grant_permission",
+  "description": "Grants a runtime Android permission to an installed application.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Application package name (e.g., com.example.app)."
+      },
+      "permission": {
+        "type": "string",
+        "description": "Android permission string (e.g., android.permission.POST_NOTIFICATIONS, android.permission.CAMERA)."
+      }
+    },
+    "required": [
+      "package",
+      "permission"
+    ]
+  }
+}

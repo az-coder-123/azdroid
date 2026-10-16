@@ -1,0 +1,20 @@
+{
+  "name": "android_launch_app",
+  "description": "Launches an application by package name using the default launcher activity.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Package name to launch (e.g., com.example.app)."
+      }
+    },
+    "required": [
+      "package"
+    ]
+  }
+}

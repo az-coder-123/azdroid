@@ -1,0 +1,25 @@
+{
+  "name": "android_click_element",
+  "description": "Finds an on-screen element by text, ID, or description and immediately taps its center coordinates.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "text": {
+        "type": "string",
+        "description": "Visible text of the element to click."
+      },
+      "resourceId": {
+        "type": "string",
+        "description": "Resource ID of the element to click."
+      },
+      "contentDesc": {
+        "type": "string",
+        "description": "Accessibility description of the element to click."
+      }
+    }
+  }
+}

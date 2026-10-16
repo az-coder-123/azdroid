@@ -1,0 +1,20 @@
+{
+  "name": "android_toggle_airplane_mode",
+  "description": "Enables or disables device Airplane mode.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "enable": {
+        "type": "boolean",
+        "description": "True to enable Airplane mode, false to disable."
+      }
+    },
+    "required": [
+      "enable"
+    ]
+  }
+}

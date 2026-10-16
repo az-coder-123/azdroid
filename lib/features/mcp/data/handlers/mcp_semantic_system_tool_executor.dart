@@ -12,6 +12,8 @@ class McpSemanticSystemToolExecutor {
   bool canHandle(String toolName) {
     return const {
       'android_dump_hierarchy',
+      'android_get_semantic_tree',
+      'android_click_element_by_id',
       'android_find_element',
       'android_click_element',
       'android_toggle_wifi',
@@ -33,6 +35,21 @@ class McpSemanticSystemToolExecutor {
       case 'android_dump_hierarchy':
         final xml = await _adb.dumpHierarchy(serial);
         return McpToolResult.text('UI Hierarchy for $serial:\n$xml');
+
+      case 'android_get_semantic_tree':
+        final digest = await _adb.getSemanticTree(serial);
+        return McpToolResult.text(digest);
+
+      case 'android_click_element_by_id':
+        final id = arguments['id'] as int;
+        final success = await _adb.clickElementById(serial, id);
+        return success
+            ? McpToolResult.text(
+                'Successfully tapped element [#$id] on $serial.',
+              )
+            : McpToolResult.error(
+                'Failed to tap element [#$id]: not found in active tree.',
+              );
 
       case 'android_find_element':
         final text = arguments['text'] as String?;

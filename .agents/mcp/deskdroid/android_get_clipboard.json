@@ -1,0 +1,13 @@
+{
+  "name": "android_get_clipboard",
+  "description": "Retrieves the text currently stored in the Android system clipboard.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "android_set_orientation",
+  "description": "Forces device screen rotation: 0 (Portrait), 1 (Landscape), 2 (Reverse Portrait), 3 (Reverse Landscape).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "orientation": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "description": "Target orientation (0=Portrait, 1=Landscape, 2=Reverse Portrait, 3=Reverse Landscape)."
+      }
+    },
+    "required": [
+      "orientation"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "android_wait_for_element",
+  "description": "Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "text": {
+        "type": "string",
+        "description": "Target text to match."
+      },
+      "resourceId": {
+        "type": "string",
+        "description": "Target resource ID to match."
+      },
+      "contentDesc": {
+        "type": "string",
+        "description": "Target content-desc to match."
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "description": "Maximum wait duration in ms (default 10000)."
+      },
+      "pollIntervalMs": {
+        "type": "integer",
+        "description": "Polling interval in ms (default 500)."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      }
+    }
+  }
+}

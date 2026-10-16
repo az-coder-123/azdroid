@@ -13,11 +13,26 @@ class McpAutomationTools {
         'type': 'object',
         'properties': {
           'text': {'type': 'string', 'description': 'Target text to match.'},
-          'resourceId': {'type': 'string', 'description': 'Target resource ID to match.'},
-          'contentDesc': {'type': 'string', 'description': 'Target content-desc to match.'},
-          'timeoutMs': {'type': 'integer', 'description': 'Maximum wait duration in ms (default 10000).'},
-          'pollIntervalMs': {'type': 'integer', 'description': 'Polling interval in ms (default 500).'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial or IP:port.'},
+          'resourceId': {
+            'type': 'string',
+            'description': 'Target resource ID to match.',
+          },
+          'contentDesc': {
+            'type': 'string',
+            'description': 'Target content-desc to match.',
+          },
+          'timeoutMs': {
+            'type': 'integer',
+            'description': 'Maximum wait duration in ms (default 10000).',
+          },
+          'pollIntervalMs': {
+            'type': 'integer',
+            'description': 'Polling interval in ms (default 500).',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial or IP:port.',
+          },
         },
       },
     ),
@@ -32,7 +47,10 @@ class McpAutomationTools {
             'description': 'List of action maps: {"action": "tap"|"type"|"key"|"swipe"|"sleep", ...}',
             'items': {'type': 'object'},
           },
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial or IP:port.'},
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial or IP:port.',
+          },
         },
         'required': ['actions'],
       },
@@ -43,8 +61,15 @@ class McpAutomationTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'filter': {'type': 'string', 'description': 'Optional substring filter for package, title, or text.'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'filter': {
+            'type': 'string',
+            'description':
+                'Optional substring filter for package, title, or text.',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
       },
     ),
@@ -54,9 +79,18 @@ class McpAutomationTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'key': {'type': 'string', 'description': 'Specific notification key.'},
-          'clearAll': {'type': 'boolean', 'description': 'Set true to clear all notifications.'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'key': {
+            'type': 'string',
+            'description': 'Specific notification key.',
+          },
+          'clearAll': {
+            'type': 'boolean',
+            'description': 'Set true to clear all notifications.',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
       },
     ),
@@ -68,8 +102,14 @@ class McpAutomationTools {
         'properties': {
           'latitude': {'type': 'number', 'description': 'GPS latitude.'},
           'longitude': {'type': 'number', 'description': 'GPS longitude.'},
-          'altitude': {'type': 'number', 'description': 'Optional altitude in meters.'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'altitude': {
+            'type': 'number',
+            'description': 'Optional altitude in meters.',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
         'required': ['latitude', 'longitude'],
       },
@@ -85,7 +125,10 @@ class McpAutomationTools {
             'enum': ['normal', 'offline', 'wifi_only', 'data_only'],
             'description': 'Target network mode.',
           },
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
         'required': ['mode'],
       },
@@ -96,10 +139,22 @@ class McpAutomationTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'x': {'type': 'number', 'description': 'Normalized horizontal coordinate (0.0 to 1.0).'},
-          'y': {'type': 'number', 'description': 'Normalized vertical coordinate (0.0 to 1.0).'},
-          'durationMs': {'type': 'integer', 'description': 'Press duration in milliseconds (default 1000).'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'x': {
+            'type': 'number',
+            'description': 'Normalized horizontal coordinate (0.0 to 1.0).',
+          },
+          'y': {
+            'type': 'number',
+            'description': 'Normalized vertical coordinate (0.0 to 1.0).',
+          },
+          'durationMs': {
+            'type': 'integer',
+            'description': 'Press duration in milliseconds (default 1000).',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
         'required': ['x', 'y'],
       },
@@ -110,9 +165,19 @@ class McpAutomationTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'expand': {'type': 'boolean', 'description': 'True to expand, false to collapse.'},
-          'quickSettings': {'type': 'boolean', 'description': 'True to expand Quick Settings instead of notifications.'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'expand': {
+            'type': 'boolean',
+            'description': 'True to expand, false to collapse.',
+          },
+          'quickSettings': {
+            'type': 'boolean',
+            'description':
+                'True to expand Quick Settings instead of notifications.',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
       },
     ),
@@ -122,9 +187,19 @@ class McpAutomationTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'package': {'type': 'string', 'description': 'Target application package name.'},
-          'fileName': {'type': 'string', 'description': 'Optional XML file name (defaults to package_preferences.xml).'},
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'package': {
+            'type': 'string',
+            'description': 'Target application package name.',
+          },
+          'fileName': {
+            'type': 'string',
+            'description':
+                'Optional XML file name (defaults to package_preferences.xml).',
+          },
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
         'required': ['package'],
       },
@@ -150,7 +225,10 @@ class McpAutomationTools {
             ],
             'description': 'Target hardware button.',
           },
-          'deviceSerial': {'type': 'string', 'description': 'Target device serial.'},
+          'deviceSerial': {
+            'type': 'string',
+            'description': 'Target device serial.',
+          },
         },
         'required': ['button'],
       },

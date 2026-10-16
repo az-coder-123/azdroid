@@ -38,6 +38,7 @@ dependencies:
   equatable: ^3.0.0
   get_it: ^9.3.0
   desktop_drop: ^0.8.4
+  xml: ^7.1.0
 
 dev_dependencies:
   flutter_test:

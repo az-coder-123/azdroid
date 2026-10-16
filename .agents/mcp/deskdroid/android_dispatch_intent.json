@@ -1,0 +1,36 @@
+{
+  "name": "android_dispatch_intent",
+  "description": "Fires an Android Intent, custom URL scheme, or deep link with optional package and typed extras.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "action": {
+        "type": "string",
+        "description": "Intent action (e.g., android.intent.action.VIEW)."
+      },
+      "dataUri": {
+        "type": "string",
+        "description": "Data URI or web URL."
+      },
+      "package": {
+        "type": "string",
+        "description": "Target application package name."
+      },
+      "component": {
+        "type": "string",
+        "description": "Explicit target component class."
+      },
+      "extras": {
+        "type": "object",
+        "description": "Key-value map of intent extras."
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "android_get_logcat",
+  "description": "Extracts real-time or recent logcat records from the device with optional tag and level filtering.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "tag": {
+        "type": "string",
+        "description": "Filter by tag."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Maximum number of log lines to retrieve (default 50)."
+      }
+    }
+  }
+}

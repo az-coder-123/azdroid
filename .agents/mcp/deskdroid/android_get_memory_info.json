@@ -1,0 +1,20 @@
+{
+  "name": "android_get_memory_info",
+  "description": "Dumps detailed memory allocation (PSS, Dalvik heap, Native heap, Views) for an application package.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Target package name (e.g., com.example.app)."
+      }
+    },
+    "required": [
+      "package"
+    ]
+  }
+}

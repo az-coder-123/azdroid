@@ -1,0 +1,24 @@
+{
+  "name": "android_record_screen",
+  "description": "Captures a screen video recording (MP4) for a specified duration and downloads it to the Mac host filesystem.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "durationSec": {
+        "type": "integer",
+        "description": "Duration of the recording in seconds (default 5, max 180)."
+      },
+      "localDestination": {
+        "type": "string",
+        "description": "Absolute local destination file path on Mac (e.g. /tmp/recording.mp4)."
+      }
+    },
+    "required": [
+      "localDestination"
+    ]
+  }
+}

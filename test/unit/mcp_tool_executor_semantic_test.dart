@@ -29,6 +29,35 @@ void main() {
       expect(result.content.first.text, contains('Login'));
     });
 
+    test('android_get_semantic_tree returns pruned digest', () async {
+      when(() => mockAdb.getSemanticTree('192.168.1.100:5555')).thenAnswer(
+        (_) async => '=== Screen UI Tree (1 elements) ===\n[#1] Button text:"OK" center:(100,200)',
+      );
+
+      final result = await executor.execute('android_get_semantic_tree', {
+        'deviceSerial': '192.168.1.100:5555',
+      });
+
+      expect(result.isError, isFalse);
+      expect(result.content.first.text, contains('[#1] Button'));
+    });
+
+    test('android_click_element_by_id taps element by id', () async {
+      when(() => mockAdb.clickElementById('192.168.1.100:5555', 1))
+          .thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_click_element_by_id', {
+        'deviceSerial': '192.168.1.100:5555',
+        'id': 1,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Successfully tapped element [#1]'),
+      );
+    });
+
     test(
       'android_find_element returns element coordinates and metadata',
       () async {

@@ -32,6 +32,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Android adbd Port Lifecycle** | Android OS Security & TCP Lifecycle | Understand ephemeral TCP lifetimes and implement zero-click USB-to-Wi-Fi auto-provisioning. | [android-adbd-tcpip-port-lifecycle.md](android-adbd-tcpip-port-lifecycle.md) |
 | **Logcat Soft-Wrap Sliver Jank** | Flutter Layout & Virtualized Slivers | Eliminate 10s UI freeze on dynamic extents via adaptive reverse sliver and bounded row lines. | [logcat-soft-wrap-sliver-layout-jank.md](logcat-soft-wrap-sliver-layout-jank.md) |
 | **Action Footer RenderFlex Overflow** | UI Layout & Universal Responsiveness | Eliminate horizontal overflow via adaptive `LayoutBuilder`, scrollable `ConstrainedBox`, and dynamic badges. | [renderflex-overflow-action-footer-resilience.md](renderflex-overflow-action-footer-resilience.md) |
+| **Accessibility Tree Semantic Pruning** | MCP Server & AI Agent Grounding | Prune 97% of redundant layout nodes and assign sequential [#ID] tags for deterministic click actions. | [accessibility-tree-semantic-pruning.md](accessibility-tree-semantic-pruning.md) |
 
 ---
 

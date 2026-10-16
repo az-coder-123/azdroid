@@ -123,6 +123,8 @@ Verify proper functioning using any of the following 3 methods:
 ### 2. UI Semantic Inspection & Accessibility
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
+| **`android_get_semantic_tree`** | `deviceSerial` | Prunes invisible/empty layouts into a compact token-efficient digest (< 2KB / ~300 tokens) with sequential `[#ID]` tags. |
+| **`android_click_element_by_id`** | `id`, `deviceSerial` | Taps an element directly by its sequential `[#ID]` from the semantic tree in < 50ms without image vision. |
 | **`android_dump_hierarchy`** | `deviceSerial` | Dumps the complete active window UI accessibility XML (classes, IDs, text, bounds). |
 | **`android_find_element`** | `text`, `resourceId`, `contentDesc`, `deviceSerial` | Queries the UI tree and returns exact bounds and center tap coordinates. |
 | **`android_click_element`** | `text`, `resourceId`, `contentDesc`, `deviceSerial` | Locates an on-screen element by query and taps its center coordinates in one shot. |

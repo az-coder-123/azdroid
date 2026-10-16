@@ -1,0 +1,13 @@
+{
+  "name": "android_take_screenshot",
+  "description": "Captures a high-resolution screenshot from the Android device and returns it as a base64 image artifact.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port (optional if only one device is connected)."
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "android_clear_app_data",
+  "description": "Clears all user data and cache for an application (resets it to fresh install state).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Package name to reset."
+      }
+    },
+    "required": [
+      "package"
+    ]
+  }
+}

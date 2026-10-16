@@ -1,0 +1,30 @@
+{
+  "name": "android_press_key",
+  "description": "Presses an Android hardware or system navigation key (BACK, HOME, APP_SWITCH, ENTER, TAB, POWER).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "key": {
+        "type": "string",
+        "enum": [
+          "BACK",
+          "HOME",
+          "APP_SWITCH",
+          "ENTER",
+          "TAB",
+          "POWER",
+          "VOLUME_UP",
+          "VOLUME_DOWN"
+        ],
+        "description": "Key name to press."
+      }
+    },
+    "required": [
+      "key"
+    ]
+  }
+}

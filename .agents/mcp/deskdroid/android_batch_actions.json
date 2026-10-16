@@ -1,0 +1,23 @@
+{
+  "name": "android_batch_actions",
+  "description": "Executes a sequential compound macro of actions (tap, type, key, swipe, sleep) locally in one shot.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "actions": {
+        "type": "array",
+        "description": "List of action maps: {\"action\": \"tap\"|\"type\"|\"key\"|\"swipe\"|\"sleep\", ...}",
+        "items": {
+          "type": "object"
+        }
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      }
+    },
+    "required": [
+      "actions"
+    ]
+  }
+}

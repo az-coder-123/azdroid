@@ -1,0 +1,17 @@
+{
+  "name": "android_list_processes",
+  "description": "Lists active running Android processes with their PIDs and package names.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "filter": {
+        "type": "string",
+        "description": "Optional keyword to filter process names by."
+      }
+    }
+  }
+}

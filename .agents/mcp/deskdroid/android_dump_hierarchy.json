@@ -1,0 +1,13 @@
+{
+  "name": "android_dump_hierarchy",
+  "description": "Dumps the raw active window UI accessibility hierarchy XML (classes, resource IDs, text, bounds, clickable).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      }
+    }
+  }
+}
