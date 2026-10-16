@@ -108,6 +108,15 @@ Add to `cline_mcp_settings.json`:
 }
 ```
 
+### 4. Verification & Health Check
+
+- **Terminal Smoke Test:**
+  ```bash
+  echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
+  ```
+  *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is normal MCP behavior. Press `Ctrl+C` to exit.)*
+- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `deskdroid` with 40 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
+
 ---
 
 ## 💡 Practical AI Agent Automation Scenarios

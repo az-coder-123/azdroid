@@ -40,24 +40,8 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
 
 ### 1. Claude Desktop Integration
 
-Add `deskdroid` to your `claude_desktop_config.json`:
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+Add `deskdroid` to your `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
-```json
-{
-  "mcpServers": {
-    "deskdroid": {
-      "command": "dart",
-      "args": [
-        "run",
-        "/absolute/path/to/desk-droid/bin/deskdroid_mcp.dart"
-      ]
-    }
-  }
-}
-```
-
-Or using the launcher script:
 ```json
 {
   "mcpServers": {
@@ -97,13 +81,26 @@ Add to `cline_mcp_settings.json`:
 }
 ```
 
-### 4. CLI Smoke Testing
+### 4. How to Verify if the Server is Working
 
-Verify the server over `stdio` directly from macOS Terminal:
+Verify proper functioning using any of the following 3 methods:
 
-```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
-```
+- **Method 1: Terminal Pipe Test (CLI Smoke Test)**
+  ```bash
+  # 1. Verify all 40 tools are registered:
+  echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
+
+  # 2. Test live device discovery:
+  echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"android_list_devices","arguments":{}}}' | ./scripts/start_mcp_server.sh
+  ```
+  *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is standard stdio behavior, not a freeze. Press `Ctrl+C` to exit.)*
+
+- **Method 2: Visual Indicator in Claude / Cursor**
+  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `deskdroid` with 40 tools enabled.
+  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (40 tools)`.
+
+- **Method 3: Direct Natural Language Prompt**
+  Ask your AI: *"List all connected Android devices with DeskDroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
 
 ---
 
