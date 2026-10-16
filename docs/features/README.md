@@ -21,6 +21,7 @@
 | **11** | **Screen-Off Streaming** | `lib/features/streaming/` | <kbd>Cmd</kbd> + <kbd>O</kbd> | [screen-off-streaming.md](screen-off-streaming.md) |
 | **12** | **Menu Bar Companion** | `lib/features/menubar/` | macOS Status Bar icon | [menu-bar-companion.md](menu-bar-companion.md) |
 | **13** | **Deep Link & Intent Dispatcher** | `lib/features/intent_dispatcher/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> | [deep-link-intent-dispatcher.md](deep-link-intent-dispatcher.md) |
+| **14** | **Model Context Protocol (MCP) AI Agent Server** | `lib/features/mcp/` | Stdio CLI / `./scripts/start_mcp_server.sh` | [mcp-ai-agent-server.md](mcp-ai-agent-server.md) |
 
 ---
 

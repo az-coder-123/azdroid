@@ -42,7 +42,7 @@ Or using the launcher script:
 }
 ```
 
-### 2. Cursor IDE Integration
+### 2. Cursor IDE & Windsurf Integration
 
 Add to `.cursor/mcp.json` in your project root or user settings:
 
@@ -55,6 +55,28 @@ Add to `.cursor/mcp.json` in your project root or user settings:
     }
   }
 }
+```
+
+### 3. Cline / Roo Code (VS Code Extension)
+
+Add to `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "deskdroid": {
+      "command": "/absolute/path/to/desk-droid/scripts/start_mcp_server.sh"
+    }
+  }
+}
+```
+
+### 4. CLI Smoke Testing
+
+Verify the server over `stdio` directly from macOS Terminal:
+
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
 ```
 
 ---
