@@ -1,2 +1,2 @@
-33f6e4e0c122e867458647b5aea33a253cd2ae845fbdd50a59eac9edbf7abe2b  DeskDroid-v1.0.0-macOS.zip
-33f6e4e0c122e867458647b5aea33a253cd2ae845fbdd50a59eac9edbf7abe2b  DeskDroid-macOS-latest.zip
+522e696f2da2b5068fb1e0e994c02e918eda9ed5f9b8e2d9b0ec58f2b4ef8453  DeskDroid-v1.0.0-macOS.zip
+522e696f2da2b5068fb1e0e994c02e918eda9ed5f9b8e2d9b0ec58f2b4ef8453  DeskDroid-macOS-latest.zip
