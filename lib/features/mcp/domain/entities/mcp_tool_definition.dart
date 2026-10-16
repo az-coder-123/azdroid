@@ -3,15 +3,13 @@ import 'package:equatable/equatable.dart';
 /// Content object returned inside an MCP Tool Execution Result.
 class McpContent extends Equatable {
   const McpContent.text(this.text)
-      : type = 'text',
-        data = null,
-        mimeType = null;
+    : type = 'text',
+      data = null,
+      mimeType = null;
 
-  const McpContent.image({
-    required this.data,
-    this.mimeType = 'image/png',
-  })  : type = 'image',
-        text = null;
+  const McpContent.image({required this.data, this.mimeType = 'image/png'})
+    : type = 'image',
+      text = null;
 
   final String type;
   final String? text;
@@ -31,14 +29,10 @@ class McpContent extends Equatable {
 
 /// Execution result of an MCP tool invocation.
 class McpToolResult extends Equatable {
-  const McpToolResult({
-    required this.content,
-    this.isError = false,
-  });
+  const McpToolResult({required this.content, this.isError = false});
 
-  factory McpToolResult.text(String text) => McpToolResult(
-    content: [McpContent.text(text)],
-  );
+  factory McpToolResult.text(String text) =>
+      McpToolResult(content: [McpContent.text(text)]);
 
   factory McpToolResult.image({
     required String base64Data,
@@ -51,10 +45,8 @@ class McpToolResult extends Equatable {
     ],
   );
 
-  factory McpToolResult.error(String errorMessage) => McpToolResult(
-    content: [McpContent.text(errorMessage)],
-    isError: true,
-  );
+  factory McpToolResult.error(String errorMessage) =>
+      McpToolResult(content: [McpContent.text(errorMessage)], isError: true);
 
   final List<McpContent> content;
   final bool isError;

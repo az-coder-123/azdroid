@@ -59,8 +59,9 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 
 ---
 
-## 🛠️ Published MCP Tools
+## 🛠️ Published MCP Tools (20 Tools)
 
+### 1. Touch & System Navigation
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_list_devices`** | *none* | Lists all connected USB and Wi-Fi Android devices and their status. |
@@ -68,24 +69,44 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 | **`android_tap`** | `x`, `y` (normalized 0.0–1.0 or pixels), `deviceSerial` | Simulates a touch tap gesture on screen. |
 | **`android_swipe`** | `startX`, `startY`, `endX`, `endY`, `durationMs` | Injects a swipe or drag gesture. |
 | **`android_type_text`** | `text`, `deviceSerial` | Types text into the focused Android input field (supports Unicode & spaces). |
-| **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`) | Presses Android hardware/navigation keys. |
+| **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, etc.) | Presses Android hardware/navigation keys. |
 | **`android_dispatch_intent`** | `action`, `dataUri`, `package`, `component`, `extras` | Dispatches Android Intents, deep link URLs, and custom app schemes. |
-| **`android_get_logcat`** | `tag`, `minLevel`, `limit` | Retrieves real-time or recent logcat records for crash diagnosis. |
+| **`android_get_logcat`** | `tag`, `limit` | Retrieves real-time or recent logcat records for crash diagnosis. |
 | **`android_install_apk`** | `apkPath`, `reinstall`, `grantPermissions` | Sideloads an APK package onto the device. |
 | **`android_shell_command`** | `command`, `deviceSerial` | Runs raw ADB shell commands for advanced diagnostics. |
+
+### 2. Application Lifecycle & Package Governance
+| Tool Name | Parameters | Purpose |
+| :--- | :--- | :--- |
+| **`android_get_current_app`** | `deviceSerial` | Identifies currently focused foreground package and active Activity. |
+| **`android_launch_app`** | `package`, `deviceSerial` | Launches an installed application via default launcher category. |
+| **`android_stop_app`** | `package`, `deviceSerial` | Force terminates a running application by package name. |
+| **`android_clear_app_data`** | `package`, `deviceSerial` | Clears app cache and user data (resets app to fresh install state). |
+| **`android_list_packages`** | `thirdPartyOnly`, `query`, `deviceSerial` | Searches and lists installed applications on the device. |
+
+### 3. Device Telemetry, Clipboard & File Transfers
+| Tool Name | Parameters | Purpose |
+| :--- | :--- | :--- |
+| **`android_get_device_info`** | `deviceSerial` | Reports hardware model, manufacturer, Android OS, display resolution, and battery level. |
+| **`android_get_clipboard`** | `deviceSerial` | Reads the current text stored in the Android system clipboard. |
+| **`android_set_clipboard`** | `text`, `deviceSerial` | Copies text directly into the Android system clipboard. |
+| **`android_push_file`** | `localPath`, `remotePath`, `deviceSerial` | Uploads a file from Mac host to the Android filesystem. |
+| **`android_pull_file`** | `remotePath`, `localPath`, `deviceSerial` | Downloads a file or capture from Android device to Mac host. |
 
 ---
 
 ## 💡 Example AI Assistant Prompts
 
-Once configured, your AI assistant can execute complex mobile workflows autonomously:
+Once configured, your AI assistant can execute end-to-end mobile automation autonomously:
 
-1. **Visual App Inspection:**
-   > *"Take a screenshot of the connected phone and verify that the checkout button is visible without layout overflow."*
-2. **Automated Testing:**
-   > *"Open my app via deep link `myapp://checkout/cart`, tap the promo code field at (0.5, 0.45), type 'DISCOUNT2026', and press Enter."*
-3. **Crash Investigation:**
-   > *"Run the app. If a crash occurs, pull the last 100 lines of Logcat filtered by tag 'FATAL' and explain the stack trace."*
+1. **Automated Regression & UI Verification:**
+   > *"Launch `com.example.app`, take a screenshot, verify that the Login button is rendered, tap it at (0.5, 0.8), and check that no crash appears in logcat."*
+2. **Two-Factor Authentication & Clipboard Helper:**
+   > *"Check the Android clipboard for any 6-digit OTP code, and if found, paste it into the Mac browser."*
+3. **App State Reset & Clean Installation:**
+   > *"Clear the app data for `com.myapp.beta`, install the new build `/Users/long/builds/app-release.apk`, and verify the initial onboarding screen."*
+4. **Device Diagnostics:**
+   > *"Get the device telemetry: check if the battery is above 50% and confirm the Android OS version before running the stress test suite."*
 
 ---
 

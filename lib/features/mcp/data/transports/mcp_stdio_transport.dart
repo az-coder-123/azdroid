@@ -18,10 +18,9 @@ class McpStdioTransport {
 
   /// Starts listening to the input stream and replying via stdout.
   Future<void> run() async {
-    final stream = inputStream ??
-        stdin
-            .transform(utf8.decoder)
-            .transform(const LineSplitter());
+    final stream =
+        inputStream ??
+        stdin.transform(utf8.decoder).transform(const LineSplitter());
 
     final sink = outputSink ?? (String line) => stdout.writeln(line);
 

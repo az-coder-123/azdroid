@@ -14,10 +14,11 @@ void main() {
     executor = McpToolExecutor(adbClient: mockAdb);
   });
 
-  group('McpToolExecutor Pure Dart Tests', () {
+  group('McpToolExecutor Basic Tools Tests', () {
     test('android_list_devices lists devices from raw ADB output', () async {
       when(() => mockAdb.listDevicesRaw()).thenAnswer(
-        (_) async => '192.168.1.100:5555 device product:raven model:Pixel_6_Pro',
+        (_) async =>
+            '192.168.1.100:5555 device product:raven model:Pixel_6_Pro',
       );
 
       final result = await executor.execute('android_list_devices', {});
@@ -37,7 +38,10 @@ void main() {
       });
 
       expect(result.isError, isFalse);
-      expect(result.content.first.text, contains('Tapped at coordinates (0.5, 0.75)'));
+      expect(
+        result.content.first.text,
+        contains('Tapped at coordinates (0.5, 0.75)'),
+      );
     });
 
     test('android_swipe executes swipe via McpAdbClient', () async {
@@ -54,7 +58,10 @@ void main() {
       });
 
       expect(result.isError, isFalse);
-      expect(result.content.first.text, contains('Swiped from (0.5, 0.8) to (0.5, 0.2)'));
+      expect(
+        result.content.first.text,
+        contains('Swiped from (0.5, 0.8) to (0.5, 0.2)'),
+      );
     });
 
     test('android_type_text injects string via McpAdbClient', () async {
@@ -83,19 +90,6 @@ void main() {
       expect(result.content.first.text, contains('Pressed key BACK (4)'));
     });
 
-    test('android_shell_command executes command and returns stdout', () async {
-      when(() => mockAdb.shell('192.168.1.100:5555', 'echo "test"'))
-          .thenAnswer((_) async => 'Exit: 0\ntest\n');
-
-      final result = await executor.execute('android_shell_command', {
-        'deviceSerial': '192.168.1.100:5555',
-        'command': 'echo "test"',
-      });
-
-      expect(result.isError, isFalse);
-      expect(result.content.first.text, contains('Shell output:\nExit: 0\ntest'));
-    });
-
     test('returns error when tool is unknown', () async {
       when(() => mockAdb.getConnectedSerials())
           .thenAnswer((_) async => ['192.168.1.100:5555']);
@@ -105,7 +99,10 @@ void main() {
       });
 
       expect(result.isError, isTrue);
-      expect(result.content.first.text, contains('Unknown tool: android_unknown_tool'));
+      expect(
+        result.content.first.text,
+        contains('Unknown tool: android_unknown_tool'),
+      );
     });
   });
 }

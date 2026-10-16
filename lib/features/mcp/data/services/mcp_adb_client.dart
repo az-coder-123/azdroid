@@ -1,5 +1,9 @@
 import 'dart:io';
 
+part 'mcp_adb_app_ops.dart';
+part 'mcp_adb_device_ops.dart';
+part 'mcp_adb_resolver.dart';
+
 /// Pure Dart ADB client for DeskDroid MCP Server.
 /// Operates without UI or Flutter framework dependencies.
 class McpAdbClient {
@@ -7,36 +11,8 @@ class McpAdbClient {
 
   String? _cachedAdbPath;
 
-  static final List<String> _knownPaths = [
-    'adb',
-    '/opt/homebrew/bin/adb',
-    '/usr/local/bin/adb',
-    '${Platform.environment['HOME']}/Library/Android/sdk/platform-tools/adb',
-  ];
-
-  Future<String?> resolveAdb() async {
-    if (_cachedAdbPath != null) return _cachedAdbPath;
-
-    try {
-      final which = await Process.run('/usr/bin/which', ['adb']);
-      final path = which.stdout.toString().trim();
-      if (which.exitCode == 0 && path.isNotEmpty) {
-        _cachedAdbPath = path;
-        return path;
-      }
-    } catch (_) {}
-
-    for (final p in _knownPaths) {
-      try {
-        final res = await Process.run(p, ['version']);
-        if (res.exitCode == 0) {
-          _cachedAdbPath = p;
-          return p;
-        }
-      } catch (_) {}
-    }
-    return null;
-  }
+  Future<String?> resolveAdb() async =>
+      _cachedAdbPath = await McpAdbResolver.resolve(_cachedAdbPath);
 
   Future<ProcessResult> run(List<String> args) async {
     final adb = await resolveAdb();
@@ -72,8 +48,13 @@ class McpAdbClient {
     final adb = await resolveAdb();
     if (adb == null) return null;
 
-    final res = await Process.run(adb, ['-s', serial, 'exec-out', 'screencap', '-p'],
-        stdoutEncoding: null);
+    final res = await Process.run(adb, [
+      '-s',
+      serial,
+      'exec-out',
+      'screencap',
+      '-p',
+    ], stdoutEncoding: null);
     if (res.exitCode == 0 && res.stdout is List<int>) {
       return res.stdout as List<int>;
     }
@@ -100,11 +81,26 @@ class McpAdbClient {
       targetX = (x * size.x).round();
       targetY = (y * size.y).round();
     }
-    final res = await run(['-s', serial, 'shell', 'input', 'tap', '$targetX', '$targetY']);
+    final res = await run([
+      '-s',
+      serial,
+      'shell',
+      'input',
+      'tap',
+      '$targetX',
+      '$targetY',
+    ]);
     return res.exitCode == 0;
   }
 
-  Future<bool> swipe(String serial, double sx, double sy, double ex, double ey, int durationMs) async {
+  Future<bool> swipe(
+    String serial,
+    double sx,
+    double sy,
+    double ex,
+    double ey,
+    int durationMs,
+  ) async {
     int startX = sx.round();
     int startY = sy.round();
     int endX = ex.round();
@@ -116,7 +112,18 @@ class McpAdbClient {
       endX = (ex * size.x).round();
       endY = (ey * size.y).round();
     }
-    final res = await run(['-s', serial, 'shell', 'input', 'swipe', '$startX', '$startY', '$endX', '$endY', '$durationMs']);
+    final res = await run([
+      '-s',
+      serial,
+      'shell',
+      'input',
+      'swipe',
+      '$startX',
+      '$startY',
+      '$endX',
+      '$endY',
+      '$durationMs',
+    ]);
     return res.exitCode == 0;
   }
 
@@ -127,15 +134,35 @@ class McpAdbClient {
   }
 
   Future<bool> pressKey(String serial, int keyCode) async {
-    final res = await run(['-s', serial, 'shell', 'input', 'keyevent', '$keyCode']);
+    final res = await run([
+      '-s',
+      serial,
+      'shell',
+      'input',
+      'keyevent',
+      '$keyCode',
+    ]);
     return res.exitCode == 0;
   }
 
-  Future<String> dispatchIntent(String serial, String action, {String? dataUri, String? package, String? component, Map<String, dynamic>? extras}) async {
+  Future<String> dispatchIntent(
+    String serial,
+    String action, {
+    String? dataUri,
+    String? package,
+    String? component,
+    Map<String, dynamic>? extras,
+  }) async {
     final cmd = ['-s', serial, 'shell', 'am', 'start', '-a', action];
-    if (dataUri != null && dataUri.isNotEmpty) cmd.addAll(['-d', dataUri]);
-    if (package != null && package.isNotEmpty) cmd.addAll(['-p', package]);
-    if (component != null && component.isNotEmpty) cmd.addAll(['-n', component]);
+    if (dataUri != null && dataUri.isNotEmpty) {
+      cmd.addAll(['-d', dataUri]);
+    }
+    if (package != null && package.isNotEmpty) {
+      cmd.addAll(['-p', package]);
+    }
+    if (component != null && component.isNotEmpty) {
+      cmd.addAll(['-n', component]);
+    }
     if (extras != null) {
       extras.forEach((key, value) {
         if (value is bool) {
@@ -153,12 +180,19 @@ class McpAdbClient {
 
   Future<String> getLogcat(String serial, {String? tag, int limit = 50}) async {
     final cmd = ['-s', serial, 'logcat', '-d', '-t', '$limit'];
-    if (tag != null && tag.isNotEmpty) cmd.addAll(['-s', '$tag:*']);
+    if (tag != null && tag.isNotEmpty) {
+      cmd.addAll(['-s', '$tag:*']);
+    }
     final res = await run(cmd);
     return res.stdout.toString().trim();
   }
 
-  Future<bool> installApk(String serial, String apkPath, {bool reinstall = true, bool grantPermissions = true}) async {
+  Future<bool> installApk(
+    String serial,
+    String apkPath, {
+    bool reinstall = true,
+    bool grantPermissions = true,
+  }) async {
     final cmd = ['-s', serial, 'install'];
     if (reinstall) cmd.add('-r');
     if (grantPermissions) cmd.add('-g');
@@ -171,10 +205,42 @@ class McpAdbClient {
     final res = await run(['-s', serial, 'shell', command]);
     return 'Exit: ${res.exitCode}\n${res.stdout}\n${res.stderr}'.trim();
   }
-}
 
-class Point<T extends num> {
-  const Point(this.x, this.y);
-  final T x;
-  final T y;
+  Future<Map<String, String>?> getCurrentApp(String serial) =>
+      McpAdbAppOps.getCurrentApp(this, serial);
+
+  Future<bool> launchApp(String serial, String packageName) =>
+      McpAdbAppOps.launchApp(this, serial, packageName);
+
+  Future<bool> stopApp(String serial, String packageName) =>
+      McpAdbAppOps.stopApp(this, serial, packageName);
+
+  Future<bool> clearAppData(String serial, String packageName) =>
+      McpAdbAppOps.clearAppData(this, serial, packageName);
+
+  Future<List<String>> listPackages(
+    String serial, {
+    bool thirdPartyOnly = true,
+    String? query,
+  }) => McpAdbAppOps.listPackages(
+    this,
+    serial,
+    thirdPartyOnly: thirdPartyOnly,
+    query: query,
+  );
+
+  Future<Map<String, dynamic>> getDeviceInfo(String serial) =>
+      McpAdbDeviceOps.getDeviceInfo(this, serial);
+
+  Future<String> getClipboard(String serial) =>
+      McpAdbDeviceOps.getClipboard(this, serial);
+
+  Future<bool> setClipboard(String serial, String text) =>
+      McpAdbDeviceOps.setClipboard(this, serial, text);
+
+  Future<bool> pushFile(String serial, String localPath, String remotePath) =>
+      McpAdbDeviceOps.pushFile(this, serial, localPath, remotePath);
+
+  Future<bool> pullFile(String serial, String remotePath, String localPath) =>
+      McpAdbDeviceOps.pullFile(this, serial, remotePath, localPath);
 }

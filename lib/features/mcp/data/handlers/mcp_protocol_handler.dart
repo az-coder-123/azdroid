@@ -6,11 +6,9 @@ import 'package:desk_droid/features/mcp/domain/services/mcp_tool_registry.dart';
 
 /// Handles parsing, routing, and response formatting for the MCP JSON-RPC 2.0 protocol.
 class McpProtocolHandler {
-  McpProtocolHandler({
-    McpToolRegistry? registry,
-    McpToolExecutor? executor,
-  }) : _registry = registry ?? const McpToolRegistry(),
-       _executor = executor ?? McpToolExecutor();
+  McpProtocolHandler({McpToolRegistry? registry, McpToolExecutor? executor})
+    : _registry = registry ?? const McpToolRegistry(),
+      _executor = executor ?? McpToolExecutor();
 
   final McpToolRegistry _registry;
   final McpToolExecutor _executor;
@@ -28,15 +26,25 @@ class McpProtocolHandler {
     try {
       final parsed = jsonDecode(trimmed);
       if (parsed is! Map<String, dynamic>) {
-        return jsonEncode(const McpResponse(
-          error: McpError(code: McpError.invalidRequest, message: 'Invalid JSON-RPC request object'),
-        ).toJson());
+        return jsonEncode(
+          const McpResponse(
+            error: McpError(
+              code: McpError.invalidRequest,
+              message: 'Invalid JSON-RPC request object',
+            ),
+          ).toJson(),
+        );
       }
       jsonMap = parsed;
     } catch (_) {
-      return jsonEncode(const McpResponse(
-        error: McpError(code: McpError.parseError, message: 'Failed to parse JSON string'),
-      ).toJson());
+      return jsonEncode(
+        const McpResponse(
+          error: McpError(
+            code: McpError.parseError,
+            message: 'Failed to parse JSON string',
+          ),
+        ).toJson(),
+      );
     }
 
     final request = McpRequest.fromJson(jsonMap);
@@ -60,10 +68,7 @@ class McpProtocolHandler {
             'capabilities': {
               'tools': {'listChanged': false},
             },
-            'serverInfo': {
-              'name': serverName,
-              'version': serverVersion,
-            },
+            'serverInfo': {'name': serverName, 'version': serverVersion},
           },
         );
 
@@ -74,9 +79,7 @@ class McpProtocolHandler {
         final tools = _registry.getTools();
         return McpResponse(
           id: request.id,
-          result: {
-            'tools': tools.map((t) => t.toJson()).toList(),
-          },
+          result: {'tools': tools.map((t) => t.toJson()).toList()},
         );
 
       case 'tools/call':
@@ -96,10 +99,7 @@ class McpProtocolHandler {
             : <String, dynamic>{};
 
         final toolResult = await _executor.execute(name, arguments);
-        return McpResponse(
-          id: request.id,
-          result: toolResult.toJson(),
-        );
+        return McpResponse(id: request.id, result: toolResult.toJson());
 
       default:
         return McpResponse(

@@ -2,11 +2,7 @@ import 'package:equatable/equatable.dart';
 
 /// Standard JSON-RPC 2.0 error representation according to MCP specifications.
 class McpError extends Equatable {
-  const McpError({
-    required this.code,
-    required this.message,
-    this.data,
-  });
+  const McpError({required this.code, required this.message, this.data});
 
   final int code;
   final String message;
@@ -74,12 +70,7 @@ class McpRequest extends Equatable {
 
 /// Outgoing JSON-RPC 2.0 Response.
 class McpResponse extends Equatable {
-  const McpResponse({
-    this.id,
-    this.result,
-    this.error,
-    this.jsonrpc = '2.0',
-  });
+  const McpResponse({this.id, this.result, this.error, this.jsonrpc = '2.0'});
 
   final String jsonrpc;
   final dynamic id;
@@ -89,10 +80,7 @@ class McpResponse extends Equatable {
   bool get isSuccess => error == null;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{
-      'jsonrpc': jsonrpc,
-      'id': id,
-    };
+    final map = <String, dynamic>{'jsonrpc': jsonrpc, 'id': id};
     if (error != null) {
       map['error'] = error!.toJson();
     } else {

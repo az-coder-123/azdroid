@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_protocol_handler.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_json_rpc.dart';
@@ -11,39 +12,42 @@ void main() {
       handler = McpProtocolHandler();
     });
 
-    test('initialize returns protocol version and server capabilities', () async {
-      final requestJson = jsonEncode({
-        'jsonrpc': '2.0',
-        'id': 1,
-        'method': 'initialize',
-        'params': {
-          'protocolVersion': '2024-11-05',
-          'capabilities': {},
-        },
-      });
+    test(
+      'initialize returns protocol version and server capabilities',
+      () async {
+        final requestJson = jsonEncode({
+          'jsonrpc': '2.0',
+          'id': 1,
+          'method': 'initialize',
+          'params': {'protocolVersion': '2024-11-05', 'capabilities': {}},
+        });
 
-      final responseStr = await handler.handleMessage(requestJson);
-      expect(responseStr, isNotNull);
+        final responseStr = await handler.handleMessage(requestJson);
+        expect(responseStr, isNotNull);
 
-      final responseMap = jsonDecode(responseStr!) as Map<String, dynamic>;
-      expect(responseMap['jsonrpc'], '2.0');
-      expect(responseMap['id'], 1);
+        final responseMap = jsonDecode(responseStr!) as Map<String, dynamic>;
+        expect(responseMap['jsonrpc'], '2.0');
+        expect(responseMap['id'], 1);
 
-      final result = responseMap['result'] as Map<String, dynamic>;
-      expect(result['protocolVersion'], '2024-11-05');
-      expect(result['serverInfo']['name'], 'deskdroid-mcp');
-      expect(result['capabilities']['tools'], isNotNull);
-    });
+        final result = responseMap['result'] as Map<String, dynamic>;
+        expect(result['protocolVersion'], '2024-11-05');
+        expect(result['serverInfo']['name'], 'deskdroid-mcp');
+        expect(result['capabilities']['tools'], isNotNull);
+      },
+    );
 
-    test('notifications/initialized returns null (no response for notification)', () async {
-      final notificationJson = jsonEncode({
-        'jsonrpc': '2.0',
-        'method': 'notifications/initialized',
-      });
+    test(
+      'notifications/initialized returns null (no response for notification)',
+      () async {
+        final notificationJson = jsonEncode({
+          'jsonrpc': '2.0',
+          'method': 'notifications/initialized',
+        });
 
-      final responseStr = await handler.handleMessage(notificationJson);
-      expect(responseStr, isNull);
-    });
+        final responseStr = await handler.handleMessage(notificationJson);
+        expect(responseStr, isNull);
+      },
+    );
 
     test('ping returns empty result map', () async {
       final requestJson = jsonEncode({
