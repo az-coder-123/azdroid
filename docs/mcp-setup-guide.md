@@ -10,6 +10,28 @@ DeskDroid provides a built-in **Model Context Protocol (MCP)** server over stand
 
 ---
 
+## 📋 Prerequisites & System Requirements
+
+Before configuring and executing MCP tools with an AI assistant, ensure:
+
+1. **Android Physical Device or Emulator:**
+   - **Developer Options & USB Debugging:** Enabled on target device (`Settings` > `Developer options` > `USB debugging`).
+   - **Host Authorization:** Accept the *"Always allow from this computer"* dialog when connecting via USB.
+   - **Connection Verification:** Ensure device is online via macOS Terminal:
+     ```bash
+     adb devices
+     # Expected output: <device_serial> device
+     ```
+2. **macOS Host Machine:**
+   - **Android Platform Tools (ADB):** Installed and accessible in `$PATH` (`brew install android-platform-tools`).
+   - **Dart SDK:** Installed (bundled with Flutter SDK or standalone via `brew install dart`).
+   - **Execution Permissions:** Ensure launcher script is executable:
+     ```bash
+     chmod +x scripts/start_mcp_server.sh
+     ```
+
+---
+
 ## 🚀 Quick Setup & Configuration
 
 ### 1. Claude Desktop Integration
