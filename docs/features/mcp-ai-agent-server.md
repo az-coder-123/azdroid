@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-The **DeskDroid Model Context Protocol (MCP) Server** turns DeskDroid into an autonomous AI agent powerhouse. It exposes **40 comprehensive tools** enabling frontier AI models (Claude 3.5 Sonnet, Claude 3.7 Sonnet, GPT-4o) and agentic IDEs (**Claude Desktop**, **Cursor**, **Antigravity**, **Windsurf**, **Cline**) to directly observe, inspect, test, profile, and control physical or virtual Android devices over Wi-Fi and USB with zero UI overhead.
+The **DeskDroid Model Context Protocol (MCP) Server** turns DeskDroid into an autonomous AI agent powerhouse. It exposes **50 comprehensive tools** enabling frontier AI models (Claude 3.5 Sonnet, Claude 3.7 Sonnet, GPT-4o) and agentic IDEs (**Claude Desktop**, **Cursor**, **Antigravity**, **Windsurf**, **Cline**) to directly observe, inspect, test, profile, and control physical or virtual Android devices over Wi-Fi and USB with zero UI overhead.
 
 > [!TIP]
 > **Headless Execution (No GUI App Required):** The MCP server runs independently as a lightweight Dart CLI process via `stdio`. You **do not need to open `DeskDroid.app`** for the AI to work. However, you can optionally run `DeskDroid.app` concurrently to visually observe the agent interacting with your device in real time.
@@ -17,7 +17,7 @@ The **DeskDroid Model Context Protocol (MCP) Server** turns DeskDroid into an au
 ```mermaid
 flowchart TD
     AI["🤖 AI Client / Agent\n(Claude Desktop / Cursor / Antigravity / Cline)"] -->|JSON-RPC 2.0 via stdio| Handler["McpProtocolHandler\n(Stdio Frame Parser & Router)"]
-    Handler --> Registry["McpToolRegistry\n(40 Tools Schema Definition)"]
+    Handler --> Registry["McpToolRegistry\n(50 Tools Schema Definition)"]
     Handler --> Executor["McpToolExecutor\n(Master Tool Dispatcher)"]
 
     subgraph SubExecutors ["Modular Tool Executors (SRP)"]
@@ -25,6 +25,7 @@ flowchart TD
         E2["McpAppDeviceToolExecutor\n(Lifecycle, Clipboard, Files, Info)"]
         E3["McpSemanticSystemToolExecutor\n(UI Tree, Element Click, Settings)"]
         E4["McpPerformanceMediaToolExecutor\n(CPU, RAM, Battery, Gfx, Rec, Biometric)"]
+        E5["McpAutomationToolExecutor\n(Smart Wait, Batch Macro, Notif, GPS, Network)"]
     end
 
     Executor --> SubExecutors
@@ -34,7 +35,7 @@ flowchart TD
 
 ---
 
-## ⚡️ Key Capabilities Across 6 Clusters
+## ⚡️ Key Capabilities Across 7 Clusters
 
 | Cluster | Count | Key Tools & Scope |
 | :--- | :-: | :--- |
@@ -44,6 +45,7 @@ flowchart TD
 | **4. Semantic UI Grounding** | 3 | `android_dump_hierarchy`, `android_find_element`, `android_click_element` |
 | **5. System & OS Governance** | 12 | `android_dispatch_intent`, `android_get_logcat`, `android_install_apk`, `android_shell_command`, `android_toggle_wifi`, `android_toggle_airplane_mode`, `android_grant_permission`, `android_revoke_permission`, `android_set_volume`, `android_wake_screen`, `android_open_settings` |
 | **6. Performance, Media & QA** | 10 | `android_get_cpu_usage`, `android_get_memory_info`, `android_get_battery_stats`, `android_get_gfx_info`, `android_get_network_info`, `android_record_screen`, `android_list_processes`, `android_kill_process`, `android_set_orientation`, `android_simulate_biometric` |
+| **7. Automation, Macro & GPS** | 10 | `android_wait_for_element`, `android_batch_actions`, `android_get_notifications`, `android_dismiss_notification`, `android_set_location`, `android_set_network_condition`, `android_long_press`, `android_open_notification_panel`, `android_read_shared_prefs`, `android_press_button` |
 
 ---
 

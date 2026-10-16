@@ -104,7 +104,7 @@ Verify proper functioning using any of the following 3 methods:
 
 ---
 
-## 🛠️ Published MCP Tools (40 Tools)
+## 🛠️ Published MCP Tools (50 Tools)
 
 ### 1. Touch & System Navigation
 | Tool Name | Parameters | Purpose |
@@ -169,6 +169,16 @@ Verify proper functioning using any of the following 3 methods:
 | **`android_kill_process`** | `pid`, `package`, `deviceSerial` | Terminates an active process by PID or package name. |
 | **`android_set_orientation`** | `orientation` (0..3), `deviceSerial` | Rotates screen: 0=Portrait, 1=Landscape, 2=Rev. Portrait, 3=Rev. Landscape. |
 | **`android_simulate_biometric`** | `success` (bool), `deviceSerial` | Simulates biometric (fingerprint/face) authentication prompt. |
+| **`android_wait_for_element`** | `text`, `resourceId`, `timeoutMs` | Polls UI until element appears to eliminate LLM polling round-trips. |
+| **`android_batch_actions`** | `actions` (array of maps) | Executes compound sequence of actions locally in one shot. |
+| **`android_get_notifications`** | `filter`, `deviceSerial` | Extracts active system notifications and status bar 2FA/OTP codes. |
+| **`android_dismiss_notification`** | `key`, `clearAll`, `deviceSerial` | Dismisses a specific notification or clears all notifications. |
+| **`android_set_location`** | `latitude`, `longitude`, `altitude` | Injects mock GPS coordinates for maps and geo-fencing QA. |
+| **`android_set_network_condition`** | `mode`, `deviceSerial` | Simulates network conditions (`offline`, `wifi_only`, `data_only`, `normal`). |
+| **`android_long_press`** | `x`, `y`, `durationMs` | Injects a long-press touch gesture with configurable duration. |
+| **`android_open_notification_panel`** | `expand`, `quickSettings` | Expands or collapses notification shade or Quick Settings. |
+| **`android_read_shared_prefs`** | `package`, `fileName` | Reads SharedPreferences XML data for deep state verification. |
+| **`android_press_button`** | `button` (`volume_up`, `camera`, etc.) | Triggers physical hardware buttons on the device. |
 
 ---
 
