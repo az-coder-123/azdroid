@@ -4,6 +4,8 @@ part 'mcp_adb_app_ops.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
 part 'mcp_adb_input_ops.dart';
+part 'mcp_adb_media_proc_ops.dart';
+part 'mcp_adb_performance_ops.dart';
 part 'mcp_adb_resolver.dart';
 part 'mcp_adb_system_ops.dart';
 part 'mcp_adb_ui_ops.dart';
@@ -26,27 +28,11 @@ class McpAdbClient {
     return await Process.run(adb, args);
   }
 
-  Future<List<String>> getConnectedSerials() async {
-    final res = await run(['devices']);
-    if (res.exitCode != 0) return [];
+  // --- Device Enumeration ---
+  Future<List<String>> getConnectedSerials() =>
+      McpAdbDeviceOps.getConnectedSerials(this);
 
-    final lines = res.stdout.toString().split('\n');
-    final serials = <String>[];
-    for (final line in lines) {
-      final trimmed = line.trim();
-      if (trimmed.isEmpty || trimmed.startsWith('List of devices')) continue;
-      final parts = trimmed.split(RegExp(r'\s+'));
-      if (parts.length >= 2 && parts[1].toLowerCase() == 'device') {
-        serials.add(parts[0]);
-      }
-    }
-    return serials;
-  }
-
-  Future<String> listDevicesRaw() async {
-    final res = await run(['devices', '-l']);
-    return res.stdout.toString().trim();
-  }
+  Future<String> listDevicesRaw() => McpAdbDeviceOps.listDevicesRaw(this);
 
   // --- Input & Gesture Operations ---
   Future<List<int>?> captureScreenshotBytes(String serial) =>
@@ -223,4 +209,38 @@ class McpAdbClient {
     action: action,
     packageName: packageName,
   );
+
+  // --- Performance & Hardware Telemetry Operations ---
+  Future<String> getCpuUsage(String serial, {String? package}) =>
+      McpAdbPerformanceOps.getCpuUsage(this, serial, package: package);
+  Future<String> getMemoryInfo(String serial, String package) =>
+      McpAdbPerformanceOps.getMemoryInfo(this, serial, package);
+  Future<Map<String, dynamic>> getBatteryStats(String serial) =>
+      McpAdbPerformanceOps.getBatteryStats(this, serial);
+  Future<String> getGfxInfo(String serial, String package) =>
+      McpAdbPerformanceOps.getGfxInfo(this, serial, package);
+  Future<Map<String, String>> getNetworkInfo(String serial) =>
+      McpAdbPerformanceOps.getNetworkInfo(this, serial);
+
+  // --- Media Recording, Process & Biometrics Operations ---
+  Future<bool> recordScreen(
+    String serial, {
+    int durationSec = 5,
+    required String localDestination,
+  }) => McpAdbMediaProcOps.recordScreen(
+    this,
+    serial,
+    durationSec: durationSec,
+    localDestination: localDestination,
+  );
+  Future<List<Map<String, String>>> listProcesses(
+    String serial, {
+    String? filter,
+  }) => McpAdbMediaProcOps.listProcesses(this, serial, filter: filter);
+  Future<bool> killProcess(String serial, {int? pid, String? package}) =>
+      McpAdbMediaProcOps.killProcess(this, serial, pid: pid, package: package);
+  Future<bool> setOrientation(String serial, int orientation) =>
+      McpAdbMediaProcOps.setOrientation(this, serial, orientation);
+  Future<bool> simulateBiometric(String serial, {bool success = true}) =>
+      McpAdbMediaProcOps.simulateBiometric(this, serial, success: success);
 }

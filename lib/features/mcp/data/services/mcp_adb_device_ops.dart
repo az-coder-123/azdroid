@@ -126,4 +126,28 @@ class McpAdbDeviceOps {
     final res = await client.run(['-s', serial, 'pull', remotePath, localPath]);
     return res.exitCode == 0;
   }
+
+  /// Lists connected device serial numbers.
+  static Future<List<String>> getConnectedSerials(McpAdbClient client) async {
+    final res = await client.run(['devices']);
+    if (res.exitCode != 0) return [];
+
+    final lines = res.stdout.toString().split('\n');
+    final serials = <String>[];
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty || trimmed.startsWith('List of devices')) continue;
+      final parts = trimmed.split(RegExp(r'\s+'));
+      if (parts.length >= 2 && parts[1].toLowerCase() == 'device') {
+        serials.add(parts[0]);
+      }
+    }
+    return serials;
+  }
+
+  /// Returns raw ADB devices -l output.
+  static Future<String> listDevicesRaw(McpAdbClient client) async {
+    final res = await client.run(['devices', '-l']);
+    return res.stdout.toString().trim();
+  }
 }

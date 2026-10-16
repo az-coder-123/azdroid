@@ -1,6 +1,6 @@
 # 🤖 DeskDroid MCP Server — AI Agent Integration Guide
 
-> Connect **DeskDroid** to **Claude Desktop**, **Cursor**, and **Antigravity** via the **Model Context Protocol (MCP)** to allow AI assistants to see, control, inspect, test, and automate real Android devices over Wi-Fi and USB.
+> Connect **DeskDroid** to **Claude Desktop**, **Cursor**, and **Antigravity** via the **Model Context Protocol (MCP)** to allow AI assistants to see, control, inspect, test, profile, and automate real Android devices over Wi-Fi and USB.
 
 ---
 
@@ -59,7 +59,7 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 
 ---
 
-## 🛠️ Published MCP Tools (30 Tools)
+## 🛠️ Published MCP Tools (40 Tools)
 
 ### 1. Touch & System Navigation
 | Tool Name | Parameters | Purpose |
@@ -111,20 +111,34 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 | **`android_wake_screen`** | `wake`, `deviceSerial` | Wakes the screen or puts the device to sleep. |
 | **`android_open_settings`** | `action`, `package`, `deviceSerial` | Opens specific Android system settings or App Info details page. |
 
+### 6. Performance Profiling, Media, Orientation & Processes
+| Tool Name | Parameters | Purpose |
+| :--- | :--- | :--- |
+| **`android_get_cpu_usage`** | `package`, `deviceSerial` | Samples CPU consumption for a specific package or top system processes. |
+| **`android_get_memory_info`** | `package`, `deviceSerial` | Dumps detailed memory allocation (PSS, Dalvik, Native heap) for an app. |
+| **`android_get_battery_stats`** | `deviceSerial` | Retrieves battery health, temperature (°C), voltage, and charging source. |
+| **`android_get_gfx_info`** | `package`, `deviceSerial` | Queries Choreographer frame timings and jank percentage for an app. |
+| **`android_get_network_info`** | `deviceSerial` | Discovers local IP address, connected Wi-Fi SSID, and wireless link speed. |
+| **`android_record_screen`** | `durationSec`, `localDestination`, `deviceSerial` | Records an MP4 video of the screen and saves it to the Mac host. |
+| **`android_list_processes`** | `filter`, `deviceSerial` | Lists running Android processes with their PIDs and package names. |
+| **`android_kill_process`** | `pid`, `package`, `deviceSerial` | Terminates an active process by PID or package name. |
+| **`android_set_orientation`** | `orientation` (0..3), `deviceSerial` | Rotates screen: 0=Portrait, 1=Landscape, 2=Rev. Portrait, 3=Rev. Landscape. |
+| **`android_simulate_biometric`** | `success` (bool), `deviceSerial` | Simulates biometric (fingerprint/face) authentication prompt. |
+
 ---
 
 ## 💡 Example AI Assistant Prompts
 
-Once configured, your AI assistant can execute complex mobile workflows autonomously:
+Once configured, your AI assistant can execute autonomous mobile QA and engineering workflows:
 
-1. **Semantic UI Navigation (No Coordinate Guessing):**
+1. **Performance & Memory Leak Investigation:**
+   > *"Run a 30-second stress test on `com.example.app`, then check `android_get_cpu_usage` and `android_get_memory_info` to detect memory leaks or runaway background threads."*
+2. **Visual Animation Recording & Defect Capture:**
+   > *"Rotate screen to Landscape with `android_set_orientation`, start a 10-second screen recording to `/tmp/bug_demo.mp4`, reproduce the glitch, and summarize the logcat errors."*
+3. **Semantic UI Navigation (No Coordinate Guessing):**
    > *"Find the element with text 'Đăng nhập' or ID 'btn_login' and click it. Then dump the new hierarchy to confirm we reached the dashboard."*
-2. **Permission Setup & Clean Run:**
-   > *"Grant `android.permission.POST_NOTIFICATIONS` to `com.example.app`, clear app cache, and launch the application."*
-3. **Network Resilience Testing:**
-   > *"Turn off Wi-Fi on the phone, trigger a payment checkout in the app, verify that the 'Offline - check connection' snackbar appears, and then re-enable Wi-Fi."*
-4. **Automated Two-Factor Authentication:**
-   > *"Check the Android clipboard for any 6-digit OTP code, and if found, paste it into the Mac browser."*
+4. **Resilience & Biometric Testing:**
+   > *"Open the bank app login screen, trigger biometric prompt, simulate successful match with `android_simulate_biometric`, and verify that the account summary loads."*
 
 ---
 
