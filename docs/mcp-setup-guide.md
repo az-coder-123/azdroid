@@ -149,18 +149,52 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/st
 
 ---
 
-## 💡 Example AI Assistant Prompts
+## 💡 Example AI Assistant Prompts & Execution Scenarios
 
 Once configured, your AI assistant can execute autonomous mobile QA and engineering workflows:
 
-1. **Performance & Memory Leak Investigation:**
-   > *"Run a 30-second stress test on `com.example.app`, then check `android_get_cpu_usage` and `android_get_memory_info` to detect memory leaks or runaway background threads."*
-2. **Visual Animation Recording & Defect Capture:**
-   > *"Rotate screen to Landscape with `android_set_orientation`, start a 10-second screen recording to `/tmp/bug_demo.mp4`, reproduce the glitch, and summarize the logcat errors."*
-3. **Semantic UI Navigation (No Coordinate Guessing):**
-   > *"Find the element with text 'Đăng nhập' or ID 'btn_login' and click it. Then dump the new hierarchy to confirm we reached the dashboard."*
-4. **Resilience & Biometric Testing:**
-   > *"Open the bank app login screen, trigger biometric prompt, simulate successful match with `android_simulate_biometric`, and verify that the account summary loads."*
+### 🎯 Scenario 1: Launch App & Tap by Text (No Coordinate Guessing)
+
+> **User Prompt:** *"Check if any device is connected, launch YouTube, and tap the Search button."*
+> 
+> **AI Autonomous Execution:**
+> 1. Invokes `android_list_devices()` ➔ Identifies online device serial.
+> 2. Invokes `android_launch_app(package="com.google.android.youtube")` ➔ Brings app to foreground.
+> 3. Invokes `android_click_element(text="Search", contentDesc="Search")` ➔ Inspects accessibility tree and taps exact element center with 100% precision.
+
+### 📸 Scenario 2: Automated Visual Inspection & Layout QA
+
+> **User Prompt:** *"Capture the current device display and evaluate whether the user profile header renders properly."*
+> 
+> **AI Autonomous Execution:**
+> 1. Invokes `android_take_screenshot()` ➔ Captures display and returns base64 image artifact into AI context.
+> 2. AI Multimodal Vision ➔ Inspects layout alignment, typography, and visual assets to report UI discrepancies.
+
+### 📊 Scenario 3: Performance & Memory Leak Profiling
+
+> **User Prompt:** *"Profile CPU utilization, memory allocations, and battery status for `com.example.app` during a 30-second run."*
+> 
+> **AI Autonomous Execution:**
+> 1. Invokes `android_get_cpu_usage(package="com.example.app")` ➔ Measures user and kernel thread CPU load.
+> 2. Invokes `android_get_memory_info(package="com.example.app")` ➔ Extracts PSS, Native Heap, and Dalvik Heap sizes.
+> 3. Invokes `android_get_battery_stats()` ➔ Reads battery temperature (°C) and voltage to detect overheating.
+
+### 🎬 Scenario 4: Bug Reproduction & MP4 Video Capture
+
+> **User Prompt:** *"Rotate display to Landscape, record a 10-second video of the animation bug into `/tmp/bug.mp4`, and check recent error logs."*
+> 
+> **AI Autonomous Execution:**
+> 1. Invokes `android_set_orientation(orientation=1)` ➔ Rotates display to landscape orientation.
+> 2. Invokes `android_record_screen(durationSec=10, localDestination="/tmp/bug.mp4")` ➔ Hardware encodes MP4 on device GPU and pulls to Mac.
+> 3. Invokes `android_get_logcat(limit=50)` ➔ Filters crash stack traces and exception logs.
+
+### 🔐 Scenario 5: Biometric Authentication Simulation
+
+> **User Prompt:** *"When on the bank login screen, simulate a successful biometric fingerprint verification."*
+> 
+> **AI Autonomous Execution:**
+> 1. Invokes `android_simulate_biometric(success=true)` ➔ Injects virtual fingerprint sensor match signal.
+> 2. Invokes `android_get_current_app()` ➔ Confirms successful transition from lock screen to account dashboard.
 
 ---
 
