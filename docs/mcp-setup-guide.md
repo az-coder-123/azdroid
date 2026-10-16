@@ -8,6 +8,9 @@
 
 DeskDroid provides a built-in **Model Context Protocol (MCP)** server over standard I/O (`stdio`). This bridges multimodal AI agents directly with your connected Android devices with zero UI overhead.
 
+- **Headless & Standalone:** You **do not need to launch `DeskDroid.app`** to use this MCP server. AI clients run the pure Dart CLI process independently in the background.
+- **Optional Visual Mirroring:** You can optionally open `DeskDroid.app` concurrently to visually observe the agent's taps, gestures, and inputs in real time at 60 FPS.
+
 ---
 
 ## 📋 Prerequisites & System Requirements
@@ -23,6 +26,7 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
      # Expected output: <device_serial> device
      ```
 2. **macOS Host Machine:**
+   - **No GUI Required:** `DeskDroid.app` does not need to be running.
    - **Android Platform Tools (ADB):** Installed and accessible in `$PATH` (`brew install android-platform-tools`).
    - **Dart SDK:** Installed (bundled with Flutter SDK or standalone via `brew install dart`).
    - **Execution Permissions:** Ensure launcher script is executable:
