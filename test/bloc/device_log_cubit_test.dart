@@ -311,5 +311,79 @@ void main() {
         ),
       ],
     );
+
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'toggleLevel, updateSearch, toggleRegex, toggleCaseSensitive update criteria',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) {
+        cubit.startLogging(testSerial);
+        cubit.toggleLevel(LogLevel.error);
+        cubit.updateSearch('crash');
+        cubit.toggleRegex();
+        cubit.toggleCaseSensitive();
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.selectedLevels.contains(LogLevel.error),
+          'selectedLevels contains error',
+          isTrue,
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.textQuery,
+          'textQuery',
+          'crash',
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.isRegex,
+          'isRegex',
+          isTrue,
+        ),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.filter.caseSensitive,
+          'caseSensitive',
+          isTrue,
+        ),
+      ],
+    );
+
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'exportLogs delegates to repository with active entries',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        when(
+          () => mockRepository.exportLogsToFile(
+            entries: any(named: 'entries'),
+            destinationPath: any(named: 'destinationPath'),
+          ),
+        ).thenAnswer((_) async => '/tmp/exported.log');
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        cubit.startLogging(testSerial);
+        await cubit.exportLogs(destinationPath: '/tmp/exported.log');
+      },
+      expect: () => [
+        isA<DeviceLogStreaming>(),
+        isA<DeviceLogStreaming>().having(
+          (s) => s.feedbackMessage,
+          'feedbackMessage',
+          contains('Exported'),
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () => mockRepository.exportLogsToFile(
+            entries: any(named: 'entries'),
+            destinationPath: '/tmp/exported.log',
+          ),
+        ).called(1);
+      },
+    );
   });
 }

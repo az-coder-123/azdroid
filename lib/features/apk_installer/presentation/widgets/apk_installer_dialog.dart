@@ -11,6 +11,7 @@ import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_info_
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_options_card.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_progress_card.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_result_card.dart';
+import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_footer.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_picker_drop_zone.dart';
 
 /// Modal dialog providing professional APK inspection, options configuration, and sideloading.
@@ -73,7 +74,13 @@ class ApkInstallerDialog extends StatelessWidget {
                     ),
                   ),
                   const Divider(height: 1, color: AppColors.border),
-                  _buildFooter(context, state),
+                  ApkInstallerFooter(
+                    state: state,
+                    onReset: () => context.read<ApkInstallerCubit>().reset(),
+                    onInstall: () =>
+                        context.read<ApkInstallerCubit>().install(),
+                    onClose: () => Navigator.of(context).pop(),
+                  ),
                 ],
               );
             },
@@ -225,57 +232,6 @@ class ApkInstallerDialog extends StatelessWidget {
     }
 
     return const SizedBox.shrink();
-  }
-
-  Widget _buildFooter(BuildContext context, ApkInstallerState state) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14.0),
-      color: AppColors.surfaceElevated,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (state is ApkInstallerSuccess)
-            TextButton.icon(
-              onPressed: () => context.read<ApkInstallerCubit>().reset(),
-              icon: const Icon(Icons.add_rounded, size: 16),
-              label: const Text('Install Another APK'),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.accentLight,
-              ),
-            )
-          else
-            const SizedBox.shrink(),
-          Row(
-            children: [
-              OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
-                  side: const BorderSide(color: AppColors.border),
-                ),
-                child: Text(state is ApkInstallerSuccess ? 'Done' : 'Cancel'),
-              ),
-              if (state is ApkInstallerReady) ...[
-                const SizedBox(width: 12),
-                ElevatedButton.icon(
-                  onPressed: () => context.read<ApkInstallerCubit>().install(),
-                  icon: const Icon(Icons.download_rounded, size: 16),
-                  label: const Text('Install to Device'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 10,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _pickApk(BuildContext context) async {

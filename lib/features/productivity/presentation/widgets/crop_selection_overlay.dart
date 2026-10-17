@@ -7,7 +7,7 @@ import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/utils/crop_handle_helper.dart';
-import 'package:desk_droid/features/productivity/presentation/widgets/crop_action_toolbar.dart';
+import 'package:desk_droid/features/productivity/presentation/widgets/crop_floating_toolbar.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/crop_dimension_badge.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/crop_instruction_pill.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/crop_mask_painter.dart';
@@ -229,34 +229,20 @@ class _CropSelectionOverlayState extends State<CropSelectionOverlay> {
                   if (_hasSelection &&
                       selRect != null &&
                       _activeHandle == CropHandle.none)
-                    _buildFloatingToolbar(selRect, size),
+                    CropFloatingToolbar(
+                      selectionRect: selRect,
+                      viewportSize: size,
+                      onSelectDestination: (dest) =>
+                          _onSelectDestination(dest, size),
+                      onCancel: () =>
+                          context.read<ScreenshotCubit>().cancelAreaSelection(),
+                    ),
                 ],
               ),
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildFloatingToolbar(Rect selRect, Size size) {
-    const toolbarWidth = 275.0;
-    const toolbarHeight = 40.0;
-    final maxLeft = math.max(12.0, size.width - toolbarWidth - 12.0).toDouble();
-    final left = ((selRect.left + (selRect.width / 2) - (toolbarWidth / 2)))
-        .clamp(12.0, maxLeft);
-    final fitsBelow = selRect.bottom + 10 + toolbarHeight < size.height;
-    final top = fitsBelow
-        ? selRect.bottom + 10.0
-        : (math.max(10.0, selRect.top - 10.0 - toolbarHeight)).toDouble();
-
-    return Positioned(
-      left: left,
-      top: top,
-      child: CropActionToolbar(
-        onSelect: (dest) => _onSelectDestination(dest, size),
-        onCancel: () => context.read<ScreenshotCubit>().cancelAreaSelection(),
-      ),
     );
   }
 }

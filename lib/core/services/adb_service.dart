@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:desk_droid/core/models/adb_command_result.dart';
 import 'package:desk_droid/core/models/adb_device.dart';
 import 'package:desk_droid/core/models/adb_mdns_service.dart';
 import 'package:desk_droid/core/services/adb_output_parser.dart';
+import 'package:desk_droid/core/services/adb_path_resolver.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 
@@ -11,6 +10,7 @@ export 'package:desk_droid/core/models/adb_command_result.dart';
 export 'package:desk_droid/core/models/adb_device.dart';
 export 'package:desk_droid/core/models/adb_mdns_service.dart';
 export 'package:desk_droid/core/services/adb_output_parser.dart';
+export 'package:desk_droid/core/services/adb_path_resolver.dart';
 
 /// Service managing ADB interaction, mDNS queries, and device pairing.
 class AdbService {
@@ -18,51 +18,27 @@ class AdbService {
     ProcessExecutor? processExecutor,
     String? explicitAdbPath,
     AdbOutputParser? parser,
+    AdbPathResolver? pathResolver,
   }) : _executor = processExecutor ?? const DefaultProcessExecutor(),
        _cachedAdbPath = explicitAdbPath,
-       _parser = parser ?? const AdbOutputParser();
+       _parser = parser ?? const AdbOutputParser(),
+       _resolver =
+           pathResolver ??
+           AdbPathResolver(
+             executor: processExecutor ?? const DefaultProcessExecutor(),
+             explicitPath: explicitAdbPath,
+           );
 
   final ProcessExecutor _executor;
   final AdbOutputParser _parser;
+  final AdbPathResolver _resolver;
   String? _cachedAdbPath;
-
-  /// Known macOS fallback paths where ADB is frequently installed.
-  static final List<String> _knownAdbPaths = [
-    'adb',
-    '${Platform.environment['HOME']}/Library/Android/sdk/platform-tools/adb',
-    '/opt/homebrew/bin/adb',
-    '/usr/local/bin/adb',
-  ];
 
   /// Locates and caches the active ADB executable path.
   Future<String?> resolveAdbPath() async {
-    if (_cachedAdbPath != null) return _cachedAdbPath;
-
-    try {
-      final whichResult = await _executor.run('/usr/bin/which', ['adb']);
-      final path = whichResult.stdout.toString().trim();
-      if (whichResult.exitCode == 0 && path.isNotEmpty) {
-        _cachedAdbPath = path;
-        return path;
-      }
-    } catch (e) {
-      AppLogger.debug('which adb resolution failed: $e');
-    }
-
-    for (final candidate in _knownAdbPaths) {
-      try {
-        final result = await _executor.run(candidate, [
-          'version',
-        ], timeout: const Duration(seconds: 2));
-        if (result.exitCode == 0) {
-          _cachedAdbPath = candidate;
-          return candidate;
-        }
-      } catch (e) {
-        AppLogger.debug('ADB candidate $candidate check failed: $e');
-      }
-    }
-    return null;
+    final path = await _resolver.resolve(_cachedAdbPath);
+    if (path != null) _cachedAdbPath = path;
+    return path;
   }
 
   /// Checks if ADB is installed and reachable.

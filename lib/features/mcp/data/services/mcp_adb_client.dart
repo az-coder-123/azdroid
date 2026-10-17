@@ -4,19 +4,22 @@ import 'package:desk_droid/features/mcp/domain/entities/mcp_semantic_element.dar
 import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_tree_parser.dart';
 
 part 'mcp_adb_app_ops.dart';
+part 'mcp_adb_automation_delegator.dart';
 part 'mcp_adb_automation_ops.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
 part 'mcp_adb_input_ops.dart';
 part 'mcp_adb_media_proc_ops.dart';
+part 'mcp_adb_notification_button_ops.dart';
 part 'mcp_adb_performance_ops.dart';
 part 'mcp_adb_resolver.dart';
+part 'mcp_adb_system_delegator.dart';
 part 'mcp_adb_system_ops.dart';
 part 'mcp_adb_ui_ops.dart';
 
 /// Pure Dart ADB client for DeskDroid MCP Server.
 /// Operates without UI or Flutter framework dependencies.
-class McpAdbClient {
+class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
   McpAdbClient({String? explicitAdbPath}) : _cachedAdbPath = explicitAdbPath;
 
   String? _cachedAdbPath;
@@ -162,196 +165,4 @@ class McpAdbClient {
       McpAdbDeviceOps.pushFile(this, serial, localPath, remotePath);
   Future<bool> pullFile(String serial, String remotePath, String localPath) =>
       McpAdbDeviceOps.pullFile(this, serial, remotePath, localPath);
-
-  // --- UI Inspection & Semantic Operations ---
-  Future<String> dumpHierarchy(String serial) =>
-      McpAdbUiOps.dumpHierarchy(this, serial);
-  Future<String> getSemanticTree(String serial) =>
-      McpAdbUiOps.getSemanticTree(this, serial);
-  Future<bool> clickElementById(String serial, int id) =>
-      McpAdbUiOps.clickElementById(this, serial, id);
-  Future<Map<String, dynamic>?> findElement(
-    String serial, {
-    String? text,
-    String? resourceId,
-    String? contentDesc,
-  }) => McpAdbUiOps.findElement(
-    this,
-    serial,
-    text: text,
-    resourceId: resourceId,
-    contentDesc: contentDesc,
-  );
-  Future<bool> clickElement(
-    String serial, {
-    String? text,
-    String? resourceId,
-    String? contentDesc,
-  }) => McpAdbUiOps.clickElement(
-    this,
-    serial,
-    text: text,
-    resourceId: resourceId,
-    contentDesc: contentDesc,
-  );
-
-  // --- System, Radio & Settings Operations ---
-  Future<bool> toggleWifi(String serial, bool enable) =>
-      McpAdbSystemOps.toggleWifi(this, serial, enable);
-  Future<bool> toggleAirplaneMode(String serial, bool enable) =>
-      McpAdbSystemOps.toggleAirplaneMode(this, serial, enable);
-  Future<bool> grantPermission(
-    String serial,
-    String packageName,
-    String permission,
-  ) => McpAdbSystemOps.grantPermission(this, serial, packageName, permission);
-  Future<bool> revokePermission(
-    String serial,
-    String packageName,
-    String permission,
-  ) => McpAdbSystemOps.revokePermission(this, serial, packageName, permission);
-  Future<bool> setVolume(
-    String serial, {
-    required int stream,
-    required int volumeIndex,
-  }) => McpAdbSystemOps.setVolume(
-    this,
-    serial,
-    stream: stream,
-    volumeIndex: volumeIndex,
-  );
-  Future<bool> wakeOrSleep(String serial, bool wake) =>
-      McpAdbSystemOps.wakeOrSleep(this, serial, wake);
-  Future<String> openSettings(
-    String serial, {
-    String? action,
-    String? packageName,
-  }) => McpAdbSystemOps.openSettings(
-    this,
-    serial,
-    action: action,
-    packageName: packageName,
-  );
-
-  // --- Performance & Hardware Telemetry Operations ---
-  Future<String> getCpuUsage(String serial, {String? package}) =>
-      McpAdbPerformanceOps.getCpuUsage(this, serial, package: package);
-  Future<String> getMemoryInfo(String serial, String package) =>
-      McpAdbPerformanceOps.getMemoryInfo(this, serial, package);
-  Future<Map<String, dynamic>> getBatteryStats(String serial) =>
-      McpAdbPerformanceOps.getBatteryStats(this, serial);
-  Future<String> getGfxInfo(String serial, String package) =>
-      McpAdbPerformanceOps.getGfxInfo(this, serial, package);
-  Future<Map<String, String>> getNetworkInfo(String serial) =>
-      McpAdbPerformanceOps.getNetworkInfo(this, serial);
-
-  // --- Media Recording, Process & Biometrics Operations ---
-  Future<bool> recordScreen(
-    String serial, {
-    int durationSec = 5,
-    required String localDestination,
-  }) => McpAdbMediaProcOps.recordScreen(
-    this,
-    serial,
-    durationSec: durationSec,
-    localDestination: localDestination,
-  );
-  Future<List<Map<String, String>>> listProcesses(
-    String serial, {
-    String? filter,
-  }) => McpAdbMediaProcOps.listProcesses(this, serial, filter: filter);
-  Future<bool> killProcess(String serial, {int? pid, String? package}) =>
-      McpAdbMediaProcOps.killProcess(this, serial, pid: pid, package: package);
-  Future<bool> setOrientation(String serial, int orientation) =>
-      McpAdbMediaProcOps.setOrientation(this, serial, orientation);
-  Future<bool> simulateBiometric(String serial, {bool success = true}) =>
-      McpAdbMediaProcOps.simulateBiometric(this, serial, success: success);
-
-  // --- Automation, Smart Waiting, Notifications & Batching ---
-  Future<Map<String, dynamic>?> waitForElement(
-    String serial, {
-    String? text,
-    String? resourceId,
-    String? contentDesc,
-    int timeoutMs = 10000,
-    int pollIntervalMs = 500,
-  }) => McpAdbAutomationOps.waitForElement(
-    this,
-    serial,
-    text: text,
-    resourceId: resourceId,
-    contentDesc: contentDesc,
-    timeoutMs: timeoutMs,
-    pollIntervalMs: pollIntervalMs,
-  );
-
-  Future<List<Map<String, dynamic>>> batchActions(
-    String serial,
-    List<Map<String, dynamic>> actions,
-  ) => McpAdbAutomationOps.batchActions(this, serial, actions);
-
-  Future<List<Map<String, String>>> getNotifications(
-    String serial, {
-    String? filter,
-  }) => McpAdbAutomationOps.getNotifications(this, serial, filter: filter);
-
-  Future<bool> dismissNotification(
-    String serial, {
-    String? key,
-    bool clearAll = false,
-  }) => McpAdbAutomationOps.dismissNotification(
-    this,
-    serial,
-    key: key,
-    clearAll: clearAll,
-  );
-
-  Future<bool> setLocation(
-    String serial, {
-    required double latitude,
-    required double longitude,
-    double? altitude,
-  }) => McpAdbAutomationOps.setLocation(
-    this,
-    serial,
-    latitude: latitude,
-    longitude: longitude,
-    altitude: altitude,
-  );
-
-  Future<bool> setNetworkCondition(String serial, String mode) =>
-      McpAdbAutomationOps.setNetworkCondition(this, serial, mode);
-
-  Future<bool> longPress(
-    String serial,
-    double x,
-    double y, {
-    int durationMs = 1000,
-  }) =>
-      McpAdbAutomationOps.longPress(this, serial, x, y, durationMs: durationMs);
-
-  Future<bool> openNotificationPanel(
-    String serial, {
-    bool expand = true,
-    bool quickSettings = false,
-  }) => McpAdbAutomationOps.openNotificationPanel(
-    this,
-    serial,
-    expand: expand,
-    quickSettings: quickSettings,
-  );
-
-  Future<String> readSharedPreferences(
-    String serial, {
-    required String package,
-    String? fileName,
-  }) => McpAdbAutomationOps.readSharedPreferences(
-    this,
-    serial,
-    package: package,
-    fileName: fileName,
-  );
-
-  Future<bool> pressButton(String serial, String button) =>
-      McpAdbAutomationOps.pressButton(this, serial, button);
 }

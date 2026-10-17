@@ -1,0 +1,104 @@
+part of 'mcp_adb_client.dart';
+
+/// Mixin providing automation, smart waiting, notifications, and button
+/// delegator methods for [McpAdbClient].
+mixin McpAdbAutomationDelegator {
+  McpAdbClient get _adbClient => this as McpAdbClient;
+
+  // --- Automation, Smart Waiting, Notifications & Batching ---
+  Future<Map<String, dynamic>?> waitForElement(
+    String serial, {
+    String? text,
+    String? resourceId,
+    String? contentDesc,
+    int timeoutMs = 10000,
+    int pollIntervalMs = 500,
+  }) => McpAdbAutomationOps.waitForElement(
+    _adbClient,
+    serial,
+    text: text,
+    resourceId: resourceId,
+    contentDesc: contentDesc,
+    timeoutMs: timeoutMs,
+    pollIntervalMs: pollIntervalMs,
+  );
+
+  Future<List<Map<String, dynamic>>> batchActions(
+    String serial,
+    List<Map<String, dynamic>> actions,
+  ) => McpAdbAutomationOps.batchActions(_adbClient, serial, actions);
+
+  Future<List<Map<String, String>>> getNotifications(
+    String serial, {
+    String? filter,
+  }) => McpAdbNotificationButtonOps.getNotifications(
+    _adbClient,
+    serial,
+    filter: filter,
+  );
+
+  Future<bool> dismissNotification(
+    String serial, {
+    String? key,
+    bool clearAll = false,
+  }) => McpAdbNotificationButtonOps.dismissNotification(
+    _adbClient,
+    serial,
+    key: key,
+    clearAll: clearAll,
+  );
+
+  Future<bool> setLocation(
+    String serial, {
+    required double latitude,
+    required double longitude,
+    double? altitude,
+  }) => McpAdbAutomationOps.setLocation(
+    _adbClient,
+    serial,
+    latitude: latitude,
+    longitude: longitude,
+    altitude: altitude,
+  );
+
+  Future<bool> setNetworkCondition(String serial, String mode) =>
+      McpAdbAutomationOps.setNetworkCondition(_adbClient, serial, mode);
+
+  Future<bool> longPress(
+    String serial,
+    double x,
+    double y, {
+    int durationMs = 1000,
+  }) => McpAdbAutomationOps.longPress(
+    _adbClient,
+    serial,
+    x,
+    y,
+    durationMs: durationMs,
+  );
+
+  Future<bool> openNotificationPanel(
+    String serial, {
+    bool expand = true,
+    bool quickSettings = false,
+  }) => McpAdbNotificationButtonOps.openNotificationPanel(
+    _adbClient,
+    serial,
+    expand: expand,
+    quickSettings: quickSettings,
+  );
+
+  Future<String> readSharedPreferences(
+    String serial, {
+    required String package,
+    String? fileName,
+  }) => McpAdbNotificationButtonOps.readSharedPreferences(
+    _adbClient,
+    serial,
+    package: package,
+    fileName: fileName,
+  );
+
+  Future<bool> pressButton(String serial, String button) =>
+      McpAdbNotificationButtonOps.pressButton(_adbClient, serial, button);
+}

@@ -4,16 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
-import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 import 'package:desk_droid/features/logging/domain/repositories/device_log_repository.dart';
+import 'package:desk_droid/features/logging/presentation/cubit/device_log_filter_mixin.dart';
+import 'package:desk_droid/features/logging/presentation/cubit/device_log_persistence_mixin.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
 
-/// Cubit managing real-time Android logcat stream ingestion, multi-tier filtering,
-/// disk persistence, and viewport pause states.
-class DeviceLogCubit extends Cubit<DeviceLogState> {
+/// Cubit managing real-time Android logcat stream ingestion, viewport pause states,
+/// and log line selection.
+class DeviceLogCubit extends Cubit<DeviceLogState>
+    with DeviceLogFilterMixin, DeviceLogPersistenceMixin {
   DeviceLogCubit({required this.repository, this.maxBufferEntries = 5000})
     : super(const DeviceLogInitial());
 
+  @override
   final DeviceLogRepository repository;
   final int maxBufferEntries;
 
@@ -39,7 +42,7 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
 
     _recordingTelemetryTimer = Timer.periodic(
       const Duration(seconds: 1),
-      (_) => _syncRecordingTelemetry(),
+      (_) => syncRecordingTelemetry(),
     );
 
     _streamSubscription = repository
@@ -141,181 +144,6 @@ class DeviceLogCubit extends Cubit<DeviceLogState> {
       emit(current.copyWith(selectedEntry: () => null));
     } else {
       emit(current.copyWith(selectedEntry: () => entry));
-    }
-  }
-
-  /// Toggles star/bookmark on an entry ID.
-  void toggleBookmark(int id) {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    final updated = Set<int>.from(current.bookmarkedIds);
-    updated.contains(id) ? updated.remove(id) : updated.add(id);
-    final filtered = current.allEntries
-        .where((e) => current.filter.matches(e, bookmarkedIds: updated))
-        .toList();
-    emit(current.copyWith(bookmarkedIds: updated, filteredEntries: filtered));
-  }
-
-  /// Toggles filtering only bookmarked/starred entries.
-  void toggleBookmarksOnly() {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    updateFilter(
-      current.filter.copyWith(bookmarksOnly: !current.filter.bookmarksOnly),
-    );
-  }
-
-  /// Adds a tag to the excluded tags set.
-  void excludeTag(String tag) {
-    final current = state;
-    if (current is! DeviceLogStreaming || tag.trim().isEmpty) return;
-    final updated = Set<String>.from(current.filter.excludeTags)
-      ..add(tag.trim());
-    updateFilter(current.filter.copyWith(excludeTags: updated));
-  }
-
-  /// Removes a tag from the excluded tags set.
-  void removeExcludeTag(String tag) {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    final updated = Set<String>.from(current.filter.excludeTags)
-      ..remove(tag.trim());
-    updateFilter(current.filter.copyWith(excludeTags: updated));
-  }
-
-  /// Clears all excluded tags.
-  void clearExcludeTags() {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    updateFilter(current.filter.copyWith(excludeTags: const {}));
-  }
-
-  /// Updates active filter criteria and re-evaluates visible logs.
-  void updateFilter(LogFilterCriteria newFilter) {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    final filtered = current.allEntries
-        .where(
-          (e) => newFilter.matches(e, bookmarkedIds: current.bookmarkedIds),
-        )
-        .toList();
-    emit(current.copyWith(filter: newFilter, filteredEntries: filtered));
-  }
-
-  /// Toggles a specific severity level.
-  void toggleLevel(LogLevel level) {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    final levels = Set<LogLevel>.from(current.filter.selectedLevels);
-    levels.contains(level) ? levels.remove(level) : levels.add(level);
-    updateFilter(current.filter.copyWith(selectedLevels: levels));
-  }
-
-  /// Updates search text query.
-  void updateSearch(String query) {
-    final current = state;
-    if (current is DeviceLogStreaming) {
-      updateFilter(current.filter.copyWith(textQuery: query));
-    }
-  }
-
-  /// Toggles regex evaluation mode.
-  void toggleRegex() {
-    final current = state;
-    if (current is DeviceLogStreaming) {
-      updateFilter(current.filter.copyWith(isRegex: !current.filter.isRegex));
-    }
-  }
-
-  /// Toggles case-sensitivity for search and tags.
-  void toggleCaseSensitive() {
-    final current = state;
-    if (current is DeviceLogStreaming) {
-      updateFilter(
-        current.filter.copyWith(caseSensitive: !current.filter.caseSensitive),
-      );
-    }
-  }
-
-  /// Clears in-memory logs from the console.
-  void clearConsole() {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    emit(current.copyWith(allEntries: const [], filteredEntries: const []));
-  }
-
-  /// Clears log buffer on the physical Android device.
-  Future<void> clearDeviceBuffer() async {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    clearConsole();
-    await repository.clearDeviceBuffer(current.deviceSerial);
-    emit(
-      current.copyWith(
-        allEntries: const [],
-        filteredEntries: const [],
-        feedbackMessage: () => 'Device logcat buffer cleared',
-      ),
-    );
-  }
-
-  /// Toggles real-time streaming to a local `.log` file.
-  Future<void> toggleFileRecording({
-    String? customDirectory,
-    String? customFilePath,
-  }) async {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-
-    if (current.recordingStatus.isRecording) {
-      final finalStatus = await repository.stopRecordingToFile();
-      emit(
-        current.copyWith(
-          recordingStatus: finalStatus,
-          feedbackMessage: () => 'Log saved to: ${finalStatus.targetFilePath}',
-        ),
-      );
-    } else {
-      final savedPath = await repository.startRecordingToFile(
-        deviceSerial: current.deviceSerial,
-        customDirectory: customDirectory,
-        customFilePath: customFilePath,
-      );
-      emit(
-        current.copyWith(
-          recordingStatus: repository.recordingStatus,
-          feedbackMessage: () => 'Recording logs to: $savedPath',
-        ),
-      );
-    }
-  }
-
-  /// Exports current in-memory filtered logs to a file.
-  Future<void> exportLogs({required String destinationPath}) async {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-
-    final targetEntries = current.filteredEntries.isNotEmpty
-        ? current.filteredEntries
-        : current.allEntries;
-
-    await repository.exportLogsToFile(
-      entries: targetEntries,
-      destinationPath: destinationPath,
-    );
-    emit(
-      current.copyWith(
-        feedbackMessage: () =>
-            'Exported ${targetEntries.length} logs to $destinationPath',
-      ),
-    );
-  }
-
-  void _syncRecordingTelemetry() {
-    final current = state;
-    if (current is! DeviceLogStreaming) return;
-    if (current.recordingStatus.isRecording) {
-      emit(current.copyWith(recordingStatus: repository.recordingStatus));
     }
   }
 
