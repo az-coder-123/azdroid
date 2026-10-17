@@ -12,6 +12,7 @@
 # ==============================================================================
 
 set -euo pipefail
+export PATH="$PATH:/Users/trannamlong/DevTools/flutter/bin:/Users/trannamlong/Library/Android/sdk/platform-tools:/opt/homebrew/bin:/usr/local/bin"
 
 # ANSI color codes for readable output
 RED='\033[0;31m'
@@ -189,7 +190,7 @@ echo -e "${GREEN}✓ Release documentation generated:${NC} ${RELEASE_DIR}/README
 if [ "$PUSH_GIT" = true ]; then
   echo -e "${YELLOW}🚀 [Step 5/5] Committing release artifacts and pushing to GitHub...${NC}"
   cd "$ROOT_DIR"
-  git add scripts/build_release.sh RELEASE/
+  git add pubspec.yaml scripts/build_release.sh RELEASE/ docs/
   git commit -m "chore(release): package DeskDroid v${VERSION_NAME} macOS release archive" || echo "No changes to commit"
   git push origin main
   echo -e "${GREEN}✓ Release artifacts successfully pushed to GitHub!${NC}"
@@ -215,6 +216,7 @@ if [ "$CREATE_GH_RELEASE" = true ] && command -v gh &> /dev/null; then
 - 🚀 **Performance:** Glass-to-glass latency under 20ms with 60–120 FPS hardware video decoding.
 - 📶 **Dual Connection:** Subnet auto-discovery, mDNS wireless debugging, and plug-and-play USB cable mode.
 - 🛠️ **Developer Workstation:** Built-in Logcat Console, Intent & Deep Link Dispatcher, 1-Click APK Manager, Finder-style File Explorer, Screen Recording, and Area Crop.
+- 🤖 **MCP AI Server:** 58 headless automation & inspection tools for AI agents (Claude Desktop, Cursor, Antigravity).
 
 ### 📥 Download & Verification
 - **File:** \`${ZIP_NAME}\` (\`${ZIP_SIZE}\`)

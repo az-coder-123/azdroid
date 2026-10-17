@@ -4,21 +4,21 @@
 
 ---
 
-## 📥 Current Release: v1.0.0 (Build 1)
+## 📥 Current Release: v1.0.1 (Build 2)
 
 | Asset | Platform | File Size | SHA-256 Checksum |
 | :--- | :--- | :--- | :--- |
-| **[`DeskDroid-v1.0.0-macOS.zip`](DeskDroid-v1.0.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | `18M` | `34d6809c54740ee250d3b8bb6a12f951a97c39633cf33f072aa662d1b91cf7c6` |
-| **[`DeskDroid-macOS-latest.zip`](DeskDroid-macOS-latest.zip)** | macOS 12.0+ (Latest Snapshot) | `18M` | `34d6809c54740ee250d3b8bb6a12f951a97c39633cf33f072aa662d1b91cf7c6` |
+| **[`DeskDroid-v1.0.1-macOS.zip`](DeskDroid-v1.0.1-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | `18M` | `ed6e422eeb458d272fbb4a075a2c8e39de7c50f39a7de70fd56096b270e36fd9` |
+| **[`DeskDroid-macOS-latest.zip`](DeskDroid-macOS-latest.zip)** | macOS 12.0+ (Latest Snapshot) | `18M` | `ed6e422eeb458d272fbb4a075a2c8e39de7c50f39a7de70fd56096b270e36fd9` |
 
 ---
 
 ## 🚀 Installation Guide (macOS)
 
-1. Download **[`DeskDroid-v1.0.0-macOS.zip`](DeskDroid-v1.0.0-macOS.zip)** from this directory or the [GitHub Releases](https://github.com/az-coder-123/desk-droid/releases) page.
+1. Download **[`DeskDroid-v1.0.1-macOS.zip`](DeskDroid-v1.0.1-macOS.zip)** from this directory or the [GitHub Releases](https://github.com/az-coder-123/desk-droid/releases) page.
 2. Unzip the archive by double-clicking it in macOS Finder or running:
    ```bash
-   unzip DeskDroid-v1.0.0-macOS.zip
+   unzip DeskDroid-v1.0.1-macOS.zip
    ```
 3. Drag **DeskDroid.app** into your `/Applications` folder.
 4. Ensure **ADB (Android Debug Bridge)** is installed on your Mac:
