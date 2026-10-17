@@ -61,13 +61,15 @@ class MenuBarSessionCard extends StatelessWidget {
             children: [
               _buildTelemetryChip(
                 icon: Icons.speed_rounded,
-                label: '${status.latencyMs ?? 18}ms',
+                label: status.latencyMs == null
+                    ? '— ms'
+                    : '${status.latencyMs}ms',
                 color: AppColors.accentLight,
               ),
               const SizedBox(width: 8),
               _buildTelemetryChip(
                 icon: Icons.motion_photos_on_rounded,
-                label: '${status.fps ?? 60} FPS',
+                label: '${status.fps ?? '—'} FPS',
                 color: AppColors.statusSuccess,
               ),
             ],

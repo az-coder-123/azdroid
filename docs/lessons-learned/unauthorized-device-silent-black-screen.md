@@ -81,7 +81,8 @@ a Mac is still `unauthorized` for a new Windows PC.
       typed failure at the repository boundary.
 - [x] **Map failures to guidance in the presentation layer.** Domain errors
       carry a reason; the cubit decides the wording.
-- [ ] **Async native connections need their own failure signal.** Open: the
-      native plugin should report "header never arrived" back to Dart.
-- [ ] **Do not show fixed telemetry as live data.** Open: replace the fixed
-      `latencyMs` with measured values.
+- [x] **Async native connections need their own failure signal.** The
+      native `getStats` method reports `failed` / `ended`, and the cubit ends
+      the session with an explanation (see `docs/native-video-contract.md`).
+- [x] **Do not show fixed telemetry as live data.** The header shows measured
+      FPS, bitrate, and latency, and a dash until the first sample arrives.

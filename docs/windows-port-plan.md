@@ -92,7 +92,9 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 - `windows/scrcpy_stream`: Winsock client, Media Foundation H.264 MFT (low-latency mode, stream-change handling from 1c), RGBA pixel-buffer texture, DLL plugin registered in `flutter_window.cpp`.
 - Contract shared with macOS: [native-video-contract.md](native-video-contract.md).
 - First Windows run (Windows 10, Redmi M2004J19C over Wi-Fi): `flutter run -d windows` builds after one fix ([windows-sdk-macro-identifier-clash.md](lessons-learned/windows-sdk-macro-identifier-clash.md)). The plugin reads the header (`h264 1080x2336`), and the MF decoder outputs NV12 with a 1088-pixel coded width; more than 1,100 frames decoded in one session.
-- Still open: visual check of the rendered frame (colors, stride, aspect ratio), and the MSVC core tests (see [native-video-contract.md](native-video-contract.md#5-testing)).
+- MSVC core tests pass (21 tests, `/W4 /WX`), using the CMake bundled with Visual Studio.
+- `getStats` telemetry works end to end: killing the scrcpy server on the phone moves the stream to `ended`, and the app stops the session with an error within one second.
+- Still open: visual check of the rendered frame (colors, stride, aspect ratio).
 
 ### Phase 2 — Windows Service Implementations (≈ 1 week)
 

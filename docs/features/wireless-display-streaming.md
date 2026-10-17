@@ -46,6 +46,6 @@ flowchart LR
 ## 🏛️ State Management (`StreamingCubit`)
 
 - `StreamingInitial`: Idle state awaiting device connection.
-- `StreamingConnecting`: Daemon uploaded, establishing TCP video sockets.
-- `StreamingActive`: Video feed live with active FPS, bitrate, and latency telemetry.
-- `StreamingError`: Network timeout, port conflict, or ADB disconnection.
+- `StreamingStarting`: Checks that ADB lists the device as authorized, launches the scrcpy server, and opens the video socket.
+- `StreamingActive`: Video texture is shown. `telemetry` holds measured FPS, bitrate, and processing latency, refreshed every second by `StreamingTelemetryTracker` (`null` until the first sample, shown as `—`).
+- `StreamingError`: Actionable message for an unauthorized, offline, or missing device, a server that failed to start, or a video stream that failed or ended (native `getStats` state). The session is stopped and **Retry Connection** starts a new one.

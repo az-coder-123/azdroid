@@ -14,7 +14,6 @@ class StreamSessionEntity extends Equatable {
     this.isAudioEnabled = false,
     this.isConnected = true,
     this.isScreenOff = false,
-    this.latencyMs = 20,
   });
 
   /// Unique session identifier.
@@ -50,9 +49,6 @@ class StreamSessionEntity extends Equatable {
   /// Whether the physical phone screen is powered off during streaming.
   final bool isScreenOff;
 
-  /// Estimated glass-to-glass latency in milliseconds.
-  final int latencyMs;
-
   /// Aspect ratio calculated from width and height.
   double get aspectRatio => height > 0 ? width / height : 9 / 19.5;
 
@@ -68,7 +64,6 @@ class StreamSessionEntity extends Equatable {
     bool? isAudioEnabled,
     bool? isConnected,
     bool? isScreenOff,
-    int? latencyMs,
   }) {
     return StreamSessionEntity(
       sessionId: sessionId ?? this.sessionId,
@@ -82,7 +77,6 @@ class StreamSessionEntity extends Equatable {
       isAudioEnabled: isAudioEnabled ?? this.isAudioEnabled,
       isConnected: isConnected ?? this.isConnected,
       isScreenOff: isScreenOff ?? this.isScreenOff,
-      latencyMs: latencyMs ?? this.latencyMs,
     );
   }
 
@@ -99,6 +93,5 @@ class StreamSessionEntity extends Equatable {
     isAudioEnabled,
     isConnected,
     isScreenOff,
-    latencyMs,
   ];
 }

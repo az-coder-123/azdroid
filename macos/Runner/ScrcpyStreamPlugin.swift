@@ -26,6 +26,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
   private var activeSps: Data?
   private var activePps: Data?
   private var decodedFrameCount = 0
+  private let stats = ScrcpyStreamStats()
 
   public var videoWidth: Int = 0
   public var videoHeight: Int = 0
@@ -93,6 +94,9 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
     case "getDimensions":
       result(["width": videoWidth, "height": videoHeight])
 
+    case "getStats":
+      result(stats.snapshot())
+
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -124,6 +128,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
     ScrcpyStreamPlugin.streamLog("Texture registered with ID: \(id)")
     self.textureId = id
     self.isStreaming = true
+    stats.reset(to: .connecting)
 
     let thread = Thread { [weak self] in
       self?.runStreamLoop(host: host, port: port)
@@ -137,6 +142,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
 
   private func stopStream() {
     isStreaming = false
+    stats.reset(to: .idle)
 
     if streamSocket >= 0 {
       Darwin.shutdown(streamSocket, SHUT_RDWR)
@@ -233,8 +239,10 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
 
     guard headerReceived && sock >= 0 else {
       ScrcpyStreamPlugin.streamLog("Failed to establish video stream and read header after retries")
+      if isStreaming { stats.setState(.failed) }
       return
     }
+    stats.setState(.streaming)
 
     // 2. Read Packets Loop (8 bytes PTS, 4 bytes packet size, <size> bytes NALUs)
     var packetIndex = 0
@@ -251,6 +259,8 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       guard packetSize > 0, let packetData = readExact(socket: sock, count: packetSize) else {
         break
       }
+      let receivedAt = DispatchTime.now().uptimeNanoseconds
+      stats.addBytes(ptsData.count + sizeData.count + packetSize)
 
       packetIndex += 1
       if packetIndex <= 5 || packetIndex % 60 == 0 {
@@ -262,11 +272,13 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       if isConfig {
         parseConfigPacket(packetData)
       } else {
-        processVideoFrame(packetData)
+        processVideoFrame(packetData, receivedAt: receivedAt)
       }
     }
 
     ScrcpyStreamPlugin.streamLog("Stream loop terminated.")
+    // The loop only exits on its own when the device closes the stream.
+    if isStreaming { stats.setState(.ended) }
     if streamSocket >= 0 {
       Darwin.close(streamSocket)
       streamSocket = -1
@@ -365,7 +377,9 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
             guard status == noErr, let imageBuffer = imageBuffer else { return }
             let plugin = Unmanaged<ScrcpyStreamPlugin>.fromOpaque(outputRefCon!)
               .takeUnretainedValue()
-            plugin.onPixelBufferAvailable(imageBuffer)
+            // The frame refcon carries the packet receive time (see processVideoFrame).
+            let receivedAt = UInt64(UInt(bitPattern: sourceFrameRefCon))
+            plugin.onPixelBufferAvailable(imageBuffer, receivedAt: receivedAt)
           },
           decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
         )
@@ -397,7 +411,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
     }
   }
 
-  private func processVideoFrame(_ data: Data) {
+  private func processVideoFrame(_ data: Data, receivedAt: UInt64) {
     let nalus = splitAnnexBNalus(data)
     guard !nalus.isEmpty else { return }
 
@@ -489,12 +503,13 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       session,
       sampleBuffer: sb,
       flags: [._EnableAsynchronousDecompression],
-      frameRefcon: nil,
+      // Returned unchanged to the output callback to measure processing time.
+      frameRefcon: UnsafeMutableRawPointer(bitPattern: UInt(receivedAt)),
       infoFlagsOut: &flagsOut
     )
   }
 
-  fileprivate func onPixelBufferAvailable(_ pixelBuffer: CVImageBuffer) {
+  fileprivate func onPixelBufferAvailable(_ pixelBuffer: CVImageBuffer, receivedAt: UInt64) {
     let format = CVPixelBufferGetPixelFormatType(pixelBuffer)
     if format == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange ||
        format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
@@ -512,6 +527,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
     pixelBufferLock.lock()
     currentPixelBuffer = pixelBuffer
     pixelBufferLock.unlock()
+    stats.recordFrame(receivedAtNs: receivedAt)
 
     if let id = self.textureId {
       DispatchQueue.main.async { [weak self] in

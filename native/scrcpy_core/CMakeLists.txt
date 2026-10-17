@@ -15,6 +15,7 @@ add_library(scrcpy_core STATIC
   src/nv12_converter.cpp
   src/packet_header.cpp
   src/stream_header.cpp
+  src/stream_stats.cpp
 )
 target_include_directories(scrcpy_core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_compile_features(scrcpy_core PUBLIC cxx_std_17)
@@ -33,6 +34,7 @@ if(SCRCPY_CORE_BUILD_TESTS)
   add_executable(scrcpy_core_tests
     test/frame_test.cpp
     test/protocol_test.cpp
+    test/stats_test.cpp
     test/test_main.cpp
   )
   target_link_libraries(scrcpy_core_tests PRIVATE scrcpy_core Threads::Threads)

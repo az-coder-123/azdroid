@@ -4,7 +4,9 @@ import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
+import 'package:desk_droid/features/streaming/data/services/stream_telemetry_sampler.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 
@@ -14,14 +16,24 @@ class StreamingRepositoryImpl implements StreamingRepository {
     ScrcpyServerManager? serverManager,
     IVideoStreamNativeService? videoStreamNativeService,
     StreamDevicePreflight? devicePreflight,
+    StreamTelemetrySampler? telemetrySampler,
   }) : _serverManager = serverManager ?? ScrcpyServerManager(),
        _videoStreamNativeService =
            videoStreamNativeService ?? VideoStreamNativeService(),
-       _devicePreflight = devicePreflight ?? StreamDevicePreflight();
+       _devicePreflight = devicePreflight ?? StreamDevicePreflight(),
+       // The native service is a stateless channel wrapper, so a second
+       // default instance for the sampler is harmless.
+       _telemetrySampler =
+           telemetrySampler ??
+           StreamTelemetrySampler(
+             nativeService:
+                 videoStreamNativeService ?? VideoStreamNativeService(),
+           );
 
   final ScrcpyServerManager _serverManager;
   final IVideoStreamNativeService _videoStreamNativeService;
   final StreamDevicePreflight _devicePreflight;
+  final StreamTelemetrySampler _telemetrySampler;
 
   StreamSessionEntity? _currentSession;
 
@@ -87,12 +99,14 @@ class StreamingRepositoryImpl implements StreamingRepository {
       bitrateMbps: bitrate,
       textureId: textureId,
       isScreenOff: screenOff,
-      latencyMs: 16,
     );
 
     _currentSession = session;
     return session;
   }
+
+  @override
+  Stream<StreamTelemetry> watchTelemetry() => _telemetrySampler.watch();
 
   @override
   Future<void> stopSession(String sessionId) async {

@@ -1,5 +1,6 @@
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 
 /// Contract defining low-latency video streaming and session lifecycle operations.
 abstract class StreamingRepository {
@@ -13,6 +14,12 @@ abstract class StreamingRepository {
     int? bitrateMbps,
     bool? turnScreenOff,
   });
+
+  /// Emits measured stream telemetry about once per second while listened to.
+  ///
+  /// A terminal [StreamTelemetry.health] (`failed`, `ended`) means the video
+  /// stream is gone and the session should be stopped.
+  Stream<StreamTelemetry> watchTelemetry();
 
   /// Terminates an active mirroring session identified by [sessionId].
   Future<void> stopSession(String sessionId);

@@ -5,12 +5,15 @@ import 'package:desk_droid/features/streaming/domain/errors/stream_start_excepti
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/streaming_telemetry_tracker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing the display mirroring session lifecycle, viewport controls, and navigation input.
-class StreamingCubit extends Cubit<StreamingState> {
+class StreamingCubit extends Cubit<StreamingState>
+    with StreamingTelemetryTracker {
   StreamingCubit({required this.repository}) : super(const StreamingInitial());
 
+  @override
   final StreamingRepository repository;
 
   /// Starts a low-latency video streaming session with the specified [device].
@@ -29,6 +32,7 @@ class StreamingCubit extends Cubit<StreamingState> {
         turnScreenOff: turnScreenOff,
       );
       emit(StreamingActive(session: session));
+      startTelemetry();
     } on StreamStartException catch (error) {
       AppLogger.warning('Mirroring session not started: $error');
       emit(StreamingError(message: error.failure.messageFor(device.name)));
@@ -39,6 +43,7 @@ class StreamingCubit extends Cubit<StreamingState> {
 
   /// Stops and cleans up the active streaming session.
   Future<void> stopSession() async {
+    await stopTelemetry();
     final currentState = state;
     if (currentState is StreamingActive) {
       try {
@@ -58,6 +63,7 @@ class StreamingCubit extends Cubit<StreamingState> {
 
   @override
   Future<void> close() async {
+    await stopTelemetry();
     final currentState = state;
     if (currentState is StreamingActive) {
       try {

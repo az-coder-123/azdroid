@@ -20,10 +20,11 @@ class MirroringView extends StatelessWidget {
       body: BlocConsumer<StreamingCubit, StreamingState>(
         listener: (context, state) {
           if (state is StreamingActive) {
+            final telemetry = state.telemetry;
             context.read<MenuBarCubit>().updateActiveSession(
               deviceName: state.session.deviceName,
-              latencyMs: state.session.latencyMs,
-              fps: state.session.fps,
+              latencyMs: telemetry?.latencyMs?.round(),
+              fps: telemetry?.fps?.round(),
             );
           } else if (state is StreamingInitial) {
             context.read<MenuBarCubit>().clearActiveSession();

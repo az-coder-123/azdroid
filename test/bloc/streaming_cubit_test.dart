@@ -1,8 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/stream_health_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
@@ -17,6 +19,8 @@ void main() {
 
   setUp(() {
     mockRepository = MockStreamingRepository();
+    when(() => mockRepository.watchTelemetry())
+        .thenAnswer((_) => const Stream.empty());
     streamingCubit = StreamingCubit(repository: mockRepository);
   });
 
@@ -61,6 +65,56 @@ void main() {
       ],
       verify: (_) {
         verify(() => mockRepository.startSession(testDevice)).called(1);
+      },
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'adds measured telemetry to the active state',
+      build: () {
+        when(() => mockRepository.startSession(testDevice))
+            .thenAnswer((_) async => testSession);
+        when(() => mockRepository.watchTelemetry()).thenAnswer(
+          (_) => Stream.value(
+            const StreamTelemetry(health: StreamHealth.live, fps: 58),
+          ),
+        );
+        return streamingCubit;
+      },
+      act: (cubit) => cubit.startSession(testDevice),
+      expect: () => [
+        const StreamingStarting(device: testDevice),
+        const StreamingActive(session: testSession),
+        const StreamingActive(
+          session: testSession,
+          telemetry: StreamTelemetry(health: StreamHealth.live, fps: 58),
+        ),
+      ],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'stops the session and explains when the video stream ends',
+      build: () {
+        when(() => mockRepository.startSession(testDevice))
+            .thenAnswer((_) async => testSession);
+        when(() => mockRepository.stopSession(testSession.sessionId))
+            .thenAnswer((_) async {});
+        when(() => mockRepository.watchTelemetry()).thenAnswer(
+          (_) =>
+              Stream.value(const StreamTelemetry(health: StreamHealth.ended)),
+        );
+        return streamingCubit;
+      },
+      act: (cubit) => cubit.startSession(testDevice),
+      expect: () => [
+        const StreamingStarting(device: testDevice),
+        const StreamingActive(session: testSession),
+        StreamingError(
+          message: StreamHealth.ended.messageFor(testSession.deviceName)!,
+        ),
+      ],
+      verify: (_) {
+        verify(() => mockRepository.stopSession(testSession.sessionId))
+            .called(1);
       },
     );
 

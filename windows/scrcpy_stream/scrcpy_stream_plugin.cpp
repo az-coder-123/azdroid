@@ -18,6 +18,7 @@ using flutter::EncodableValue;
 constexpr char kStartStream[] = "startStream";
 constexpr char kStopStream[] = "stopStream";
 constexpr char kGetDimensions[] = "getDimensions";
+constexpr char kGetStats[] = "getStats";
 constexpr char kHostKey[] = "host";
 constexpr char kPortKey[] = "port";
 constexpr char kNoRegistryCode[] = "NO_REGISTRY";
@@ -85,6 +86,8 @@ void ScrcpyStreamPlugin::HandleMethodCall(
     result->Success(EncodableValue(true));
   } else if (method == kGetDimensions) {
     result->Success(Dimensions());
+  } else if (method == kGetStats) {
+    result->Success(Stats());
   } else {
     result->NotImplemented();
   }
@@ -128,6 +131,21 @@ EncodableValue ScrcpyStreamPlugin::Dimensions() const {
   return EncodableValue(EncodableMap{
       {EncodableValue("width"), EncodableValue(width)},
       {EncodableValue("height"), EncodableValue(height)},
+  });
+}
+
+EncodableValue ScrcpyStreamPlugin::Stats() const {
+  const scrcpy_core::StreamStatsSnapshot stats =
+      session_ ? session_->stats() : scrcpy_core::StreamStatsSnapshot{};
+  return EncodableValue(EncodableMap{
+      {EncodableValue("state"),
+       EncodableValue(std::string(scrcpy_core::StreamStateName(stats.state)))},
+      {EncodableValue("framesDecoded"),
+       EncodableValue(static_cast<int64_t>(stats.frames_decoded))},
+      {EncodableValue("bytesReceived"),
+       EncodableValue(static_cast<int64_t>(stats.bytes_received))},
+      {EncodableValue("processingTimeUs"),
+       EncodableValue(static_cast<int64_t>(stats.processing_time_us))},
   });
 }
 

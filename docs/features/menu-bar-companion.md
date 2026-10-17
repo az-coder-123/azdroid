@@ -28,8 +28,8 @@ flowchart TD
 ### 2. Live Session Telemetry Popover
 Clicking the menu bar icon reveals an Apple-styled frosted glass popover displaying:
 - **Active Device Model:** Displays device marketing name (e.g. `Google Pixel 8 Pro`) and connection type (5 GHz Wi-Fi or USB).
-- **Glass-to-Glass Latency:** Real-time round-trip latency metric (e.g. `24 ms`).
-- **Stream Frame Rate:** Real-time rendered frames per second (e.g. `60 FPS`).
+- **Processing Latency:** Average host time per frame, from packet received to frame displayed (e.g. `12ms`). It excludes device encoding and network time, so it is not glass-to-glass latency. Shows `— ms` until the first measurement.
+- **Stream Frame Rate:** Measured decoded frames per second (e.g. `60 FPS`). scrcpy only sends frames when the screen changes, so a still screen shows a low value.
 - **Connection Health:** Color-coded status badge signaling optimal, degraded, or congested wireless links.
 
 ### 3. Rapid Window & Session Governance

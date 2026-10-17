@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/models/native_stream_stats.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:flutter/services.dart';
 
@@ -11,6 +12,10 @@ abstract class IVideoStreamNativeService {
 
   /// Retrieves the decoded video frame dimensions (width and height).
   Future<Map<String, int>> getDimensions();
+
+  /// Reads the stream state and cumulative counters, or `null` when the
+  /// native side cannot report them.
+  Future<NativeStreamStats?> getStats();
 }
 
 /// Production implementation of the `com.deskdroid/video_stream` channel.
@@ -75,5 +80,21 @@ class VideoStreamNativeService implements IVideoStreamNativeService {
       AppLogger.debug('Failed to get native stream dimensions: $e');
     }
     return {'width': 0, 'height': 0};
+  }
+
+  @override
+  Future<NativeStreamStats?> getStats() async {
+    try {
+      final result = await _channel.invokeMapMethod<Object?, Object?>(
+        'getStats',
+      );
+      return result == null ? null : NativeStreamStats.fromMap(result);
+    } on MissingPluginException {
+      // Older native builds have no getStats; telemetry stays unknown.
+      return null;
+    } on PlatformException catch (e) {
+      AppLogger.debug('Failed to get native stream stats: $e');
+      return null;
+    }
   }
 }

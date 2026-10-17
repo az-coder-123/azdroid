@@ -54,6 +54,7 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                     child: StreamTelemetryHeader(
                       session: widget.state.session,
+                      telemetry: widget.state.telemetry,
                       isZenMode: _isZenMode,
                       onToggleZenMode: () => setState(() => _isZenMode = true),
                       onClose: context.read<StreamingCubit>().stopSession,

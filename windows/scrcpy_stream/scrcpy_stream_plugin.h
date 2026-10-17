@@ -36,6 +36,7 @@ class ScrcpyStreamPlugin : public flutter::Plugin {
   int64_t StartStream(const std::string& host, uint16_t port);
   void StopStream();
   flutter::EncodableValue Dimensions() const;
+  flutter::EncodableValue Stats() const;
 
   flutter::TextureRegistrar* textures_;
   std::shared_ptr<FrameTexture> texture_;

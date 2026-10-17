@@ -17,6 +17,8 @@ namespace {
 
 constexpr char kSupportedCodec[] = "h264";
 
+using scrcpy_core::StreamState;
+
 }  // namespace
 
 StreamSession::StreamSession(std::string host, uint16_t port,
@@ -31,6 +33,7 @@ StreamSession::~StreamSession() { Stop(); }
 
 void StreamSession::Start() {
   Stop();
+  stats_.SetState(StreamState::kConnecting);
   running_ = true;
   thread_ = std::thread([this] { Run(); });
 }
@@ -59,14 +62,22 @@ void StreamSession::Run() {
   MediaFoundationScope media_foundation;
   if (!winsock.ok() || !media_foundation.ok()) {
     StreamLog("Platform initialization failed; stream not started");
+    stats_.SetState(StreamState::kFailed);
     return;
   }
 
   const auto header = ConnectAndReadHeader();
-  if (header) {
-    PumpPackets(*header);
+  if (!header) {
+    if (running_) {
+      StreamLog("Failed to connect and read the stream header after retries");
+      stats_.SetState(StreamState::kFailed);
+    }
+  } else if (!PumpPackets(*header)) {
+    stats_.SetState(StreamState::kFailed);
   } else if (running_) {
-    StreamLog("Failed to connect and read the stream header after retries");
+    // The loop only exits on its own when the device closes the stream.
+    StreamLog("Stream closed by the device");
+    stats_.SetState(StreamState::kEnded);
   }
   connection_.Close();
   StreamLog("Session thread finished");
@@ -99,15 +110,16 @@ std::optional<scrcpy_core::StreamHeader> StreamSession::ConnectAndReadHeader() {
   return std::nullopt;
 }
 
-void StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
+bool StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
   if (header.codec != kSupportedCodec) {
     StreamLog("Codec '" + header.codec + "' is not supported; expected h264");
-    return;
+    return false;
   }
   MfH264Decoder decoder;
   if (!decoder.Initialize(header.width, header.height)) {
-    return;
+    return false;
   }
+  stats_.SetState(StreamState::kStreaming);
 
   scrcpy_core::ConfigPacketMerger merger;
   std::array<uint8_t, scrcpy_core::kPacketHeaderSize> header_bytes = {};
@@ -133,6 +145,8 @@ void StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
         ReadResult::kOk) {
       break;
     }
+    packet_received_at_ = std::chrono::steady_clock::now();
+    stats_.AddBytes(header_bytes.size() + payload.size());
     if (index <= kVerboseLogCount || index % kPeriodicLogInterval == 0) {
       StreamLog("Packet #" + std::to_string(index) + ": size=" +
                 std::to_string(packet->payload_size) +
@@ -145,6 +159,7 @@ void StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
     }
   }
   decoder.Shutdown();
+  return true;
 }
 
 void StreamSession::PublishFrame(const scrcpy_core::Nv12Image& image) {
@@ -156,6 +171,9 @@ void StreamSession::PublishFrame(const scrcpy_core::Nv12Image& image) {
   width_ = image.width;
   height_ = image.height;
   on_frame_ready_();
+  const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
+      std::chrono::steady_clock::now() - packet_received_at_);
+  stats_.AddFrame(static_cast<uint64_t>(elapsed.count()));
 }
 
 }  // namespace scrcpy_stream

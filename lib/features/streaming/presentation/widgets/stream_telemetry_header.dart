@@ -1,6 +1,8 @@
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/stream_telemetry_labels.dart';
 import 'package:flutter/material.dart';
 
 /// Floating telemetry header displaying real-time stream performance metrics.
@@ -8,12 +10,16 @@ class StreamTelemetryHeader extends StatelessWidget {
   const StreamTelemetryHeader({
     super.key,
     required this.session,
+    this.telemetry,
     required this.onClose,
     this.onToggleZenMode,
     this.isZenMode = false,
   });
 
   final StreamSessionEntity session;
+
+  /// Measured values; `null` until the first sample arrives.
+  final StreamTelemetry? telemetry;
   final VoidCallback onClose;
   final VoidCallback? onToggleZenMode;
   final bool isZenMode;
@@ -42,12 +48,17 @@ class StreamTelemetryHeader extends StatelessWidget {
             // Device Name & Status
             Row(
               children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.statusSuccess,
-                    shape: BoxShape.circle,
+                Tooltip(
+                  message: _isLive ? 'Streaming' : 'Waiting for video',
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _isLive
+                          ? AppColors.statusSuccess
+                          : AppColors.statusWarning,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -65,17 +76,20 @@ class StreamTelemetryHeader extends StatelessWidget {
             const SizedBox(width: 16),
 
             // Latency Badge
-            _buildMetricPill(
-              icon: Icons.bolt_rounded,
-              label: '${session.latencyMs}ms',
-              color: AppColors.statusSuccess,
+            Tooltip(
+              message: StreamTelemetryLabels.latencyTooltip,
+              child: _buildMetricPill(
+                icon: Icons.bolt_rounded,
+                label: StreamTelemetryLabels.latency(telemetry),
+                color: AppColors.statusSuccess,
+              ),
             ),
             const SizedBox(width: 10),
 
             // Frame Rate Badge
             _buildMetricPill(
               icon: Icons.speed_rounded,
-              label: '${session.fps} FPS',
+              label: StreamTelemetryLabels.fps(telemetry),
               color: AppColors.accentLight,
             ),
             const SizedBox(width: 10),
@@ -83,7 +97,7 @@ class StreamTelemetryHeader extends StatelessWidget {
             // Bitrate Badge
             _buildMetricPill(
               icon: Icons.network_check_rounded,
-              label: '${session.bitrateMbps} Mbps',
+              label: StreamTelemetryLabels.bitrate(telemetry),
               color: AppColors.accent,
             ),
             const SizedBox(width: 10),
@@ -132,6 +146,8 @@ class StreamTelemetryHeader extends StatelessWidget {
       ),
     );
   }
+
+  bool get _isLive => telemetry?.health == StreamHealth.live;
 
   Widget _buildDivider() {
     return Container(width: 1, height: 16, color: AppColors.border);

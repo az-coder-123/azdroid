@@ -1,5 +1,6 @@
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 import 'package:equatable/equatable.dart';
 
 /// Base class for all states emitted by [StreamingCubit].
@@ -31,26 +32,37 @@ final class StreamingActive extends StreamingState {
     required this.session,
     this.isHudVisible = true,
     this.rotationDegrees = 0,
+    this.telemetry,
   });
 
   final StreamSessionEntity session;
   final bool isHudVisible;
   final int rotationDegrees;
 
+  /// Latest measured telemetry, or `null` before the first sample.
+  final StreamTelemetry? telemetry;
+
   StreamingActive copyWith({
     StreamSessionEntity? session,
     bool? isHudVisible,
     int? rotationDegrees,
+    StreamTelemetry? telemetry,
   }) {
     return StreamingActive(
       session: session ?? this.session,
       isHudVisible: isHudVisible ?? this.isHudVisible,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
+      telemetry: telemetry ?? this.telemetry,
     );
   }
 
   @override
-  List<Object?> get props => [session, isHudVisible, rotationDegrees];
+  List<Object?> get props => [
+    session,
+    isHudVisible,
+    rotationDegrees,
+    telemetry,
+  ];
 }
 
 /// State emitted when the active session is temporarily paused.

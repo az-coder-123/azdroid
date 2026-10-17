@@ -19,6 +19,7 @@ import 'package:desk_droid/features/productivity/presentation/cubit/file_transfe
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
@@ -70,7 +71,14 @@ void main() {
     height: 2400,
     fps: 60,
     bitrateMbps: 8,
-    latencyMs: 18,
+  );
+
+  // Measured values deliberately differ from the session's targets above.
+  const testTelemetry = StreamTelemetry(
+    health: StreamHealth.live,
+    fps: 59.6,
+    bitrateMbps: 7.84,
+    latencyMs: 12.4,
   );
 
   const testAudioStream = AudioStreamEntity(
@@ -93,6 +101,8 @@ void main() {
     when(() => mockRepository.startSession(testDevice))
         .thenAnswer((_) async => testSession);
     when(() => mockRepository.stopSession(any())).thenAnswer((_) async {});
+    when(() => mockRepository.watchTelemetry())
+        .thenAnswer((_) => Stream.value(testTelemetry));
     when(() => mockRepository.sendNavigationKey(any(), any()))
         .thenAnswer((_) async {});
     when(() => mockAudioRepository.startAudioStream(any()))
@@ -188,9 +198,11 @@ void main() {
 
       // Verify Telemetry Header
       expect(find.text('Google Pixel 8'), findsWidgets);
-      expect(find.text('18ms'), findsOneWidget);
+      // Header shows measured telemetry, not the configured targets.
+      await tester.pump();
+      expect(find.text('12ms'), findsOneWidget);
       expect(find.text('60 FPS'), findsOneWidget);
-      expect(find.text('8 Mbps'), findsOneWidget);
+      expect(find.text('7.8 Mbps'), findsOneWidget);
 
       // Labels come from the scheme registered by the platform module.
       final keys = sl<ShortcutScheme>();
