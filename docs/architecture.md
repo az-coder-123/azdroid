@@ -52,7 +52,7 @@ flowchart TD
 ```text
 lib/
 ├── core/                                   # Shared kernel & infrastructure
-│   ├── constants/                          # Zero-hardcoding constants
+│   ├── constants/                          # Zero-hardcoding constants (incl. AdbTimeouts, FeedbackDurations)
 │   │   ├── android_key_codes.dart          # Android KeyEvent codes & Flutter key mapper
 │   │   ├── app_constants.dart              # App metadata, dimensions
 │   │   ├── audio_constants.dart            # Audio sample rate, channels, codec defaults
@@ -74,7 +74,6 @@ lib/
 ├── features/                               # Modular domain features
 │   ├── discovery/                          # Device discovery & wireless pairing
 │   │   ├── domain/
-│   │   │   ├── entities/device_entity.dart
 │   │   │   └── repositories/device_discovery_repository.dart
 │   │   ├── data/
 │   │   │   ├── models/device_model.dart
@@ -239,11 +238,11 @@ lib/
    - States are immutable and compared using `Equatable`.
 3. **Dependency Inversion (DIP):**
    - High-level modules (Cubits) depend on domain abstractions (`DeviceDiscoveryRepository`), not low-level concrete implementations.
-   - All components are registered through the `GetIt` service locator in `lib/core/di/injection.dart`.
+   - All components are registered through the `GetIt` service locator in `lib/core/di/injection.dart`. Cross-feature rules (shared kernel, composition root, core contracts) live in [dependency-boundaries.md](dependency-boundaries.md).
 4. **Comprehensive Automated Testing:**
    - **Unit Tests:** Data serialization and model mapping in `test/unit/`.
    - **BLoC Tests:** Cubit state transitions verified with `bloc_test` in `test/bloc/`.
-   - **Widget Tests:** UI layout, button interactions, and state rendering in `test/widget_test.dart`.
+   - **Widget Tests:** UI layout, button interactions, and state rendering in `test/widget/`.
 5. **Universal UI Responsiveness & Zero-Overflow Policy:**
    - All desktop viewports, modal dialogs, overlays, and sidebars defensively adapt to arbitrary window resizing, compact laptop screens, and 4K/5K displays using `LayoutBuilder`, `FittedBox`, scrollable containers, and bounded constraint envelopes with zero `RenderFlex` overflows.
 

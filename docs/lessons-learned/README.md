@@ -35,6 +35,8 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Accessibility Tree Semantic Pruning** | MCP Server & AI Agent Grounding | Prune 97% of redundant layout nodes and assign sequential [#ID] tags for deterministic click actions. | [accessibility-tree-semantic-pruning.md](accessibility-tree-semantic-pruning.md) |
 | **IME Predictive Text & Gesture Latency** | Android IME & MCP Execution | Bypass Telex/IME corruption via atomic clipboard paste and chain double-tap to beat IPC latency. | [ime-predictive-text-and-gesture-latency.md](ime-predictive-text-and-gesture-latency.md) |
 | **Large File SRP Mixin Decomposition** | Architecture & SOLID / Clean Code | Decompose monolithic clients & cubits (< 250 lines) via mixins preserving mock interfaces and reactivity. | [large-file-srp-mixin-decomposition.md](large-file-srp-mixin-decomposition.md) |
+| **build-tools Lexicographic Version Sort** | Android SDK Tooling & APK Inspection | Compare dotted versions numerically so `34.0.0` beats `9.0.0` when picking `aapt2`. | [build-tools-lexicographic-version-sort.md](build-tools-lexicographic-version-sort.md) |
+| **Silent Catch Masked Defects** | Error Handling & Test Reliability | Replace `catch (_) {}` with typed handlers, `tryRead<T>()`, and lints to expose hidden bugs. | [silent-catch-masked-defects.md](silent-catch-masked-defects.md) |
 
 ---
 
