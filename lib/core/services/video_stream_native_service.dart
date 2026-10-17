@@ -13,7 +13,10 @@ abstract class IVideoStreamNativeService {
   Future<Map<String, int>> getDimensions();
 }
 
-/// Production implementation communicating with macOS Runner via platform channel.
+/// Production implementation of the `com.deskdroid/video_stream` channel.
+///
+/// Served by `macos/Runner/ScrcpyStreamPlugin.swift` and
+/// `windows/scrcpy_stream/` (see docs/native-video-contract.md).
 class VideoStreamNativeService implements IVideoStreamNativeService {
   VideoStreamNativeService({MethodChannel? channel})
     : _channel = channel ?? const MethodChannel('com.deskdroid/video_stream');

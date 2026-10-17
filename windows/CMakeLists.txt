@@ -57,6 +57,12 @@ add_subdirectory("runner")
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
+# DeskDroid native video plugin (scrcpy stream -> texture).
+# See docs/native-video-contract.md.
+add_subdirectory("scrcpy_stream")
+target_link_libraries(${BINARY_NAME} PRIVATE scrcpy_stream_plugin)
+list(APPEND PLUGIN_BUNDLED_LIBRARIES $<TARGET_FILE:scrcpy_stream_plugin>)
+
 
 # === Installation ===
 # Support files are copied into place next to the executable, so that it can

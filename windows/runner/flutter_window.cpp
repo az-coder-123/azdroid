@@ -2,6 +2,8 @@
 
 #include <optional>
 
+#include <scrcpy_stream/scrcpy_stream_plugin_c_api.h>
+
 #include "flutter/generated_plugin_registrant.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
@@ -25,6 +27,10 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  // DeskDroid's own video plugin lives in windows/scrcpy_stream (not a pub
+  // package), so it is registered here, like ScrcpyStreamPlugin on macOS.
+  ScrcpyStreamPluginRegisterWithRegistrar(
+      flutter_controller_->engine()->GetRegistrarForPlugin("ScrcpyStreamPlugin"));
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
