@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:desk_droid/core/services/local_file_system_gateway.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 
 void main() {
   late Directory root;
@@ -12,11 +13,16 @@ void main() {
 
   group('IoLocalFileSystemGateway', () {
     test('keeps files and expands directories recursively', () {
-      final single = File('${root.path}/single.txt')..writeAsStringSync('a');
-      final nested = File('${root.path}/dir/sub/nested.txt')
+      // Use host separators: directory listings return them on every OS.
+      final single = File(p.join(root.path, 'single.txt'))
+        ..writeAsStringSync('a');
+      final nested = File(p.join(root.path, 'dir', 'sub', 'nested.txt'))
         ..createSync(recursive: true);
 
-      final result = gateway.expandToFiles([single.path, '${root.path}/dir']);
+      final result = gateway.expandToFiles([
+        single.path,
+        p.join(root.path, 'dir'),
+      ]);
 
       expect(result, [single.path, nested.path]);
     });

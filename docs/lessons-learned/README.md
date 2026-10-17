@@ -47,6 +47,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Plugin Registrants Ship With Dependency** | Flutter Tooling & Commit Hygiene | Commit regenerated `macos/`, `windows/`, `linux/`, `ios/` plugin files with the `pubspec` change; tests won't catch their absence. | [plugin-registrants-ship-with-dependency.md](plugin-registrants-ship-with-dependency.md) |
 | **Texture Pixel Order: BGRA vs RGBA** | Native Video & Flutter Textures | Make pixel order an explicit parameter; macOS CVPixelBuffer is BGRA, Windows pixel-buffer textures are RGBA. | [texture-pixel-order-bgra-vs-rgba.md](texture-pixel-order-bgra-vs-rgba.md) |
 | **Windows SDK Macro Identifier Clash** | Native Windows Build | `rpcndr.h` defines `small` as `char`; never use SDK macro names (`small`, `near`, `far`, `interface`) as identifiers. | [windows-sdk-macro-identifier-clash.md](windows-sdk-macro-identifier-clash.md) |
+| **Unauthorized Device Silent Black Screen** | Streaming & ADB Authorization | Check `adb devices` state before starting scrcpy and show actionable `StreamStartFailure` guidance instead of a black viewport. | [unauthorized-device-silent-black-screen.md](unauthorized-device-silent-black-screen.md) |
 
 ---
 

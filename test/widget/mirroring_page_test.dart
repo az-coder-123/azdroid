@@ -159,11 +159,15 @@ void main() {
   });
 
   Widget createSubject() {
-    return BlocProvider<MenuBarCubit>.value(
-      value: sl<MenuBarCubit>(),
-      child: MaterialApp(
-        theme: AppTheme.darkTheme,
-        home: const MirroringPage(device: testDevice),
+    // Mirror main.dart: widgets read the scheme from the tree, not from `sl`.
+    return RepositoryProvider<ShortcutScheme>.value(
+      value: sl<ShortcutScheme>(),
+      child: BlocProvider<MenuBarCubit>.value(
+        value: sl<MenuBarCubit>(),
+        child: MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: const MirroringPage(device: testDevice),
+        ),
       ),
     );
   }
@@ -189,7 +193,7 @@ void main() {
       expect(find.text('8 Mbps'), findsOneWidget);
 
       // Labels come from the scheme registered by the platform module.
-      const keys = ShortcutScheme.mac;
+      final keys = sl<ShortcutScheme>();
 
       // Verify HUD navigation buttons
       expect(find.byTooltip('Back (Right Click)'), findsOneWidget);

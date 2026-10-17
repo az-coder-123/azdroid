@@ -1,7 +1,9 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -74,6 +76,28 @@ void main() {
         const StreamingStarting(device: testDevice),
         const StreamingError(
           message: 'Failed to start mirroring session: Exception: Socket connection failed',
+        ),
+      ],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'emits actionable guidance when the device is unauthorized',
+      build: () {
+        when(() => mockRepository.startSession(testDevice)).thenThrow(
+          StreamStartException(
+            StreamStartFailure.deviceUnauthorized,
+            deviceSerial: testDevice.id,
+          ),
+        );
+        return streamingCubit;
+      },
+      act: (cubit) => cubit.startSession(testDevice),
+      expect: () => [
+        const StreamingStarting(device: testDevice),
+        StreamingError(
+          message: StreamStartFailure.deviceUnauthorized.messageFor(
+            testDevice.name,
+          ),
         ),
       ],
     );

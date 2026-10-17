@@ -3,7 +3,9 @@ import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 
 /// Concrete implementation of [StreamingRepository] orchestrating server daemon and native decoder.
@@ -11,12 +13,15 @@ class StreamingRepositoryImpl implements StreamingRepository {
   StreamingRepositoryImpl({
     ScrcpyServerManager? serverManager,
     IVideoStreamNativeService? videoStreamNativeService,
+    StreamDevicePreflight? devicePreflight,
   }) : _serverManager = serverManager ?? ScrcpyServerManager(),
        _videoStreamNativeService =
-           videoStreamNativeService ?? VideoStreamNativeService();
+           videoStreamNativeService ?? VideoStreamNativeService(),
+       _devicePreflight = devicePreflight ?? StreamDevicePreflight();
 
   final ScrcpyServerManager _serverManager;
   final IVideoStreamNativeService _videoStreamNativeService;
+  final StreamDevicePreflight _devicePreflight;
 
   StreamSessionEntity? _currentSession;
 
@@ -35,26 +40,35 @@ class StreamingRepositoryImpl implements StreamingRepository {
       'Starting streaming session for ${device.name} (${device.id})...',
     );
 
-    // 1. Launch persistent scrcpy-server daemon on target
-    await _serverManager.startServerDaemon(
+    // 1. Fail fast with a clear reason instead of showing a black viewport
+    await _devicePreflight.ensureReady(device.id);
+
+    // 2. Launch persistent scrcpy-server daemon on target
+    final serverStarted = await _serverManager.startServerDaemon(
       deviceSerial: device.id,
       port: SocketConfig.defaultVideoStreamPort,
       maxFps: fps,
       bitrateMbps: bitrate,
     );
+    if (!serverStarted) {
+      throw StreamStartException(
+        StreamStartFailure.serverStartFailed,
+        deviceSerial: device.id,
+      );
+    }
 
-    // 2. Connect native VideoToolbox decoder and obtain hardware texture ID
+    // 3. Connect the native hardware decoder and obtain its texture ID
     final textureId = await _videoStreamNativeService.startStream(
       host: '127.0.0.1',
       port: SocketConfig.defaultVideoStreamPort,
     );
 
-    // 3. Obtain real device frame dimensions from decoded header
+    // 4. Obtain real device frame dimensions from decoded header
     final dims = await _videoStreamNativeService.getDimensions();
     final realWidth = dims['width'] ?? 0;
     final realHeight = dims['height'] ?? 0;
 
-    // 4. Turn screen off if requested
+    // 5. Turn screen off if requested
     if (screenOff) {
       await _serverManager.setScreenPower(
         deviceSerial: device.id,

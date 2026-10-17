@@ -6,6 +6,7 @@ import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/repositories/streaming_repository_impl.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_locator.dart';
+import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:get_it/get_it.dart';
@@ -30,6 +31,7 @@ void registerStreamingDependencies(GetIt sl) {
     () => StreamingRepositoryImpl(
       serverManager: sl<ScrcpyServerManager>(),
       videoStreamNativeService: sl<IVideoStreamNativeService>(),
+      devicePreflight: StreamDevicePreflight(adbService: sl<AdbService>()),
     ),
   );
 

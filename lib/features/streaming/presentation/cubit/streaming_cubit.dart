@@ -1,7 +1,9 @@
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +29,9 @@ class StreamingCubit extends Cubit<StreamingState> {
         turnScreenOff: turnScreenOff,
       );
       emit(StreamingActive(session: session));
+    } on StreamStartException catch (error) {
+      AppLogger.warning('Mirroring session not started: $error');
+      emit(StreamingError(message: error.failure.messageFor(device.name)));
     } catch (e) {
       emit(StreamingError(message: 'Failed to start mirroring session: $e'));
     }

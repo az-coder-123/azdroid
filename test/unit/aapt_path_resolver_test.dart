@@ -51,10 +51,14 @@ void main() {
           ..createSync(recursive: true);
 
     test('picks the newest build-tools version from the SDK', () async {
-      createTool('9.0.0', 'aapt');
-      final newest = createTool('34.0.0', 'aapt2');
+      // This test scans a real folder, so it must use the host OS: a foreign
+      // toolchain would join host paths with the wrong separator.
+      final resolver = buildResolver(HostOs.current);
+      final binaries = toolchainFor(HostOs.current, const {}).aaptExecutables;
+      createTool('9.0.0', binaries.last);
+      final newest = createTool('34.0.0', binaries.first);
 
-      expect(await buildResolver(HostOs.macos).resolve(), newest.path);
+      expect(await resolver.resolve(), newest.path);
     });
 
     test('queries `where` for aapt2.exe with a Windows toolchain', () async {

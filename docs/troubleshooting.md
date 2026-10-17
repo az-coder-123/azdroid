@@ -35,12 +35,15 @@
 ## 🔒 2. Authorization & ADB Errors
 
 ### ❌ Device Status Shows "Unauthorized"
-- **Root Cause:** The Mac's RSA cryptographic key has not been approved on the phone.
+- **Symptom:** The mirroring page shows *"USB debugging is not allowed on (device name) yet"*, or the device list marks the device as unauthorized. Logcat stays empty.
+- **Root Cause:** This computer's ADB key has not been approved on the phone. Each computer has its own key in `~/.android/adbkey` (`%USERPROFILE%\.android\adbkey` on Windows), so a phone that trusts your Mac must still approve your Windows PC.
 - **Solution:**
   1. Unlock your phone screen.
   2. Look for the prompt: *"Allow USB debugging from this computer?"*.
   3. Check **"Always allow from this computer"** and tap **OK**.
-  4. If the prompt does not appear, run `adb kill-server && adb start-server` in Terminal.
+  4. If the prompt does not appear on a Wi-Fi connection, reconnect to show it again: `adb disconnect <ip>:5555` then `adb connect <ip>:5555`.
+  5. If it still does not appear, restart ADB: `adb kill-server` then `adb start-server`.
+  6. Tap **Retry Connection** on the mirroring page.
 
 ---
 

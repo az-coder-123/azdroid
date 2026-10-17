@@ -47,11 +47,12 @@ class MirroringErrorFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Scrolls on short windows; buttons wrap on narrow ones.
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(32.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
               Icons.error_outline_rounded,
@@ -65,14 +66,15 @@ class MirroringErrorFallback extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16,
+              runSpacing: 12,
               children: [
                 OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Back to Devices'),
                 ),
-                const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () =>
                       context.read<StreamingCubit>().startSession(device),

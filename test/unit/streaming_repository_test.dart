@@ -2,6 +2,8 @@ import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/repositories/streaming_repository_impl.dart';
+import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
+import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -10,17 +12,23 @@ class MockScrcpyServerManager extends Mock implements ScrcpyServerManager {}
 class MockVideoStreamNativeService extends Mock
     implements IVideoStreamNativeService {}
 
+class MockStreamDevicePreflight extends Mock implements StreamDevicePreflight {}
+
 void main() {
   late MockScrcpyServerManager mockServerManager;
   late MockVideoStreamNativeService mockNativeService;
+  late MockStreamDevicePreflight mockPreflight;
   late StreamingRepositoryImpl repository;
 
   setUp(() {
     mockServerManager = MockScrcpyServerManager();
     mockNativeService = MockVideoStreamNativeService();
+    mockPreflight = MockStreamDevicePreflight();
+    when(() => mockPreflight.ensureReady(any())).thenAnswer((_) async {});
     repository = StreamingRepositoryImpl(
       serverManager: mockServerManager,
       videoStreamNativeService: mockNativeService,
+      devicePreflight: mockPreflight,
     );
   });
 
@@ -78,6 +86,73 @@ void main() {
         ),
       ).called(1);
     });
+
+    test('startSession stops before the server when preflight fails', () async {
+      when(() => mockPreflight.ensureReady(testDevice.id)).thenThrow(
+        StreamStartException(
+          StreamStartFailure.deviceUnauthorized,
+          deviceSerial: testDevice.id,
+        ),
+      );
+
+      await expectLater(
+        repository.startSession(testDevice),
+        throwsA(
+          isA<StreamStartException>().having(
+            (e) => e.failure,
+            'failure',
+            StreamStartFailure.deviceUnauthorized,
+          ),
+        ),
+      );
+
+      verifyNever(
+        () => mockServerManager.startServerDaemon(
+          deviceSerial: any(named: 'deviceSerial'),
+          port: any(named: 'port'),
+          maxFps: any(named: 'maxFps'),
+          bitrateMbps: any(named: 'bitrateMbps'),
+        ),
+      );
+      verifyNever(
+        () => mockNativeService.startStream(
+          host: any(named: 'host'),
+          port: any(named: 'port'),
+        ),
+      );
+    });
+
+    test(
+      'startSession throws serverStartFailed when the daemon fails',
+      () async {
+        when(
+          () => mockServerManager.startServerDaemon(
+            deviceSerial: any(named: 'deviceSerial'),
+            port: any(named: 'port'),
+            maxFps: any(named: 'maxFps'),
+            bitrateMbps: any(named: 'bitrateMbps'),
+          ),
+        ).thenAnswer((_) async => false);
+
+        await expectLater(
+          repository.startSession(testDevice),
+          throwsA(
+            isA<StreamStartException>().having(
+              (e) => e.failure,
+              'failure',
+              StreamStartFailure.serverStartFailed,
+            ),
+          ),
+        );
+
+        verifyNever(
+          () => mockNativeService.startStream(
+            host: any(named: 'host'),
+            port: any(named: 'port'),
+          ),
+        );
+      },
+    );
 
     test('stopSession stops native stream and stops server daemon', () async {
       when(

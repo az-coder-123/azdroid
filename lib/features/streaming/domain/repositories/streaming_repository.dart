@@ -4,6 +4,9 @@ import 'package:desk_droid/features/streaming/domain/entities/stream_session_ent
 /// Contract defining low-latency video streaming and session lifecycle operations.
 abstract class StreamingRepository {
   /// Initiates a low-latency video mirroring session with the specified [device].
+  ///
+  /// Throws `StreamStartException` when the device is not ready (missing,
+  /// offline, or unauthorized) or the scrcpy server cannot be launched.
   Future<StreamSessionEntity> startSession(
     DeviceEntity device, {
     int? maxFps,

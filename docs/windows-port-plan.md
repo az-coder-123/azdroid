@@ -1,6 +1,6 @@
 # Windows Port Plan
 
-> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a implemented** (awaiting first Windows run).
+> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a running on Windows** (visual check pending).
 
 ---
 
@@ -87,11 +87,12 @@ Exit criteria: `flutter analyze` and `flutter test` are green on macOS, and no `
 
 Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licensing or binary-size cost, and supports hardware decoding. FFmpeg stays a fallback if MF latency misses the target.
 
-**Status (2026-10-17): 1a implemented, not yet run on Windows.**
+**Status (2026-10-18): 1a builds with MSVC and mirrors a real device.**
 - `native/scrcpy_core`: platform-neutral parsing, config merging, NV12→RGBA/BGRA, triple frame buffer. 17 tests pass with `-Werror` under ASan/UBSan and TSan.
 - `windows/scrcpy_stream`: Winsock client, Media Foundation H.264 MFT (low-latency mode, stream-change handling from 1c), RGBA pixel-buffer texture, DLL plugin registered in `flutter_window.cpp`.
 - Contract shared with macOS: [native-video-contract.md](native-video-contract.md).
-- **Not yet compiled with MSVC.** Next step on a Windows PC: `flutter build windows`, the MSVC core tests (see [native-video-contract.md](native-video-contract.md#5-testing)), then a manual mirror test with a real device.
+- First Windows run (Windows 10, Redmi M2004J19C over Wi-Fi): `flutter run -d windows` builds after one fix ([windows-sdk-macro-identifier-clash.md](lessons-learned/windows-sdk-macro-identifier-clash.md)). The plugin reads the header (`h264 1080x2336`), and the MF decoder outputs NV12 with a 1088-pixel coded width; more than 1,100 frames decoded in one session.
+- Still open: visual check of the rendered frame (colors, stride, aspect ratio), and the MSVC core tests (see [native-video-contract.md](native-video-contract.md#5-testing)).
 
 ### Phase 2 — Windows Service Implementations (≈ 1 week)
 

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:path/path.dart' as p;
 
 class MockFileTransferRepository extends Mock
     implements FileTransferRepository {}
@@ -122,9 +123,12 @@ void main() {
     'FileDropTargetOverlay expands directory recursively when a folder is dropped',
     (WidgetTester tester) async {
       final tempDir = Directory.systemTemp.createTempSync('drop_dir_test_');
-      final nestedDir = Directory('${tempDir.path}/nested')..createSync();
-      final file1 = File('${tempDir.path}/doc1.txt')..writeAsStringSync('1');
-      final file2 = File('${nestedDir.path}/doc2.pdf')..writeAsStringSync('2');
+      // Use host separators: directory listings return them on every OS.
+      final nestedDir = Directory(p.join(tempDir.path, 'nested'))..createSync();
+      final file1 = File(p.join(tempDir.path, 'doc1.txt'))
+        ..writeAsStringSync('1');
+      final file2 = File(p.join(nestedDir.path, 'doc2.pdf'))
+        ..writeAsStringSync('2');
 
       when(() => mockRepository.pushFile(testSerial, any()))
           .thenAnswer((_) async => true);
