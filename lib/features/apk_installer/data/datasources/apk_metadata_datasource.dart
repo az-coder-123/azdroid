@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:desk_droid/core/constants/apk_installer_constants.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/apk_installer/data/services/aapt_path_resolver.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
 
 /// Contract for extracting metadata from local APK files.
@@ -15,23 +16,21 @@ abstract class ApkMetadataDatasource {
 class ApkMetadataDatasourceImpl implements ApkMetadataDatasource {
   ApkMetadataDatasourceImpl({
     ProcessExecutor processExecutor = const DefaultProcessExecutor(),
-  }) : _executor = processExecutor;
+    AaptPathResolver? aaptResolver,
+  }) : _executor = processExecutor,
+       _aaptResolver =
+           aaptResolver ?? AaptPathResolver(processExecutor: processExecutor);
 
   final ProcessExecutor _executor;
-  String? _cachedAaptPath;
+  final AaptPathResolver _aaptResolver;
 
   @override
   Future<ApkInfoEntity> inspectApk(String apkPath) async {
     final file = File(apkPath);
     final fileName = apkPath.split('/').last;
-    int sizeBytes = 0;
-    try {
-      if (file.existsSync()) {
-        sizeBytes = file.lengthSync();
-      }
-    } catch (_) {}
+    final sizeBytes = _readFileSize(file);
 
-    final aapt = await _resolveAaptPath();
+    final aapt = await _aaptResolver.resolve();
     if (aapt == null) {
       return ApkInfoEntity(
         filePath: apkPath,
@@ -70,6 +69,15 @@ class ApkMetadataDatasourceImpl implements ApkMetadataDatasource {
         fileName: fileName,
         fileSizeBytes: sizeBytes,
       );
+    }
+  }
+
+  int _readFileSize(File file) {
+    try {
+      return file.existsSync() ? file.lengthSync() : 0;
+    } on FileSystemException catch (error) {
+      AppLogger.warning('Failed to read APK file size.', error: error);
+      return 0;
     }
   }
 
@@ -147,57 +155,19 @@ class ApkMetadataDatasourceImpl implements ApkMetadataDatasource {
     String iconInternalPath,
   ) async {
     try {
-      final res = await _executor.run('/usr/bin/unzip', [
-        '-p',
-        apkPath,
-        iconInternalPath,
-      ], timeout: const Duration(seconds: 4));
+      final res = await _executor.run(
+        ApkInstallerConstants.unzipPath,
+        ['-p', apkPath, iconInternalPath],
+        timeout: const Duration(
+          seconds: ApkInstallerConstants.iconExtractTimeoutSeconds,
+        ),
+      );
       if (res.exitCode == 0 && res.stdout is List<int>) {
         return Uint8List.fromList(res.stdout as List<int>);
       }
-    } catch (_) {}
-    return null;
-  }
-
-  Future<String?> _resolveAaptPath() async {
-    if (_cachedAaptPath != null) return _cachedAaptPath;
-
-    // Check which aapt / aapt2
-    for (final bin in ApkInstallerConstants.aaptBinaryNames) {
-      try {
-        final which = await _executor.run('/usr/bin/which', [bin]);
-        final p = which.stdout.toString().trim();
-        if (which.exitCode == 0 && p.isNotEmpty) {
-          _cachedAaptPath = p;
-          return p;
-        }
-      } catch (_) {}
+    } on Exception catch (error) {
+      AppLogger.debug('APK icon extraction failed: $error');
     }
-
-    // Search ~/Library/Android/sdk/build-tools/
-    final home = Platform.environment['HOME'];
-    if (home != null) {
-      final buildToolsDir = Directory(
-        '$home/${ApkInstallerConstants.androidSdkBuildToolsSubpath}',
-      );
-      if (buildToolsDir.existsSync()) {
-        try {
-          final entries =
-              buildToolsDir.listSync().whereType<Directory>().toList()
-                ..sort((a, b) => b.path.compareTo(a.path)); // Latest first
-          for (final dir in entries) {
-            for (final bin in ApkInstallerConstants.aaptBinaryNames) {
-              final candidate = '${dir.path}/$bin';
-              if (File(candidate).existsSync()) {
-                _cachedAaptPath = candidate;
-                return candidate;
-              }
-            }
-          }
-        } catch (_) {}
-      }
-    }
-
     return null;
   }
 }
