@@ -1,14 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
@@ -22,6 +19,10 @@ import 'package:desk_droid/features/streaming/domain/entities/stream_session_ent
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockStreamingRepository extends Mock implements StreamingRepository {}
 
@@ -146,9 +147,12 @@ void main() {
   });
 
   Widget createSubject() {
-    return MaterialApp(
-      theme: AppTheme.darkTheme,
-      home: const MirroringPage(device: testDevice),
+    return BlocProvider<MenuBarCubit>.value(
+      value: sl<MenuBarCubit>(),
+      child: MaterialApp(
+        theme: AppTheme.darkTheme,
+        home: const MirroringPage(device: testDevice),
+      ),
     );
   }
 

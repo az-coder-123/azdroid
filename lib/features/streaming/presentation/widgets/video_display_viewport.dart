@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:flutter/material.dart';
 
 /// Renders the hardware-accelerated video display viewport preserving aspect ratio and rotation.
 class VideoDisplayViewport extends StatelessWidget {
@@ -56,7 +56,7 @@ class VideoDisplayViewport extends StatelessWidget {
 
   Widget _buildConnectingViewport(BuildContext context) {
     return Container(
-      color: const Color(0xFF0D0E12),
+      color: AppColors.viewportBackdrop,
       padding: const EdgeInsets.all(32.0),
       child: Center(
         child: Column(

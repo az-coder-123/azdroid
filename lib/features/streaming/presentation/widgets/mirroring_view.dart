@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_active_view.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_status_fallback.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Interactive mirroring view managing stream lifecycle and delegating active UI to [MirroringActiveView].
 class MirroringView extends StatelessWidget {
@@ -21,13 +20,13 @@ class MirroringView extends StatelessWidget {
       body: BlocConsumer<StreamingCubit, StreamingState>(
         listener: (context, state) {
           if (state is StreamingActive) {
-            sl<MenuBarCubit>().updateActiveSession(
+            context.read<MenuBarCubit>().updateActiveSession(
               deviceName: state.session.deviceName,
               latencyMs: state.session.latencyMs,
               fps: state.session.fps,
             );
           } else if (state is StreamingInitial) {
-            sl<MenuBarCubit>().clearActiveSession();
+            context.read<MenuBarCubit>().clearActiveSession();
             Navigator.of(context).maybePop();
           }
         },

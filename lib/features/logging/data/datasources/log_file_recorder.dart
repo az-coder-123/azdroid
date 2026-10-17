@@ -8,6 +8,8 @@ import 'package:desk_droid/features/logging/domain/entities/log_file_recording_s
 class LogFileRecorder {
   LogFileRecorder();
 
+  // Closed in stopRecording() through a local alias, which the lint misses.
+  // ignore: close_sinks
   IOSink? _activeSink;
   String? _activeFilePath;
   int _bytesWritten = 0;

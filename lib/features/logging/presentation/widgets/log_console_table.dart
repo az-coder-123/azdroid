@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_motion.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_console_row.dart';
+import 'package:flutter/material.dart';
 
 /// Virtualized console log table rendering color-coded logcat entries with auto-scrolling.
 class LogConsoleTable extends StatefulWidget {
@@ -187,7 +188,7 @@ class _LogConsoleTableState extends State<LogConsoleTable> {
                   if (isReversed) {
                     _scrollController.animateTo(
                       0.0,
-                      duration: const Duration(milliseconds: 200),
+                      duration: AppMotion.medium,
                       curve: Curves.easeOut,
                     );
                   } else {

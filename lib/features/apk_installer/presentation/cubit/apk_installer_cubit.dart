@@ -1,14 +1,26 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
 import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing APK package inspection, installation workflow, and remote launch.
 class ApkInstallerCubit extends Cubit<ApkInstallerState> {
-  ApkInstallerCubit({required this.repository, required String deviceSerial})
-    : super(ApkInstallerInitial(deviceSerial: deviceSerial));
+  ApkInstallerCubit({
+    required this.repository,
+    required String deviceSerial,
+    this._filePicker = const MacFilePickerServiceImpl(),
+  }) : super(ApkInstallerInitial(deviceSerial: deviceSerial));
 
   final ApkInstallerRepository repository;
+  final MacFilePickerService _filePicker;
+
+  /// Opens the native file picker and inspects the chosen APK, if any.
+  Future<void> pickApk() async {
+    final path = await _filePicker.pickApkFile();
+    if (path != null && !isClosed) await selectApk(path);
+  }
 
   /// Loads and inspects the specified APK file path.
   Future<void> selectApk(String filePath) async {
@@ -20,7 +32,12 @@ class ApkInstallerCubit extends Cubit<ApkInstallerState> {
       if (!isClosed) {
         emit(ApkInstallerReady(deviceSerial: serial, apkInfo: info));
       }
-    } catch (_) {
+    } on Exception catch (error, stackTrace) {
+      AppLogger.warning(
+        'Failed to inspect APK at $filePath',
+        error: error,
+        stackTrace: stackTrace,
+      );
       if (!isClosed) {
         emit(ApkInstallerInitial(deviceSerial: serial));
       }
@@ -54,13 +71,13 @@ class ApkInstallerCubit extends Cubit<ApkInstallerState> {
     final current = state;
     final String serial = current.deviceSerial;
     final apkInfo = switch (current) {
-      ApkInstallerReady s => s.apkInfo,
-      ApkInstallerFailure s => s.apkInfo,
+      final ApkInstallerReady s => s.apkInfo,
+      final ApkInstallerFailure s => s.apkInfo,
       _ => null,
     };
     final options = switch (current) {
-      ApkInstallerReady s => s.options,
-      ApkInstallerFailure s => s.options,
+      final ApkInstallerReady s => s.options,
+      final ApkInstallerFailure s => s.options,
       _ => const ApkInstallOptions(),
     };
 

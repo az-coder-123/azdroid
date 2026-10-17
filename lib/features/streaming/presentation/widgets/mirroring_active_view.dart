@@ -1,11 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/device_log_dialog.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
@@ -13,13 +9,15 @@ import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_c
 import 'package:desk_droid/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/transfer_status_banner.dart';
-import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_feedback_stack.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/interactive_display_viewport.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_feedback_stack.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/side_controls_toolbar.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/stream_telemetry_header.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Active mirroring viewport layout with top telemetry, centered phone display,
 /// right-side tools dock, bottom navigation toolbar, and overlay feedback cards.
@@ -217,21 +215,12 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       onCropScreenshot: () =>
           context.read<ScreenshotCubit>().startAreaSelection(s),
       onTextInject: () => QuickTextInputDialog.show(context, s),
-      onSendFiles: _pickAndSendFiles,
+      onSendFiles: () =>
+          context.read<FileTransferCubit>().pickAndTransferFiles(s),
       onBrowseFiles: () => DeviceFileManagerDialog.show(context, s),
       onViewLogs: () => DeviceLogDialog.show(context, s),
       onInstallApk: () => ApkInstallerDialog.show(context, deviceSerial: s),
       onDispatchIntent: () => IntentDispatcherDialog.show(context, s),
     );
-  }
-
-  Future<void> _pickAndSendFiles() async {
-    final files = await sl<MacFilePickerService>().pickFiles();
-    if (files.isNotEmpty && mounted) {
-      context.read<FileTransferCubit>().transferFiles(
-        widget.device.serial,
-        files,
-      );
-    }
   }
 }

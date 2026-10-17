@@ -1,13 +1,15 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/transfer_status_banner.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+import '../helpers/fake_local_file_system_gateway.dart';
 
 class MockFileTransferRepository extends Mock
     implements FileTransferRepository {}
@@ -39,7 +41,10 @@ void main() {
       when(() => mockRepository.pushFile(testSerial, '/Users/mac/photo.png'))
           .thenAnswer((_) => completer.future);
 
-      final cubit = FileTransferCubit(repository: mockRepository);
+      final cubit = FileTransferCubit(
+        repository: mockRepository,
+        fileSystem: const FakeLocalFileSystemGateway(),
+      );
       await tester.pumpWidget(createSubject(cubit));
 
       // Initial: nothing visible
@@ -47,7 +52,7 @@ void main() {
       expect(find.text('Transferring: photo.png'), findsNothing);
 
       // Trigger transfer
-      cubit.transferFiles(testSerial, ['/Users/mac/photo.png']);
+      unawaited(cubit.transferFiles(testSerial, ['/Users/mac/photo.png']));
       await tester.pump();
 
       // In active state
@@ -60,7 +65,7 @@ void main() {
 
       expect(find.text('File Transfer Complete'), findsOneWidget);
 
-      cubit.close();
+      await cubit.close();
     },
   );
 
@@ -70,10 +75,13 @@ void main() {
       when(() => mockRepository.pushFile(testSerial, '/Users/mac/fail.txt'))
           .thenAnswer((_) async => false);
 
-      final cubit = FileTransferCubit(repository: mockRepository);
+      final cubit = FileTransferCubit(
+        repository: mockRepository,
+        fileSystem: const FakeLocalFileSystemGateway(),
+      );
       await tester.pumpWidget(createSubject(cubit));
 
-      cubit.transferFiles(testSerial, ['/Users/mac/fail.txt']);
+      unawaited(cubit.transferFiles(testSerial, ['/Users/mac/fail.txt']));
       await tester.pumpAndSettle();
 
       expect(find.text('Transfer Failed'), findsOneWidget);
@@ -84,7 +92,7 @@ void main() {
 
       expect(find.text('Transfer Failed'), findsNothing);
 
-      cubit.close();
+      await cubit.close();
     },
   );
 }

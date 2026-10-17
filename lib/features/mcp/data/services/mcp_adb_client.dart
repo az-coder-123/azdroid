@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desk_droid/core/services/adb_binary_locator.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_semantic_element.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_tree_parser.dart';
 

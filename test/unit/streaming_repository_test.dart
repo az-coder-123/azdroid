@@ -1,9 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/repositories/streaming_repository_impl.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockScrcpyServerManager extends Mock implements ScrcpyServerManager {}
 

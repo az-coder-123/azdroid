@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/recording_setup_pill.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screen_recording_success_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Floating notification HUD banner providing live recording indicator and saved actions.
 class ScreenRecordingFeedbackBanner extends StatelessWidget {
@@ -21,7 +22,7 @@ class ScreenRecordingFeedbackBanner extends StatelessWidget {
     return BlocConsumer<ScreenRecordingCubit, ScreenRecordingState>(
       listener: (context, state) {
         if (state is ScreenRecordingSuccess) {
-          Future<void>.delayed(const Duration(seconds: 6), () {
+          Future<void>.delayed(FeedbackDurations.captureResultCard, () {
             if (context.mounted &&
                 context.read<ScreenRecordingCubit>().state == state) {
               context.read<ScreenRecordingCubit>().reset();

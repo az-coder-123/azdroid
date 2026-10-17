@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -49,7 +50,7 @@ class ControlDatasourceImpl implements ControlDatasource {
         'tap',
         x.toString(),
         y.toString(),
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(
@@ -85,7 +86,7 @@ class ControlDatasourceImpl implements ControlDatasource {
         endX.toString(),
         endY.toString(),
         durationMs.toString(),
-      ], timeout: const Duration(seconds: 4));
+      ], timeout: AdbTimeouts.shellCommand);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(
@@ -110,7 +111,7 @@ class ControlDatasourceImpl implements ControlDatasource {
         'input',
         'keyevent',
         keyCode.toString(),
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(
@@ -140,7 +141,7 @@ class ControlDatasourceImpl implements ControlDatasource {
         'input',
         'text',
         formattedText,
-      ], timeout: const Duration(seconds: 4));
+      ], timeout: AdbTimeouts.shellCommand);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(

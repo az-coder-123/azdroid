@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_motion.dart';
+import 'package:flutter/material.dart';
 
 /// Animated central hero icon with concentric radar pulse ripples when scanning.
 class EmptyStateRadarIcon extends StatefulWidget {
@@ -21,7 +22,7 @@ class _EmptyStateRadarIconState extends State<EmptyStateRadarIcon>
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: AppMotion.radarPulse,
     );
     _pulseAnimation = CurvedAnimation(
       parent: _pulseController,
@@ -92,7 +93,7 @@ class _EmptyStateRadarIconState extends State<EmptyStateRadarIcon>
             height: 76,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [AppColors.surfaceElevated, AppColors.surface],

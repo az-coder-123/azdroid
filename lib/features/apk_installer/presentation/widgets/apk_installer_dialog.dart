@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
-import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_cubit.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_info_card.dart';
@@ -13,6 +9,8 @@ import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_insta
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_install_result_card.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_footer.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_picker_drop_zone.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Modal dialog providing professional APK inspection, options configuration, and sideloading.
 class ApkInstallerDialog extends StatelessWidget {
@@ -29,10 +27,7 @@ class ApkInstallerDialog extends StatelessWidget {
       barrierDismissible: true,
       builder: (_) => BlocProvider<ApkInstallerCubit>(
         create: (_) {
-          final cubit = ApkInstallerCubit(
-            repository: sl<ApkInstallerRepository>(),
-            deviceSerial: deviceSerial,
-          );
+          final cubit = sl<ApkInstallerCubit>(param1: deviceSerial);
           if (initialApkPath != null) {
             cubit.selectApk(initialApkPath);
           }
@@ -148,7 +143,7 @@ class ApkInstallerDialog extends StatelessWidget {
       return ApkPickerDropZone(
         onApkSelected: (path) =>
             context.read<ApkInstallerCubit>().selectApk(path),
-        onBrowseTapped: () => _pickApk(context),
+        onBrowseTapped: () => context.read<ApkInstallerCubit>().pickApk(),
       );
     }
 
@@ -177,7 +172,7 @@ class ApkInstallerDialog extends StatelessWidget {
         children: [
           ApkInfoCard(
             info: state.apkInfo,
-            onChangeApk: () => _pickApk(context),
+            onChangeApk: () => context.read<ApkInstallerCubit>().pickApk(),
           ),
           const SizedBox(height: 16),
           ApkInstallOptionsCard(
@@ -232,13 +227,5 @@ class ApkInstallerDialog extends StatelessWidget {
     }
 
     return const SizedBox.shrink();
-  }
-
-  Future<void> _pickApk(BuildContext context) async {
-    final picker = sl<MacFilePickerService>();
-    final path = await picker.pickApkFile();
-    if (path != null && context.mounted) {
-      context.read<ApkInstallerCubit>().selectApk(path);
-    }
   }
 }

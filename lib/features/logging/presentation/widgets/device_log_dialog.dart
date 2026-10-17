@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/di/injection.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
@@ -12,6 +11,8 @@ import 'package:desk_droid/features/logging/presentation/widgets/log_console_tab
 import 'package:desk_droid/features/logging/presentation/widgets/log_detail_drawer.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_filter_bar.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Modal dialog providing real-time Android logcat inspection, multi-tier filtering,
 /// native keyboard shortcuts, and non-blocking local disk persistence.
@@ -70,7 +71,7 @@ class _DeviceLogDialogState extends State<DeviceLogDialog> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.feedbackMessage!),
-                    duration: const Duration(seconds: 3),
+                    duration: FeedbackDurations.snackBar,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );

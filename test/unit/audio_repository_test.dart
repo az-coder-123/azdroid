@@ -1,27 +1,27 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/constants/audio_constants.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/features/audio/data/datasources/audio_socket_datasource.dart';
 import 'package:desk_droid/features/audio/data/repositories/audio_repository_impl.dart';
-import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-class MockScrcpyServerManager extends Mock implements ScrcpyServerManager {}
+class MockAdbPortForwarder extends Mock implements AdbPortForwarder {}
 
 class MockAudioSocketDatasource extends Mock implements AudioSocketDatasource {}
 
 void main() {
-  late MockScrcpyServerManager mockServerManager;
+  late MockAdbPortForwarder mockPortForwarder;
   late MockAudioSocketDatasource mockSocketDatasource;
   late AudioRepositoryImpl repository;
 
   const testSerial = '192.168.1.100:5555';
 
   setUp(() {
-    mockServerManager = MockScrcpyServerManager();
+    mockPortForwarder = MockAdbPortForwarder();
     mockSocketDatasource = MockAudioSocketDatasource();
     repository = AudioRepositoryImpl(
-      serverManager: mockServerManager,
+      portForwarder: mockPortForwarder,
       socketDatasource: mockSocketDatasource,
     );
   });
@@ -29,7 +29,7 @@ void main() {
   group('AudioRepositoryImpl', () {
     test('startAudioStream sets up port forward, connects socket, and returns active entity', () async {
       when(
-        () => mockServerManager.setupPortForward(
+        () => mockPortForwarder.setupPortForward(
           deviceSerial: testSerial,
           localPort: SocketConfig.defaultAudioStreamPort,
         ),
@@ -49,7 +49,7 @@ void main() {
       expect(session.channels, equals(AudioConstants.defaultChannels));
 
       verify(
-        () => mockServerManager.setupPortForward(
+        () => mockPortForwarder.setupPortForward(
           deviceSerial: testSerial,
           localPort: SocketConfig.defaultAudioStreamPort,
         ),
@@ -66,7 +66,7 @@ void main() {
       () async {
         when(() => mockSocketDatasource.disconnect()).thenAnswer((_) async {});
         when(
-          () => mockServerManager.removePortForward(
+          () => mockPortForwarder.removePortForward(
             deviceSerial: testSerial,
             localPort: SocketConfig.defaultAudioStreamPort,
           ),
@@ -76,7 +76,7 @@ void main() {
 
         verify(() => mockSocketDatasource.disconnect()).called(1);
         verify(
-          () => mockServerManager.removePortForward(
+          () => mockPortForwarder.removePortForward(
             deviceSerial: testSerial,
             localPort: SocketConfig.defaultAudioStreamPort,
           ),

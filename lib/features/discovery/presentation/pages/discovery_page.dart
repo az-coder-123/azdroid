@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/constants/app_constants.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_state.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/device_card.dart';
@@ -13,11 +11,20 @@ import 'package:desk_droid/features/discovery/presentation/widgets/manual_connec
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing_dialog.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
-import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+/// Builds the route that opens the mirroring workspace for a device.
+///
+/// Supplied by the app shell so discovery does not depend on streaming.
+typedef MirroringRouteBuilder = Route<void> Function(DeviceEntity device);
 
 /// Main landing page of DeskDroid hosting the device discovery and pairing dashboard.
 class DiscoveryPage extends StatefulWidget {
-  const DiscoveryPage({super.key});
+  const DiscoveryPage({required this.mirroringRouteBuilder, super.key});
+
+  /// Creates the navigation route used when the user starts mirroring.
+  final MirroringRouteBuilder mirroringRouteBuilder;
 
   @override
   State<DiscoveryPage> createState() => _DiscoveryPageState();
@@ -55,9 +62,8 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     );
   }
 
-  void _startMirroring(DeviceEntity device) => Navigator.of(context).push(
-    MaterialPageRoute<void>(builder: (_) => MirroringPage(device: device)),
-  );
+  void _startMirroring(DeviceEntity device) =>
+      Navigator.of(context).push(widget.mirroringRouteBuilder(device));
 
   Future<void> _connectAndMirror(DeviceEntity device) async {
     await context.read<DiscoveryCubit>().connect(device);

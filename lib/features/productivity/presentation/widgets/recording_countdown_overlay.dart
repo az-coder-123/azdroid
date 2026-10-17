@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_motion.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Full-surface interactive countdown animation overlay rendered over phone screen
 /// before screen recording commences.
@@ -32,7 +33,7 @@ class RecordingCountdownOverlay extends StatelessWidget {
                 children: [
                   // Circular Pulse Countdown Badge
                   AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
+                    duration: AppMotion.emphasized,
                     transitionBuilder: (child, animation) {
                       return ScaleTransition(
                         scale: CurvedAnimation(

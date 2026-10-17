@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
@@ -10,7 +9,9 @@ import 'package:desk_droid/features/discovery/data/repositories/device_discovery
 import 'package:desk_droid/features/discovery/data/services/usb_wifi_auto_handoff_service.dart';
 import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:get_it/get_it.dart';
 
 /// Registers discovery and wireless pairing data sources, repositories, and cubits.
 void registerDiscoveryDependencies(GetIt sl) {
@@ -44,6 +45,13 @@ void registerDiscoveryDependencies(GetIt sl) {
   sl.registerFactory<DiscoveryCubit>(
     () => DiscoveryCubit(
       repository: sl<DeviceDiscoveryRepository>(),
+      historyService: sl<DeviceHistoryService>(),
+    ),
+  );
+
+  sl.registerFactory<HostContextCubit>(
+    () => HostContextCubit(
+      networkInfoService: sl<NetworkInfoService>(),
       historyService: sl<DeviceHistoryService>(),
     ),
   );

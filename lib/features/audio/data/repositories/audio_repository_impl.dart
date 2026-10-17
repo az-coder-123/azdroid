@@ -1,19 +1,18 @@
 import 'package:desk_droid/core/constants/audio_constants.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/features/audio/data/datasources/audio_socket_datasource.dart';
 import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
-import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 
 /// Concrete implementation of [AudioRepository] managing audio tunnels and playback controls.
 class AudioRepositoryImpl implements AudioRepository {
   AudioRepositoryImpl({
-    ScrcpyServerManager? serverManager,
+    required this._portForwarder,
     AudioSocketDatasource? socketDatasource,
-  }) : _serverManager = serverManager ?? ScrcpyServerManager(),
-       _socketDatasource = socketDatasource ?? AudioSocketDatasourceImpl();
+  }) : _socketDatasource = socketDatasource ?? AudioSocketDatasourceImpl();
 
-  final ScrcpyServerManager _serverManager;
+  final AdbPortForwarder _portForwarder;
   final AudioSocketDatasource _socketDatasource;
 
   double _volume = AudioConstants.defaultVolume;
@@ -27,7 +26,7 @@ class AudioRepositoryImpl implements AudioRepository {
     String? codec,
   }) async {
     // 1. Establish ADB port forwarding for the audio socket tunnel
-    await _serverManager.setupPortForward(
+    await _portForwarder.setupPortForward(
       deviceSerial: deviceSerial,
       localPort: SocketConfig.defaultAudioStreamPort,
     );
@@ -49,7 +48,7 @@ class AudioRepositoryImpl implements AudioRepository {
   @override
   Future<void> stopAudioStream(String deviceSerial) async {
     await _socketDatasource.disconnect();
-    await _serverManager.removePortForward(
+    await _portForwarder.removePortForward(
       deviceSerial: deviceSerial,
       localPort: SocketConfig.defaultAudioStreamPort,
     );

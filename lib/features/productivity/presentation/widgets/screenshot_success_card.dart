@@ -1,11 +1,9 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Translucent card presenting captured screenshot metadata and fast macOS Finder actions.
 class ScreenshotSuccessCard extends StatelessWidget {
@@ -115,14 +113,17 @@ class ScreenshotSuccessCard extends StatelessWidget {
                       _buildActionButton(
                         icon: Icons.folder_open_rounded,
                         label: 'Finder',
-                        onTap: () =>
-                            Process.run('open', ['-R', screenshot.filePath]),
+                        onTap: () => context
+                            .read<ScreenshotCubit>()
+                            .revealInFinder(screenshot.filePath),
                       ),
                       const SizedBox(width: 6),
                       _buildActionButton(
                         icon: Icons.visibility_outlined,
                         label: 'Open',
-                        onTap: () => Process.run('open', [screenshot.filePath]),
+                        onTap: () => context.read<ScreenshotCubit>().openFile(
+                          screenshot.filePath,
+                        ),
                       ),
                     ],
                   ),

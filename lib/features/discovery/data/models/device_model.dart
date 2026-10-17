@@ -1,4 +1,4 @@
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 
 /// Data transfer object extending [DeviceEntity] with serialization logic.
 class DeviceModel extends DeviceEntity {

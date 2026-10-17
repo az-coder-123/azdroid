@@ -18,6 +18,12 @@ abstract class NetworkSubnetScanner {
 /// Production implementation leveraging macOS ARP cache, recent device history,
 /// and fast parallel asynchronous TCP port probing.
 class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
+  /// Upper bound for reading the local ARP cache.
+  static const Duration _arpTimeout = Duration(seconds: 2);
+
+  /// Per-host TCP connect timeout during subnet sweeps.
+  static const Duration _portProbeTimeout = Duration(milliseconds: 400);
+
   const NetworkSubnetScannerImpl({
     this.networkInfoService,
     this.historyService,
@@ -80,7 +86,7 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
     try {
       final res = await _executor.run('/usr/sbin/arp', [
         '-an',
-      ], timeout: const Duration(seconds: 2));
+      ], timeout: _arpTimeout);
       if (res.exitCode == 0) {
         final arpIps = extractArpIps(res.stdout.toString(), subnetPrefix);
         candidates.addAll(arpIps);
@@ -189,7 +195,7 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
   Future<bool> probePort(
     String ip,
     int port, {
-    Duration timeout = const Duration(milliseconds: 400),
+    Duration timeout = _portProbeTimeout,
   }) async {
     try {
       final socket = await Socket.connect(ip, port, timeout: timeout);

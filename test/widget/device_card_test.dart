@@ -1,7 +1,7 @@
+import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/device_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
-import 'package:desk_droid/features/discovery/presentation/widgets/device_card.dart';
 
 void main() {
   const dualDevice = DeviceEntity(

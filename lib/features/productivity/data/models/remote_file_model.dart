@@ -23,7 +23,7 @@ class RemoteFileModel extends RemoteFileEntity {
     if (parts.length < 8) return null;
 
     final permissions = parts[0];
-    var isDir =
+    final isDir =
         permissions.startsWith('d') ||
         permissions.startsWith('l') ||
         parts.last.endsWith('/');

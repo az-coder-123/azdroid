@@ -1,17 +1,18 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/productivity/domain/entities/clipboard_item_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:desk_droid/features/productivity/domain/services/clipboard_sync_daemon.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing bidirectional clipboard synchronization and its background daemon.
 class ClipboardCubit extends Cubit<ClipboardState> {
   ClipboardCubit({
     required this.repository,
-    this.autoResetDuration = const Duration(seconds: 4),
+    this.autoResetDuration = FeedbackDurations.statusBanner,
     this.daemonBuilder,
   }) : super(const ClipboardInitial());
 

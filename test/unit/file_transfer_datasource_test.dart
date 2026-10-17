@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/data/datasources/file_transfer_datasource.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockProcessExecutor extends Mock implements ProcessExecutor {}
 
@@ -40,6 +40,13 @@ void main() {
           '/sdcard/Download/',
         ], timeout: any(named: 'timeout')),
       ).thenAnswer((_) async => ProcessResult(1, 0, '1 file pushed', ''));
+      when(
+        () => mockExecutor.run(
+          '/opt/homebrew/bin/adb',
+          any(that: contains('broadcast')),
+          timeout: any(named: 'timeout'),
+        ),
+      ).thenAnswer((_) async => ProcessResult(2, 0, '', ''));
 
       final result = await datasource.pushFile(
         testSerial,

@@ -1,11 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockStreamingRepository extends Mock implements StreamingRepository {}
 

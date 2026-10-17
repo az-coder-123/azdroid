@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/device_card_actions.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/device_status_badge.dart';
+import 'package:flutter/material.dart';
 
 /// Card widget rendering an individual Android device item with connect/disconnect actions.
 class DeviceCard extends StatelessWidget {

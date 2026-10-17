@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing the device scanning, auto-discovery daemon, and connection state.
 class DiscoveryCubit extends Cubit<DiscoveryState> {
@@ -46,13 +46,16 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
     try {
       final success = await repository.connectDevice(device);
       if (success) {
-        historyService?.saveRecentDevice(
-          RecentDevice(
-            id: device.id,
-            name: device.name,
-            ipAddress: device.ipAddress,
-            port: device.port,
-            lastConnected: DateTime.now(),
+        // Persisting history must not delay the connection result.
+        unawaited(
+          historyService?.saveRecentDevice(
+            RecentDevice(
+              id: device.id,
+              name: device.name,
+              ipAddress: device.ipAddress,
+              port: device.port,
+              lastConnected: DateTime.now(),
+            ),
           ),
         );
         await scanDevices();
@@ -100,13 +103,16 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
         port: port,
       );
       if (success) {
-        historyService?.saveRecentDevice(
-          RecentDevice(
-            id: '$ipAddress:$port',
-            name: 'Android Device',
-            ipAddress: ipAddress,
-            port: port,
-            lastConnected: DateTime.now(),
+        // Persisting history must not delay the connection result.
+        unawaited(
+          historyService?.saveRecentDevice(
+            RecentDevice(
+              id: '$ipAddress:$port',
+              name: 'Android Device',
+              ipAddress: ipAddress,
+              port: port,
+              lastConnected: DateTime.now(),
+            ),
           ),
         );
         await scanDevices();
@@ -134,13 +140,16 @@ class DiscoveryCubit extends Cubit<DiscoveryState> {
     try {
       final success = await repository.switchUsbToWifi(device.id, port: port);
       if (success) {
-        historyService?.saveRecentDevice(
-          RecentDevice(
-            id: '${device.ipAddress}:$port',
-            name: device.name,
-            ipAddress: device.ipAddress,
-            port: port,
-            lastConnected: DateTime.now(),
+        // Persisting history must not delay the connection result.
+        unawaited(
+          historyService?.saveRecentDevice(
+            RecentDevice(
+              id: '${device.ipAddress}:$port',
+              name: device.name,
+              ipAddress: device.ipAddress,
+              port: port,
+              lastConnected: DateTime.now(),
+            ),
           ),
         );
       }

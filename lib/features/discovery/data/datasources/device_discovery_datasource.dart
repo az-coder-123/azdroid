@@ -1,10 +1,10 @@
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/discovery/data/datasources/network_subnet_scanner.dart';
 import 'package:desk_droid/features/discovery/data/models/device_model.dart';
 import 'package:desk_droid/features/discovery/data/services/usb_wifi_auto_handoff_service.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 
 /// Low-level data source interface for scanning and pinging Android endpoints.
 abstract class DeviceDiscoveryDatasource {

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_protocol_handler.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_json_rpc.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('McpProtocolHandler JSON-RPC Tests', () {
@@ -31,8 +31,14 @@ void main() {
 
         final result = responseMap['result'] as Map<String, dynamic>;
         expect(result['protocolVersion'], '2024-11-05');
-        expect(result['serverInfo']['name'], 'deskdroid-mcp');
-        expect(result['capabilities']['tools'], isNotNull);
+        expect(
+          (result['serverInfo'] as Map<String, dynamic>)['name'],
+          'deskdroid-mcp',
+        );
+        expect(
+          (result['capabilities'] as Map<String, dynamic>)['tools'],
+          isNotNull,
+        );
       },
     );
 
@@ -79,7 +85,9 @@ void main() {
       final tools = result['tools'] as List<dynamic>;
 
       expect(tools.length, greaterThanOrEqualTo(9));
-      final toolNames = tools.map((t) => t['name'] as String).toList();
+      final toolNames = tools
+          .map((t) => (t as Map<String, dynamic>)['name'] as String)
+          .toList();
       expect(toolNames, contains('android_list_devices'));
       expect(toolNames, contains('android_take_screenshot'));
       expect(toolNames, contains('android_tap'));
@@ -106,7 +114,10 @@ void main() {
       final responseMap = jsonDecode(responseStr!) as Map<String, dynamic>;
       expect(responseMap['id'], 3);
       expect(responseMap['error'], isNotNull);
-      expect(responseMap['error']['code'], McpError.invalidParams);
+      expect(
+        (responseMap['error'] as Map<String, dynamic>)['code'],
+        McpError.invalidParams,
+      );
     });
 
     test('returns methodNotFound for unknown method', () async {
@@ -121,7 +132,10 @@ void main() {
 
       final responseMap = jsonDecode(responseStr!) as Map<String, dynamic>;
       expect(responseMap['id'], 99);
-      expect(responseMap['error']['code'], McpError.methodNotFound);
+      expect(
+        (responseMap['error'] as Map<String, dynamic>)['code'],
+        McpError.methodNotFound,
+      );
     });
 
     test('returns parseError on malformed JSON payload', () async {
@@ -131,7 +145,10 @@ void main() {
       expect(responseStr, isNotNull);
 
       final responseMap = jsonDecode(responseStr!) as Map<String, dynamic>;
-      expect(responseMap['error']['code'], McpError.parseError);
+      expect(
+        (responseMap['error'] as Map<String, dynamic>)['code'],
+        McpError.parseError,
+      );
     });
 
     test('ignores empty or whitespace-only messages', () async {

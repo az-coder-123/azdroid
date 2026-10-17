@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screenshot_success_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Floating notification HUD banner providing instant feedback and actions
 /// for captured screenshots (Show in Finder, Open, Copied to clipboard).
@@ -15,7 +16,7 @@ class ScreenshotFeedbackBanner extends StatelessWidget {
     return BlocConsumer<ScreenshotCubit, ScreenshotState>(
       listener: (context, state) {
         if (state is ScreenshotSuccess) {
-          Future<void>.delayed(const Duration(seconds: 6), () {
+          Future<void>.delayed(FeedbackDurations.captureResultCard, () {
             if (context.mounted &&
                 context.read<ScreenshotCubit>().state == state) {
               context.read<ScreenshotCubit>().reset();

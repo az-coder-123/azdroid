@@ -28,6 +28,12 @@ abstract class ScreenRecordingDatasource {
 
 /// Implementation using ADB `screenrecord` daemon and pull transfer.
 class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
+  /// Max wait for `screenrecord` to finalize the MP4 after SIGINT.
+  static const Duration _finalizeTimeout = Duration(seconds: 4);
+
+  /// Wait used when no process handle is available to await.
+  static const Duration _finalizeFallbackDelay = Duration(seconds: 1);
+
   ScreenRecordingDatasourceImpl({
     AdbService? adbService,
     ProcessExecutor? processExecutor,
@@ -90,16 +96,14 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
     // Screenrecord requires ~0.5s to write MP4 track headers and sample tables.
     if (_activeRecordingProcess != null) {
       try {
-        await _activeRecordingProcess!.exitCode.timeout(
-          const Duration(seconds: 4),
-        );
+        await _activeRecordingProcess!.exitCode.timeout(_finalizeTimeout);
       } catch (e) {
         AppLogger.warning('Recording process exit timeout: $e');
         _activeRecordingProcess?.kill(ProcessSignal.sigint);
       }
       _activeRecordingProcess = null;
     } else {
-      await Future<void>.delayed(const Duration(milliseconds: 1000));
+      await Future<void>.delayed(_finalizeFallbackDelay);
     }
 
     // Determine target save destination on macOS

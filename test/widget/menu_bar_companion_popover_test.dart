@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/menubar/presentation/widgets/menu_bar_companion_popover.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Widget createSubject(MenuBarCubit cubit) {
@@ -35,7 +35,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Show Mirroring Window'), findsOneWidget);
-      cubit.close();
+      await cubit.close();
     },
   );
 
@@ -59,7 +59,7 @@ void main() {
       expect(find.text('14ms'), findsOneWidget);
       expect(find.text('60 FPS'), findsOneWidget);
 
-      cubit.close();
+      await cubit.close();
     },
   );
 
@@ -91,7 +91,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(guideOpened, isTrue);
-      cubit.close();
+      await cubit.close();
     },
   );
 }

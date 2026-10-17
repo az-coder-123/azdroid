@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/clipboard_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/clipboard_feedback_banner.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockClipboardRepository extends Mock implements ClipboardRepository {}
 
@@ -54,7 +54,7 @@ void main() {
       await tester.pumpWidget(createSubject(cubit));
 
       // Trigger sync
-      cubit.syncHostToDevice('192.168.1.1:5555');
+      unawaited(cubit.syncHostToDevice('192.168.1.1:5555'));
       await tester.pump();
 
       expect(find.text('Syncing clipboard (Mac ➔ Android)...'), findsOneWidget);

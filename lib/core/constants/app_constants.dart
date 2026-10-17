@@ -10,7 +10,7 @@ class AppConstants {
       'High-Performance Android Screen Mirroring & Workstation for macOS';
 
   /// Standard application version string.
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '1.0.1';
 
   /// Minimum supported window dimensions for macOS desktop.
   static const double minWindowWidth = 800.0;

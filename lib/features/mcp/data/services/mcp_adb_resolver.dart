@@ -1,38 +1,22 @@
 part of 'mcp_adb_client.dart';
 
-/// Helper responsible for discovering and caching the ADB binary path on macOS host.
+/// Helper responsible for discovering the ADB binary path for the MCP server.
+///
+/// Probe failures are written to stderr because stdout carries the MCP
+/// JSON-RPC stream.
 class McpAdbResolver {
   const McpAdbResolver._();
 
-  static final List<String> _knownPaths = [
-    'adb',
-    '/opt/homebrew/bin/adb',
-    '/usr/local/bin/adb',
-    '${Platform.environment['HOME']}/Library/Android/sdk/platform-tools/adb',
-  ];
+  static const AdbBinaryLocator _locator = AdbBinaryLocator(
+    onProbeFailure: _logProbe,
+  );
+
+  static void _logProbe(String probe, Object error) =>
+      stderr.writeln('[DeskDroid MCP] ADB probe "$probe" failed: $error');
 
   /// Locates the adb executable on the local host machine.
-  static Future<String?> resolve(String? cached) async {
-    if (cached != null) return cached;
-
-    try {
-      final which = await Process.run('/usr/bin/which', ['adb']);
-      final path = which.stdout.toString().trim();
-      if (which.exitCode == 0 && path.isNotEmpty) {
-        return path;
-      }
-    } catch (_) {}
-
-    for (final p in _knownPaths) {
-      try {
-        final res = await Process.run(p, ['version']);
-        if (res.exitCode == 0) {
-          return p;
-        }
-      } catch (_) {}
-    }
-    return null;
-  }
+  static Future<String?> resolve(String? cached) async =>
+      cached ?? await _locator.locate();
 }
 
 /// Generic 2D point representation for normalized screen coordinates.

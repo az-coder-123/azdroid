@@ -1,7 +1,8 @@
-import 'package:flutter/services.dart';
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:flutter/services.dart';
 
 /// Abstract datasource for host macOS pasteboard and Android device clipboard interactions.
 abstract class ClipboardDatasource {
@@ -71,7 +72,7 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
         'cmd',
         'clipboard',
         'get',
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
 
       if (result.exitCode == 0) {
         final text = result.stdout.toString().trim();
@@ -91,7 +92,7 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
         'broadcast',
         '-a',
         'clipper.get',
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
 
       if (clipperResult.exitCode == 0) {
         final out = clipperResult.stdout.toString();
@@ -128,7 +129,7 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
         'clipboard',
         'set',
         text,
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
 
       if (result.exitCode == 0 &&
           !result.stdout.toString().contains(
@@ -150,7 +151,7 @@ class ClipboardDatasourceImpl implements ClipboardDatasource {
         '--es',
         'text',
         text,
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
 
       return clipperResult.exitCode == 0;
     } catch (e, stack) {

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:flutter/material.dart';
 
 /// List view displaying remote Android directory contents with checkboxes and vibrant file icons.
 class DeviceFileListView extends StatelessWidget {
@@ -149,10 +149,10 @@ class DeviceFileListView extends StatelessWidget {
 
   Color _getFileColor(RemoteFileEntity item) {
     if (item.isDirectory) return AppColors.accentLight;
-    if (item.isImage) return const Color(0xFFC084FC); // Purple
-    if (item.isVideo) return const Color(0xFF60A5FA); // Blue
-    if (item.isAudio) return const Color(0xFFFBBF24); // Amber
-    if (item.isApk) return const Color(0xFF4ADE80); // Green
+    if (item.isImage) return AppColors.fileImage;
+    if (item.isVideo) return AppColors.fileVideo;
+    if (item.isAudio) return AppColors.fileAudio;
+    if (item.isApk) return AppColors.fileApk;
     return AppColors.textSecondary;
   }
 }

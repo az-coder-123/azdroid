@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
 import 'package:desk_droid/features/audio/presentation/widgets/audio_controls_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockAudioRepository extends Mock implements AudioRepository {}
 
@@ -57,7 +57,7 @@ void main() {
       expect(find.text('100%'), findsOneWidget);
       expect(find.byType(Slider), findsOneWidget);
 
-      cubit.close();
+      await cubit.close();
     },
   );
 }

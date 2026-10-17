@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:ui';
 
+import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:desk_droid/core/theme/app_colors.dart';
-import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 
 /// Wraps the viewport with a drag-and-drop listener detecting local files dropped from Finder.
 class FileDropTargetOverlay extends StatefulWidget {
@@ -25,28 +24,6 @@ class FileDropTargetOverlay extends StatefulWidget {
 class _FileDropTargetOverlayState extends State<FileDropTargetOverlay> {
   bool _isDragging = false;
 
-  List<String> _resolveFiles(List<String> rawPaths) {
-    final results = <String>[];
-    for (final path in rawPaths) {
-      if (path.isEmpty) continue;
-      final type = FileSystemEntity.typeSync(path);
-      if (type == FileSystemEntityType.file) {
-        results.add(path);
-      } else if (type == FileSystemEntityType.directory) {
-        try {
-          final entities = Directory(path)
-              .listSync(recursive: true, followLinks: false);
-          for (final entity in entities) {
-            if (entity is File) {
-              results.add(entity.path);
-            }
-          }
-        } catch (_) {}
-      }
-    }
-    return results;
-  }
-
   @override
   Widget build(BuildContext context) {
     return DropTarget(
@@ -54,14 +31,11 @@ class _FileDropTargetOverlayState extends State<FileDropTargetOverlay> {
       onDragExited: (_) => setState(() => _isDragging = false),
       onDragDone: (detail) {
         setState(() => _isDragging = false);
-        final rawPaths = detail.files.map((f) => f.path).toList();
-        if (rawPaths.isEmpty) return;
-
-        final resolved = _resolveFiles(rawPaths);
-        if (resolved.isNotEmpty && mounted) {
+        final droppedPaths = detail.files.map((f) => f.path).toList();
+        if (droppedPaths.isNotEmpty && mounted) {
           context.read<FileTransferCubit>().transferFiles(
             widget.deviceSerial,
-            resolved,
+            droppedPaths,
           );
         }
       },

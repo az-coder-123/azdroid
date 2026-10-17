@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/constants/apk_installer_constants.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
@@ -111,7 +112,7 @@ class ApkInstallerDatasourceImpl implements ApkInstallerDatasource {
         '-c',
         'android.intent.category.LAUNCHER',
         '1',
-      ], timeout: const Duration(seconds: 10));
+      ], timeout: AdbTimeouts.deviceOperation);
       return result.exitCode == 0;
     } catch (e) {
       AppLogger.warning('Failed to launch package $packageName: $e');
@@ -130,7 +131,7 @@ class ApkInstallerDatasourceImpl implements ApkInstallerDatasource {
         deviceSerial,
         'uninstall',
         packageName,
-      ], timeout: const Duration(seconds: 15));
+      ], timeout: AdbTimeouts.packageOperation);
       final combined = '${result.stdout} ${result.stderr}'.toLowerCase();
       return result.exitCode == 0 && combined.contains('success');
     } catch (e) {

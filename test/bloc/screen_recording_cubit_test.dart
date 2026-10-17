@@ -1,13 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:desk_droid/core/services/host_file_launcher.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockScreenRecordingRepository extends Mock
     implements ScreenRecordingRepository {}
+
+class MockHostFileLauncher extends Mock implements HostFileLauncher {}
 
 void main() {
   late MockScreenRecordingRepository mockRepository;
@@ -240,5 +243,36 @@ void main() {
       act: (cubit) => cubit.reset(),
       expect: () => [isA<ScreenRecordingInitial>()],
     );
+  });
+
+  group('ScreenRecordingCubit file actions', () {
+    late MockHostFileLauncher launcher;
+    const filePath = '/Users/mac/Downloads/capture.file';
+
+    setUp(() {
+      launcher = MockHostFileLauncher();
+      when(() => launcher.open(any())).thenAnswer((_) async => true);
+      when(() => launcher.revealInFinder(any())).thenAnswer((_) async => true);
+    });
+
+    test('revealInFinder delegates to HostFileLauncher', () async {
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: launcher,
+      );
+      await cubit.revealInFinder(filePath);
+      verify(() => launcher.revealInFinder(filePath)).called(1);
+      await cubit.close();
+    });
+
+    test('openFile delegates to HostFileLauncher', () async {
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: launcher,
+      );
+      await cubit.openFile(filePath);
+      verify(() => launcher.open(filePath)).called(1);
+      await cubit.close();
+    });
   });
 }

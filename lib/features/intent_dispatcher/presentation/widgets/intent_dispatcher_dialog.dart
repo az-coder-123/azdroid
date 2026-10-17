@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/di/injection.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
-import 'package:desk_droid/features/intent_dispatcher/domain/repositories/intent_repository.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/cubit/intent_dispatcher_cubit.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_advanced_options.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_footer.dart';
@@ -11,6 +8,8 @@ import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/inten
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_extras_editor.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_presets_bar.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_status_banner.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Modal dialog for configuring and firing Android Intents, Deep Links, and Extras.
 class IntentDispatcherDialog extends StatefulWidget {
@@ -24,8 +23,7 @@ class IntentDispatcherDialog extends StatefulWidget {
       context: context,
       barrierDismissible: true,
       builder: (_) => BlocProvider<IntentDispatcherCubit>(
-        create: (_) =>
-            IntentDispatcherCubit(repository: sl<IntentRepository>()),
+        create: (_) => sl<IntentDispatcherCubit>(),
         child: IntentDispatcherDialog(deviceSerial: deviceSerial),
       ),
     );

@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/core/services/device_history_service.dart';
-import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/extensions/optional_read_extension.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/empty_state_radar_icon.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/empty_state_step_card.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/recent_devices_chips.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/empty_state/usb_quick_switch_banner.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/host_context_builder.dart';
+import 'package:flutter/material.dart';
 
 /// Clean and interactive onboarding launchpad displayed when no devices are detected.
 class EmptyStateView extends StatefulWidget {
@@ -39,18 +39,11 @@ class EmptyStateView extends StatefulWidget {
 }
 
 class _EmptyStateViewState extends State<EmptyStateView> {
-  late final Future<String?> _ipFuture;
-  late final Future<List<RecentDevice>> _recentFuture;
-
   @override
   void initState() {
     super.initState();
-    _ipFuture = sl.isRegistered<NetworkInfoService>()
-        ? sl<NetworkInfoService>().getLocalIpAddress()
-        : Future.value(null);
-    _recentFuture = sl.isRegistered<DeviceHistoryService>()
-        ? sl<DeviceHistoryService>().getRecentDevices()
-        : Future.value(<RecentDevice>[]);
+    // Refresh so devices saved during the last session appear immediately.
+    context.tryRead<HostContextCubit>()?.load();
   }
 
   @override
@@ -82,19 +75,18 @@ class _EmptyStateViewState extends State<EmptyStateView> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              FutureBuilder<String?>(
-                future: _ipFuture,
-                builder: (context, snapshot) => _buildChecklist(snapshot.data),
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder<List<RecentDevice>>(
-                future: _recentFuture,
-                builder: (context, snapshot) {
-                  return RecentDevicesChips(
-                    devices: snapshot.data ?? const [],
-                    onSelect: widget.onRecentSelected,
-                  );
-                },
+              HostContextBuilder(
+                builder: (context, host) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildChecklist(host.hostIpAddress),
+                    const SizedBox(height: 20),
+                    RecentDevicesChips(
+                      devices: host.recentDevices,
+                      onSelect: widget.onRecentSelected,
+                    ),
+                  ],
+                ),
               ),
               _buildActionButtons(),
               const SizedBox(height: 20),
@@ -119,7 +111,7 @@ class _EmptyStateViewState extends State<EmptyStateView> {
           badgeIcon: Icons.wifi_rounded,
           badgeColor: AppColors.statusSuccess,
         );
-        final card2 = const EmptyStateStepCard(
+        const card2 = EmptyStateStepCard(
           stepNumber: 2,
           icon: Icons.developer_mode_rounded,
           title: 'Wireless Debugging',
@@ -128,7 +120,7 @@ class _EmptyStateViewState extends State<EmptyStateView> {
           badgeIcon: Icons.settings_outlined,
           badgeColor: AppColors.accent,
         );
-        final card3 = const EmptyStateStepCard(
+        const card3 = EmptyStateStepCard(
           stepNumber: 3,
           icon: Icons.phonelink_lock_rounded,
           title: 'Pair & Connect',
@@ -144,9 +136,9 @@ class _EmptyStateViewState extends State<EmptyStateView> {
             children: [
               Expanded(child: card1),
               const SizedBox(width: 12),
-              Expanded(child: card2),
+              const Expanded(child: card2),
               const SizedBox(width: 12),
-              Expanded(child: card3),
+              const Expanded(child: card3),
             ],
           );
         }

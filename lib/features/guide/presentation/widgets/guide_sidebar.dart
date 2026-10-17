@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_motion.dart';
 import 'package:desk_droid/features/guide/domain/models/guide_category.dart';
+import 'package:flutter/material.dart';
 
 /// Navigation sidebar for the user guide dialog, rendering category tabs and platform footer.
 class GuideSidebar extends StatelessWidget {
@@ -39,7 +40,7 @@ class GuideSidebar extends StatelessWidget {
                   onTap: () => onSelectCategory(index),
                   borderRadius: BorderRadius.circular(10),
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
+                    duration: AppMotion.fast,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 10,

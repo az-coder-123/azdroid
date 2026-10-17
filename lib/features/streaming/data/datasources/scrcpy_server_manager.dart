@@ -1,14 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/services.dart';
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
+import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:flutter/services.dart';
 
 /// Manages scrcpy-server deployment, persistent daemon execution, and socket tunnels.
-class ScrcpyServerManager {
+class ScrcpyServerManager implements AdbPortForwarder {
+  /// Max wait for the scrcpy server ready signal before continuing.
+  static const Duration _serverReadyFallback = Duration(milliseconds: 2500);
+
+  /// Settle time for the device LocalServerSocket before forwarding.
+  static const Duration _socketSettleDelay = Duration(milliseconds: 200);
+
   ScrcpyServerManager({
     AdbService? adbService,
     ProcessExecutor? processExecutor,
@@ -57,6 +65,7 @@ class ScrcpyServerManager {
   }
 
   /// Configures TCP port forwarding via ADB to scrcpy abstract UNIX socket.
+  @override
   Future<bool> setupPortForward({
     required String deviceSerial,
     int localPort = SocketConfig.defaultVideoStreamPort,
@@ -71,7 +80,7 @@ class ScrcpyServerManager {
         'forward',
         'tcp:$localPort',
         'localabstract:scrcpy_$scid',
-      ], timeout: const Duration(seconds: 5));
+      ], timeout: AdbTimeouts.connect);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(
@@ -84,6 +93,7 @@ class ScrcpyServerManager {
   }
 
   /// Removes an existing TCP port forward.
+  @override
   Future<bool> removePortForward({
     required String deviceSerial,
     int localPort = SocketConfig.defaultVideoStreamPort,
@@ -98,7 +108,7 @@ class ScrcpyServerManager {
         'forward',
         '--remove',
         'tcp:$localPort',
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(
@@ -131,7 +141,7 @@ class ScrcpyServerManager {
           'push',
           localJarPath,
           remoteServerPath,
-        ], timeout: const Duration(seconds: 5));
+        ], timeout: AdbTimeouts.connect);
       } catch (e) {
         AppLogger.debug('scrcpy-server.jar push skipped: $e');
       }
@@ -178,11 +188,11 @@ class ScrcpyServerManager {
       // Await daemon readiness or 2.5s fallback
       await Future.any([
         readyCompleter.future,
-        Future<void>.delayed(const Duration(milliseconds: 2500)),
+        Future<void>.delayed(_serverReadyFallback),
       ]);
 
       // Brief 200ms stabilization window for LocalServerSocket
-      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await Future<void>.delayed(_socketSettleDelay);
 
       // Setup port forward once server socket is listening
       await setupPortForward(deviceSerial: deviceSerial, localPort: port);
@@ -227,7 +237,7 @@ class ScrcpyServerManager {
         'input',
         'keyevent',
         keyCode.toString(),
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: AdbTimeouts.quickQuery);
       return result.exitCode == 0;
     } catch (e, stack) {
       AppLogger.warning(

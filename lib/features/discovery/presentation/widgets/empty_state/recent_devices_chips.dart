@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:flutter/material.dart';
 
 /// Horizontal wrap of recent device chips for 1-click reconnecting.
 class RecentDevicesChips extends StatelessWidget {

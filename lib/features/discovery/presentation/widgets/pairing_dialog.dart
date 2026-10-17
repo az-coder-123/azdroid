@@ -1,16 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/extensions/optional_read_extension.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/pairing_state.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/host_context_builder.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_dialog_header.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_manual_code_tab.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_status_banner.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Modal dialog providing interactive step-by-step wireless pairing for Android 11+
 /// using authentic 6-digit Wi-Fi pairing code and port entry.
@@ -41,7 +43,6 @@ class PairingDialog extends StatefulWidget {
 }
 
 class _PairingDialogState extends State<PairingDialog> {
-  String? _hostMacIp;
   late final TextEditingController _ipController;
   late final TextEditingController _portController;
   late final TextEditingController _codeController;
@@ -49,7 +50,7 @@ class _PairingDialogState extends State<PairingDialog> {
   @override
   void initState() {
     super.initState();
-    _loadHostIp();
+    context.tryRead<HostContextCubit>()?.load();
 
     final device = widget.initialDevice;
     _ipController = TextEditingController(
@@ -61,21 +62,6 @@ class _PairingDialogState extends State<PairingDialog> {
       text: (device?.pairingPort ?? 37123).toString(),
     );
     _codeController = TextEditingController();
-  }
-
-  Future<void> _loadHostIp() async {
-    try {
-      final ip = await sl<NetworkInfoService>().getLocalIpAddress();
-      if (mounted && ip != null) {
-        setState(() => _hostMacIp = ip);
-      }
-    } catch (e, stack) {
-      AppLogger.warning(
-        'Failed to load host Mac IP for pairing dialog',
-        error: e,
-        stackTrace: stack,
-      );
-    }
   }
 
   @override
@@ -103,7 +89,7 @@ class _PairingDialogState extends State<PairingDialog> {
         listener: (context, state) {
           if (state is PairingSuccess) {
             widget.onPairingSuccess?.call();
-            Future.delayed(const Duration(milliseconds: 900), () {
+            Future.delayed(FeedbackDurations.dialogAutoClose, () {
               if (context.mounted) {
                 Navigator.of(context).pop();
               }
@@ -113,72 +99,86 @@ class _PairingDialogState extends State<PairingDialog> {
         builder: (context, state) {
           final isSubmitting = state is PairingSubmitting;
 
-          return Dialog(
-            backgroundColor: AppColors.surface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-              side: const BorderSide(color: AppColors.border),
-            ),
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 500),
-              padding: const EdgeInsets.all(24.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    PairingDialogHeader(
-                      isSubmitting: isSubmitting,
-                      onClose: () => Navigator.of(context).pop(),
-                    ),
-                    const SizedBox(height: 16),
-                    PairingHostIpBanner(hostMacIp: _hostMacIp),
-                    const SizedBox(height: 16),
-                    PairingManualCodeTab(
-                      isSubmitting: isSubmitting,
-                      hostMacIp: _hostMacIp,
-                      ipController: _ipController,
-                      portController: _portController,
-                      codeController: _codeController,
-                    ),
-                    const SizedBox(height: 16),
-                    PairingStatusBanner(state: state),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        OutlinedButton(
-                          onPressed: isSubmitting
-                              ? null
-                              : () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(width: 12),
-                        ElevatedButton.icon(
-                          onPressed: isSubmitting
-                              ? null
-                              : () => _submitManualPair(context),
-                          icon: isSubmitting
-                              ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.check_rounded, size: 18),
-                          label: Text(
-                            isSubmitting ? 'Pairing...' : 'Pair & Connect',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+          return HostContextBuilder(
+            builder: (context, host) => _buildDialog(
+              context,
+              state: state,
+              isSubmitting: isSubmitting,
+              hostMacIp: host.hostIpAddress,
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildDialog(
+    BuildContext context, {
+    required PairingState state,
+    required bool isSubmitting,
+    required String? hostMacIp,
+  }) {
+    return Dialog(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PairingDialogHeader(
+                isSubmitting: isSubmitting,
+                onClose: () => Navigator.of(context).pop(),
+              ),
+              const SizedBox(height: 16),
+              PairingHostIpBanner(hostMacIp: hostMacIp),
+              const SizedBox(height: 16),
+              PairingManualCodeTab(
+                isSubmitting: isSubmitting,
+                hostMacIp: hostMacIp,
+                ipController: _ipController,
+                portController: _portController,
+                codeController: _codeController,
+              ),
+              const SizedBox(height: 16),
+              PairingStatusBanner(state: state),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: isSubmitting
+                        ? null
+                        : () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton.icon(
+                    onPressed: isSubmitting
+                        ? null
+                        : () => _submitManualPair(context),
+                    icon: isSubmitting
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.check_rounded, size: 18),
+                    label: Text(isSubmitting ? 'Pairing...' : 'Pair & Connect'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,9 +1,13 @@
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Dedicated service responsible for switching USB-connected Android devices to wireless TCP/IP mode.
 class AdbTcpipService {
+  /// Time for adbd to restart in TCP mode after `adb tcpip`.
+  static const Duration _adbdRestartDelay = Duration(milliseconds: 600);
+
   AdbTcpipService({AdbService? adbService, ProcessExecutor? processExecutor})
     : _adbService = adbService ?? AdbService(),
       _executor = processExecutor ?? const DefaultProcessExecutor();
@@ -28,7 +32,7 @@ class AdbTcpipService {
         'addr',
         'show',
         'wlan0',
-      ], timeout: const Duration(seconds: 4));
+      ], timeout: AdbTimeouts.shellCommand);
 
       final output = result.stdout.toString();
       final match = RegExp(r'inet\s+(\d+\.\d+\.\d+\.\d+)').firstMatch(output);
@@ -47,7 +51,7 @@ class AdbTcpipService {
         'shell',
         'ip',
         'route',
-      ], timeout: const Duration(seconds: 4));
+      ], timeout: AdbTimeouts.shellCommand);
 
       final output = result.stdout.toString();
       final match = RegExp(r'src\s+(\d+\.\d+\.\d+\.\d+)').firstMatch(output);
@@ -73,7 +77,7 @@ class AdbTcpipService {
         'shell',
         'getprop',
         'ro.serialno',
-      ], timeout: const Duration(seconds: 4));
+      ], timeout: AdbTimeouts.shellCommand);
 
       final output = result.stdout.toString().trim();
       if (result.exitCode == 0 &&
@@ -103,7 +107,7 @@ class AdbTcpipService {
         serial,
         'tcpip',
         port.toString(),
-      ], timeout: const Duration(seconds: 8));
+      ], timeout: AdbTimeouts.slowCommand);
 
       final out = result.stdout.toString().trim();
       final err = result.stderr.toString().trim();
@@ -148,7 +152,7 @@ class AdbTcpipService {
     }
 
     // Small delay to allow adbd to restart in TCP mode
-    await Future<void>.delayed(const Duration(milliseconds: 600));
+    await Future<void>.delayed(_adbdRestartDelay);
 
     // 3. If Wi-Fi IP was identified, connect immediately!
     if (wifiIp != null && wifiIp.isNotEmpty) {

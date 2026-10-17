@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -80,7 +81,7 @@ class IntentDatasourceImpl implements IntentDatasource {
       final result = await _executor.run(
         adb,
         args,
-        timeout: const Duration(seconds: 5),
+        timeout: AdbTimeouts.connect,
       );
 
       final stdout = result.stdout.toString().trim();

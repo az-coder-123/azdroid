@@ -1,20 +1,35 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/services/local_file_system_gateway.dart';
+import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/features/productivity/domain/entities/file_transfer_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing drag-and-drop file transfers and APK sideloading.
 class FileTransferCubit extends Cubit<FileTransferState> {
   FileTransferCubit({
     required this.repository,
-    this.autoResetDuration = const Duration(seconds: 4),
+    this.autoResetDuration = FeedbackDurations.statusBanner,
+    this._fileSystem = const IoLocalFileSystemGateway(),
+    this._filePicker = const MacFilePickerServiceImpl(),
   }) : super(const FileTransferInitial());
 
   final FileTransferRepository repository;
+  final LocalFileSystemGateway _fileSystem;
+  final MacFilePickerService _filePicker;
+
+  /// Opens the native file picker and transfers the chosen files, if any.
+  Future<void> pickAndTransferFiles(String deviceSerial) async {
+    final files = await _filePicker.pickFiles();
+    if (files.isNotEmpty && !isClosed) {
+      await transferFiles(deviceSerial, files);
+    }
+  }
+
   final Duration? autoResetDuration;
   Timer? _autoResetTimer;
 
@@ -30,11 +45,12 @@ class FileTransferCubit extends Cubit<FileTransferState> {
     return super.close();
   }
 
-  /// Processes and pushes a batch of local file paths to the connected Android device.
-  Future<void> transferFiles(
-    String deviceSerial,
-    List<String> filePaths,
-  ) async {
+  /// Pushes local files to the connected Android device.
+  ///
+  /// [paths] may contain files or directories; directories are expanded
+  /// recursively into their contained files before transfer.
+  Future<void> transferFiles(String deviceSerial, List<String> paths) async {
+    final filePaths = _fileSystem.expandToFiles(paths);
     if (filePaths.isEmpty) return;
 
     final totalCount = filePaths.length;
@@ -46,13 +62,7 @@ class FileTransferCubit extends Cubit<FileTransferState> {
         ProductivityConstants.apkExtension,
       );
 
-      int sizeBytes = 0;
-      try {
-        final f = File(path);
-        if (f.existsSync()) {
-          sizeBytes = f.lengthSync();
-        }
-      } catch (_) {}
+      final sizeBytes = _fileSystem.fileSizeOf(path);
 
       final transfer = FileTransferEntity(
         id: DateTime.now().microsecondsSinceEpoch.toString(),

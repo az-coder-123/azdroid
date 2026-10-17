@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
-import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/core/extensions/optional_read_extension.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/widgets/host_context_builder.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing/pairing_host_ip_banner.dart';
+import 'package:flutter/material.dart';
 
 /// Simple modal dialog allowing manual IP and port input for direct connection.
 class ManualConnectDialog extends StatefulWidget {
@@ -33,7 +33,6 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
   late final TextEditingController _ipController;
   late final TextEditingController _portController;
   String? _errorMessage;
-  String? _hostMacIp;
 
   @override
   void initState() {
@@ -42,22 +41,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
     _portController = TextEditingController(
       text: SocketConfig.defaultAdbWirelessPort.toString(),
     );
-    _loadHostIp();
-  }
-
-  Future<void> _loadHostIp() async {
-    try {
-      final ip = await sl<NetworkInfoService>().getLocalIpAddress();
-      if (mounted && ip != null) {
-        setState(() => _hostMacIp = ip);
-      }
-    } catch (e, stack) {
-      AppLogger.warning(
-        'Failed to load host Mac IP for manual connect dialog',
-        error: e,
-        stackTrace: stack,
-      );
-    }
+    context.tryRead<HostContextCubit>()?.load();
   }
 
   @override
@@ -87,6 +71,12 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
 
   @override
   Widget build(BuildContext context) {
+    return HostContextBuilder(
+      builder: (context, host) => _buildDialog(context, host.hostIpAddress),
+    );
+  }
+
+  Widget _buildDialog(BuildContext context, String? hostMacIp) {
     return Dialog(
       backgroundColor: AppColors.surface,
       shape: RoundedRectangleBorder(
@@ -137,7 +127,7 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
               ),
               const SizedBox(height: 16),
 
-              PairingHostIpBanner(hostMacIp: _hostMacIp),
+              PairingHostIpBanner(hostMacIp: hostMacIp),
               const SizedBox(height: 16),
 
               Row(
@@ -150,8 +140,8 @@ class _ManualConnectDialogState extends State<ManualConnectDialog> {
                       autofocus: true,
                       decoration: InputDecoration(
                         labelText: 'Phone IP Address',
-                        hintText: _hostMacIp != null
-                            ? 'e.g. ${_hostMacIp!.substring(0, _hostMacIp!.lastIndexOf('.') + 1)}xxx'
+                        hintText: hostMacIp != null
+                            ? 'e.g. ${hostMacIp.substring(0, hostMacIp.lastIndexOf('.') + 1)}xxx'
                             : '192.168.1.100',
                         helperText: 'View in phone Wi-Fi settings',
                         isDense: true,

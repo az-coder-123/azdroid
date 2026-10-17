@@ -1,18 +1,23 @@
+import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/core/services/device_history_service.dart';
+import 'package:desk_droid/core/services/network_info_service.dart';
+import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
+import 'package:desk_droid/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:desk_droid/core/di/injection.dart';
-import 'package:desk_droid/core/services/network_info_service.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
-import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
-import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
-import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
-import 'package:desk_droid/main.dart';
 
 class MockDeviceDiscoveryRepository extends Mock
     implements DeviceDiscoveryRepository {}
 
 class MockNetworkInfoService extends Mock implements NetworkInfoService {}
+
+class MockDeviceHistoryService extends Mock implements DeviceHistoryService {}
 
 void main() {
   late MockDeviceDiscoveryRepository mockRepository;
@@ -34,6 +39,16 @@ void main() {
     sl.registerFactory<PairingCubit>(
       () => PairingCubit(repository: sl<DeviceDiscoveryRepository>()),
     );
+    final mockHistoryService = MockDeviceHistoryService();
+    when(() => mockHistoryService.getRecentDevices())
+        .thenAnswer((_) async => []);
+    sl.registerFactory<HostContextCubit>(
+      () => HostContextCubit(
+        networkInfoService: mockNetworkInfoService,
+        historyService: mockHistoryService,
+      ),
+    );
+    sl.registerLazySingleton<MenuBarCubit>(MenuBarCubit.new);
   });
 
   tearDown(() async {

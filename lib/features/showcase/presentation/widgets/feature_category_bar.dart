@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/core/theme/app_motion.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:flutter/material.dart';
 
 /// Horizontal category selector bar rendering macOS-native styled pill filters.
 class FeatureCategoryBar extends StatelessWidget {
@@ -27,7 +28,7 @@ class FeatureCategoryBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               onTap: () => onSelectCategory(cat),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
+                duration: AppMotion.medium,
                 curve: Curves.easeOut,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,

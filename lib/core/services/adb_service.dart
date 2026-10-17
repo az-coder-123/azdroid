@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/models/adb_command_result.dart';
 import 'package:desk_droid/core/models/adb_device.dart';
 import 'package:desk_droid/core/models/adb_mdns_service.dart';
@@ -53,7 +54,7 @@ class AdbService {
       final result = await _executor.run(adb, [
         'devices',
         '-l',
-      ], timeout: const Duration(seconds: 5));
+      ], timeout: AdbTimeouts.connect);
 
       if (result.exitCode != 0) return [];
       return _parser.parseDevices(result.stdout.toString());
@@ -80,7 +81,7 @@ class AdbService {
       final result = await _executor.run(adb, [
         'mdns',
         'services',
-      ], timeout: const Duration(seconds: 5));
+      ], timeout: AdbTimeouts.connect);
 
       if (result.exitCode != 0) return [];
       return _parser.parseMdnsServices(result.stdout.toString());
@@ -113,7 +114,7 @@ class AdbService {
       var result = await _executor.run(adb, [
         'connect',
         target,
-      ], timeout: const Duration(seconds: 8));
+      ], timeout: AdbTimeouts.slowCommand);
 
       var out = result.stdout.toString().trim();
       var err = result.stderr.toString().trim();
@@ -124,11 +125,11 @@ class AdbService {
         AppLogger.info('Stale ADB route for $target. Recycling ADB daemon...');
         await _executor.run(adb, [
           'kill-server',
-        ], timeout: const Duration(seconds: 4));
+        ], timeout: AdbTimeouts.shellCommand);
         result = await _executor.run(adb, [
           'connect',
           target,
-        ], timeout: const Duration(seconds: 8));
+        ], timeout: AdbTimeouts.slowCommand);
         out = result.stdout.toString().trim();
         err = result.stderr.toString().trim();
         combined = '$out $err'.trim();
@@ -168,7 +169,7 @@ class AdbService {
       final result = await _executor.run(adb, [
         'disconnect',
         target,
-      ], timeout: const Duration(seconds: 5));
+      ], timeout: AdbTimeouts.connect);
 
       final out = result.stdout.toString().trim();
       return AdbCommandResult(isSuccess: true, message: out);
@@ -200,7 +201,7 @@ class AdbService {
         'pair',
         target,
         pairingCode,
-      ], timeout: const Duration(seconds: 10));
+      ], timeout: AdbTimeouts.deviceOperation);
 
       final out = result.stdout.toString().trim();
       final err = result.stderr.toString().trim();

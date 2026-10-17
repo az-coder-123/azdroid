@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:desk_droid/core/constants/feedback_durations.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:desk_droid/core/theme/app_colors.dart';
 
 /// Interactive terminal command box with 1-click copy to clipboard and visual feedback.
 class GuideCommandSnippet extends StatefulWidget {
@@ -22,7 +23,7 @@ class _GuideCommandSnippetState extends State<GuideCommandSnippet> {
     Clipboard.setData(ClipboardData(text: widget.command));
     setState(() => _isCopied = true);
     _resetTimer?.cancel();
-    _resetTimer = Timer(const Duration(seconds: 2), () {
+    _resetTimer = Timer(FeedbackDurations.copyConfirmation, () {
       if (mounted) setState(() => _isCopied = false);
     });
   }

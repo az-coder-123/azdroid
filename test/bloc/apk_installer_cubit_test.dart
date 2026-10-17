@@ -1,15 +1,18 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
 import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_cubit.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockApkInstallerRepository extends Mock
     implements ApkInstallerRepository {}
+
+class MockMacFilePickerService extends Mock implements MacFilePickerService {}
 
 void main() {
   late MockApkInstallerRepository mockRepo;
@@ -171,6 +174,44 @@ void main() {
           appLaunched: true,
         ),
       ],
+    );
+  });
+
+  group('ApkInstallerCubit.pickApk', () {
+    late MockMacFilePickerService picker;
+
+    setUp(() => picker = MockMacFilePickerService());
+
+    blocTest<ApkInstallerCubit, ApkInstallerState>(
+      'inspects the picked APK',
+      setUp: () {
+        when(() => picker.pickApkFile(prompt: any(named: 'prompt')))
+            .thenAnswer((_) async => '/path/app.apk');
+        when(() => mockRepo.inspectApk('/path/app.apk'))
+            .thenAnswer((_) async => testInfo);
+      },
+      build: () => ApkInstallerCubit(
+        repository: mockRepo,
+        deviceSerial: testSerial,
+        filePicker: picker,
+      ),
+      act: (cubit) => cubit.pickApk(),
+      expect: () => [isA<ApkInstallerInspecting>(), isA<ApkInstallerReady>()],
+    );
+
+    blocTest<ApkInstallerCubit, ApkInstallerState>(
+      'emits nothing when the picker is cancelled',
+      setUp: () {
+        when(() => picker.pickApkFile(prompt: any(named: 'prompt')))
+            .thenAnswer((_) async => null);
+      },
+      build: () => ApkInstallerCubit(
+        repository: mockRepo,
+        deviceSerial: testSerial,
+        filePicker: picker,
+      ),
+      act: (cubit) => cubit.pickApk(),
+      expect: () => <ApkInstallerState>[],
     );
   });
 }

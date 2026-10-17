@@ -18,6 +18,9 @@ abstract class AudioSocketDatasource {
   /// Stream of raw incoming PCM/Opus audio byte packets.
   Stream<List<int>> get audioPacketStream;
 
+  /// Disconnects and closes the packet stream. The instance is unusable after.
+  Future<void> dispose();
+
   /// Whether the audio socket is currently connected.
   bool get isConnected;
 }
@@ -89,5 +92,12 @@ class AudioSocketDatasourceImpl implements AudioSocketDatasource {
     }
     _socket?.destroy();
     _socket = null;
+  }
+
+  @override
+  Future<void> dispose() async {
+    await disconnect();
+    await _streamController?.close();
+    _streamController = null;
   }
 }

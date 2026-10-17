@@ -12,6 +12,9 @@ import 'package:desk_droid/features/logging/domain/repositories/device_log_repos
 /// Implementation of [DeviceLogRepository] providing batched logcat streaming,
 /// bounded in-memory caching, and non-blocking real-time file recording.
 class DeviceLogRepositoryImpl implements DeviceLogRepository {
+  /// Backlog size that triggers an immediate flush instead of waiting.
+  static const int _maxPendingLines = 200;
+
   DeviceLogRepositoryImpl({
     LogcatStreamDatasource? datasource,
     LogFileRecorder? fileRecorder,
@@ -60,7 +63,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
             _pendingRawLines.add(rawLine);
 
             // If batch grows large rapidly, flush early to prevent memory pressure
-            if (_pendingRawLines.length >= 200) {
+            if (_pendingRawLines.length >= _maxPendingLines) {
               _flushPendingBatch();
             }
           },
@@ -69,7 +72,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
           },
           onDone: () async {
             await _flushPendingBatch();
-            if (!controller.isClosed) controller.close();
+            if (!controller.isClosed) unawaited(controller.close());
           },
         );
 
@@ -114,8 +117,9 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
       );
     } finally {
       _isFlushing = false;
-      if (_pendingRawLines.length >= 200) {
-        _flushPendingBatch();
+      if (_pendingRawLines.length >= _maxPendingLines) {
+        // Drain the backlog without blocking the caller of this flush.
+        unawaited(_flushPendingBatch());
       }
     }
   }

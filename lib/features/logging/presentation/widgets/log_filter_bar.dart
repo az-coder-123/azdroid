@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_cubit.dart';
+import 'package:desk_droid/features/logging/presentation/utils/log_level_colors.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_exclude_tags_bar.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_filter_chips.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_pid_filter_input.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_preset_dropdown.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_tag_filter_input.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Top filtering toolbar providing level toggles, search text, regex, and tag/pid filters.
 class LogFilterBar extends StatefulWidget {

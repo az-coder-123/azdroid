@@ -7,14 +7,28 @@ import 'package:flutter/foundation.dart';
 class AppLogger {
   const AppLogger._();
 
+  /// Append-only diagnostic log file used for post-mortem debugging.
+  static const String logFilePath = '/tmp/deskdroid_dart.log';
+
+  /// Logger name used when the diagnostic log file itself cannot be written.
+  static const String _fileSinkTag = 'DeskDroid.LogFile';
+
   static void _logToFile(String line) {
     try {
-      File('/tmp/deskdroid_dart.log').writeAsStringSync(
+      File(logFilePath).writeAsStringSync(
         '${DateTime.now().toIso8601String()} $line\n',
         mode: FileMode.append,
         flush: true,
       );
-    } catch (_) {}
+    } on FileSystemException catch (error) {
+      // Report through the VM log only, to avoid recursing into the file sink.
+      developer.log(
+        'Failed to write diagnostic log file',
+        name: _fileSinkTag,
+        level: 900,
+        error: error,
+      );
+    }
   }
 
   /// Logs informational system messages.

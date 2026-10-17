@@ -29,4 +29,21 @@ class AppColors {
   static const Color statusWarning = Color(0xFFFF9500); // Orange
   static const Color statusError = Color(0xFFFF3B30); // Red
   static const Color statusInfo = Color(0xFF5AC8FA); // Light Blue
+
+  // Mirroring viewport backdrop behind the device frame
+  static const Color viewportBackdrop = Color(0xFF0D0E12);
+
+  // Logcat severity palette
+  static const Color logVerbose = Color(0xFF9E9E9E);
+  static const Color logDebug = Color(0xFF64B5F6);
+  static const Color logInfo = Color(0xFF81C784);
+  static const Color logWarn = Color(0xFFFFB74D);
+  static const Color logError = Color(0xFFE57373);
+  static const Color logFatal = Color(0xFFF06292);
+
+  // Remote file type palette
+  static const Color fileImage = Color(0xFFC084FC);
+  static const Color fileVideo = Color(0xFF60A5FA);
+  static const Color fileAudio = Color(0xFFFBBF24);
+  static const Color fileApk = Color(0xFF4ADE80);
 }

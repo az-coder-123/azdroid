@@ -1,18 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
+import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/pairing_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockDeviceDiscoveryRepository extends Mock
     implements DeviceDiscoveryRepository {}
 
 class MockNetworkInfoService extends Mock implements NetworkInfoService {}
+
+class MockDeviceHistoryService extends Mock implements DeviceHistoryService {}
 
 void main() {
   late MockDeviceDiscoveryRepository mockRepository;
@@ -38,9 +43,17 @@ void main() {
   });
 
   Widget createSubject({DeviceEntity? device}) {
-    return MaterialApp(
-      theme: AppTheme.darkTheme,
-      home: Scaffold(body: PairingDialog(initialDevice: device)),
+    final historyService = MockDeviceHistoryService();
+    when(() => historyService.getRecentDevices()).thenAnswer((_) async => []);
+    return BlocProvider<HostContextCubit>(
+      create: (_) => HostContextCubit(
+        networkInfoService: mockNetworkInfoService,
+        historyService: historyService,
+      ),
+      child: MaterialApp(
+        theme: AppTheme.darkTheme,
+        home: Scaffold(body: PairingDialog(initialDevice: device)),
+      ),
     );
   }
 

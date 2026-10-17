@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/data/utils/image_crop_util.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
+import 'package:flutter/material.dart';
 
 /// Data source interface for capturing raw device screenshots.
 abstract class ScreenshotDatasource {
@@ -20,6 +20,9 @@ abstract class ScreenshotDatasource {
 
 /// Implementation using ADB `exec-out screencap -p` and macOS system clipboard integration.
 class ScreenshotDatasourceImpl implements ScreenshotDatasource {
+  /// Upper bound for the AppleScript that copies a PNG to the pasteboard.
+  static const Duration _clipboardScriptTimeout = Duration(seconds: 3);
+
   ScreenshotDatasourceImpl({
     AdbService? adbService,
     ProcessExecutor? processExecutor,
@@ -147,7 +150,7 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
       final res = await _executor.run('/usr/bin/osascript', [
         '-e',
         script,
-      ], timeout: const Duration(seconds: 3));
+      ], timeout: _clipboardScriptTimeout);
       return res.exitCode == 0;
     } catch (e) {
       AppLogger.debug('Clipboard copy failed: $e');

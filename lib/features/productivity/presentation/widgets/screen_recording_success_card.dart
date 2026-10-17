@@ -1,11 +1,9 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Translucent card presenting captured screen recording details and macOS QuickTime / Finder actions.
 class ScreenRecordingSuccessCard extends StatelessWidget {
@@ -90,14 +88,17 @@ class ScreenRecordingSuccessCard extends StatelessWidget {
                     _buildActionButton(
                       icon: Icons.folder_open_rounded,
                       label: 'Finder',
-                      onTap: () =>
-                          Process.run('open', ['-R', recording.filePath]),
+                      onTap: () => context
+                          .read<ScreenRecordingCubit>()
+                          .revealInFinder(recording.filePath),
                     ),
                     const SizedBox(width: 6),
                     _buildActionButton(
                       icon: Icons.play_arrow_rounded,
                       label: 'Play',
-                      onTap: () => Process.run('open', [recording.filePath]),
+                      onTap: () => context
+                          .read<ScreenRecordingCubit>()
+                          .openFile(recording.filePath),
                     ),
                   ],
                 ),

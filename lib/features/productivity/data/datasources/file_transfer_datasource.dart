@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/constants/productivity_constants.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
@@ -63,7 +66,10 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       );
 
       if (result.exitCode == 0) {
-        _scanRemoteMedia(adb, deviceSerial, remoteDestination, localPath);
+        // Media indexing is best effort and must not delay the push result.
+        unawaited(
+          _scanRemoteMedia(adb, deviceSerial, remoteDestination, localPath),
+        );
         return true;
       }
       return false;
@@ -113,9 +119,10 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
         '-d',
         'file://$remoteFile',
-      ], timeout: const Duration(seconds: 4));
-    } catch (_) {
-      // Best effort scan notification
+      ], timeout: AdbTimeouts.shellCommand);
+    } on Exception catch (error) {
+      // Media scan is best effort; the file is already on the device.
+      AppLogger.debug('Media scanner broadcast failed for $remoteFile: $error');
     }
   }
 
@@ -167,7 +174,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         'ls',
         '-lp',
         normDir,
-      ], timeout: const Duration(seconds: 8));
+      ], timeout: AdbTimeouts.slowCommand);
 
       final stdoutStr = result.stdout.toString();
       if (result.exitCode != 0 && stdoutStr.trim().isEmpty) {
@@ -207,7 +214,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         'ls',
         '-d',
         '/storage/*',
-      ], timeout: const Duration(seconds: 4));
+      ], timeout: AdbTimeouts.shellCommand);
 
       final lines = result.stdout.toString().split('\n');
       for (final line in lines) {
@@ -219,7 +226,12 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
             !const {'emulated', 'self', 'sdcard0'}.contains(name);
         if (isExt) return path.endsWith('/') ? path : '$path/';
       }
-    } catch (_) {}
+    } on Exception catch (error) {
+      AppLogger.warning(
+        'Failed to query external storage on $deviceSerial',
+        error: error,
+      );
+    }
     return null;
   }
 

@@ -1,6 +1,6 @@
+import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/discovery/data/datasources/device_discovery_datasource.dart';
-import 'package:desk_droid/features/discovery/domain/entities/device_entity.dart';
 import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
 
 /// Concrete implementation of [DeviceDiscoveryRepository].
