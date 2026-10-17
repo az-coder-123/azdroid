@@ -15,6 +15,7 @@
 | **BL-05** | `streaming` (Audio) | Scrcpy v2.0+ Audio Forwarding Socket Pipeline (Android 10+) | Medium | v1.3 | ⏳ Backlog |
 | **BL-06** | `architecture` (Clean Code) | Modularize Large Widget & Cubit Files (`device_log_cubit`, `apk_installer_dialog`, `log_filter_bar`) | Medium | Technical Debt | ⏳ In Progress |
 | **BL-07** | `distribution` (DevOps) | macOS DMG Bundler, Apple Code-Signing & Sparkle Auto-Update Pipeline | High | Release Ready | ⏳ Backlog |
+| **BL-08** | `mcp` (DeskDroid) | AI Agent Tool Enhancements (IME input, double-tap, smart clicks) | High | v1.3 | ⏳ Proposed ([Details](mcp-tool-enhancement-proposals.md)) |
 
 ---
 
@@ -56,3 +57,7 @@
 ### BL-07: macOS Distribution & Release Pipeline
 - **Problem Statement:** The project is run via `flutter run`, lacking an automated release bundle.
 - **Proposed Solution:** Create `scripts/build_dmg.sh` using `create-dmg` to produce styled DMG packages with background art, integrate Apple Developer ID signing, and configure `Sparkle.framework` for auto-updates.
+
+### BL-08: DeskDroid MCP Server Tool Enhancements
+- **Problem Statement:** AI Agent latency and IME/autocorrect interference during end-to-end mobile app testing.
+- **Proposed Solution:** Implement 9 new MCP tools (`android_set_text`, `android_clear_text`, `android_double_tap`, `android_click_by_desc/text`, `android_wait_for_element`, etc.). See detailed spec: [mcp-tool-enhancement-proposals.md](mcp-tool-enhancement-proposals.md).
