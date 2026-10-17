@@ -38,8 +38,9 @@ uint16_t ReadPort(const EncodableMap* args) {
     const auto it = args->find(EncodableValue(kPortKey));
     if (it != args->end()) {
       // Dart ints arrive as int32 when they fit, int64 otherwise.
-      if (const auto* small = std::get_if<int32_t>(&it->second)) port = *small;
-      if (const auto* large = std::get_if<int64_t>(&it->second)) port = *large;
+      // Avoid the name `small`: the Windows SDK defines it as a macro.
+      if (const auto* port32 = std::get_if<int32_t>(&it->second)) port = *port32;
+      if (const auto* port64 = std::get_if<int64_t>(&it->second)) port = *port64;
     }
   }
   return (port > 0 && port <= UINT16_MAX) ? static_cast<uint16_t>(port)
