@@ -120,7 +120,8 @@ echo -e "${YELLOW}📦 [Step 4/5] Packaging release archive into RELEASE/...${NC
 mkdir -p "$RELEASE_DIR"
 cd "$RELEASE_DIR"
 
-# Clean old zip archives to avoid stale checksums
+# Clean old zip archives to keep only the latest release archive
+find "${RELEASE_DIR}" -maxdepth 1 -name "DeskDroid-v*.zip" ! -name "$ZIP_NAME" -delete 2>/dev/null || true
 rm -f "$ZIP_NAME" "$LATEST_ZIP_NAME" SHA256SUMS.txt
 
 # Use Apple ditto to preserve macOS resource forks, symlinks, and code signature
