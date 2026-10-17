@@ -42,25 +42,25 @@ mixin StreamingTelemetryTracker on Cubit<StreamingState> {
     if (lostMessage == null) {
       emit(current.copyWith(telemetry: telemetry));
     } else {
-      unawaited(_endLostSession(current, telemetry.health, lostMessage));
+      AppLogger.warning(
+        'Video stream ${telemetry.health.name} for ${current.session.deviceId}',
+      );
+      unawaited(endSessionWithError(current, lostMessage));
     }
   }
 
-  Future<void> _endLostSession(
-    StreamingActive lost,
-    StreamHealth health,
+  /// Stops a session that cannot continue and shows [message].
+  Future<void> endSessionWithError(
+    StreamingActive failed,
     String message,
   ) async {
-    AppLogger.warning(
-      'Video stream ${health.name} for ${lost.session.deviceId}; '
-      'stopping the session',
-    );
+    AppLogger.warning('Ending session ${failed.session.sessionId}: $message');
     await stopTelemetry();
     try {
-      await repository.stopSession(lost.session.sessionId);
+      await repository.stopSession(failed.session.sessionId);
     } catch (e, stack) {
       AppLogger.warning(
-        'Error while stopping a lost streaming session',
+        'Error while stopping a failed streaming session',
         error: e,
         stackTrace: stack,
       );

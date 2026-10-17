@@ -25,7 +25,9 @@ class SideControlsToolbar extends StatelessWidget {
   });
 
   final StreamSessionEntity session;
-  final ValueChanged<int> onSelectBitrate;
+
+  /// Picks a new bitrate; `null` disables the menu (change in progress).
+  final ValueChanged<int>? onSelectBitrate;
   final VoidCallback? onScreenshot;
   final VoidCallback? onCropScreenshot;
   final VoidCallback? onTextInject;
@@ -60,6 +62,7 @@ class SideControlsToolbar extends StatelessWidget {
             // Stream Quality & Bitrate Settings
             PopupMenuButton<int>(
               tooltip: 'Streaming Bitrate & Quality',
+              enabled: onSelectBitrate != null,
               icon: const Icon(
                 Icons.tune_rounded,
                 size: 20,

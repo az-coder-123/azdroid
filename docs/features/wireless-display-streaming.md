@@ -34,7 +34,7 @@ flowchart LR
 
 ### 3. High Refresh Rate & Dynamic Bitrate Scaling
 - **Up to 120 FPS:** Supports high-refresh-rate displays (60 Hz, 90 Hz, 120 Hz) for smooth navigation, gaming, and animation testing.
-- **Bitrate Presets:** Easily toggle streaming bandwidth between 2 Mbps, 4 Mbps, 8 Mbps, 12 Mbps, or 16 Mbps from the side dock or telemetry bar.
+- **Bitrate Presets:** Pick 4, 8, or 16 Mbps from the side dock. scrcpy fixes the bitrate at launch, so a change restarts the video pipeline (about 1 second, at most 3; shown as *"Applying 16 Mbps…"*); the menu is disabled until it finishes. The header's Mbps badge shows the measured rate, which stays below the preset when the screen is still.
 - **Adaptive Resolution:** Configure resolution targets (720p, 1080p, 2K, or Native) to balance network congestion with visual fidelity.
 
 ### 4. Apple Retina & HiDPI Pixel Density Compensation

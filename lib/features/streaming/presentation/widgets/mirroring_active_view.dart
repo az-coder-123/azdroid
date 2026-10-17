@@ -15,6 +15,7 @@ import 'package:desk_droid/features/streaming/presentation/widgets/floating_cont
 import 'package:desk_droid/features/streaming/presentation/widgets/interactive_display_viewport.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_feedback_stack.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/side_controls_toolbar.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/stream_reconfiguring_badge.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/stream_telemetry_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -137,6 +138,16 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
             right: 24,
             child: const MirroringFeedbackStack(),
           ),
+
+          // Pipeline restart feedback (bitrate change)
+          if (widget.state.pendingBitrateMbps case final bitrate?)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Center(
+                  child: StreamReconfiguringBadge(bitrateMbps: bitrate),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -211,7 +222,9 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
     return SideControlsToolbar(
       session: widget.state.session,
       deviceSerial: s,
-      onSelectBitrate: (b) => context.read<StreamingCubit>().updateBitrate(b),
+      onSelectBitrate: widget.state.isReconfiguring
+          ? null
+          : (b) => context.read<StreamingCubit>().updateBitrate(b),
       onScreenshot: () => context.read<ScreenshotCubit>().captureScreenshot(s),
       onCropScreenshot: () =>
           context.read<ScreenshotCubit>().startAreaSelection(s),

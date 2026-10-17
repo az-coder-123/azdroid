@@ -109,7 +109,8 @@ class VideoDisplayViewport extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '${session.width} × ${session.height} @ ${session.fps} FPS',
+                    // fps is the cap sent to scrcpy; measured FPS is in the header.
+                    '${session.width} × ${session.height} · max ${session.fps} FPS',
                     style: AppTypography.caption.copyWith(
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondary,

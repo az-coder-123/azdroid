@@ -33,6 +33,7 @@ final class StreamingActive extends StreamingState {
     this.isHudVisible = true,
     this.rotationDegrees = 0,
     this.telemetry,
+    this.pendingBitrateMbps,
   });
 
   final StreamSessionEntity session;
@@ -42,17 +43,27 @@ final class StreamingActive extends StreamingState {
   /// Latest measured telemetry, or `null` before the first sample.
   final StreamTelemetry? telemetry;
 
+  /// Bitrate being applied by a pipeline restart, or `null` when idle.
+  final int? pendingBitrateMbps;
+
+  bool get isReconfiguring => pendingBitrateMbps != null;
+
   StreamingActive copyWith({
     StreamSessionEntity? session,
     bool? isHudVisible,
     int? rotationDegrees,
     StreamTelemetry? telemetry,
+    int? pendingBitrateMbps,
+    bool clearPendingBitrate = false,
   }) {
     return StreamingActive(
       session: session ?? this.session,
       isHudVisible: isHudVisible ?? this.isHudVisible,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       telemetry: telemetry ?? this.telemetry,
+      pendingBitrateMbps: clearPendingBitrate
+          ? null
+          : pendingBitrateMbps ?? this.pendingBitrateMbps,
     );
   }
 
@@ -62,6 +73,7 @@ final class StreamingActive extends StreamingState {
     isHudVisible,
     rotationDegrees,
     telemetry,
+    pendingBitrateMbps,
   ];
 }
 

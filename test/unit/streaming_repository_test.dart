@@ -154,6 +154,98 @@ void main() {
       },
     );
 
+    group('updateBitrate', () {
+      void stubPipeline({bool serverStarts = true}) {
+        when(
+          () => mockServerManager.startServerDaemon(
+            deviceSerial: any(named: 'deviceSerial'),
+            port: any(named: 'port'),
+            maxFps: any(named: 'maxFps'),
+            bitrateMbps: any(named: 'bitrateMbps'),
+          ),
+        ).thenAnswer((_) async => serverStarts);
+        when(() => mockNativeService.stopStream()).thenAnswer((_) async {});
+        when(() => mockNativeService.getDimensions())
+            .thenAnswer((_) async => {'width': 1080, 'height': 2400});
+      }
+
+      test('restarts the pipeline at the new bitrate', () async {
+        stubPipeline();
+        var nextTexture = 42;
+        when(
+          () => mockNativeService.startStream(
+            host: any(named: 'host'),
+            port: any(named: 'port'),
+          ),
+        ).thenAnswer((_) async => nextTexture++);
+        final session = await repository.startSession(testDevice);
+
+        final updated = await repository.updateBitrate(session.sessionId, 16);
+
+        expect(updated.bitrateMbps, 16);
+        expect(updated.textureId, 43);
+        expect(updated.sessionId, session.sessionId);
+        verify(() => mockNativeService.stopStream()).called(1);
+        verify(
+          () => mockServerManager.startServerDaemon(
+            deviceSerial: testDevice.id,
+            port: any(named: 'port'),
+            maxFps: 60,
+            bitrateMbps: 16,
+          ),
+        ).called(1);
+      });
+
+      test('keeps the pipeline when the bitrate is unchanged', () async {
+        stubPipeline();
+        when(
+          () => mockNativeService.startStream(
+            host: any(named: 'host'),
+            port: any(named: 'port'),
+          ),
+        ).thenAnswer((_) async => 42);
+        final session = await repository.startSession(testDevice);
+
+        final updated = await repository.updateBitrate(session.sessionId, 8);
+
+        expect(updated, session);
+        verifyNever(() => mockNativeService.stopStream());
+      });
+
+      test(
+        'throws serverStartFailed when the restarted server fails',
+        () async {
+          stubPipeline();
+          when(
+            () => mockNativeService.startStream(
+              host: any(named: 'host'),
+              port: any(named: 'port'),
+            ),
+          ).thenAnswer((_) async => 42);
+          final session = await repository.startSession(testDevice);
+          stubPipeline(serverStarts: false);
+
+          await expectLater(
+            repository.updateBitrate(session.sessionId, 4),
+            throwsA(
+              isA<StreamStartException>().having(
+                (e) => e.failure,
+                'failure',
+                StreamStartFailure.serverStartFailed,
+              ),
+            ),
+          );
+        },
+      );
+
+      test('rejects an unknown session', () {
+        expect(
+          repository.updateBitrate('missing', 16),
+          throwsA(isA<StateError>()),
+        );
+      });
+    });
+
     test('stopSession stops native stream and stops server daemon', () async {
       when(
         () => mockServerManager.startServerDaemon(

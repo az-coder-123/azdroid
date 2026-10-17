@@ -92,6 +92,61 @@ void main() {
     );
 
     blocTest<StreamingCubit, StreamingState>(
+      'shows the pending bitrate, then the restarted session',
+      build: () {
+        when(() => mockRepository.updateBitrate(testSession.sessionId, 16))
+            .thenAnswer(
+              (_) async => testSession.copyWith(bitrateMbps: 16, textureId: 7),
+            );
+        return streamingCubit;
+      },
+      seed: () => const StreamingActive(session: testSession),
+      act: (cubit) => cubit.updateBitrate(16),
+      expect: () => [
+        const StreamingActive(session: testSession, pendingBitrateMbps: 16),
+        StreamingActive(
+          session: testSession.copyWith(bitrateMbps: 16, textureId: 7),
+        ),
+      ],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'ignores a bitrate that is already active',
+      build: () => streamingCubit,
+      seed: () => const StreamingActive(session: testSession),
+      act: (cubit) => cubit.updateBitrate(testSession.bitrateMbps),
+      expect: () => const <StreamingState>[],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'ends the session with guidance when the restart fails',
+      build: () {
+        when(() => mockRepository.updateBitrate(any(), any())).thenThrow(
+          StreamStartException(
+            StreamStartFailure.serverStartFailed,
+            deviceSerial: testSession.deviceId,
+          ),
+        );
+        when(() => mockRepository.stopSession(any())).thenAnswer((_) async {});
+        return streamingCubit;
+      },
+      seed: () => const StreamingActive(session: testSession),
+      act: (cubit) => cubit.updateBitrate(16),
+      expect: () => [
+        const StreamingActive(session: testSession, pendingBitrateMbps: 16),
+        StreamingError(
+          message: StreamStartFailure.serverStartFailed.messageFor(
+            testSession.deviceName,
+          ),
+        ),
+      ],
+      verify: (_) {
+        verify(() => mockRepository.stopSession(testSession.sessionId))
+            .called(1);
+      },
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
       'stops the session and explains when the video stream ends',
       build: () {
         when(() => mockRepository.startSession(testDevice))

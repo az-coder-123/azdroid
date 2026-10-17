@@ -146,19 +146,33 @@ class StreamingCubit extends Cubit<StreamingState>
     }
   }
 
-  /// Updates streaming bitrate quality setting in real-time.
+  /// Restarts the video pipeline at [bitrateMbps]. Ignored while another
+  /// change is in progress or when the bitrate is unchanged.
   Future<void> updateBitrate(int bitrateMbps) async {
-    final currentState = state;
-    if (currentState is StreamingActive) {
-      await repository.updateBitrate(
-        currentState.session.sessionId,
+    final current = state;
+    if (current is! StreamingActive ||
+        current.isReconfiguring ||
+        current.session.bitrateMbps == bitrateMbps) {
+      return;
+    }
+
+    emit(current.copyWith(pendingBitrateMbps: bitrateMbps));
+    try {
+      final session = await repository.updateBitrate(
+        current.session.sessionId,
         bitrateMbps,
       );
-      emit(
-        currentState.copyWith(
-          session: currentState.session.copyWith(bitrateMbps: bitrateMbps),
-        ),
+      final latest = state;
+      if (!isClosed && latest is StreamingActive) {
+        emit(latest.copyWith(session: session, clearPendingBitrate: true));
+      }
+    } on StreamStartException catch (error) {
+      await endSessionWithError(
+        current,
+        error.failure.messageFor(current.session.deviceName),
       );
+    } catch (e) {
+      await endSessionWithError(current, 'Failed to change the bitrate: $e');
     }
   }
 }

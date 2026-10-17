@@ -27,8 +27,12 @@ abstract class StreamingRepository {
   /// Toggles physical Android display power off or on during streaming.
   Future<void> toggleScreenOff(String sessionId, bool turnOff);
 
-  /// Dynamically updates video bitrate in Mbps during an active stream.
-  Future<void> updateBitrate(String sessionId, int bitrateMbps);
+  /// Changes the video bitrate of the active session to [bitrateMbps].
+  ///
+  /// scrcpy fixes the bitrate at launch, so this restarts the video pipeline
+  /// and returns the session with its new texture. Throws
+  /// `StreamStartException` when the restarted server cannot start.
+  Future<StreamSessionEntity> updateBitrate(String sessionId, int bitrateMbps);
 
   /// Injects Android navigation keycode actions (Back, Home, AppSwitch).
   Future<void> sendNavigationKey(String sessionId, int keyCode);

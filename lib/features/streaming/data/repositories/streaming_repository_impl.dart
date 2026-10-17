@@ -55,32 +55,19 @@ class StreamingRepositoryImpl implements StreamingRepository {
     // 1. Fail fast with a clear reason instead of showing a black viewport
     await _devicePreflight.ensureReady(device.id);
 
-    // 2. Launch persistent scrcpy-server daemon on target
-    final serverStarted = await _serverManager.startServerDaemon(
-      deviceSerial: device.id,
-      port: SocketConfig.defaultVideoStreamPort,
+    // 2. Launch the scrcpy server and connect the native decoder
+    final textureId = await _launchVideoPipeline(
+      device.id,
       maxFps: fps,
       bitrateMbps: bitrate,
     );
-    if (!serverStarted) {
-      throw StreamStartException(
-        StreamStartFailure.serverStartFailed,
-        deviceSerial: device.id,
-      );
-    }
 
-    // 3. Connect the native hardware decoder and obtain its texture ID
-    final textureId = await _videoStreamNativeService.startStream(
-      host: '127.0.0.1',
-      port: SocketConfig.defaultVideoStreamPort,
-    );
-
-    // 4. Obtain real device frame dimensions from decoded header
+    // 3. Obtain real device frame dimensions from decoded header
     final dims = await _videoStreamNativeService.getDimensions();
     final realWidth = dims['width'] ?? 0;
     final realHeight = dims['height'] ?? 0;
 
-    // 5. Turn screen off if requested
+    // 4. Turn screen off if requested
     if (screenOff) {
       await _serverManager.setScreenPower(
         deviceSerial: device.id,
@@ -139,11 +126,58 @@ class StreamingRepositoryImpl implements StreamingRepository {
   }
 
   @override
-  Future<void> updateBitrate(String sessionId, int bitrateMbps) async {
+  Future<StreamSessionEntity> updateBitrate(
+    String sessionId,
+    int bitrateMbps,
+  ) async {
     final session = _currentSession;
-    if (session != null) {
-      _currentSession = session.copyWith(bitrateMbps: bitrateMbps);
+    if (session == null || session.sessionId != sessionId) {
+      throw StateError('No active streaming session $sessionId');
     }
+    if (session.bitrateMbps == bitrateMbps) return session;
+
+    // scrcpy reads `video_bit_rate` only at launch, so restart the pipeline.
+    AppLogger.info(
+      'Restarting video pipeline at $bitrateMbps Mbps for ${session.deviceId}',
+    );
+    await _videoStreamNativeService.stopStream();
+    final textureId = await _launchVideoPipeline(
+      session.deviceId,
+      maxFps: session.fps,
+      bitrateMbps: bitrateMbps,
+    );
+
+    final updated = session.copyWith(
+      bitrateMbps: bitrateMbps,
+      textureId: textureId,
+    );
+    _currentSession = updated;
+    return updated;
+  }
+
+  /// Starts the scrcpy server (replacing a running one) and connects the
+  /// native decoder. Returns the new texture ID.
+  Future<int?> _launchVideoPipeline(
+    String deviceSerial, {
+    required int maxFps,
+    required int bitrateMbps,
+  }) async {
+    final serverStarted = await _serverManager.startServerDaemon(
+      deviceSerial: deviceSerial,
+      port: SocketConfig.defaultVideoStreamPort,
+      maxFps: maxFps,
+      bitrateMbps: bitrateMbps,
+    );
+    if (!serverStarted) {
+      throw StreamStartException(
+        StreamStartFailure.serverStartFailed,
+        deviceSerial: deviceSerial,
+      );
+    }
+    return _videoStreamNativeService.startStream(
+      host: SocketConfig.loopbackHost,
+      port: SocketConfig.defaultVideoStreamPort,
+    );
   }
 
   @override

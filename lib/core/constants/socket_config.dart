@@ -8,6 +8,9 @@ class SocketConfig {
   /// Standard wireless ADB daemon port on Android devices.
   static const int defaultAdbWirelessPort = 5555;
 
+  /// Host side of `adb forward` tunnels.
+  static const String loopbackHost = '127.0.0.1';
+
   /// Default port for raw H.264 video stream transmission.
   static const int defaultVideoStreamPort = 27183;
 
