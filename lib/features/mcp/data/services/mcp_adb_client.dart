@@ -76,6 +76,22 @@ class McpAdbClient {
   );
   Future<bool> clearText(String serial, {int? elementId}) =>
       McpAdbInputOps.clearText(this, serial, elementId: elementId);
+  Future<bool> drag(
+    String serial,
+    double startX,
+    double startY,
+    double endX,
+    double endY, {
+    int durationMs = 1000,
+  }) => McpAdbInputOps.drag(
+    this,
+    serial,
+    startX,
+    startY,
+    endX,
+    endY,
+    durationMs: durationMs,
+  );
 
   // --- Command & Diagnostic Operations ---
   Future<String> dispatchIntent(
@@ -96,6 +112,10 @@ class McpAdbClient {
   );
   Future<String> getLogcat(String serial, {String? tag, int limit = 50}) =>
       McpAdbCmdOps.getLogcat(this, serial, tag: tag, limit: limit);
+  Future<String> checkCrash(String serial, {String? package, int limit = 50}) =>
+      McpAdbCmdOps.checkCrash(this, serial, package: package, limit: limit);
+  Future<bool> scanMediaFile(String serial, String filePath) =>
+      McpAdbCmdOps.scanMediaFile(this, serial, filePath);
   Future<bool> installApk(
     String serial,
     String apkPath, {

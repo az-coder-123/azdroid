@@ -152,6 +152,84 @@ void main() {
       expect(result.content.first.text, contains('Pressed key BACK (4)'));
     });
 
+    test('android_drag executes drag via McpAdbClient', () async {
+      when(
+        () => mockAdb.drag(
+          '192.168.1.100:5555',
+          0.1,
+          0.5,
+          0.9,
+          0.5,
+          durationMs: 1000,
+        ),
+      ).thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_drag', {
+        'deviceSerial': '192.168.1.100:5555',
+        'startX': 0.1,
+        'startY': 0.5,
+        'endX': 0.9,
+        'endY': 0.5,
+        'durationMs': 1000,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Dragged from (0.1, 0.5) to (0.9, 0.5) with duration 1000ms'),
+      );
+    });
+
+    test('android_check_crash queries crash logs via McpAdbClient', () async {
+      when(
+        () => mockAdb.checkCrash(
+          '192.168.1.100:5555',
+          package: 'com.example.app',
+          limit: 30,
+        ),
+      ).thenAnswer(
+        (_) async => 'FATAL EXCEPTION in main: java.lang.NullPointerException',
+      );
+
+      final result = await executor.execute('android_check_crash', {
+        'deviceSerial': '192.168.1.100:5555',
+        'package': 'com.example.app',
+        'limit': 30,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Crash diagnostics for com.example.app (up to 30 entries)'),
+      );
+      expect(result.content.first.text, contains('FATAL EXCEPTION in main'));
+    });
+
+    test(
+      'android_scan_media_file triggers media indexer via McpAdbClient',
+      () async {
+        when(
+          () => mockAdb.scanMediaFile(
+            '192.168.1.100:5555',
+            '/sdcard/Music/test.mp3',
+          ),
+        ).thenAnswer((_) async => true);
+
+        final result = await executor.execute('android_scan_media_file', {
+          'deviceSerial': '192.168.1.100:5555',
+          'filePath': '/sdcard/Music/test.mp3',
+        });
+
+        expect(result.isError, isFalse);
+        expect(
+          result.content.first.text,
+          contains(
+            'Triggered MediaStore scan for file: /sdcard/Music/test.mp3 on 192.168.1.100:5555',
+          ),
+        );
+      },
+    );
+
     test('returns error when tool is unknown', () async {
       when(() => mockAdb.getConnectedSerials())
           .thenAnswer((_) async => ['192.168.1.100:5555']);

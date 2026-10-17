@@ -104,7 +104,7 @@ Verify proper functioning using any of the following 3 methods:
 
 ---
 
-## 🛠️ Published MCP Tools (50 Tools)
+## 🛠️ Published MCP Tools (58 Tools)
 
 ### 1. Touch & System Navigation
 | Tool Name | Parameters | Purpose |
@@ -113,13 +113,16 @@ Verify proper functioning using any of the following 3 methods:
 | **`android_take_screenshot`** | `deviceSerial` (optional) | Returns high-resolution screenshot as a base64 image artifact for visual inspection. |
 | **`android_tap`** | `x`, `y` (normalized 0.0–1.0 or pixels), `deviceSerial` | Simulates a touch tap gesture on screen. |
 | **`android_double_tap`** | `x`, `y`, `intervalMs` (default 120), `deviceSerial` | Executes rapid double-tap within native Android window to seek video, zoom, or like. |
-| **`android_swipe`** | `startX`, `startY`, `endX`, `endY`, `durationMs` | Injects a swipe or drag gesture. |
+| **`android_swipe`** | `startX`, `startY`, `endX`, `endY`, `durationMs` | Injects a swipe gesture across screen coordinates. |
+| **`android_drag`** | `startX`, `startY`, `endX`, `endY`, `durationMs` (1000) | Smooth, controlled drag gesture for timeline seekbars, sliders, and list reordering. |
 | **`android_type_text`** | `text`, `deviceSerial` | Types text into the focused Android input field (character-by-character). |
 | **`android_set_text`** | `text`, `elementId` (optional), `clearFirst` (bool), `deviceSerial` | Sets exact text atomically, bypassing IME predictive autocorrect and Telex alteration. |
 | **`android_clear_text`** | `elementId` (optional), `deviceSerial` | Clears all text in the focused field or target element by ID in a single shot. |
 | **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, etc.) | Presses Android hardware/navigation keys. |
 | **`android_dispatch_intent`** | `action`, `dataUri`, `package`, `component`, `extras` | Dispatches Android Intents, deep link URLs, and custom app schemes. |
 | **`android_get_logcat`** | `tag`, `limit` | Retrieves real-time or recent logcat records for crash diagnosis. |
+| **`android_check_crash`** | `package` (optional), `limit` (default 50) | Targeted inspection of crash buffers, fatal runtime exceptions, and ANR traces. |
+| **`android_scan_media_file`** | `filePath` | Triggers MediaStore indexing broadcast (`MEDIA_SCANNER_SCAN_FILE`) for immediate media visibility. |
 | **`android_install_apk`** | `apkPath`, `reinstall`, `grantPermissions` | Sideloads an APK package onto the device. |
 | **`android_shell_command`** | `command`, `deviceSerial` | Runs raw ADB shell commands for advanced diagnostics. |
 

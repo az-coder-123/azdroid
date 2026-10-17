@@ -53,6 +53,47 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
     },
   ),
   const McpToolDefinition(
+    name: 'android_check_crash',
+    description: 'Inspects the Android dedicated crash buffer (-b crash), runtime fatal exceptions, or ANRs for a target package, returning clean crash traces.',
+    inputSchema: {
+      'type': 'object',
+      'properties': {
+        'deviceSerial': {
+          'type': 'string',
+          'description': 'Target device serial.',
+        },
+        'package': {
+          'type': 'string',
+          'description':
+              'Target application package name to filter crash logs for.',
+        },
+        'limit': {
+          'type': 'integer',
+          'description':
+              'Maximum number of crash log lines to retrieve (default 50).',
+        },
+      },
+    },
+  ),
+  const McpToolDefinition(
+    name: 'android_scan_media_file',
+    description: 'Triggers Android MediaStore to scan and index a newly pushed or modified audio/video file so media apps immediately discover it.',
+    inputSchema: {
+      'type': 'object',
+      'properties': {
+        'deviceSerial': {
+          'type': 'string',
+          'description': 'Target device serial.',
+        },
+        'filePath': {
+          'type': 'string',
+          'description': 'Absolute path to the media file on device (e.g., /sdcard/Music/song.mp3).',
+        },
+      },
+      'required': ['filePath'],
+    },
+  ),
+  const McpToolDefinition(
     name: 'android_install_apk',
     description: 'Sideloads an APK package onto the Android device.',
     inputSchema: {

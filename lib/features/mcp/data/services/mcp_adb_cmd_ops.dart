@@ -79,4 +79,93 @@ class McpAdbCmdOps {
     final res = await client.run(['-s', serial, 'shell', command]);
     return 'Exit: ${res.exitCode}\n${res.stdout}\n${res.stderr}'.trim();
   }
+
+  /// Inspects Android dedicated crash buffer (-b crash) and runtime exceptions.
+  static Future<String> checkCrash(
+    McpAdbClient client,
+    String serial, {
+    String? package,
+    int limit = 50,
+  }) async {
+    // 1. Query dedicated crash buffer (-b crash)
+    final crashBufferRes = await client.run([
+      '-s',
+      serial,
+      'logcat',
+      '-b',
+      'crash',
+      '-d',
+      '-t',
+      '$limit',
+    ]);
+    final crashOutput = crashBufferRes.stdout.toString().trim();
+
+    if (crashOutput.isNotEmpty &&
+        !crashOutput.contains('--------- beginning of') &&
+        (package == null ||
+            crashOutput.toLowerCase().contains(package.toLowerCase()))) {
+      return 'Crash detected in crash buffer:\n$crashOutput';
+    }
+
+    // 2. Query main logcat for FATAL EXCEPTION or AndroidRuntime errors
+    final mainLogRes = await client.run([
+      '-s',
+      serial,
+      'logcat',
+      '-d',
+      '-t',
+      '${limit * 2}',
+      '-s',
+      'AndroidRuntime:E',
+    ]);
+    final mainLog = mainLogRes.stdout.toString().trim();
+
+    if (mainLog.isNotEmpty &&
+        (package == null ||
+            mainLog.toLowerCase().contains(package.toLowerCase()))) {
+      return 'Fatal exception detected in AndroidRuntime:\n$mainLog';
+    }
+
+    // 3. Check for ANR traces if package provided
+    if (package != null && package.isNotEmpty) {
+      final anrRes = await client.run([
+        '-s',
+        serial,
+        'shell',
+        'dumpsys',
+        'activity',
+        'lastanr',
+      ]);
+      final anrOut = anrRes.stdout.toString().trim();
+      if (anrOut.contains(package)) {
+        final snippet = anrOut.split('\n').take(30).join('\n');
+        return 'ANR (Application Not Responding) detected for $package:\n$snippet';
+      }
+    }
+
+    return 'No crashes or fatal exceptions detected${package != null ? ' for $package' : ''}.';
+  }
+
+  /// Triggers MediaStore to index a newly pushed or modified media file immediately.
+  static Future<bool> scanMediaFile(
+    McpAdbClient client,
+    String serial,
+    String filePath,
+  ) async {
+    final formattedPath = filePath.startsWith('file://')
+        ? filePath
+        : 'file://$filePath';
+    final res = await client.run([
+      '-s',
+      serial,
+      'shell',
+      'am',
+      'broadcast',
+      '-a',
+      'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
+      '-d',
+      formattedPath,
+    ]);
+    return res.exitCode == 0;
+  }
 }

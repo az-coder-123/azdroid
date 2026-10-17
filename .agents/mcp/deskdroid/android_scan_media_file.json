@@ -1,0 +1,20 @@
+{
+  "name": "android_scan_media_file",
+  "description": "Triggers Android MediaStore to scan and index a newly pushed or modified audio/video file so media apps immediately discover it.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "filePath": {
+        "type": "string",
+        "description": "Absolute path to the media file on device (e.g., /sdcard/Music/song.mp3)."
+      }
+    },
+    "required": [
+      "filePath"
+    ]
+  }
+}

@@ -190,6 +190,6 @@ These proposals address three core challenges:
 | **`android_long_press`** | Capability | Long-press gesture with duration | Low | ✅ **Available (`McpAutomationTools`)** |
 | **`android_wait_for_element`** | Reliability | Eliminates test race conditions during animations | Medium | ✅ **Available (Phase 3 for `disappear`)** |
 | **`android_click_by_desc` / `text`** | Efficiency | Saves 2 tool turns & ~1,500 prompt tokens per click | Medium | ⏳ **Phase 3 (`exactMatch` param)** |
-| **`android_drag`** | Precision | Smooth timeline scrubbing & slider controls | Medium | ⏳ **Phase 2 (Planned)** |
-| **`android_scan_media_file`** | Workflow | Instant MediaStore indexing for media app testing | Low | ⏳ **Phase 2 (Planned)** |
-| **`android_check_crash`** | Diagnostics | Instant stack trace retrieval upon failure | Low | ⏳ **Phase 2 (Planned)** |
+| **`android_drag`** | Precision | Smooth timeline scrubbing & slider controls | Medium | ✅ **Implemented (v1.0.1)** |
+| **`android_scan_media_file`** | Workflow | Instant MediaStore indexing for media app testing | Low | ✅ **Implemented (v1.0.1)** |
+| **`android_check_crash`** | Diagnostics | Instant stack trace retrieval upon failure | Low | ✅ **Implemented (v1.0.1)** |

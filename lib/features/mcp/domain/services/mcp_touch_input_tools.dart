@@ -107,6 +107,44 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     },
   ),
   const McpToolDefinition(
+    name: 'android_drag',
+    description: 'Performs a smooth, controlled drag gesture between two points (default duration 1000ms) for timeline seekbars, volume sliders, and list reordering.',
+    inputSchema: {
+      'type': 'object',
+      'properties': {
+        'deviceSerial': {
+          'type': 'string',
+          'description': 'Target device serial.',
+        },
+        'startX': {
+          'type': 'number',
+          'description':
+              'Start X coordinate (normalized 0.0-1.0 or exact pixels).',
+        },
+        'startY': {
+          'type': 'number',
+          'description':
+              'Start Y coordinate (normalized 0.0-1.0 or exact pixels).',
+        },
+        'endX': {
+          'type': 'number',
+          'description':
+              'End X coordinate (normalized 0.0-1.0 or exact pixels).',
+        },
+        'endY': {
+          'type': 'number',
+          'description':
+              'End Y coordinate (normalized 0.0-1.0 or exact pixels).',
+        },
+        'durationMs': {
+          'type': 'integer',
+          'description': 'Drag duration in milliseconds (default 1000ms).',
+        },
+      },
+      'required': ['startX', 'startY', 'endX', 'endY'],
+    },
+  ),
+  const McpToolDefinition(
     name: 'android_type_text',
     description: 'Injects raw or international Unicode text into the currently focused Android input field.',
     inputSchema: {

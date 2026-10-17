@@ -22,6 +22,9 @@ class McpBasicToolExecutor {
       'android_dispatch_intent',
       'android_get_logcat',
       'android_install_apk',
+      'android_drag',
+      'android_check_crash',
+      'android_scan_media_file',
       'android_shell_command',
     }.contains(toolName);
   }
@@ -81,6 +84,26 @@ class McpBasicToolExecutor {
                 'Swiped from ($sx, $sy) to ($ex, $ey) on $serial.',
               )
             : McpToolResult.error('Failed to swipe.');
+
+      case 'android_drag':
+        final sx = (arguments['startX'] as num).toDouble();
+        final sy = (arguments['startY'] as num).toDouble();
+        final ex = (arguments['endX'] as num).toDouble();
+        final ey = (arguments['endY'] as num).toDouble();
+        final dur = arguments['durationMs'] as int? ?? 1000;
+        final success = await _adb.drag(
+          serial,
+          sx,
+          sy,
+          ex,
+          ey,
+          durationMs: dur,
+        );
+        return success
+            ? McpToolResult.text(
+                'Dragged from ($sx, $sy) to ($ex, $ey) with duration ${dur}ms on $serial.',
+              )
+            : McpToolResult.error('Failed to drag.');
 
       case 'android_type_text':
         final text = arguments['text'] as String;
@@ -169,6 +192,27 @@ class McpBasicToolExecutor {
         return success
             ? McpToolResult.text('APK installed successfully: $apk')
             : McpToolResult.error('Failed to install APK: $apk');
+
+      case 'android_check_crash':
+        final pkg = arguments['package'] as String?;
+        final limit = arguments['limit'] as int? ?? 50;
+        final crashLogs = await _adb.checkCrash(
+          serial,
+          package: pkg,
+          limit: limit,
+        );
+        return McpToolResult.text(
+          'Crash diagnostics${pkg != null ? ' for $pkg' : ''} (up to $limit entries):\n$crashLogs',
+        );
+
+      case 'android_scan_media_file':
+        final path = arguments['filePath'] as String;
+        final success = await _adb.scanMediaFile(serial, path);
+        return success
+            ? McpToolResult.text(
+                'Triggered MediaStore scan for file: $path on $serial.',
+              )
+            : McpToolResult.error('Failed to trigger MediaScanner for $path.');
 
       case 'android_shell_command':
         final cmd = arguments['command'] as String;

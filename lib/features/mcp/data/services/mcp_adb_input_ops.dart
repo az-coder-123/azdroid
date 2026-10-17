@@ -126,6 +126,17 @@ class McpAdbInputOps {
     return res.exitCode == 0;
   }
 
+  /// Injects a smooth, controlled drag gesture for seekbars, sliders, and list reordering.
+  static Future<bool> drag(
+    McpAdbClient client,
+    String serial,
+    double startX,
+    double startY,
+    double endX,
+    double endY, {
+    int durationMs = 1000,
+  }) => swipe(client, serial, startX, startY, endX, endY, durationMs);
+
   /// Types text with space escaping (character-by-character via IME).
   static Future<bool> typeText(
     McpAdbClient client,
