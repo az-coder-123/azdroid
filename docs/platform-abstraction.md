@@ -73,7 +73,13 @@ Prefer the options higher in the table. A new Strategy is the last resort.
 
 ---
 
-## 6. Known Platform Quirks Encoded Here
+## 6. Native Code
+
+Dart-side rules above cover `lib/`. For native code, the same idea applies: protocol logic lives once in `native/scrcpy_core` (no OS headers), and `macos/Runner` and `windows/scrcpy_stream` are thin adapters. See [native-video-contract.md](native-video-contract.md).
+
+---
+
+## 7. Known Platform Quirks Encoded Here
 
 | Quirk | Where handled |
 |:---|:---|
@@ -82,3 +88,4 @@ Prefer the options higher in the table. A new Strategy is the last resort.
 | `Clipboard.SetImage` needs an STA thread | `WindowsImageClipboard` runs PowerShell with `-STA` |
 | `Directory.systemTemp` is `$TMPDIR` on macOS | `SystemHostPaths.diagnosticLogFile` keeps `/tmp` on POSIX |
 | Release assets: `App.framework` (macOS) vs `data\flutter_assets` (Windows) | `SystemHostPaths.flutterAssetPath` |
+| Texture pixel order: BGRA (macOS) vs RGBA (Windows pixel buffer) | `scrcpy_core::PixelOrder` |

@@ -1,6 +1,6 @@
 # Windows Port Plan
 
-> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, Phase 1 next.
+> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a implemented** (awaiting first Windows run).
 
 ---
 
@@ -86,6 +86,12 @@ Exit criteria: `flutter analyze` and `flutter test` are green on macOS, and no `
 | 1c | Resolution and rotation changes, decoder reset on new SPS, clean `stopStream` (unregister texture, release COM objects) | Matches the macOS lifecycle and lessons-learned rules. |
 
 Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licensing or binary-size cost, and supports hardware decoding. FFmpeg stays a fallback if MF latency misses the target.
+
+**Status (2026-10-17): 1a implemented, not yet run on Windows.**
+- `native/scrcpy_core`: platform-neutral parsing, config merging, NV12→RGBA/BGRA, triple frame buffer. 17 tests pass with `-Werror` under ASan/UBSan and TSan.
+- `windows/scrcpy_stream`: Winsock client, Media Foundation H.264 MFT (low-latency mode, stream-change handling from 1c), RGBA pixel-buffer texture, DLL plugin registered in `flutter_window.cpp`.
+- Contract shared with macOS: [native-video-contract.md](native-video-contract.md).
+- **Not yet compiled with MSVC.** Next step on a Windows PC: `flutter build windows`, the MSVC core tests (see [native-video-contract.md](native-video-contract.md#5-testing)), then a manual mirror test with a real device.
 
 ### Phase 2 — Windows Service Implementations (≈ 1 week)
 

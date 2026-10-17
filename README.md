@@ -202,6 +202,7 @@ flutter run -d macos
 | [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
 | [🧭 Dependency Boundaries](docs/dependency-boundaries.md) | Allowed imports between features, shared kernel, and composition root |
 | [🧩 Platform Abstraction](docs/platform-abstraction.md) | Where macOS/Windows differences live, and how to add a new one |
+| [🎞️ Native Video Contract](docs/native-video-contract.md) | MethodChannel, scrcpy wire format, and rules shared by the Swift and C++ plugins |
 | [🪟 Windows Port Plan](docs/windows-port-plan.md) | Proposed phases, architecture, and risks for Windows support |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |

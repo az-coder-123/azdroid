@@ -45,6 +45,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Foreign-OS Paths in Host Tests** | Cross-Platform Testing | Test foreign path construction as strings; touch disk only with the host path style. | [foreign-os-paths-in-host-tests.md](foreign-os-paths-in-host-tests.md) |
 | **Host-Dependent Test Expectations** | Cross-Platform Testing | Inject relative paths and derive OS-specific labels from production sources so tests pass on any runner. | [host-dependent-test-expectations.md](host-dependent-test-expectations.md) |
 | **Plugin Registrants Ship With Dependency** | Flutter Tooling & Commit Hygiene | Commit regenerated `macos/`, `windows/`, `linux/`, `ios/` plugin files with the `pubspec` change; tests won't catch their absence. | [plugin-registrants-ship-with-dependency.md](plugin-registrants-ship-with-dependency.md) |
+| **Texture Pixel Order: BGRA vs RGBA** | Native Video & Flutter Textures | Make pixel order an explicit parameter; macOS CVPixelBuffer is BGRA, Windows pixel-buffer textures are RGBA. | [texture-pixel-order-bgra-vs-rgba.md](texture-pixel-order-bgra-vs-rgba.md) |
 
 ---
 

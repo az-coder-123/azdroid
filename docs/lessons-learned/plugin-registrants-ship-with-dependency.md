@@ -37,3 +37,4 @@ The unpushed branch was rebuilt (`git reset --mixed <base>`). The registrants an
 - [ ] After `flutter pub add <plugin>`, run `git status` and commit every changed file under `macos/`, `windows/`, `linux/`, and `ios/` together with `pubspec.yaml`.
 - [ ] Before the last commit of a series, confirm `git status --short` is empty, or that every remaining file is intentionally excluded.
 - [ ] Remember that green unit tests do not prove native plugins are registered; launch the app (or run `flutter build`) after adding a plugin.
+- [ ] `macos/Podfile.lock` changes only after the first macOS build runs `pod install`, not after `pub get`. Build once before committing a new plugin, or commit the lock file as soon as it appears (it surfaced one phase later for `file_selector_macos`).
