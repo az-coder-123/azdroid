@@ -80,8 +80,12 @@ class StreamingRepositoryImpl implements StreamingRepository {
           'session_${device.id}_${DateTime.now().millisecondsSinceEpoch}',
       deviceId: device.id,
       deviceName: device.name,
-      width: realWidth > 0 ? realWidth : 1080,
-      height: realHeight > 0 ? realHeight : 2400,
+      // Usually 0 here: the native side connects in the background. The
+      // telemetry stream replaces the placeholder with the real size.
+      width: realWidth > 0 ? realWidth : StreamSessionEntity.placeholderWidth,
+      height: realHeight > 0
+          ? realHeight
+          : StreamSessionEntity.placeholderHeight,
       fps: fps,
       bitrateMbps: bitrate,
       textureId: textureId,

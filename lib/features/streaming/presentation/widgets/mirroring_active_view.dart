@@ -161,12 +161,8 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
 
         // Calculate aspect ratio of the stream accounting for active rotation
         final isRotated = (widget.state.rotationDegrees ~/ 90) % 2 != 0;
-        final rawW = widget.state.session.width > 0
-            ? widget.state.session.width.toDouble()
-            : 1080.0;
-        final rawH = widget.state.session.height > 0
-            ? widget.state.session.height.toDouble()
-            : 2400.0;
+        final rawW = widget.state.session.width.toDouble();
+        final rawH = widget.state.session.height.toDouble();
         final streamW = isRotated ? rawH : rawW;
         final streamH = isRotated ? rawW : rawH;
         final phoneAspect = streamW / streamH;

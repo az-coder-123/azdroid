@@ -28,6 +28,8 @@ class StreamTelemetry extends Equatable {
     this.fps,
     this.bitrateMbps,
     this.latencyMs,
+    this.videoWidth,
+    this.videoHeight,
   });
 
   final StreamHealth health;
@@ -42,6 +44,31 @@ class StreamTelemetry extends Equatable {
   /// published), in milliseconds. Excludes device encode and network time.
   final double? latencyMs;
 
+  /// Current decoded video size in pixels; changes when the device rotates.
+  /// `null` until the native side knows it.
+  final int? videoWidth;
+  final int? videoHeight;
+
+  /// Returns a copy with the decoded video size, ignoring unknown (0) sizes.
+  StreamTelemetry withVideoSize(int width, int height) {
+    if (width <= 0 || height <= 0) return this;
+    return StreamTelemetry(
+      health: health,
+      fps: fps,
+      bitrateMbps: bitrateMbps,
+      latencyMs: latencyMs,
+      videoWidth: width,
+      videoHeight: height,
+    );
+  }
+
   @override
-  List<Object?> get props => [health, fps, bitrateMbps, latencyMs];
+  List<Object?> get props => [
+    health,
+    fps,
+    bitrateMbps,
+    latencyMs,
+    videoWidth,
+    videoHeight,
+  ];
 }

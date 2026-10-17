@@ -75,6 +75,22 @@ void main() {
     });
   });
 
+  group('StreamTelemetry.withVideoSize', () {
+    const live = StreamTelemetry(health: StreamHealth.live, fps: 30);
+
+    test('adds a known size and keeps the other values', () {
+      final sized = live.withVideoSize(1080, 2336);
+
+      expect(sized.videoWidth, 1080);
+      expect(sized.videoHeight, 2336);
+      expect(sized.fps, 30);
+    });
+
+    test('ignores an unknown (zero) size', () {
+      expect(live.withVideoSize(0, 0), live);
+    });
+  });
+
   group('StreamTelemetryCalculator.healthOf', () {
     test('maps native states to stream health', () {
       expect(

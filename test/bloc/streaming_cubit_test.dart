@@ -92,6 +92,34 @@ void main() {
     );
 
     blocTest<StreamingCubit, StreamingState>(
+      'resizes the session to the decoded video size (e.g. rotation)',
+      build: () {
+        when(() => mockRepository.watchTelemetry()).thenAnswer(
+          (_) => Stream.value(
+            const StreamTelemetry(
+              health: StreamHealth.live,
+              videoWidth: 2400,
+              videoHeight: 1080,
+            ),
+          ),
+        );
+        return streamingCubit;
+      },
+      seed: () => const StreamingActive(session: testSession),
+      act: (cubit) => cubit.startTelemetry(),
+      expect: () => [
+        StreamingActive(
+          session: testSession.copyWith(width: 2400, height: 1080),
+          telemetry: const StreamTelemetry(
+            health: StreamHealth.live,
+            videoWidth: 2400,
+            videoHeight: 1080,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
       'shows the pending bitrate, then the restarted session',
       build: () {
         when(() => mockRepository.updateBitrate(testSession.sessionId, 16))

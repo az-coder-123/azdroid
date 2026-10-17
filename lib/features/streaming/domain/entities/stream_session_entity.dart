@@ -16,6 +16,11 @@ class StreamSessionEntity extends Equatable {
     this.isScreenOff = false,
   });
 
+  /// Placeholder size until the native decoder reports the real one
+  /// (a typical 1080p portrait phone).
+  static const int placeholderWidth = 1080;
+  static const int placeholderHeight = 2400;
+
   /// Unique session identifier.
   final String sessionId;
 

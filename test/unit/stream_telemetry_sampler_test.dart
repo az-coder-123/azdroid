@@ -18,6 +18,8 @@ void main() {
       nativeService: nativeService,
       interval: const Duration(milliseconds: 5),
     );
+    when(() => nativeService.getDimensions())
+        .thenAnswer((_) async => {'width': 0, 'height': 0});
   });
 
   /// Answers successive `getStats` calls with [responses], then repeats the
@@ -52,6 +54,17 @@ void main() {
     expect(samples.last.fps, greaterThan(0));
     expect(samples.last.bitrateMbps, greaterThan(0));
     expect(samples.last.latencyMs, 10);
+  });
+
+  test('adds the decoded video size once it is known', () async {
+    stubStats(const [NativeStreamStats(state: NativeStreamState.streaming)]);
+    when(() => nativeService.getDimensions())
+        .thenAnswer((_) async => {'width': 2336, 'height': 1080});
+
+    final first = await sampler.watch().first;
+
+    expect(first.videoWidth, 2336);
+    expect(first.videoHeight, 1080);
   });
 
   test('skips samples the native side cannot provide', () async {

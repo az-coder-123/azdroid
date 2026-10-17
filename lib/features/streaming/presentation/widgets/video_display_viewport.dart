@@ -17,10 +17,8 @@ class VideoDisplayViewport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final turns = (rotationDegrees ~/ 90) % 4;
-    final streamWidth = session.width > 0 ? session.width.toDouble() : 1080.0;
-    final streamHeight = session.height > 0
-        ? session.height.toDouble()
-        : 2400.0;
+    final streamWidth = session.width.toDouble();
+    final streamHeight = session.height.toDouble();
 
     return Center(
       child: FittedBox(

@@ -33,11 +33,10 @@ class StreamTelemetrySampler {
 
       final elapsed = sinceLastSample.elapsed;
       sinceLastSample.reset();
-      yield calculator.calculate(
-        previous: previous,
-        current: current,
-        elapsed: elapsed,
-      );
+      final size = await nativeService.getDimensions();
+      yield calculator
+          .calculate(previous: previous, current: current, elapsed: elapsed)
+          .withVideoSize(size['width'] ?? 0, size['height'] ?? 0);
       previous = current;
     }
   }

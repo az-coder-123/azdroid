@@ -39,7 +39,7 @@ flowchart LR
 
 ### 4. Apple Retina & HiDPI Pixel Density Compensation
 - **Automatic Density Scaling:** Automatically compensates for Apple Retina display backing scale factors ($2\times / 3\times$), ensuring crisp text and sharp UI rendering without blurriness.
-- **Aspect Ratio Fidelity:** Maintains the target device's native portrait or landscape aspect ratio using `BoxFit.contain` inside `VideoDisplayViewport`.
+- **Aspect Ratio Fidelity:** Maintains the target device's native portrait or landscape aspect ratio using `BoxFit.contain` inside `VideoDisplayViewport`. The size comes from the decoded video (polled with telemetry once per second), so the viewport switches to landscape when the device rotates. A 1080 × 2400 placeholder is used only until the first sample.
 
 ---
 

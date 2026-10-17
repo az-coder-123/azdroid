@@ -164,7 +164,12 @@ class StreamingCubit extends Cubit<StreamingState>
       );
       final latest = state;
       if (!isClosed && latest is StreamingActive) {
-        emit(latest.copyWith(session: session, clearPendingBitrate: true));
+        // Keep the measured video size; the restart does not change it.
+        final restarted = session.copyWith(
+          width: latest.session.width,
+          height: latest.session.height,
+        );
+        emit(latest.copyWith(session: restarted, clearPendingBitrate: true));
       }
     } on StreamStartException catch (error) {
       await endSessionWithError(

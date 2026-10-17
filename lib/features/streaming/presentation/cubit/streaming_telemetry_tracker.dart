@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_health_message.dart';
@@ -40,13 +41,31 @@ mixin StreamingTelemetryTracker on Cubit<StreamingState> {
 
     final lostMessage = telemetry.health.messageFor(current.session.deviceName);
     if (lostMessage == null) {
-      emit(current.copyWith(telemetry: telemetry));
+      emit(
+        current.copyWith(
+          telemetry: telemetry,
+          session: _resizedSession(current.session, telemetry),
+        ),
+      );
     } else {
       AppLogger.warning(
         'Video stream ${telemetry.health.name} for ${current.session.deviceId}',
       );
       unawaited(endSessionWithError(current, lostMessage));
     }
+  }
+
+  /// The session with the decoded video size, or `null` when unchanged.
+  /// Keeps the viewport aspect ratio exact, also after the device rotates.
+  StreamSessionEntity? _resizedSession(
+    StreamSessionEntity session,
+    StreamTelemetry telemetry,
+  ) {
+    final width = telemetry.videoWidth;
+    final height = telemetry.videoHeight;
+    if (width == null || height == null) return null;
+    if (width == session.width && height == session.height) return null;
+    return session.copyWith(width: width, height: height);
   }
 
   /// Stops a session that cannot continue and shows [message].
