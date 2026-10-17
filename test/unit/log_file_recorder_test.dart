@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/logging/data/datasources/log_file_recorder.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late LogFileRecorder recorder;

@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 import 'package:desk_droid/features/logging/domain/repositories/device_log_repository.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_cubit.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockDeviceLogRepository extends Mock implements DeviceLogRepository {}
 

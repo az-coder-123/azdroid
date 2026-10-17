@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
+import 'package:flutter/material.dart';
 
 /// Curated registry of all built-in DeskDroid features with user-friendly English descriptions.
 class AppFeaturesCatalog {

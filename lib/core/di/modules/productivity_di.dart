@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/data/datasources/clipboard_datasource.dart';
@@ -18,6 +17,7 @@ import 'package:desk_droid/features/productivity/presentation/cubit/device_file_
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_cubit.dart';
+import 'package:get_it/get_it.dart';
 
 /// Registers productivity tools (clipboard, files, screenshots, recording) dependencies.
 void registerProductivityDependencies(GetIt sl) {

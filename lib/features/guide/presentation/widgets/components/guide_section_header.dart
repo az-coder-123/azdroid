@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:flutter/material.dart';
 
 /// Standardized section title, subtitle, and divider for user guide pages.
 class GuideSectionHeader extends StatelessWidget {

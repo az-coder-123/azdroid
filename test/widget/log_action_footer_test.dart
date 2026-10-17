@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_cubit.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_action_footer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockDeviceLogCubit extends Mock implements DeviceLogCubit {}
 

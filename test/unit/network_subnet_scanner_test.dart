@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/discovery/data/datasources/network_subnet_scanner.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockNetworkInfoService extends Mock implements NetworkInfoService {}
 

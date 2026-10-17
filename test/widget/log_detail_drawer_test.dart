@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_detail_drawer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LogDetailDrawer Widget Tests', () {

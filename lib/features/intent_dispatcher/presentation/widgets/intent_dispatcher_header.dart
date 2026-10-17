@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Modal dialog header displaying title, target device serial, and close action.
 class IntentDispatcherHeader extends StatelessWidget {

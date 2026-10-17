@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:flutter/material.dart';
 
 /// Application theme configurations adhering to macOS Dark Mode aesthetics.
 class AppTheme {

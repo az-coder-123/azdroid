@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Action controls cluster rendered on the right side of the Logcat footer.
 class LogFooterActions extends StatelessWidget {

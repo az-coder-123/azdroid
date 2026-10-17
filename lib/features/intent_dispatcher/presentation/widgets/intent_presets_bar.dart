@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Preset template defining common Android Intent and Deep Link configurations.
 class IntentPreset {

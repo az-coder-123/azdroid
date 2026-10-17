@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/domain/entities/clipboard_item_entity.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Floating toast HUD banner providing instant non-intrusive feedback
 /// when clipboard content is synchronized between macOS and Android.

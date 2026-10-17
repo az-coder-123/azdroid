@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_state.dart';
@@ -7,6 +5,8 @@ import 'package:desk_droid/features/menubar/presentation/widgets/components/menu
 import 'package:desk_droid/features/menubar/presentation/widgets/components/menu_bar_header.dart';
 import 'package:desk_droid/features/menubar/presentation/widgets/components/menu_bar_idle_card.dart';
 import 'package:desk_droid/features/menubar/presentation/widgets/components/menu_bar_session_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Refined Apple-native popover menu attached to the macOS system tray status item.
 class MenuBarCompanionPopover extends StatelessWidget {

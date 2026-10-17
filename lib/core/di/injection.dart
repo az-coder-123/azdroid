@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:desk_droid/core/di/modules/apk_installer_di.dart';
 import 'package:desk_droid/core/di/modules/audio_di.dart';
 import 'package:desk_droid/core/di/modules/control_di.dart';
@@ -9,6 +8,7 @@ import 'package:desk_droid/core/di/modules/logging_di.dart';
 import 'package:desk_droid/core/di/modules/menubar_di.dart';
 import 'package:desk_droid/core/di/modules/productivity_di.dart';
 import 'package:desk_droid/core/di/modules/streaming_di.dart';
+import 'package:get_it/get_it.dart';
 
 /// Global service locator instance.
 final GetIt sl = GetIt.instance;

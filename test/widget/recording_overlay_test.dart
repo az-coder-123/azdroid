@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/recording_countdown_overlay.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/recording_setup_pill.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockScreenRecordingRepository extends Mock
     implements ScreenRecordingRepository {}

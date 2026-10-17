@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:flutter/material.dart';
 
 /// Single item displaying Apple keyboard shortcut keys (keycap badges) and their description.
 class GuideShortcutItem extends StatelessWidget {

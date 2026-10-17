@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Responsive actions toolbar rendered in the DiscoveryPage AppBar following macOS HIG.
 class DiscoveryAppBarActions extends StatelessWidget {

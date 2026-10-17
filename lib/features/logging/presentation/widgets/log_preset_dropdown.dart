@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_preset.dart';
+import 'package:flutter/material.dart';
 
 /// Dropdown selector offering quick activation of predefined filter presets.
 class LogPresetDropdown extends StatelessWidget {

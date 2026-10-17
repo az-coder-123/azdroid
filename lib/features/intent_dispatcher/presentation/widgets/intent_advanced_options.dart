@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Collapsible section for configuring optional target package and component names.
 class IntentAdvancedOptions extends StatefulWidget {

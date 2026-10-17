@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/menubar/domain/entities/menu_bar_status_entity.dart';
+import 'package:flutter/material.dart';
 
 /// Active device session card rendering device name, battery, and live latency/FPS telemetry.
 class MenuBarSessionCard extends StatelessWidget {

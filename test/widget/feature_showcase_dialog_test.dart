@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:desk_droid/features/showcase/data/app_features_catalog.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_card.dart';
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('FeatureShowcaseDialog Widget Tests', () {

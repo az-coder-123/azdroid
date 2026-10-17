@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_tag_dropdown_menu.dart';
+import 'package:flutter/material.dart';
 
 /// Tag filter input field providing freeform typing, live autocomplete,
 /// and a dropdown selector of all active apps and modules detected in the logs.

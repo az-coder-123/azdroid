@@ -1,11 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_state.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockControlRepository extends Mock implements ControlRepository {}
 

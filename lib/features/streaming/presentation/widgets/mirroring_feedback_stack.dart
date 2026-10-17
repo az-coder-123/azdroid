@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/clipboard_feedback_banner.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screen_recording_feedback_banner.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screenshot_feedback_banner.dart';
+import 'package:flutter/material.dart';
 
 /// Floating stack of productivity feedback toasts (Clipboard, Recording, Screenshots).
 class MirroringFeedbackStack extends StatelessWidget {

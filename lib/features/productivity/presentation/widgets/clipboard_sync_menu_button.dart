@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Floating HUD button with menu for manual and automatic clipboard synchronization.
 class ClipboardSyncMenuButton extends StatelessWidget {

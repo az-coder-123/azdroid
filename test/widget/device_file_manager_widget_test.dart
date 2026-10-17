@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/device_file_list_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const file1 = RemoteFileEntity(

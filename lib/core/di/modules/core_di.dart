@@ -1,10 +1,10 @@
-import 'package:get_it/get_it.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:get_it/get_it.dart';
 
 /// Registers core infrastructure services and process runners.
 void registerCoreDependencies(GetIt sl) {

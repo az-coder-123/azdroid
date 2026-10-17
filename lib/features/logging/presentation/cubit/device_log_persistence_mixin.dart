@@ -1,6 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/features/logging/domain/repositories/device_log_repository.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Mixin encapsulating log buffer clearing, file recording, and export persistence
 /// for [Cubit<DeviceLogState>].

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
@@ -8,6 +7,7 @@ import 'package:desk_droid/features/logging/domain/repositories/device_log_repos
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_filter_mixin.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_persistence_mixin.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing real-time Android logcat stream ingestion, viewport pause states,
 /// and log line selection.

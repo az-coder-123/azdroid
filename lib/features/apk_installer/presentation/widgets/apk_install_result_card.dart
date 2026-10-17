@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
+import 'package:flutter/material.dart';
 
 /// Card displaying post-installation outcome (success with launch action, or failure with diagnosis).
 class ApkInstallResultCard extends StatelessWidget {

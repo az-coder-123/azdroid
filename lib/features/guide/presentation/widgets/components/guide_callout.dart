@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:flutter/material.dart';
 
 /// Prominent callout banner for important warnings and tips.
 class GuideCallout extends StatelessWidget {

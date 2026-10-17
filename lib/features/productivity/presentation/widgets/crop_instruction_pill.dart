@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Floating instruction pill at the top of the crop selection overlay.
 class CropInstructionPill extends StatelessWidget {

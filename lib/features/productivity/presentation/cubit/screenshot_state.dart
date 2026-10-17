@@ -1,5 +1,5 @@
-import 'package:equatable/equatable.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
+import 'package:equatable/equatable.dart';
 
 /// Base state for device screenshot capturing lifecycle.
 sealed class ScreenshotState extends Equatable {

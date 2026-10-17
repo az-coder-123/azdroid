@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppLogger', () {

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Interactive chip for selecting log severity level filters.
 class LogFilterChip extends StatelessWidget {

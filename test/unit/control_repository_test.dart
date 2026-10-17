@@ -1,9 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
 import 'package:desk_droid/features/control/data/repositories/control_repository_impl.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockControlDatasource extends Mock implements ControlDatasource {}
 

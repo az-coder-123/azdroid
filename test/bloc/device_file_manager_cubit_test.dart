@@ -1,11 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockFileTransferRepository extends Mock
     implements FileTransferRepository {}

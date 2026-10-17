@@ -1,6 +1,6 @@
-import 'package:equatable/equatable.dart';
 import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_request_entity.dart';
 import 'package:desk_droid/features/intent_dispatcher/domain/entities/intent_result_entity.dart';
+import 'package:equatable/equatable.dart';
 
 /// Base state for the Intent Dispatcher feature.
 sealed class IntentDispatcherState extends Equatable {

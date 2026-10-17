@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/features/discovery/data/services/usb_wifi_auto_handoff_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockAdbTcpipService extends Mock implements AdbTcpipService {}
 

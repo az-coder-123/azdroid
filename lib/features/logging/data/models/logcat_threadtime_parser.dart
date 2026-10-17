@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
+import 'package:flutter/foundation.dart';
 
 /// Data payload passed to background isolate for concurrent batch parsing.
 class LogcatBatchPayload {

@@ -1,5 +1,5 @@
-import 'package:equatable/equatable.dart';
 import 'package:desk_droid/core/constants/audio_constants.dart';
+import 'package:equatable/equatable.dart';
 
 /// Domain entity representing an active low-latency audio stream session.
 class AudioStreamEntity extends Equatable {

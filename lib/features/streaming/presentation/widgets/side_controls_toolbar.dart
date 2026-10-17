@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screen_record_button.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:flutter/material.dart';
 
 /// Vertical actions toolbar placed beside the real-time phone display
 /// providing fast access to quality bitrate settings, screenshots, screen recording,

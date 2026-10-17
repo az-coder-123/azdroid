@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_card.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_section_header.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_step_row.dart';
+import 'package:flutter/material.dart';
 
 /// Quick start guide explaining 3 realistic connection modes (1-Click USB switch, 6-Digit PIN, Direct IP).
 class QuickStartSection extends StatelessWidget {

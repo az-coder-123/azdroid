@@ -1,6 +1,6 @@
+import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:desk_droid/core/constants/android_key_codes.dart';
 
 void main() {
   group('AndroidKeyCodes', () {

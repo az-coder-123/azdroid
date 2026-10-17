@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/logging/data/models/logcat_threadtime_parser.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const parser = LogcatThreadtimeParser();

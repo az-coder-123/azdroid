@@ -1,6 +1,6 @@
+import 'package:desk_droid/features/logging/presentation/utils/log_search_highlighter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:desk_droid/features/logging/presentation/utils/log_search_highlighter.dart';
 
 void main() {
   group('LogSearchHighlighter Unit Tests', () {

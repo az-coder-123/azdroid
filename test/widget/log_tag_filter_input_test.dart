@@ -1,6 +1,6 @@
+import 'package:desk_droid/features/logging/presentation/widgets/log_tag_filter_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:desk_droid/features/logging/presentation/widgets/log_tag_filter_input.dart';
 
 void main() {
   group('LogTagFilterInput Widget Tests', () {

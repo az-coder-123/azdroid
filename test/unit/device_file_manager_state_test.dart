@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('DeviceFileManagerLoaded state helpers', () {

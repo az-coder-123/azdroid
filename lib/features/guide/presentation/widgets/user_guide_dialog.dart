@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/guide/domain/models/guide_category.dart';
@@ -8,6 +7,7 @@ import 'package:desk_droid/features/guide/presentation/widgets/sections/producti
 import 'package:desk_droid/features/guide/presentation/widgets/sections/quick_start_section.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/sections/troubleshooting_section.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/sections/xiaomi_setup_section.dart';
+import 'package:flutter/material.dart';
 
 /// Modal dialog orchestrator for the DeskDroid user guide, presenting a macOS-native
 /// two-column split view with categorized documentation tabs.

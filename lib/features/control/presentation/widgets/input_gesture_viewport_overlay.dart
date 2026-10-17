@@ -1,6 +1,3 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/constants/control_constants.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
@@ -9,6 +6,9 @@ import 'package:desk_droid/features/control/presentation/utils/viewport_key_even
 import 'package:desk_droid/features/control/presentation/widgets/control_shortcut_help_badge.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:desk_droid/features/control/presentation/widgets/touch_indicator_overlay.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Interactive viewport overlay translating macOS mouse gestures, trackpad scrolling,
 /// and keyboard keystrokes into normalized Android touch and key actions.

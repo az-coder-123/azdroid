@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:flutter/material.dart';
 
 /// Top header bar for FeatureShowcaseDialog with title, icon, and adaptive search input.
 class FeatureShowcaseHeader extends StatelessWidget {

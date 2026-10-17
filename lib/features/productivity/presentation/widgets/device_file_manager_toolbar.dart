@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Top toolbar for the file explorer providing breadcrumb navigation,
 /// instant search filtering, sort options, and bulk selection.

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:equatable/equatable.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:equatable/equatable.dart';
 
 /// Entity representing a previously connected device entry for quick 1-click reconnect.
 class RecentDevice extends Equatable {

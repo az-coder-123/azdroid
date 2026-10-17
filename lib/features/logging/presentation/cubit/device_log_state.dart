@@ -1,7 +1,7 @@
-import 'package:equatable/equatable.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
+import 'package:equatable/equatable.dart';
 
 /// Base state for device real-time logcat streaming.
 abstract class DeviceLogState extends Equatable {

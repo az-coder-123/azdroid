@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
+import 'package:flutter/material.dart';
 
 /// Modal dialog action footer for [ApkInstallerDialog].
 class ApkInstallerFooter extends StatelessWidget {

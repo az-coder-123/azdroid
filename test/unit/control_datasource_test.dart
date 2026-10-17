@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockProcessExecutor extends Mock implements ProcessExecutor {}
 

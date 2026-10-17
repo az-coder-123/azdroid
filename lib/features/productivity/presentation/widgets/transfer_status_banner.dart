@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Floating toast banner rendering current transfer progress, success, or error alerts.
 class TransferStatusBanner extends StatelessWidget {

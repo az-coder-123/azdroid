@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 /// Top header for the menu bar companion popover, rendering app branding and live status pill.
 class MenuBarHeader extends StatelessWidget {

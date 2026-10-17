@@ -1,7 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/pairing_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing Android 11+ wireless pairing workflow.
 class PairingCubit extends Cubit<PairingState> {

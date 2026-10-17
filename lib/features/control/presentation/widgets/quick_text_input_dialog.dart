@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Modal dialog allowing macOS users to inject international Unicode text
 /// or paste long strings directly into the Android focused input field.

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_detail_drawer_header.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/log_stack_trace_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Bottom inspection drawer displaying full log body, formatted stack traces,
 /// or pretty-printed JSON payloads.

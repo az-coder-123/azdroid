@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desk_droid/core/constants/productivity_constants.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing remote Android filesystem exploration and pulling files to macOS.
 class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
