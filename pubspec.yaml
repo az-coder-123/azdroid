@@ -39,6 +39,9 @@ dependencies:
   get_it: ^9.3.0
   desktop_drop: ^0.8.4
   xml: ^7.1.0
+  path: ^1.9.1
+  file_selector: ^1.1.0
+  archive: ^4.5.2
 
 dev_dependencies:
   flutter_test:

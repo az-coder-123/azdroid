@@ -1,0 +1,109 @@
+import 'package:desk_droid/core/platform/host_os.dart';
+import 'package:desk_droid/core/platform/host_paths.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('SystemHostPaths on macOS', () {
+    final paths = SystemHostPaths(
+      os: HostOs.macos,
+      environment: {'HOME': '/Users/dev'},
+      systemTempPath: '/var/folders/xy/T',
+    );
+
+    test('resolves home, downloads, and app data', () {
+      expect(paths.homeDirectory, '/Users/dev');
+      expect(paths.downloadsDirectory, '/Users/dev/Downloads');
+      expect(
+        paths.appDataDirectory,
+        '/Users/dev/Library/Application Support/DeskDroid',
+      );
+    });
+
+    test('keeps the diagnostic log in /tmp', () {
+      expect(paths.diagnosticLogFile, '/tmp/deskdroid_dart.log');
+    });
+  });
+
+  group('SystemHostPaths on Windows', () {
+    final paths = SystemHostPaths(
+      os: HostOs.windows,
+      environment: {
+        'USERPROFILE': r'C:\Users\Nguyễn Văn A',
+        'APPDATA': r'C:\Users\Nguyễn Văn A\AppData\Roaming',
+      },
+      systemTempPath: r'C:\Users\Nguyễn Văn A\AppData\Local\Temp',
+    );
+
+    test('uses USERPROFILE and APPDATA with backslashes', () {
+      expect(paths.homeDirectory, r'C:\Users\Nguyễn Văn A');
+      expect(paths.downloadsDirectory, r'C:\Users\Nguyễn Văn A\Downloads');
+      expect(
+        paths.appDataDirectory,
+        r'C:\Users\Nguyễn Văn A\AppData\Roaming\DeskDroid',
+      );
+    });
+
+    test('writes the diagnostic log to the system temp folder', () {
+      expect(
+        paths.diagnosticLogFile,
+        r'C:\Users\Nguyễn Văn A\AppData\Local\Temp\deskdroid_dart.log',
+      );
+    });
+
+    test('falls back to HOMEDRIVE and HOMEPATH', () {
+      final fallback = SystemHostPaths(
+        os: HostOs.windows,
+        environment: {'HOMEDRIVE': 'D:', 'HOMEPATH': r'\Users\dev'},
+        systemTempPath: r'D:\Temp',
+      );
+      expect(fallback.homeDirectory, r'D:\Users\dev');
+      expect(
+        fallback.appDataDirectory,
+        r'D:\Users\dev\AppData\Roaming\DeskDroid',
+      );
+    });
+  });
+
+  test('Linux honors XDG_DATA_HOME', () {
+    final paths = SystemHostPaths(
+      os: HostOs.linux,
+      environment: {'HOME': '/home/dev', 'XDG_DATA_HOME': '/data'},
+      systemTempPath: '/tmp',
+    );
+    expect(paths.appDataDirectory, '/data/DeskDroid');
+  });
+
+  test('HostOs.executableName appends .exe only on Windows', () {
+    expect(HostOs.windows.executableName('adb'), 'adb.exe');
+    expect(HostOs.macos.executableName('adb'), 'adb');
+  });
+
+  group('flutterAssetPath', () {
+    test('macOS resolves inside App.framework of the .app bundle', () {
+      final paths = SystemHostPaths(
+        os: HostOs.macos,
+        environment: {'HOME': '/Users/dev'},
+        systemTempPath: '/tmp',
+        executablePath: '/Applications/DeskDroid.app/Contents/MacOS/DeskDroid',
+      );
+      expect(
+        paths.flutterAssetPath('assets/scrcpy-server.jar'),
+        '/Applications/DeskDroid.app/Contents/Frameworks/App.framework/'
+        'Versions/A/Resources/flutter_assets/assets/scrcpy-server.jar',
+      );
+    });
+
+    test('Windows resolves under data/flutter_assets next to the exe', () {
+      final paths = SystemHostPaths(
+        os: HostOs.windows,
+        environment: {'USERPROFILE': r'C:\Users\dev'},
+        systemTempPath: r'C:\Temp',
+        executablePath: r'C:\Program Files\DeskDroid\desk_droid.exe',
+      );
+      expect(
+        paths.flutterAssetPath('assets/scrcpy-server.jar'),
+        r'C:\Program Files\DeskDroid\data\flutter_assets\assets\scrcpy-server.jar',
+      );
+    });
+  });
+}
