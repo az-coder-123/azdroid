@@ -12,7 +12,10 @@
 # ==============================================================================
 
 set -euo pipefail
-export PATH="$PATH:/Users/trannamlong/DevTools/flutter/bin:/Users/trannamlong/Library/Android/sdk/platform-tools:/opt/homebrew/bin:/usr/local/bin"
+export PATH="$PATH:/opt/homebrew/bin:/usr/local/bin"
+for p in "${FLUTTER_ROOT:-}/bin" "${HOME}/DevTools/flutter/bin" "${HOME}/flutter/bin" "${ANDROID_HOME:-}/platform-tools" "${HOME}/Library/Android/sdk/platform-tools"; do
+  [[ -n "$p" && -d "$p" ]] && export PATH="$PATH:$p"
+done
 
 # ANSI color codes for readable output
 RED='\033[0;31m'
