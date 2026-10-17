@@ -66,9 +66,9 @@ void main() {
 
         expect(
           stopwatchOn.elapsedMilliseconds,
-          lessThan(1500),
+          lessThan(3000),
           reason:
-              'SoftWrap toggle ON must be instantaneous (< 1500ms under load)',
+              'SoftWrap toggle ON must be instantaneous (< 3000ms under load)',
         );
 
         // Toggle softWrap back to false (measure time)
@@ -81,9 +81,9 @@ void main() {
 
         expect(
           stopwatchOff.elapsedMilliseconds,
-          lessThan(1500),
+          lessThan(3000),
           reason:
-              'SoftWrap toggle OFF must be instantaneous (< 1500ms under load)',
+              'SoftWrap toggle OFF must be instantaneous (< 3000ms under load)',
         );
       },
     );

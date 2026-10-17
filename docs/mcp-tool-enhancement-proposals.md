@@ -182,12 +182,14 @@ These proposals address three core challenges:
 
 ## 📈 3. Impact Assessment Matrix
 
-| Tool | Impact Area | Primary Benefit | Implementation Complexity |
-| :--- | :--- | :--- | :---: |
-| **`android_set_text`** | Accuracy | Eliminates 100% of IME / Telex autocorrect corruption | Low |
-| **`android_clear_text`** | Ergonomics | 1-step input reset without UI navigation | Low |
-| **`android_double_tap`** | Capability | Enables media player scrubbing & zoom tests | Low |
-| **`android_click_by_desc` / `text`** | Efficiency | Saves 2 tool turns & ~1,500 prompt tokens per click | Medium |
-| **`android_wait_for_element`** | Reliability | Eliminates test race conditions during animations | Medium |
-| **`android_scan_media_file`** | Workflow | Instant MediaStore indexing for media app testing | Low |
-| **`android_check_crash`** | Diagnostics | Instant stack trace retrieval upon failure | Low |
+| Tool | Impact Area | Primary Benefit | Implementation Complexity | Status |
+| :--- | :--- | :--- | :---: | :---: |
+| **`android_set_text`** | Accuracy | Eliminates 100% of IME / Telex autocorrect corruption | Low | ✅ **Implemented (v1.0.1)** |
+| **`android_clear_text`** | Ergonomics | 1-step input reset without UI navigation | Low | ✅ **Implemented (v1.0.1)** |
+| **`android_double_tap`** | Capability | Enables media player scrubbing & zoom tests | Low | ✅ **Implemented (v1.0.1)** |
+| **`android_long_press`** | Capability | Long-press gesture with duration | Low | ✅ **Available (`McpAutomationTools`)** |
+| **`android_wait_for_element`** | Reliability | Eliminates test race conditions during animations | Medium | ✅ **Available (Phase 3 for `disappear`)** |
+| **`android_click_by_desc` / `text`** | Efficiency | Saves 2 tool turns & ~1,500 prompt tokens per click | Medium | ⏳ **Phase 3 (`exactMatch` param)** |
+| **`android_drag`** | Precision | Smooth timeline scrubbing & slider controls | Medium | ⏳ **Phase 2 (Planned)** |
+| **`android_scan_media_file`** | Workflow | Instant MediaStore indexing for media app testing | Low | ⏳ **Phase 2 (Planned)** |
+| **`android_check_crash`** | Diagnostics | Instant stack trace retrieval upon failure | Low | ⏳ **Phase 2 (Planned)** |

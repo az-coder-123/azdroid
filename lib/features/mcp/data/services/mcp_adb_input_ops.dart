@@ -67,6 +67,29 @@ class McpAdbInputOps {
     return res.exitCode == 0;
   }
 
+  /// Injects a rapid double-tap gesture within the threshold (default 120ms).
+  static Future<bool> doubleTap(
+    McpAdbClient client,
+    String serial,
+    double x,
+    double y, {
+    int intervalMs = 120,
+  }) async {
+    int targetX = x.round();
+    int targetY = y.round();
+    if (x >= 0.0 && x <= 1.0 && y >= 0.0 && y <= 1.0) {
+      final size = await getDisplaySize(client, serial);
+      targetX = (x * size.x).round();
+      targetY = (y * size.y).round();
+    }
+
+    final sleepSec = (intervalMs / 1000.0).toStringAsFixed(3);
+    final cmd =
+        'input tap $targetX $targetY && sleep $sleepSec && input tap $targetX $targetY';
+    final res = await client.run(['-s', serial, 'shell', cmd]);
+    return res.exitCode == 0;
+  }
+
   /// Injects a swipe gesture from start to end coordinates.
   static Future<bool> swipe(
     McpAdbClient client,
@@ -103,7 +126,7 @@ class McpAdbInputOps {
     return res.exitCode == 0;
   }
 
-  /// Types text with space escaping.
+  /// Types text with space escaping (character-by-character via IME).
   static Future<bool> typeText(
     McpAdbClient client,
     String serial,
@@ -118,6 +141,62 @@ class McpAdbInputOps {
       'text',
       escaped,
     ]);
+    return res.exitCode == 0;
+  }
+
+  /// Injects exact text bypassing IME predictive engines and Telex autocorrect.
+  static Future<bool> setText(
+    McpAdbClient client,
+    String serial,
+    String text, {
+    int? elementId,
+    bool clearFirst = false,
+  }) async {
+    if (elementId != null) {
+      final tapped = await client.clickElementById(serial, elementId);
+      if (!tapped) return false;
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+
+    if (clearFirst) {
+      await clearText(client, serial);
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    // Set Android system clipboard and paste as atomic block.
+    final copied = await client.setClipboard(serial, text);
+    if (!copied) {
+      return await typeText(client, serial, text);
+    }
+
+    await Future.delayed(const Duration(milliseconds: 100));
+    final res = await client.run([
+      '-s',
+      serial,
+      'shell',
+      'input',
+      'keyevent',
+      '279',
+    ]);
+    return res.exitCode == 0;
+  }
+
+  /// Clears text in the focused field or focuses an element by ID before clearing.
+  static Future<bool> clearText(
+    McpAdbClient client,
+    String serial, {
+    int? elementId,
+  }) async {
+    if (elementId != null) {
+      final tapped = await client.clickElementById(serial, elementId);
+      if (!tapped) return false;
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+
+    // Move to end, Select All (Ctrl+A), and Delete (DEL) in a single shell invocation.
+    const cmd =
+        'input keyevent 123 && input keyevent --meta 4096 29 && input keyevent 67';
+    final res = await client.run(['-s', serial, 'shell', cmd]);
     return res.exitCode == 0;
   }
 

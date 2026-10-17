@@ -13,8 +13,11 @@ class McpBasicToolExecutor {
     return const {
       'android_take_screenshot',
       'android_tap',
+      'android_double_tap',
       'android_swipe',
       'android_type_text',
+      'android_set_text',
+      'android_clear_text',
       'android_press_key',
       'android_dispatch_intent',
       'android_get_logcat',
@@ -50,6 +53,22 @@ class McpBasicToolExecutor {
             ? McpToolResult.text('Tapped at coordinates ($x, $y) on $serial.')
             : McpToolResult.error('Failed to tap at ($x, $y).');
 
+      case 'android_double_tap':
+        final x = (arguments['x'] as num).toDouble();
+        final y = (arguments['y'] as num).toDouble();
+        final interval = arguments['intervalMs'] as int? ?? 120;
+        final success = await _adb.doubleTap(
+          serial,
+          x,
+          y,
+          intervalMs: interval,
+        );
+        return success
+            ? McpToolResult.text(
+                'Double-tapped at coordinates ($x, $y) with ${interval}ms interval on $serial.',
+              )
+            : McpToolResult.error('Failed to double-tap at ($x, $y).');
+
       case 'android_swipe':
         final sx = (arguments['startX'] as num).toDouble();
         final sy = (arguments['startY'] as num).toDouble();
@@ -69,6 +88,31 @@ class McpBasicToolExecutor {
         return success
             ? McpToolResult.text('Injected text "$text" into $serial.')
             : McpToolResult.error('Failed to inject text.');
+
+      case 'android_set_text':
+        final text = arguments['text'] as String;
+        final elementId = arguments['elementId'] as int?;
+        final clearFirst = arguments['clearFirst'] as bool? ?? false;
+        final success = await _adb.setText(
+          serial,
+          text,
+          elementId: elementId,
+          clearFirst: clearFirst,
+        );
+        return success
+            ? McpToolResult.text(
+                'Set text "$text" on $serial (elementId: ${elementId ?? 'focused'}, clearFirst: $clearFirst).',
+              )
+            : McpToolResult.error('Failed to set text "$text".');
+
+      case 'android_clear_text':
+        final elementId = arguments['elementId'] as int?;
+        final success = await _adb.clearText(serial, elementId: elementId);
+        return success
+            ? McpToolResult.text(
+                'Cleared text on $serial (elementId: ${elementId ?? 'focused'}).',
+              )
+            : McpToolResult.error('Failed to clear text.');
 
       case 'android_press_key':
         final keyMap = <String, int>{

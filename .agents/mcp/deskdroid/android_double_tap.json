@@ -1,0 +1,29 @@
+{
+  "name": "android_double_tap",
+  "description": "Executes a rapid double-tap gesture within the native Android double-tap window (default 120ms) to seek video (+10s/-10s), zoom, or trigger secondary actions.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "x": {
+        "type": "number",
+        "description": "Horizontal coordinate (normalized 0.0-1.0 or exact pixels)."
+      },
+      "y": {
+        "type": "number",
+        "description": "Vertical coordinate (normalized 0.0-1.0 or exact pixels)."
+      },
+      "intervalMs": {
+        "type": "integer",
+        "description": "Delay between taps in milliseconds (default 120ms)."
+      }
+    },
+    "required": [
+      "x",
+      "y"
+    ]
+  }
+}

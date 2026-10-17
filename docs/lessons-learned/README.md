@@ -33,6 +33,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Logcat Soft-Wrap Sliver Jank** | Flutter Layout & Virtualized Slivers | Eliminate 10s UI freeze on dynamic extents via adaptive reverse sliver and bounded row lines. | [logcat-soft-wrap-sliver-layout-jank.md](logcat-soft-wrap-sliver-layout-jank.md) |
 | **Action Footer RenderFlex Overflow** | UI Layout & Universal Responsiveness | Eliminate horizontal overflow via adaptive `LayoutBuilder`, scrollable `ConstrainedBox`, and dynamic badges. | [renderflex-overflow-action-footer-resilience.md](renderflex-overflow-action-footer-resilience.md) |
 | **Accessibility Tree Semantic Pruning** | MCP Server & AI Agent Grounding | Prune 97% of redundant layout nodes and assign sequential [#ID] tags for deterministic click actions. | [accessibility-tree-semantic-pruning.md](accessibility-tree-semantic-pruning.md) |
+| **IME Predictive Text & Gesture Latency** | Android IME & MCP Execution | Bypass Telex/IME corruption via atomic clipboard paste and chain double-tap to beat IPC latency. | [ime-predictive-text-and-gesture-latency.md](ime-predictive-text-and-gesture-latency.md) |
 
 ---
 

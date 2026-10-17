@@ -124,7 +124,7 @@ DeskDroid includes **13 built-in modules** engineered for speed, reliability, an
 | **11** | **Bidirectional Clipboard Sync** | Real-time Mac pasteboard (`⌘C`) ⇄ Android clipboard with loop prevention | <kbd>Cmd</kbd>+<kbd>C</kbd> / <kbd>V</kbd> | [Guide](docs/features/clipboard-sync.md) |
 | **12** | **Hardware MP4 Screen Recording** | Lossless MP4 video encoded on phone GPU, 3s countdown HUD, live timer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | [Guide](docs/features/hardware-screen-recording.md) |
 | **13** | **Lossless Screenshots & Area Crop** | Full display capture or interactive 8-handle marquee crop saved to `~/Downloads` | <kbd>Cmd</kbd>+<kbd>S</kbd> / <kbd>Shift</kbd>+<kbd>S</kbd> | [Guide](docs/features/screenshots-area-crop.md) |
-| **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 52 tools for Claude Desktop, Cursor & Antigravity | Stdio CLI | [Guide](docs/mcp-setup-guide.md) |
+| **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 55 tools for Claude Desktop, Cursor & Antigravity | Stdio CLI | [Guide](docs/mcp-setup-guide.md) |
 | **+** | **macOS Menu Bar Companion** | Status bar popover for quick window toggle and live telemetry (FPS & latency) | Menu Bar | [Guide](docs/features/menu-bar-companion.md) |
 
 ---
@@ -202,7 +202,7 @@ flutter run -d macos
 | [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
-| [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (52 tools) |
+| [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (55 tools) |
 
 ---
 

@@ -44,6 +44,68 @@ void main() {
       );
     });
 
+    test('android_double_tap executes double tap via McpAdbClient', () async {
+      when(
+        () =>
+            mockAdb.doubleTap('192.168.1.100:5555', 0.5, 0.75, intervalMs: 120),
+      ).thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_double_tap', {
+        'deviceSerial': '192.168.1.100:5555',
+        'x': 0.5,
+        'y': 0.75,
+        'intervalMs': 120,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains(
+          'Double-tapped at coordinates (0.5, 0.75) with 120ms interval',
+        ),
+      );
+    });
+
+    test('android_set_text injects exact text via McpAdbClient', () async {
+      when(
+        () => mockAdb.setText(
+          '192.168.1.100:5555',
+          'Hello OpenPlayer3',
+          elementId: 5,
+          clearFirst: true,
+        ),
+      ).thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_set_text', {
+        'deviceSerial': '192.168.1.100:5555',
+        'text': 'Hello OpenPlayer3',
+        'elementId': 5,
+        'clearFirst': true,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Set text "Hello OpenPlayer3" on 192.168.1.100:5555'),
+      );
+    });
+
+    test('android_clear_text resets text via McpAdbClient', () async {
+      when(() => mockAdb.clearText('192.168.1.100:5555', elementId: 5))
+          .thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_clear_text', {
+        'deviceSerial': '192.168.1.100:5555',
+        'elementId': 5,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Cleared text on 192.168.1.100:5555'),
+      );
+    });
+
     test('android_swipe executes swipe via McpAdbClient', () async {
       when(() => mockAdb.swipe('192.168.1.100:5555', 0.5, 0.8, 0.5, 0.2, 300))
           .thenAnswer((_) async => true);

@@ -56,6 +56,26 @@ class McpAdbClient {
       McpAdbInputOps.typeText(this, serial, text);
   Future<bool> pressKey(String serial, int keyCode) =>
       McpAdbInputOps.pressKey(this, serial, keyCode);
+  Future<bool> doubleTap(
+    String serial,
+    double x,
+    double y, {
+    int intervalMs = 120,
+  }) => McpAdbInputOps.doubleTap(this, serial, x, y, intervalMs: intervalMs);
+  Future<bool> setText(
+    String serial,
+    String text, {
+    int? elementId,
+    bool clearFirst = false,
+  }) => McpAdbInputOps.setText(
+    this,
+    serial,
+    text,
+    elementId: elementId,
+    clearFirst: clearFirst,
+  );
+  Future<bool> clearText(String serial, {int? elementId}) =>
+      McpAdbInputOps.clearText(this, serial, elementId: elementId);
 
   // --- Command & Diagnostic Operations ---
   Future<String> dispatchIntent(

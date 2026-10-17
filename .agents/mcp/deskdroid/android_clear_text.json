@@ -1,0 +1,17 @@
+{
+  "name": "android_clear_text",
+  "description": "Clears all existing text in the currently focused input field or target element by ID in a single shot.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "elementId": {
+        "type": "integer",
+        "description": "Optional target element ID from semantic tree to tap before clearing."
+      }
+    }
+  }
+}

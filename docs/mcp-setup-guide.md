@@ -112,8 +112,11 @@ Verify proper functioning using any of the following 3 methods:
 | **`android_list_devices`** | *none* | Lists all connected USB and Wi-Fi Android devices and their status. |
 | **`android_take_screenshot`** | `deviceSerial` (optional) | Returns high-resolution screenshot as a base64 image artifact for visual inspection. |
 | **`android_tap`** | `x`, `y` (normalized 0.0–1.0 or pixels), `deviceSerial` | Simulates a touch tap gesture on screen. |
+| **`android_double_tap`** | `x`, `y`, `intervalMs` (default 120), `deviceSerial` | Executes rapid double-tap within native Android window to seek video, zoom, or like. |
 | **`android_swipe`** | `startX`, `startY`, `endX`, `endY`, `durationMs` | Injects a swipe or drag gesture. |
-| **`android_type_text`** | `text`, `deviceSerial` | Types text into the focused Android input field (supports Unicode & spaces). |
+| **`android_type_text`** | `text`, `deviceSerial` | Types text into the focused Android input field (character-by-character). |
+| **`android_set_text`** | `text`, `elementId` (optional), `clearFirst` (bool), `deviceSerial` | Sets exact text atomically, bypassing IME predictive autocorrect and Telex alteration. |
+| **`android_clear_text`** | `elementId` (optional), `deviceSerial` | Clears all text in the focused field or target element by ID in a single shot. |
 | **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, etc.) | Presses Android hardware/navigation keys. |
 | **`android_dispatch_intent`** | `action`, `dataUri`, `package`, `component`, `extras` | Dispatches Android Intents, deep link URLs, and custom app schemes. |
 | **`android_get_logcat`** | `tag`, `limit` | Retrieves real-time or recent logcat records for crash diagnosis. |
