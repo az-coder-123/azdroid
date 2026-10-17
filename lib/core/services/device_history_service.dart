@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:equatable/equatable.dart';
 
@@ -51,24 +52,28 @@ abstract class DeviceHistoryService {
   Future<void> removeRecentDevice(String id);
 }
 
-/// Concrete local file-based implementation storing entries at ~/Library/Application Support/DeskDroid/history.json.
+/// File-based implementation storing entries in `<app data>/history.json`.
 class DeviceHistoryServiceImpl implements DeviceHistoryService {
-  DeviceHistoryServiceImpl({this.customFilePath});
+  DeviceHistoryServiceImpl({this.customFilePath, HostPaths? hostPaths})
+    : _paths = hostPaths ?? SystemHostPaths();
+
+  /// File name of the history store inside the app data folder.
+  static const String historyFileName = 'history.json';
 
   final String? customFilePath;
+  final HostPaths _paths;
   List<RecentDevice>? _memoryCache;
 
   File _getHistoryFile() {
     if (customFilePath != null) {
       return File(customFilePath!);
     }
-    final home = Platform.environment['HOME'] ?? '';
-    final dirPath = '$home/Library/Application Support/DeskDroid';
+    final dirPath = _paths.appDataDirectory;
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
       dir.createSync(recursive: true);
     }
-    return File('$dirPath/history.json');
+    return File(_paths.context.join(dirPath, historyFileName));
   }
 
   @override

@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/platform/file_picker/host_file_picker.dart';
 import 'package:desk_droid/core/services/local_file_system_gateway.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/features/productivity/domain/entities/file_transfer_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart' as p;
 
 /// Cubit managing drag-and-drop file transfers and APK sideloading.
 class FileTransferCubit extends Cubit<FileTransferState> {
@@ -15,12 +16,12 @@ class FileTransferCubit extends Cubit<FileTransferState> {
     required this.repository,
     this.autoResetDuration = FeedbackDurations.statusBanner,
     this._fileSystem = const IoLocalFileSystemGateway(),
-    this._filePicker = const MacFilePickerServiceImpl(),
+    this._filePicker = const FileSelectorHostFilePicker(),
   }) : super(const FileTransferInitial());
 
   final FileTransferRepository repository;
   final LocalFileSystemGateway _fileSystem;
-  final MacFilePickerService _filePicker;
+  final HostFilePicker _filePicker;
 
   /// Opens the native file picker and transfers the chosen files, if any.
   Future<void> pickAndTransferFiles(String deviceSerial) async {
@@ -57,7 +58,7 @@ class FileTransferCubit extends Cubit<FileTransferState> {
     int completedCount = 0;
 
     for (final path in filePaths) {
-      final fileName = path.split('/').last;
+      final fileName = p.basename(path);
       final isApk = path.toLowerCase().endsWith(
         ProductivityConstants.apkExtension,
       );

@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_filter_criteria.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_level.dart';
@@ -77,6 +78,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     final cubit = context.read<DeviceLogCubit>();
 
     return Container(
@@ -160,7 +162,8 @@ class _LogFilterBarState extends State<LogFilterBar> {
                       color: AppColors.textPrimary,
                     ),
                     decoration: _inputDecoration(
-                      hint: 'Search message, exception, stack trace... (⌘F)',
+                      hint:
+                          'Search message, exception, stack trace... (${keys.label('F')})',
                       prefixIcon: Icons.search,
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(

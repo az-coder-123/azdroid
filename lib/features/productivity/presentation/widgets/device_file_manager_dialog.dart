@@ -217,7 +217,7 @@ class _DeviceFileManagerDialogState extends State<DeviceFileManagerDialog> {
               ),
               OutlinedButton.icon(
                 onPressed: () =>
-                    context.read<DeviceFileManagerCubit>().openInFinder(),
+                    context.read<DeviceFileManagerCubit>().openDownloadFolder(),
                 icon: const Icon(Icons.folder_open_rounded, size: 16),
                 label: const Text('Open Downloads'),
               ),

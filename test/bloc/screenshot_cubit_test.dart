@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:desk_droid/core/services/host_file_launcher.dart';
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/screenshot_repository.dart';
@@ -9,6 +9,8 @@ import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_c
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../helpers/fake_host_file_launcher.dart';
 
 class MockScreenshotRepository extends Mock implements ScreenshotRepository {}
 
@@ -36,7 +38,10 @@ void main() {
 
   group('ScreenshotCubit', () {
     test('initial state is ScreenshotInitial', () {
-      final cubit = ScreenshotCubit(repository: mockRepository);
+      final cubit = ScreenshotCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      );
       expect(cubit.state, isA<ScreenshotInitial>());
       cubit.close();
     });
@@ -50,7 +55,10 @@ void main() {
             customSaveDirectory: any(named: 'customSaveDirectory'),
           ),
         ).thenAnswer((_) async => testScreenshot);
-        return ScreenshotCubit(repository: mockRepository);
+        return ScreenshotCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.captureScreenshot(testSerial),
       expect: () => [
@@ -76,7 +84,10 @@ void main() {
             customSaveDirectory: any(named: 'customSaveDirectory'),
           ),
         ).thenAnswer((_) async => null);
-        return ScreenshotCubit(repository: mockRepository);
+        return ScreenshotCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.captureScreenshot(testSerial),
       expect: () => [
@@ -98,7 +109,10 @@ void main() {
             customSaveDirectory: any(named: 'customSaveDirectory'),
           ),
         ).thenThrow(Exception('ADB screencap failed'));
-        return ScreenshotCubit(repository: mockRepository);
+        return ScreenshotCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.captureScreenshot(testSerial),
       expect: () => [
@@ -113,7 +127,10 @@ void main() {
 
     blocTest<ScreenshotCubit, ScreenshotState>(
       'startAreaSelection emits ScreenshotSelectingArea',
-      build: () => ScreenshotCubit(repository: mockRepository),
+      build: () => ScreenshotCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       act: (cubit) => cubit.startAreaSelection(testSerial),
       expect: () => [
         isA<ScreenshotSelectingArea>().having(
@@ -126,7 +143,10 @@ void main() {
 
     blocTest<ScreenshotCubit, ScreenshotState>(
       'cancelAreaSelection emits ScreenshotInitial when selecting area',
-      build: () => ScreenshotCubit(repository: mockRepository),
+      build: () => ScreenshotCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       seed: () => const ScreenshotSelectingArea(testSerial),
       act: (cubit) => cubit.cancelAreaSelection(),
       expect: () => [isA<ScreenshotInitial>()],
@@ -142,7 +162,10 @@ void main() {
             cropRectNormalized: any(named: 'cropRectNormalized'),
           ),
         ).thenAnswer((_) async => testScreenshot);
-        return ScreenshotCubit(repository: mockRepository);
+        return ScreenshotCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.captureScreenshot(
         testSerial,
@@ -170,7 +193,10 @@ void main() {
             destination: any(named: 'destination'),
           ),
         ).thenAnswer((_) async => testScreenshot);
-        return ScreenshotCubit(repository: mockRepository);
+        return ScreenshotCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.captureScreenshot(
         testSerial,
@@ -189,7 +215,10 @@ void main() {
 
     blocTest<ScreenshotCubit, ScreenshotState>(
       'reset emits ScreenshotInitial',
-      build: () => ScreenshotCubit(repository: mockRepository),
+      build: () => ScreenshotCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       seed: () => ScreenshotSuccess(testScreenshot),
       act: (cubit) => cubit.reset(),
       expect: () => [isA<ScreenshotInitial>()],
@@ -203,16 +232,16 @@ void main() {
     setUp(() {
       launcher = MockHostFileLauncher();
       when(() => launcher.open(any())).thenAnswer((_) async => true);
-      when(() => launcher.revealInFinder(any())).thenAnswer((_) async => true);
+      when(() => launcher.reveal(any())).thenAnswer((_) async => true);
     });
 
-    test('revealInFinder delegates to HostFileLauncher', () async {
+    test('revealFile delegates to HostFileLauncher', () async {
       final cubit = ScreenshotCubit(
         repository: mockRepository,
         fileLauncher: launcher,
       );
-      await cubit.revealInFinder(filePath);
-      verify(() => launcher.revealInFinder(filePath)).called(1);
+      await cubit.revealFile(filePath);
+      verify(() => launcher.reveal(filePath)).called(1);
       await cubit.close();
     });
 

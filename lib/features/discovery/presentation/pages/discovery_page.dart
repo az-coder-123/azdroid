@@ -4,6 +4,7 @@ import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_state.dart';
+import 'package:desk_droid/features/discovery/presentation/navigation/mirroring_route_builder.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/device_card.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/discovery_app_bar_actions.dart';
 import 'package:desk_droid/features/discovery/presentation/widgets/empty_state_view.dart';
@@ -13,11 +14,6 @@ import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-/// Builds the route that opens the mirroring workspace for a device.
-///
-/// Supplied by the app shell so discovery does not depend on streaming.
-typedef MirroringRouteBuilder = Route<void> Function(DeviceEntity device);
 
 /// Main landing page of DeskDroid hosting the device discovery and pairing dashboard.
 class DiscoveryPage extends StatefulWidget {

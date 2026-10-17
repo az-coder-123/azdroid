@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:desk_droid/core/constants/feedback_durations.dart';
 import 'package:desk_droid/core/di/injection.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
@@ -239,12 +237,6 @@ class _DeviceLogDialogState extends State<DeviceLogDialog> {
     );
   }
 
-  void _handleExportSnapshot(BuildContext context) {
-    final home = Platform.environment['HOME'] ?? '';
-    final safe = widget.deviceSerial.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_');
-    final ts = DateTime.now().millisecondsSinceEpoch;
-    final path =
-        '$home/Downloads/deskdroid_logs/logcat_snapshot_${safe}_$ts.log';
-    context.read<DeviceLogCubit>().exportLogs(destinationPath: path);
-  }
+  void _handleExportSnapshot(BuildContext context) =>
+      context.read<DeviceLogCubit>().exportLogs();
 }

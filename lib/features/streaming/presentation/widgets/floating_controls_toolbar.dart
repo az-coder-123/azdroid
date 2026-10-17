@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/audio/presentation/widgets/audio_controls_widget.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
@@ -24,6 +25,7 @@ class FloatingControlsToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -52,13 +54,13 @@ class FloatingControlsToolbar extends StatelessWidget {
             const SizedBox(width: 8),
             _buildToolButton(
               icon: Icons.circle_outlined,
-              tooltip: 'Home (Cmd+H / Middle Click)',
+              tooltip: 'Home (${keys.label('H')} / Middle Click)',
               onPressed: onHome,
             ),
             const SizedBox(width: 8),
             _buildToolButton(
               icon: Icons.crop_square_rounded,
-              tooltip: 'App Switcher (Cmd+Tab)',
+              tooltip: 'App Switcher (${keys.label('Tab')})',
               onPressed: onAppSwitch,
             ),
             const SizedBox(width: 12),

@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/clipboard_state.dart';
@@ -12,6 +13,7 @@ class ClipboardSyncMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     return BlocBuilder<ClipboardCubit, ClipboardState>(
       builder: (context, state) {
         final isSyncing = state is ClipboardSyncing;
@@ -55,16 +57,20 @@ class ClipboardSyncMenuButton extends StatelessWidget {
             }
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'mac_to_android',
               child: Row(
                 children: [
-                  Icon(Icons.upload_rounded, size: 16, color: AppColors.accent),
-                  SizedBox(width: 8),
-                  Expanded(child: Text('Push Mac ➔ Android')),
+                  const Icon(
+                    Icons.upload_rounded,
+                    size: 16,
+                    color: AppColors.accent,
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(child: Text('Push Mac ➔ Android')),
                   Text(
-                    '⌘⇧C',
-                    style: TextStyle(
+                    keys.label('C', shift: true),
+                    style: const TextStyle(
                       fontSize: 11,
                       color: AppColors.textSecondary,
                     ),
@@ -72,20 +78,20 @@ class ClipboardSyncMenuButton extends StatelessWidget {
                 ],
               ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'android_to_mac',
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.download_rounded,
                     size: 16,
                     color: AppColors.statusSuccess,
                   ),
-                  SizedBox(width: 8),
-                  Expanded(child: Text('Pull Android ➔ Mac')),
+                  const SizedBox(width: 8),
+                  const Expanded(child: Text('Pull Android ➔ Mac')),
                   Text(
-                    '⌘⇧V',
-                    style: TextStyle(
+                    keys.label('V', shift: true),
+                    style: const TextStyle(
                       fontSize: 11,
                       color: AppColors.textSecondary,
                     ),

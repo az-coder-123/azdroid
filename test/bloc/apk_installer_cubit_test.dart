@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
+import 'package:desk_droid/core/platform/file_picker/host_file_picker.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_result.dart';
@@ -12,7 +12,7 @@ import 'package:mocktail/mocktail.dart';
 class MockApkInstallerRepository extends Mock
     implements ApkInstallerRepository {}
 
-class MockMacFilePickerService extends Mock implements MacFilePickerService {}
+class MockHostFilePicker extends Mock implements HostFilePicker {}
 
 void main() {
   late MockApkInstallerRepository mockRepo;
@@ -178,14 +178,14 @@ void main() {
   });
 
   group('ApkInstallerCubit.pickApk', () {
-    late MockMacFilePickerService picker;
+    late MockHostFilePicker picker;
 
-    setUp(() => picker = MockMacFilePickerService());
+    setUp(() => picker = MockHostFilePicker());
 
     blocTest<ApkInstallerCubit, ApkInstallerState>(
       'inspects the picked APK',
       setUp: () {
-        when(() => picker.pickApkFile(prompt: any(named: 'prompt')))
+        when(() => picker.pickApkFile())
             .thenAnswer((_) async => '/path/app.apk');
         when(() => mockRepo.inspectApk('/path/app.apk'))
             .thenAnswer((_) async => testInfo);
@@ -202,8 +202,7 @@ void main() {
     blocTest<ApkInstallerCubit, ApkInstallerState>(
       'emits nothing when the picker is cancelled',
       setUp: () {
-        when(() => picker.pickApkFile(prompt: any(named: 'prompt')))
-            .thenAnswer((_) async => null);
+        when(() => picker.pickApkFile()).thenAnswer((_) async => null);
       },
       build: () => ApkInstallerCubit(
         repository: mockRepo,

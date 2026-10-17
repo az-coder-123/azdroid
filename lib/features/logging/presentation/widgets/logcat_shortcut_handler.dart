@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -56,25 +57,14 @@ class LogcatShortcutHandler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shortcuts = context.shortcuts;
     return CallbackShortcuts(
       bindings: <ShortcutActivator, VoidCallback>{
-        // Focus search (Cmd+F on Mac, Ctrl+F on Win/Linux)
-        const SingleActivator(LogicalKeyboardKey.keyF, meta: true):
+        // Primary modifier is Cmd on macOS and Ctrl on Windows/Linux.
+        shortcuts.activator(LogicalKeyboardKey.keyF):
             searchFocusNode.requestFocus,
-        const SingleActivator(LogicalKeyboardKey.keyF, control: true):
-            searchFocusNode.requestFocus,
-
-        // Clear console (Cmd+K on Mac, Ctrl+K on Win/Linux)
-        const SingleActivator(LogicalKeyboardKey.keyK, meta: true):
-            onClearConsole,
-        const SingleActivator(LogicalKeyboardKey.keyK, control: true):
-            onClearConsole,
-
-        // Scroll to bottom (Cmd+Down on Mac, Ctrl+Down on Win/Linux)
-        const SingleActivator(LogicalKeyboardKey.arrowDown, meta: true):
-            onScrollToBottom,
-        const SingleActivator(LogicalKeyboardKey.arrowDown, control: true):
-            onScrollToBottom,
+        shortcuts.activator(LogicalKeyboardKey.keyK): onClearConsole,
+        shortcuts.activator(LogicalKeyboardKey.arrowDown): onScrollToBottom,
 
         // Space: Toggle pause/resume
         const SingleActivator(LogicalKeyboardKey.space): _handleSpace,

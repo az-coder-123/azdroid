@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screen_record_button.dart';
@@ -37,6 +38,7 @@ class SideControlsToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -92,7 +94,7 @@ class SideControlsToolbar extends StatelessWidget {
               if (onScreenshot != null)
                 _buildToolButton(
                   icon: Icons.camera_alt_outlined,
-                  tooltip: 'Take Screenshot (Cmd+S)',
+                  tooltip: 'Take Screenshot (${keys.label('S')})',
                   onPressed: onScreenshot!,
                 ),
 
@@ -101,7 +103,7 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.crop_rounded,
-                  tooltip: 'Capture Area (Cmd+Shift+S)',
+                  tooltip: 'Capture Area (${keys.label('S', shift: true)})',
                   onPressed: onCropScreenshot!,
                 ),
               ],
@@ -117,7 +119,7 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.keyboard_alt_outlined,
-                  tooltip: 'Inject Text (Cmd+K)',
+                  tooltip: 'Inject Text (${keys.label('K')})',
                   onPressed: onTextInject!,
                 ),
               ],
@@ -133,7 +135,7 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.file_upload_outlined,
-                  tooltip: 'Send Files to Phone (Cmd+U)',
+                  tooltip: 'Send Files to Phone (${keys.label('U')})',
                   onPressed: onSendFiles!,
                 ),
               ],
@@ -143,7 +145,8 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.folder_shared_outlined,
-                  tooltip: 'Device Files & Downloads (Cmd+Shift+F)',
+                  tooltip:
+                      'Device Files & Downloads (${keys.label('F', shift: true)})',
                   onPressed: onBrowseFiles!,
                 ),
               ],
@@ -153,7 +156,8 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.terminal_rounded,
-                  tooltip: 'Device Logcat Console (Cmd+Shift+L)',
+                  tooltip:
+                      'Device Logcat Console (${keys.label('L', shift: true)})',
                   onPressed: onViewLogs!,
                 ),
               ],
@@ -163,7 +167,8 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.install_mobile_rounded,
-                  tooltip: 'Install APK Package (Cmd+Shift+I)',
+                  tooltip:
+                      'Install APK Package (${keys.label('I', shift: true)})',
                   onPressed: onInstallApk!,
                 ),
               ],
@@ -173,7 +178,8 @@ class SideControlsToolbar extends StatelessWidget {
                 const SizedBox(height: 4),
                 _buildToolButton(
                   icon: Icons.alt_route_rounded,
-                  tooltip: 'Deep Link & Intent Dispatcher (Cmd+Shift+D)',
+                  tooltip:
+                      'Deep Link & Intent Dispatcher (${keys.label('D', shift: true)})',
                   onPressed: onDispatchIntent!,
                 ),
               ],

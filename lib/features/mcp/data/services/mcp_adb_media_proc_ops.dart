@@ -53,7 +53,7 @@ class McpAdbMediaProcOps {
     final res = await client.run(['-s', serial, 'shell', 'ps', '-A']);
     if (res.exitCode != 0) return [];
 
-    final lines = res.stdout.toString().split('\n');
+    final lines = res.stdout.toString().splitLines();
     final results = <Map<String, String>>[];
 
     for (int i = 1; i < lines.length; i++) {

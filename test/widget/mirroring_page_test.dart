@@ -1,5 +1,8 @@
 import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/di/modules/platform_di.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/core/platform/host_os.dart';
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
@@ -23,6 +26,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../helpers/fake_host_file_launcher.dart';
 
 class MockStreamingRepository extends Mock implements StreamingRepository {}
 
@@ -76,6 +81,7 @@ void main() {
 
   setUp(() async {
     await sl.reset();
+    registerPlatformDependencies(sl, os: HostOs.macos);
     mockRepository = MockStreamingRepository();
     mockControlRepository = MockControlRepository();
     mockClipboardRepository = MockClipboardRepository();
@@ -129,14 +135,20 @@ void main() {
       () => mockScreenshotRepository,
     );
     sl.registerFactory<ScreenshotCubit>(
-      () => ScreenshotCubit(repository: sl<ScreenshotRepository>()),
+      () => ScreenshotCubit(
+        repository: sl<ScreenshotRepository>(),
+        fileLauncher: FakeHostFileLauncher(),
+      ),
     );
 
     sl.registerLazySingleton<ScreenRecordingRepository>(
       () => mockScreenRecordingRepository,
     );
     sl.registerFactory<ScreenRecordingCubit>(
-      () => ScreenRecordingCubit(repository: sl<ScreenRecordingRepository>()),
+      () => ScreenRecordingCubit(
+        repository: sl<ScreenRecordingRepository>(),
+        fileLauncher: FakeHostFileLauncher(),
+      ),
     );
 
     sl.registerLazySingleton<MenuBarCubit>(() => MenuBarCubit());
@@ -176,18 +188,39 @@ void main() {
       expect(find.text('60 FPS'), findsOneWidget);
       expect(find.text('8 Mbps'), findsOneWidget);
 
+      // Labels come from the scheme registered by the platform module.
+      const keys = ShortcutScheme.mac;
+
       // Verify HUD navigation buttons
       expect(find.byTooltip('Back (Right Click)'), findsOneWidget);
-      expect(find.byTooltip('Home (Cmd+H / Middle Click)'), findsOneWidget);
-      expect(find.byTooltip('App Switcher (Cmd+Tab)'), findsOneWidget);
+      expect(
+        find.byTooltip('Home (${keys.label('H')} / Middle Click)'),
+        findsOneWidget,
+      );
+      expect(
+        find.byTooltip('App Switcher (${keys.label('Tab')})'),
+        findsOneWidget,
+      );
       expect(find.byTooltip('Rotate Display'), findsOneWidget);
 
       // Verify Side Controls Toolbar buttons
       expect(find.byTooltip('Streaming Bitrate & Quality'), findsOneWidget);
-      expect(find.byTooltip('Take Screenshot (Cmd+S)'), findsOneWidget);
-      expect(find.byTooltip('Capture Area (Cmd+Shift+S)'), findsOneWidget);
-      expect(find.byTooltip('Record Screen (Cmd+Shift+R)'), findsOneWidget);
-      expect(find.byTooltip('Inject Text (Cmd+K)'), findsOneWidget);
+      expect(
+        find.byTooltip('Take Screenshot (${keys.label('S')})'),
+        findsOneWidget,
+      );
+      expect(
+        find.byTooltip('Capture Area (${keys.label('S', shift: true)})'),
+        findsOneWidget,
+      );
+      expect(
+        find.byTooltip('Record Screen (${keys.label('R', shift: true)})'),
+        findsOneWidget,
+      );
+      expect(
+        find.byTooltip('Inject Text (${keys.label('K')})'),
+        findsOneWidget,
+      );
       expect(find.byTooltip('Clipboard Synchronization'), findsOneWidget);
 
       // Tap Back button

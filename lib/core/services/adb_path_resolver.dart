@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/adb_binary_locator.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -10,10 +11,15 @@ class AdbPathResolver {
   AdbPathResolver({
     ProcessExecutor executor = const DefaultProcessExecutor(),
     this.explicitPath,
+    HostToolchain? toolchain,
     AdbBinaryLocator? locator,
   }) : _locator =
            locator ??
-           AdbBinaryLocator(executor: executor, onProbeFailure: _logProbe);
+           AdbBinaryLocator(
+             toolchain: toolchain,
+             executor: executor,
+             onProbeFailure: _logProbe,
+           );
 
   final String? explicitPath;
   final AdbBinaryLocator _locator;

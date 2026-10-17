@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class LogStackTraceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lines = message.split('\n');
+    final lines = message.splitLines();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

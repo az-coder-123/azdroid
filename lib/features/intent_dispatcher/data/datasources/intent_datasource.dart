@@ -1,4 +1,5 @@
 import 'package:desk_droid/core/constants/adb_timeouts.dart';
+import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -98,13 +99,10 @@ class IntentDatasourceImpl implements IntentDatasource {
           combined.contains('SecurityException');
 
       if (isError) {
-        final errorLine = stdout
-            .split('\n')
-            .firstWhere(
-              (line) => line.contains('Error:') || line.contains('Exception'),
-              orElse: () =>
-                  stderr.isNotEmpty ? stderr : 'Intent dispatch failed.',
-            );
+        final errorLine = stdout.splitLines().firstWhere(
+          (line) => line.contains('Error:') || line.contains('Exception'),
+          orElse: () => stderr.isNotEmpty ? stderr : 'Intent dispatch failed.',
+        );
         return IntentResultEntity(
           success: false,
           message: errorLine.trim(),

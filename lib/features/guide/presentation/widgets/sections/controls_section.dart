@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_card.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_gesture_item.dart';
@@ -11,16 +12,17 @@ class ControlsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final keys = context.shortcuts;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GuideSectionHeader(
+        const GuideSectionHeader(
           title: 'Mouse & Keyboard Gestures',
           description: 'Natural desktop gestures mapped seamlessly to Android touch and hardware keys.',
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
-        GuideCard(
+        const GuideCard(
           badgeText: 'MOUSE ACTIONS',
           badgeColor: AppColors.accent,
           title: 'Mouse & Trackpad Mapping',
@@ -47,7 +49,7 @@ class ControlsSection extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         GuideCard(
           badgeText: 'APPLE KEYBOARD SHORTCUTS',
@@ -55,28 +57,28 @@ class ControlsSection extends StatelessWidget {
           title: 'macOS Keyboard Navigation',
           children: [
             GuideShortcutItem(
-              keys: ['Cmd', 'H'],
+              keys: keys.keyCaps('H'),
               description: 'Go to Home Screen',
             ),
             GuideShortcutItem(
-              keys: ['Cmd', 'Backspace'],
+              keys: keys.keyCaps('Backspace'),
               description: 'Back navigation key',
             ),
             GuideShortcutItem(
-              keys: ['Cmd', 'Tab'],
+              keys: keys.keyCaps('Tab'),
               description: 'Open App Switcher (Recent Apps)',
             ),
             GuideShortcutItem(
-              keys: ['Cmd', 'K'],
+              keys: keys.keyCaps('K'),
               description:
                   'Quick Text Injector (Direct Unicode & Vietnamese accents)',
             ),
             GuideShortcutItem(
-              keys: ['Cmd', 'R'],
+              keys: keys.keyCaps('R'),
               description: 'Rotate screen display 90 degrees',
             ),
             GuideShortcutItem(
-              keys: ['Cmd', 'O'],
+              keys: keys.keyCaps('O'),
               description: 'Turn phone screen off/on (--turn-screen-off)',
             ),
           ],

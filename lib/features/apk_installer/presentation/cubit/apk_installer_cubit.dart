@@ -1,5 +1,5 @@
+import 'package:desk_droid/core/platform/file_picker/host_file_picker.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_install_options.dart';
 import 'package:desk_droid/features/apk_installer/domain/repositories/apk_installer_repository.dart';
 import 'package:desk_droid/features/apk_installer/presentation/cubit/apk_installer_state.dart';
@@ -10,11 +10,11 @@ class ApkInstallerCubit extends Cubit<ApkInstallerState> {
   ApkInstallerCubit({
     required this.repository,
     required String deviceSerial,
-    this._filePicker = const MacFilePickerServiceImpl(),
+    this._filePicker = const FileSelectorHostFilePicker(),
   }) : super(ApkInstallerInitial(deviceSerial: deviceSerial));
 
   final ApkInstallerRepository repository;
-  final MacFilePickerService _filePicker;
+  final HostFilePicker _filePicker;
 
   /// Opens the native file picker and inspects the chosen APK, if any.
   Future<void> pickApk() async {

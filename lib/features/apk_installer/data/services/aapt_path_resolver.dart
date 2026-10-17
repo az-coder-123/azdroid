@@ -1,22 +1,25 @@
 import 'dart:io';
 
-import 'package:desk_droid/core/constants/apk_installer_constants.dart';
+import 'package:desk_droid/core/extensions/line_split_extension.dart';
+import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:path/path.dart' as p;
 
 /// Locates the Android Asset Packaging Tool (`aapt2` / `aapt`) on the host.
 ///
-/// Resolution order: `PATH` lookup via `which`, then the newest version folder
-/// inside the Android SDK `build-tools` directory. The result is cached.
+/// Resolution order: `PATH` lookup, then the newest version folder inside each
+/// Android SDK `build-tools` directory. OS-specific names and folders come
+/// from [HostToolchain]. The result is cached.
 class AaptPathResolver {
   AaptPathResolver({
     ProcessExecutor processExecutor = const DefaultProcessExecutor(),
-    Map<String, String>? environment,
+    HostToolchain? toolchain,
   }) : _executor = processExecutor,
-       _environment = environment ?? Platform.environment;
+       _toolchain = toolchain ?? HostToolchain.current();
 
   final ProcessExecutor _executor;
-  final Map<String, String> _environment;
+  final HostToolchain _toolchain;
   String? _cachedPath;
 
   /// Returns the aapt executable path, or `null` when it is not installed.
@@ -25,13 +28,14 @@ class AaptPathResolver {
   }
 
   Future<String?> _resolveFromPath() async {
-    for (final bin in ApkInstallerConstants.aaptBinaryNames) {
+    for (final bin in _toolchain.aaptExecutables) {
       try {
-        final which = await _executor.run(ApkInstallerConstants.whichPath, [
-          bin,
-        ]);
-        final path = which.stdout.toString().trim();
-        if (which.exitCode == 0 && path.isNotEmpty) return path;
+        final result = await _executor.run(_toolchain.pathLookupCommand, [bin]);
+        final lines = result.stdout.toString().splitLines();
+        if (result.exitCode == 0 && lines.isNotEmpty) {
+          final path = lines.first.trim();
+          if (path.isNotEmpty) return path;
+        }
       } on Exception catch (error) {
         AppLogger.debug('aapt PATH probe for "$bin" failed: $error');
       }
@@ -40,25 +44,24 @@ class AaptPathResolver {
   }
 
   String? _resolveFromSdk() {
-    final home = _environment['HOME'];
-    if (home == null) return null;
+    for (final buildTools in _toolchain.buildToolsDirectories) {
+      final found = _newestAaptIn(Directory(buildTools));
+      if (found != null) return found;
+    }
+    return null;
+  }
 
-    final buildToolsDir = Directory(
-      '$home/${ApkInstallerConstants.androidSdkBuildToolsSubpath}',
-    );
+  String? _newestAaptIn(Directory buildToolsDir) {
     if (!buildToolsDir.existsSync()) return null;
-
     try {
       final versionDirs =
           buildToolsDir.listSync().whereType<Directory>().toList()..sort(
-            (a, b) => compareVersionNames(
-              b.path.split(Platform.pathSeparator).last,
-              a.path.split(Platform.pathSeparator).last,
-            ),
+            (a, b) =>
+                compareVersionNames(p.basename(b.path), p.basename(a.path)),
           );
       for (final dir in versionDirs) {
-        for (final bin in ApkInstallerConstants.aaptBinaryNames) {
-          final candidate = '${dir.path}/$bin';
+        for (final bin in _toolchain.aaptExecutables) {
+          final candidate = p.join(dir.path, bin);
           if (File(candidate).existsSync()) return candidate;
         }
       }

@@ -7,7 +7,7 @@ import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
-import 'package:flutter/services.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_locator.dart';
 
 /// Manages scrcpy-server deployment, persistent daemon execution, and socket tunnels.
 class ScrcpyServerManager implements AdbPortForwarder {
@@ -20,10 +20,13 @@ class ScrcpyServerManager implements AdbPortForwarder {
   ScrcpyServerManager({
     AdbService? adbService,
     ProcessExecutor? processExecutor,
+    ScrcpyServerJarLocator? jarLocator,
   }) : _adbService = adbService ?? AdbService(),
-       _executor = processExecutor ?? const DefaultProcessExecutor();
+       _executor = processExecutor ?? const DefaultProcessExecutor(),
+       _jarLocator = jarLocator ?? ScrcpyServerJarLocator();
 
   final AdbService _adbService;
+  final ScrcpyServerJarLocator _jarLocator;
   final ProcessExecutor _executor;
   Process? _daemonProcess;
 
@@ -41,28 +44,6 @@ class ScrcpyServerManager implements AdbPortForwarder {
   static const int keycodeBack = 4;
   static const int keycodePower = 26;
   static const int keycodeAppSwitch = 187;
-
-  /// Resolves the absolute path of scrcpy-server.jar across desktop dev and release bundles.
-  Future<String?> _resolveLocalJarPath() async {
-    final direct = File('assets/scrcpy-server.jar');
-    if (await direct.exists()) return direct.path;
-
-    final exeDir = File(Platform.resolvedExecutable).parent.path;
-    final bundleJar = File(
-      '$exeDir/../Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/scrcpy-server.jar',
-    );
-    if (await bundleJar.exists()) return bundleJar.path;
-
-    try {
-      final byteData = await rootBundle.load('assets/scrcpy-server.jar');
-      final tempFile = File('${Directory.systemTemp.path}/scrcpy-server.jar');
-      await tempFile.writeAsBytes(byteData.buffer.asUint8List());
-      return tempFile.path;
-    } catch (e) {
-      AppLogger.debug('Failed to extract jar from rootBundle: $e');
-    }
-    return null;
-  }
 
   /// Configures TCP port forwarding via ADB to scrcpy abstract UNIX socket.
   @override
@@ -132,7 +113,7 @@ class ScrcpyServerManager implements AdbPortForwarder {
     if (adb == null) return false;
 
     // Ensure remote scrcpy-server.jar is pushed and available
-    final localJarPath = await _resolveLocalJarPath();
+    final localJarPath = await _jarLocator.locate();
     if (localJarPath != null) {
       try {
         await _executor.run(adb, [

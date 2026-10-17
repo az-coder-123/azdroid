@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 import 'package:desk_droid/features/logging/presentation/cubit/device_log_cubit.dart';
@@ -25,6 +26,7 @@ class LogFooterActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     final cubit = context.read<DeviceLogCubit>();
     final isRecording = recordingStatus.isRecording;
 
@@ -53,8 +55,8 @@ class LogFooterActions extends StatelessWidget {
             color: autoScroll ? AppColors.accent : AppColors.textSecondary,
           ),
           tooltip: autoScroll
-              ? 'Auto-scroll enabled (⌘↓)'
-              : 'Auto-scroll disabled (⌘↓)',
+              ? 'Auto-scroll enabled (${keys.label('↓')})'
+              : 'Auto-scroll disabled (${keys.label('↓')})',
           onPressed: cubit.toggleAutoScroll,
         ),
         IconButton(
@@ -76,7 +78,7 @@ class LogFooterActions extends StatelessWidget {
             size: 18,
             color: AppColors.textPrimary,
           ),
-          tooltip: 'Clear in-memory console (⌘K)',
+          tooltip: 'Clear in-memory console (${keys.label('K')})',
           onPressed: cubit.clearConsole,
         ),
         IconButton(

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/discovery/data/parsers/arp_table_parser.dart';
 
 /// Contract for scanning local Wi-Fi subnet and ARP cache to discover active Android endpoints.
 abstract class NetworkSubnetScanner {
@@ -24,15 +26,20 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
   /// Per-host TCP connect timeout during subnet sweeps.
   static const Duration _portProbeTimeout = Duration(milliseconds: 400);
 
-  const NetworkSubnetScannerImpl({
+  NetworkSubnetScannerImpl({
     this.networkInfoService,
     this.historyService,
     ProcessExecutor processExecutor = const DefaultProcessExecutor(),
-  }) : _executor = processExecutor;
+    HostToolchain? toolchain,
+    this._arpParser = const ArpTableParser(),
+  }) : _executor = processExecutor,
+       _toolchain = toolchain ?? HostToolchain.current();
 
   final NetworkInfoService? networkInfoService;
   final DeviceHistoryService? historyService;
   final ProcessExecutor _executor;
+  final HostToolchain _toolchain;
+  final ArpTableParser _arpParser;
 
   @override
   Future<List<String>> findActiveSubnetEndpoints({
@@ -75,23 +82,25 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
     return discoveredEndpoints.toList();
   }
 
-  /// Gathers candidate IPs from macOS ARP cache and recently connected device history.
+  /// Gathers candidate IPs from the host ARP cache and recently connected device history.
   Future<Set<String>> _collectPriorityIps(
     String subnetPrefix,
     String hostIp,
   ) async {
     final candidates = <String>{};
 
-    // 1. Query ARP cache via /usr/sbin/arp -an
+    // 1. Query the OS ARP cache
     try {
-      final res = await _executor.run('/usr/sbin/arp', [
-        '-an',
-      ], timeout: _arpTimeout);
+      final res = await _executor.run(
+        _toolchain.arpCommand,
+        _toolchain.arpArguments,
+        timeout: _arpTimeout,
+      );
       if (res.exitCode == 0) {
         final arpIps = extractArpIps(res.stdout.toString(), subnetPrefix);
         candidates.addAll(arpIps);
       }
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.debug('ARP lookup failed: $e');
     }
 
@@ -113,25 +122,9 @@ class NetworkSubnetScannerImpl implements NetworkSubnetScanner {
     return candidates;
   }
 
-  /// Parses stdout of `arp -an` for IP addresses matching the specified subnet,
-  /// ignoring (incomplete) entries with no resolved MAC hardware address.
-  List<String> extractArpIps(String arpOutput, String subnetPrefix) {
-    final ips = <String>[];
-    final regex = RegExp(r'\(([\d\.]+)\)');
-    for (final line in arpOutput.split('\n')) {
-      if (line.contains('(incomplete)')) continue;
-      final match = regex.firstMatch(line);
-      if (match != null) {
-        final ip = match.group(1)!;
-        if (ip.startsWith('$subnetPrefix.') &&
-            !ip.endsWith('.255') &&
-            !ip.endsWith('.0')) {
-          ips.add(ip);
-        }
-      }
-    }
-    return ips;
-  }
+  /// Parses ARP output for IPs in [subnetPrefix]; see [ArpTableParser].
+  List<String> extractArpIps(String arpOutput, String subnetPrefix) =>
+      _arpParser.parse(arpOutput, subnetPrefix);
 
   /// Probes priority IPs on default [port] and alternative ADB ports (5554, 5556).
   Future<List<String>> _probePriorityIps(

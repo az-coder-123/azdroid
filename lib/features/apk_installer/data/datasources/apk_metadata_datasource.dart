@@ -5,7 +5,9 @@ import 'package:desk_droid/core/constants/apk_installer_constants.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/apk_installer/data/services/aapt_path_resolver.dart';
+import 'package:desk_droid/features/apk_installer/data/services/apk_entry_reader.dart';
 import 'package:desk_droid/features/apk_installer/domain/entities/apk_info_entity.dart';
+import 'package:path/path.dart' as p;
 
 /// Contract for extracting metadata from local APK files.
 abstract class ApkMetadataDatasource {
@@ -17,17 +19,19 @@ class ApkMetadataDatasourceImpl implements ApkMetadataDatasource {
   ApkMetadataDatasourceImpl({
     ProcessExecutor processExecutor = const DefaultProcessExecutor(),
     AaptPathResolver? aaptResolver,
+    this._entryReader = const ZipApkEntryReader(),
   }) : _executor = processExecutor,
        _aaptResolver =
            aaptResolver ?? AaptPathResolver(processExecutor: processExecutor);
 
   final ProcessExecutor _executor;
   final AaptPathResolver _aaptResolver;
+  final ApkEntryReader _entryReader;
 
   @override
   Future<ApkInfoEntity> inspectApk(String apkPath) async {
     final file = File(apkPath);
-    final fileName = apkPath.split('/').last;
+    final fileName = p.basename(apkPath);
     final sizeBytes = _readFileSize(file);
 
     final aapt = await _aaptResolver.resolve();
@@ -153,21 +157,5 @@ class ApkMetadataDatasourceImpl implements ApkMetadataDatasource {
   Future<Uint8List?> _extractIconBytes(
     String apkPath,
     String iconInternalPath,
-  ) async {
-    try {
-      final res = await _executor.run(
-        ApkInstallerConstants.unzipPath,
-        ['-p', apkPath, iconInternalPath],
-        timeout: const Duration(
-          seconds: ApkInstallerConstants.iconExtractTimeoutSeconds,
-        ),
-      );
-      if (res.exitCode == 0 && res.stdout is List<int>) {
-        return Uint8List.fromList(res.stdout as List<int>);
-      }
-    } on Exception catch (error) {
-      AppLogger.debug('APK icon extraction failed: $error');
-    }
-    return null;
-  }
+  ) => _entryReader.readEntry(apkPath, iconInternalPath);
 }

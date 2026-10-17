@@ -1,6 +1,7 @@
 import 'package:desk_droid/core/constants/app_constants.dart';
 import 'package:desk_droid/core/di/injection.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
@@ -32,6 +33,7 @@ class DeskDroidApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        RepositoryProvider<ShortcutScheme>.value(value: sl<ShortcutScheme>()),
         BlocProvider<DiscoveryCubit>(create: (_) => sl<DiscoveryCubit>()),
         // Provided above MaterialApp so dialogs pushed on the root navigator
         // can read host details as well.

@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
+import 'package:desk_droid/core/platform/file_picker/host_file_picker.dart';
 import 'package:desk_droid/features/productivity/domain/entities/file_transfer_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
@@ -12,7 +12,7 @@ import '../helpers/fake_local_file_system_gateway.dart';
 class MockFileTransferRepository extends Mock
     implements FileTransferRepository {}
 
-class MockMacFilePickerService extends Mock implements MacFilePickerService {}
+class MockHostFilePicker extends Mock implements HostFilePicker {}
 
 void main() {
   late MockFileTransferRepository mockRepository;
@@ -181,9 +181,9 @@ void main() {
   });
 
   group('FileTransferCubit.pickAndTransferFiles', () {
-    late MockMacFilePickerService picker;
+    late MockHostFilePicker picker;
 
-    setUp(() => picker = MockMacFilePickerService());
+    setUp(() => picker = MockHostFilePicker());
 
     FileTransferCubit build() => FileTransferCubit(
       repository: mockRepository,
@@ -193,7 +193,7 @@ void main() {
     );
 
     test('transfers every picked file', () async {
-      when(() => picker.pickFiles(prompt: any(named: 'prompt')))
+      when(() => picker.pickFiles())
           .thenAnswer((_) async => ['/Users/mac/a.txt']);
       when(() => mockRepository.pushFile(testSerial, '/Users/mac/a.txt'))
           .thenAnswer((_) async => true);
@@ -207,8 +207,7 @@ void main() {
     });
 
     test('does nothing when the picker is cancelled', () async {
-      when(() => picker.pickFiles(prompt: any(named: 'prompt')))
-          .thenAnswer((_) async => []);
+      when(() => picker.pickFiles()).thenAnswer((_) async => []);
 
       final cubit = build();
       await cubit.pickAndTransferFiles(testSerial);

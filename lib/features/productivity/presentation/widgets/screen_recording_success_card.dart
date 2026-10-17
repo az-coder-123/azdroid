@@ -90,7 +90,7 @@ class ScreenRecordingSuccessCard extends StatelessWidget {
                       label: 'Finder',
                       onTap: () => context
                           .read<ScreenRecordingCubit>()
-                          .revealInFinder(recording.filePath),
+                          .revealFile(recording.filePath),
                     ),
                     const SizedBox(width: 6),
                     _buildActionButton(

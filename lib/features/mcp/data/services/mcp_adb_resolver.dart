@@ -7,7 +7,7 @@ part of 'mcp_adb_client.dart';
 class McpAdbResolver {
   const McpAdbResolver._();
 
-  static const AdbBinaryLocator _locator = AdbBinaryLocator(
+  static final AdbBinaryLocator _locator = AdbBinaryLocator(
     onProbeFailure: _logProbe,
   );
 

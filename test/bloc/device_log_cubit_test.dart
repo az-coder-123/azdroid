@@ -385,5 +385,36 @@ void main() {
         ).called(1);
       },
     );
+
+    blocTest<DeviceLogCubit, DeviceLogState>(
+      'exportLogs without a path uses the repository snapshot path',
+      build: () {
+        when(() => mockRepository.streamLogs(testSerial))
+            .thenAnswer((_) => const Stream.empty());
+        when(() => mockRepository.defaultSnapshotPath(testSerial))
+            .thenReturn('/Users/dev/Downloads/deskdroid_logs/snap.log');
+        when(
+          () => mockRepository.exportLogsToFile(
+            entries: any(named: 'entries'),
+            destinationPath: any(named: 'destinationPath'),
+          ),
+        ).thenAnswer(
+          (_) async => '/Users/dev/Downloads/deskdroid_logs/snap.log',
+        );
+        return DeviceLogCubit(repository: mockRepository);
+      },
+      act: (cubit) async {
+        cubit.startLogging(testSerial);
+        await cubit.exportLogs();
+      },
+      skip: 1,
+      expect: () => [
+        isA<DeviceLogStreaming>().having(
+          (s) => s.feedbackMessage,
+          'feedbackMessage',
+          contains('/Users/dev/Downloads/deskdroid_logs/snap.log'),
+        ),
+      ],
+    );
   });
 }

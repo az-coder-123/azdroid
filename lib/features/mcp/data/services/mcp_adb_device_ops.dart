@@ -132,7 +132,7 @@ class McpAdbDeviceOps {
     final res = await client.run(['devices']);
     if (res.exitCode != 0) return [];
 
-    final lines = res.stdout.toString().split('\n');
+    final lines = res.stdout.toString().splitLines();
     final serials = <String>[];
     for (final line in lines) {
       final trimmed = line.trim();

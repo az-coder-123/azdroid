@@ -45,15 +45,6 @@ void main() {
       expect(content, contains('DeskDroid Logcat Session Ended'));
     });
 
-    test(
-      'generates valid default log file path containing serial and timestamp',
-      () {
-        final path = recorder.generateDefaultLogFilePath('192.168.43.148:5555');
-        expect(path, contains('192_168_43_148_5555'));
-        expect(path, endsWith('.log'));
-      },
-    );
-
     test('formattedSize formats bytes, KB, and MB accurately', () {
       expect(
         recorder.status.copyWith(bytesWritten: 500).formattedSize,

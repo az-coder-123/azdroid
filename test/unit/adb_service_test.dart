@@ -51,6 +51,21 @@ emulator-5554          device product:sdk_gphone64 model:sdk_gphone64 device:emu
       expect(devices[2].model, equals('Pixel 5'));
     });
 
+    test('parseDevicesOutput handles Windows CRLF line endings', () {
+      const sampleStdout =
+          'List of devices attached\r\n'
+          'R58M123ABC\tdevice product:a52 model:SM_A525F transport_id:4\r\n'
+          '192.168.1.7:5555\tunauthorized transport_id:5\r\n'
+          '\r\n';
+
+      final devices = adbService.parseDevicesOutput(sampleStdout);
+
+      expect(devices.map((d) => d.serial), ['R58M123ABC', '192.168.1.7:5555']);
+      expect(devices[0].state, 'device');
+      expect(devices[0].model, 'SM A525F');
+      expect(devices[1].isUnauthorized, isTrue);
+    });
+
     test(
       'parseMdnsServicesOutput correctly parses connect and pairing services',
       () {

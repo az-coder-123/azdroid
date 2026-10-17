@@ -138,7 +138,7 @@ class McpAdbCmdOps {
       ]);
       final anrOut = anrRes.stdout.toString().trim();
       if (anrOut.contains(package)) {
-        final snippet = anrOut.split('\n').take(30).join('\n');
+        final snippet = anrOut.splitLines().take(30).join('\n');
         return 'ANR (Application Not Responding) detected for $package:\n$snippet';
       }
     }

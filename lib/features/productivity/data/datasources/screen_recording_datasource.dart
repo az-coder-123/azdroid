@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -37,11 +38,14 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
   ScreenRecordingDatasourceImpl({
     AdbService? adbService,
     ProcessExecutor? processExecutor,
+    HostPaths? hostPaths,
   }) : _adbService = adbService ?? AdbService(),
-       _executor = processExecutor ?? const DefaultProcessExecutor();
+       _executor = processExecutor ?? const DefaultProcessExecutor(),
+       _paths = hostPaths ?? SystemHostPaths();
 
   final AdbService _adbService;
   final ProcessExecutor _executor;
+  final HostPaths _paths;
   Process? _activeRecordingProcess;
 
   @override
@@ -106,9 +110,10 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
       await Future<void>.delayed(_finalizeFallbackDelay);
     }
 
-    // Determine target save destination on macOS
-    final home = Platform.environment['HOME'] ?? Directory.systemTemp.path;
-    final targetDir = Directory(customSaveDirectory ?? '$home/Downloads');
+    // Determine target save destination on the host
+    final targetDir = Directory(
+      customSaveDirectory ?? _paths.downloadsDirectory,
+    );
     if (!await targetDir.exists()) {
       await targetDir.create(recursive: true);
     }
@@ -121,7 +126,7 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
     final min = now.minute.toString().padLeft(2, '0');
     final s = now.second.toString().padLeft(2, '0');
     final fileName = 'DeskDroid_Recording_$y$m${d}_$h$min$s.mp4';
-    final filePath = '${targetDir.path}/$fileName';
+    final filePath = _paths.context.join(targetDir.path, fileName);
 
     try {
       final pullResult = await _executor.run(adb, [

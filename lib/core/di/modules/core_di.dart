@@ -1,7 +1,8 @@
+import 'package:desk_droid/core/platform/host_paths.dart';
+import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
-import 'package:desk_droid/core/services/mac_file_picker_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:get_it/get_it.dart';
@@ -15,7 +16,13 @@ void registerCoreDependencies(GetIt sl) {
   sl.registerLazySingleton<NetworkInfoService>(() => NetworkInfoServiceImpl());
 
   sl.registerLazySingleton<AdbService>(
-    () => AdbService(processExecutor: sl<ProcessExecutor>()),
+    () => AdbService(
+      processExecutor: sl<ProcessExecutor>(),
+      pathResolver: AdbPathResolver(
+        executor: sl<ProcessExecutor>(),
+        toolchain: sl<HostToolchain>(),
+      ),
+    ),
   );
 
   sl.registerLazySingleton<AdbTcpipService>(
@@ -26,10 +33,6 @@ void registerCoreDependencies(GetIt sl) {
   );
 
   sl.registerLazySingleton<DeviceHistoryService>(
-    () => DeviceHistoryServiceImpl(),
-  );
-
-  sl.registerLazySingleton<MacFilePickerService>(
-    () => MacFilePickerServiceImpl(processExecutor: sl<ProcessExecutor>()),
+    () => DeviceHistoryServiceImpl(hostPaths: sl<HostPaths>()),
   );
 }

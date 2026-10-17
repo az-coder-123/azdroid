@@ -1,7 +1,7 @@
 import 'dart:ui';
 
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/host_file_launcher.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/screenshot_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_state.dart';
@@ -9,17 +9,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing screenshot capture operations and feedback states.
 class ScreenshotCubit extends Cubit<ScreenshotState> {
-  ScreenshotCubit({
-    required this.repository,
-    this._fileLauncher = const MacHostFileLauncher(),
-  }) : super(const ScreenshotInitial());
+  ScreenshotCubit({required this.repository, required this._fileLauncher})
+    : super(const ScreenshotInitial());
 
   final ScreenshotRepository repository;
   final HostFileLauncher _fileLauncher;
 
-  /// Reveals the saved screenshot file at [filePath] in Finder.
-  Future<void> revealInFinder(String filePath) =>
-      _fileLauncher.revealInFinder(filePath);
+  /// Reveals in the OS file manager the saved screenshot file at [filePath].
+  Future<void> revealFile(String filePath) => _fileLauncher.reveal(filePath);
 
   /// Opens the saved screenshot file at [filePath] with its default macOS app.
   Future<void> openFile(String filePath) => _fileLauncher.open(filePath);

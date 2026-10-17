@@ -23,24 +23,6 @@ class LogFileRecorder {
     linesWritten: _linesWritten,
   );
 
-  /// Generates a sensible default path in the user's Downloads directory.
-  String generateDefaultLogFilePath(String deviceSerial) {
-    final home = Platform.environment['HOME'] ?? '';
-    final sanitizedSerial = deviceSerial.replaceAll(
-      RegExp(r'[^a-zA-Z0-9_-]'),
-      '_',
-    );
-    final now = DateTime.now();
-    final timestamp =
-        '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_'
-        '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}';
-
-    final baseDir = home.isNotEmpty
-        ? '$home/Downloads/deskdroid_logs'
-        : 'deskdroid_logs';
-    return '$baseDir/logcat_${sanitizedSerial}_$timestamp.log';
-  }
-
   /// Begins appending lines to the given file path.
   Future<String> startRecording(String destinationPath) async {
     await stopRecording();

@@ -1,16 +1,8 @@
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 
-/// Contract for opening or revealing local files with the host OS shell.
-abstract class HostFileLauncher {
-  /// Opens [path] with its default macOS application.
-  Future<bool> open(String path);
-
-  /// Reveals and selects [path] in a Finder window.
-  Future<bool> revealInFinder(String path);
-}
-
-/// macOS implementation backed by the `/usr/bin/open` command.
+/// macOS [HostFileLauncher] backed by `/usr/bin/open`.
 class MacHostFileLauncher implements HostFileLauncher {
   const MacHostFileLauncher({
     ProcessExecutor processExecutor = const DefaultProcessExecutor(),
@@ -28,7 +20,7 @@ class MacHostFileLauncher implements HostFileLauncher {
   Future<bool> open(String path) => _run([path]);
 
   @override
-  Future<bool> revealInFinder(String path) => _run([revealFlag, path]);
+  Future<bool> reveal(String path) => _run([revealFlag, path]);
 
   Future<bool> _run(List<String> arguments) async {
     try {

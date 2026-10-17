@@ -1,5 +1,7 @@
 import 'package:desk_droid/core/di/injection.dart';
+import 'package:desk_droid/core/di/modules/platform_di.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/core/platform/host_os.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/features/discovery/domain/repositories/device_discovery_repository.dart';
@@ -25,6 +27,7 @@ void main() {
 
   setUp(() async {
     await sl.reset();
+    registerPlatformDependencies(sl, os: HostOs.macos);
     mockRepository = MockDeviceDiscoveryRepository();
     mockNetworkInfoService = MockNetworkInfoService();
     when(() => mockRepository.discoverDevices()).thenAnswer((_) async => []);

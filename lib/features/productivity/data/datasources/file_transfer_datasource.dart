@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/data/models/remote_file_model.dart';
+import 'package:desk_droid/features/productivity/data/services/remote_media_scanner.dart';
 
 /// Abstract datasource contract for ADB file push, pull, remote listing, and APK installation.
 abstract class FileTransferDatasource {
@@ -16,7 +18,7 @@ abstract class FileTransferDatasource {
     String remoteDestination,
   );
 
-  /// Pulls a remote file from Android to local destination on macOS.
+  /// Pulls a remote file from Android to a local destination on the host.
   Future<bool> pullFile(
     String deviceSerial,
     String remotePath,
@@ -41,11 +43,18 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
   FileTransferDatasourceImpl({
     AdbService? adbService,
     ProcessExecutor? processExecutor,
+    RemoteMediaScanner? mediaScanner,
   }) : _adbService = adbService ?? AdbService(),
-       _executor = processExecutor ?? const DefaultProcessExecutor();
+       _executor = processExecutor ?? const DefaultProcessExecutor(),
+       _mediaScanner =
+           mediaScanner ??
+           RemoteMediaScanner(
+             processExecutor: processExecutor ?? const DefaultProcessExecutor(),
+           );
 
   final AdbService _adbService;
   final ProcessExecutor _executor;
+  final RemoteMediaScanner _mediaScanner;
 
   @override
   Future<bool> pushFile(
@@ -68,7 +77,12 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
       if (result.exitCode == 0) {
         // Media indexing is best effort and must not delay the push result.
         unawaited(
-          _scanRemoteMedia(adb, deviceSerial, remoteDestination, localPath),
+          _mediaScanner.scanPushedFile(
+            adb: adb,
+            serial: deviceSerial,
+            remoteDirectory: remoteDestination,
+            localPath: localPath,
+          ),
         );
         return true;
       }
@@ -80,49 +94,6 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         stackTrace: stack,
       );
       return false;
-    }
-  }
-
-  Future<void> _scanRemoteMedia(
-    String adb,
-    String serial,
-    String destination,
-    String localPath,
-  ) async {
-    final lower = localPath.toLowerCase();
-    final isMedia = const {
-      '.jpg',
-      '.jpeg',
-      '.png',
-      '.webp',
-      '.gif',
-      '.mp4',
-      '.mkv',
-      '.mp3',
-      '.wav',
-    }.any(lower.endsWith);
-
-    if (!isMedia) return;
-
-    final fileName = localPath.split('/').last;
-    final dest = destination.endsWith('/') ? destination : '$destination/';
-    final remoteFile = '$dest$fileName';
-
-    try {
-      await _executor.run(adb, [
-        '-s',
-        serial,
-        'shell',
-        'am',
-        'broadcast',
-        '-a',
-        'android.intent.action.MEDIA_SCANNER_SCAN_FILE',
-        '-d',
-        'file://$remoteFile',
-      ], timeout: AdbTimeouts.shellCommand);
-    } on Exception catch (error) {
-      // Media scan is best effort; the file is already on the device.
-      AppLogger.debug('Media scanner broadcast failed for $remoteFile: $error');
     }
   }
 
@@ -184,7 +155,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         );
       }
 
-      final lines = stdoutStr.split('\n');
+      final lines = stdoutStr.splitLines();
       final files = <RemoteFileModel>[];
       for (final line in lines) {
         final model = RemoteFileModel.fromLsLine(line, normDir);
@@ -216,7 +187,7 @@ class FileTransferDatasourceImpl implements FileTransferDatasource {
         '/storage/*',
       ], timeout: AdbTimeouts.shellCommand);
 
-      final lines = result.stdout.toString().split('\n');
+      final lines = result.stdout.toString().splitLines();
       for (final line in lines) {
         final path = line.trim();
         final name = path.split('/').last;

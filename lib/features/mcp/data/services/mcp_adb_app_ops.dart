@@ -97,7 +97,7 @@ class McpAdbAppOps {
     final res = await client.run(args);
     if (res.exitCode != 0) return [];
 
-    final lines = res.stdout.toString().split('\n');
+    final lines = res.stdout.toString().splitLines();
     final pkgs = <String>[];
     for (final l in lines) {
       final trimmed = l.trim();

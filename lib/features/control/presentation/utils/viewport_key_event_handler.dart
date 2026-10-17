@@ -1,5 +1,6 @@
 import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/core/extensions/optional_read_extension.dart';
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
@@ -30,11 +31,13 @@ class ViewportKeyEventHandler {
       return KeyEventResult.ignored;
     }
 
-    final isMeta = HardwareKeyboard.instance.isMetaPressed;
+    final isPrimary = context.shortcuts.isPrimaryPressed(
+      HardwareKeyboard.instance,
+    );
     final logicalKey = event.logicalKey;
 
     // macOS Command shortcuts
-    if (isMeta) {
+    if (isPrimary) {
       if (logicalKey == LogicalKeyboardKey.keyH) {
         context.read<ControlBloc>().add(
           ControlNavigationActionDispatched(

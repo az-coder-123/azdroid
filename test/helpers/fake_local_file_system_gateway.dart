@@ -20,4 +20,7 @@ class FakeLocalFileSystemGateway implements LocalFileSystemGateway {
 
   @override
   int fileSizeOf(String path) => fileSize;
+
+  @override
+  Future<void> ensureDirectory(String path) async {}
 }

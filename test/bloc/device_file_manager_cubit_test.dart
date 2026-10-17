@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/core/platform/host_os.dart';
+import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/features/productivity/domain/entities/remote_file_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_cubit.dart';
@@ -7,14 +8,15 @@ import 'package:desk_droid/features/productivity/presentation/cubit/device_file_
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_host_file_launcher.dart';
+import '../helpers/fake_local_file_system_gateway.dart';
+
 class MockFileTransferRepository extends Mock
     implements FileTransferRepository {}
 
-class MockProcessExecutor extends Mock implements ProcessExecutor {}
-
 void main() {
   late MockFileTransferRepository mockRepository;
-  late MockProcessExecutor mockExecutor;
+  late FakeHostFileLauncher fileLauncher;
   late DeviceFileManagerCubit cubit;
 
   const testSerial = '192.168.1.3:5555';
@@ -36,10 +38,16 @@ void main() {
 
   setUp(() {
     mockRepository = MockFileTransferRepository();
-    mockExecutor = MockProcessExecutor();
+    fileLauncher = FakeHostFileLauncher();
     cubit = DeviceFileManagerCubit(
       repository: mockRepository,
-      processExecutor: mockExecutor,
+      hostPaths: SystemHostPaths(
+        os: HostOs.macos,
+        environment: {'HOME': '/Users/dev'},
+        systemTempPath: '/tmp',
+      ),
+      fileLauncher: fileLauncher,
+      fileSystem: const FakeLocalFileSystemGateway(),
     );
     when(() => mockRepository.getExternalStorageDirectory(any()))
         .thenAnswer((_) async => null);
@@ -232,4 +240,16 @@ void main() {
       ],
     );
   });
+
+  test('defaultDownloadDirectory is <Downloads>/DeskDroid', () {
+    expect(cubit.defaultDownloadDirectory, '/Users/dev/Downloads/DeskDroid');
+  });
+
+  test(
+    'openDownloadFolder opens the default folder via HostFileLauncher',
+    () async {
+      await cubit.openDownloadFolder();
+      expect(fileLauncher.opened, ['/Users/dev/Downloads/DeskDroid']);
+    },
+  );
 }

@@ -1,24 +1,21 @@
 import 'dart:async';
 
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/host_file_launcher.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing screen recording sessions, timers, and output artifacts.
 class ScreenRecordingCubit extends Cubit<ScreenRecordingState> {
-  ScreenRecordingCubit({
-    required this.repository,
-    this._fileLauncher = const MacHostFileLauncher(),
-  }) : super(const ScreenRecordingInitial());
+  ScreenRecordingCubit({required this.repository, required this._fileLauncher})
+    : super(const ScreenRecordingInitial());
 
   final ScreenRecordingRepository repository;
   final HostFileLauncher _fileLauncher;
 
-  /// Reveals the saved recording file at [filePath] in Finder.
-  Future<void> revealInFinder(String filePath) =>
-      _fileLauncher.revealInFinder(filePath);
+  /// Reveals in the OS file manager the saved recording file at [filePath].
+  Future<void> revealFile(String filePath) => _fileLauncher.reveal(filePath);
 
   /// Opens the saved recording file at [filePath] with its default macOS app.
   Future<void> openFile(String filePath) => _fileLauncher.open(filePath);

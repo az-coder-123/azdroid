@@ -23,6 +23,9 @@ abstract class DeviceLogRepository {
   /// Returns current file recording telemetry.
   LogFileRecordingStatus get recordingStatus;
 
+  /// Default destination for a snapshot export of [deviceSerial] logs.
+  String defaultSnapshotPath(String deviceSerial);
+
   /// Exports an in-memory snapshot of log entries to a local file.
   Future<String> exportLogsToFile({
     required List<DeviceLogEntry> entries,

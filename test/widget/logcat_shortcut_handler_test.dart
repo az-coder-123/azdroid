@@ -1,6 +1,8 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/logcat_shortcut_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -28,94 +30,96 @@ void main() {
       textController.dispose();
     });
 
-    Widget createSubject({bool hasSelectedEntry = false}) {
-      return MaterialApp(
-        home: Scaffold(
-          body: LogcatShortcutHandler(
-            searchFocusNode: searchFocusNode,
-            hasSelectedEntry: hasSelectedEntry,
-            onClearConsole: () => clearCount++,
-            onTogglePause: () => pauseCount++,
-            onScrollToBottom: () => scrollCount++,
-            onCloseDetail: () => closeDetailCount++,
-            onCloseDialog: () => closeDialogCount++,
-            child: Column(
-              children: [
-                TextField(
-                  key: const Key('search_input'),
-                  focusNode: searchFocusNode,
-                  controller: textController,
-                ),
-                const SizedBox(height: 20),
-                const Text('Console Content'),
-              ],
+    Widget createSubject({
+      bool hasSelectedEntry = false,
+      ShortcutScheme scheme = ShortcutScheme.mac,
+    }) {
+      return RepositoryProvider<ShortcutScheme>.value(
+        value: scheme,
+        child: MaterialApp(
+          home: Scaffold(
+            body: LogcatShortcutHandler(
+              searchFocusNode: searchFocusNode,
+              hasSelectedEntry: hasSelectedEntry,
+              onClearConsole: () => clearCount++,
+              onTogglePause: () => pauseCount++,
+              onScrollToBottom: () => scrollCount++,
+              onCloseDetail: () => closeDetailCount++,
+              onCloseDialog: () => closeDialogCount++,
+              child: Column(
+                children: [
+                  TextField(
+                    key: const Key('search_input'),
+                    focusNode: searchFocusNode,
+                    controller: textController,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text('Console Content'),
+                ],
+              ),
             ),
           ),
         ),
       );
     }
 
-    testWidgets('Cmd+F focuses search input field', (tester) async {
-      await tester.pumpWidget(createSubject());
-      expect(searchFocusNode.hasFocus, isFalse);
+    // Same expectations for every platform scheme: the primary modifier
+    // triggers the action, the other platform's modifier does not.
+    final schemes = {
+      'macOS': (
+        ShortcutScheme.mac,
+        LogicalKeyboardKey.meta,
+        LogicalKeyboardKey.control,
+      ),
+      'Windows': (
+        ShortcutScheme.pc,
+        LogicalKeyboardKey.control,
+        LogicalKeyboardKey.meta,
+      ),
+    };
 
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.meta);
-      await tester.sendKeyEvent(LogicalKeyboardKey.keyF);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.meta);
-      await tester.pump();
-
-      expect(searchFocusNode.hasFocus, isTrue);
-    });
-
-    testWidgets('Ctrl+F focuses search input field', (tester) async {
-      await tester.pumpWidget(createSubject());
-      expect(searchFocusNode.hasFocus, isFalse);
-
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
-      await tester.sendKeyEvent(LogicalKeyboardKey.keyF);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
-      await tester.pump();
-
-      expect(searchFocusNode.hasFocus, isTrue);
-    });
-
-    testWidgets('Cmd+K / Ctrl+K invokes onClearConsole', (tester) async {
-      await tester.pumpWidget(createSubject());
-
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.meta);
-      await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.meta);
-      await tester.pump();
-
-      expect(clearCount, 1);
-
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
-      await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
-      await tester.pump();
-
-      expect(clearCount, 2);
-    });
-
-    testWidgets('Cmd+Down / Ctrl+Down invokes onScrollToBottom', (
-      tester,
+    Future<void> press(
+      WidgetTester tester,
+      LogicalKeyboardKey modifier,
+      LogicalKeyboardKey key,
     ) async {
-      await tester.pumpWidget(createSubject());
-
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.meta);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.meta);
+      await tester.sendKeyDownEvent(modifier);
+      await tester.sendKeyEvent(key);
+      await tester.sendKeyUpEvent(modifier);
       await tester.pump();
+    }
 
-      expect(scrollCount, 1);
+    for (final MapEntry(key: os, value: (scheme, primary, other))
+        in schemes.entries) {
+      testWidgets('$os: primary+F focuses search, other modifier does not', (
+        tester,
+      ) async {
+        await tester.pumpWidget(createSubject(scheme: scheme));
 
-      await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
-      await tester.pump();
+        await press(tester, other, LogicalKeyboardKey.keyF);
+        expect(searchFocusNode.hasFocus, isFalse);
 
-      expect(scrollCount, 2);
-    });
+        await press(tester, primary, LogicalKeyboardKey.keyF);
+        expect(searchFocusNode.hasFocus, isTrue);
+      });
+
+      testWidgets('$os: primary+K clears the console', (tester) async {
+        await tester.pumpWidget(createSubject(scheme: scheme));
+
+        await press(tester, other, LogicalKeyboardKey.keyK);
+        await press(tester, primary, LogicalKeyboardKey.keyK);
+
+        expect(clearCount, 1);
+      });
+
+      testWidgets('$os: primary+Down scrolls to bottom', (tester) async {
+        await tester.pumpWidget(createSubject(scheme: scheme));
+
+        await press(tester, primary, LogicalKeyboardKey.arrowDown);
+
+        expect(scrollCount, 1);
+      });
+    }
 
     testWidgets('Space toggles pause when text field is NOT focused', (
       tester,

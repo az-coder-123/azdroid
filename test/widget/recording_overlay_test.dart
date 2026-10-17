@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_host_file_launcher.dart';
+
 class MockScreenRecordingRepository extends Mock
     implements ScreenRecordingRepository {}
 
@@ -34,7 +36,10 @@ void main() {
     testWidgets('renders title, countdown toggle, and start button', (
       tester,
     ) async {
-      final cubit = ScreenRecordingCubit(repository: mockRepo);
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepo,
+        fileLauncher: FakeHostFileLauncher(),
+      );
       const state = ScreenRecordingPreparing(
         deviceSerial: testSerial,
         countdownEnabled: true,
@@ -62,7 +67,10 @@ void main() {
         ),
       ).thenAnswer((_) async => '/sdcard/test.mp4');
 
-      final cubit = ScreenRecordingCubit(repository: mockRepo);
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepo,
+        fileLauncher: FakeHostFileLauncher(),
+      );
       cubit.prepareRecording(testSerial);
       final state = cubit.state as ScreenRecordingPreparing;
 
@@ -80,7 +88,10 @@ void main() {
 
   group('RecordingCountdownOverlay Widget', () {
     testWidgets('renders remaining seconds when counting down', (tester) async {
-      final cubit = ScreenRecordingCubit(repository: mockRepo);
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepo,
+        fileLauncher: FakeHostFileLauncher(),
+      );
       cubit.emit(
         const ScreenRecordingCountdown(
           deviceSerial: testSerial,
@@ -104,7 +115,10 @@ void main() {
     });
 
     testWidgets('renders shrink when not counting down', (tester) async {
-      final cubit = ScreenRecordingCubit(repository: mockRepo);
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepo,
+        fileLauncher: FakeHostFileLauncher(),
+      );
 
       await tester.pumpWidget(
         buildTestableWidget(

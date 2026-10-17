@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:desk_droid/core/platform/host_os.dart';
+import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/adb_binary_locator.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../helpers/test_toolchains.dart';
 
 class MockProcessExecutor extends Mock implements ProcessExecutor {}
 
@@ -16,60 +20,51 @@ void main() {
     probeFailures = [];
   });
 
-  AdbBinaryLocator buildLocator({
+  AdbBinaryLocator buildLocator(
+    HostToolchain toolchain, {
     Set<String> existingFiles = const {},
-    Map<String, String> environment = const {'HOME': '/Users/dev'},
   }) {
     return AdbBinaryLocator(
+      toolchain: toolchain,
       executor: executor,
-      environment: environment,
       fileExists: (path) async => existingFiles.contains(path),
       onProbeFailure: (probe, _) => probeFailures.add(probe),
     );
   }
 
-  void stubWhich(ProcessResult result) {
-    when(() => executor.run(AdbBinaryLocator.whichExecutable, ['adb']))
-        .thenAnswer((_) async => result);
-  }
+  group('AdbBinaryLocator on macOS', () {
+    final mac = toolchainFor(HostOs.macos, {'HOME': '/Users/dev'});
 
-  void stubVersion(ProcessResult result) {
-    when(() => executor.run('adb', ['version']))
-        .thenAnswer((_) async => result);
-  }
+    void stubWhich(ProcessResult result) {
+      when(() => executor.run('/usr/bin/which', ['adb']))
+          .thenAnswer((_) async => result);
+    }
 
-  group('AdbBinaryLocator', () {
     test('returns path reported by which when the file exists', () async {
       stubWhich(ProcessResult(0, 0, '/opt/homebrew/bin/adb\n', ''));
-      final locator = buildLocator(existingFiles: {'/opt/homebrew/bin/adb'});
+      final locator = buildLocator(
+        mac,
+        existingFiles: {'/opt/homebrew/bin/adb'},
+      );
 
       expect(await locator.locate(), '/opt/homebrew/bin/adb');
     });
 
-    test('prefers ANDROID_HOME over the default SDK location', () {
-      final locator = buildLocator(
-        environment: {'HOME': '/Users/dev', 'ANDROID_HOME': '/sdk'},
-      );
-
-      expect(locator.candidatePaths.first, '/sdk/platform-tools/adb');
-      expect(
-        locator.candidatePaths,
-        contains('/Users/dev/Library/Android/sdk/platform-tools/adb'),
-      );
-    });
-
-    test('falls back to known install paths when which fails', () async {
+    test('falls back to the default SDK folder when which fails', () async {
       stubWhich(ProcessResult(0, 1, '', 'not found'));
-      final locator = buildLocator(existingFiles: {'/usr/local/bin/adb'});
+      const sdkAdb = '/Users/dev/Library/Android/sdk/platform-tools/adb';
+      final locator = buildLocator(mac, existingFiles: {sdkAdb});
 
-      expect(await locator.locate(), '/usr/local/bin/adb');
+      expect(await locator.locate(), sdkAdb);
     });
 
     test('falls back to bare adb when it runs from PATH', () async {
       stubWhich(ProcessResult(0, 1, '', ''));
-      stubVersion(ProcessResult(0, 0, 'Android Debug Bridge', ''));
+      when(() => executor.run('adb', ['version'])).thenAnswer(
+        (_) async => ProcessResult(0, 0, 'Android Debug Bridge', ''),
+      );
 
-      expect(await buildLocator().locate(), 'adb');
+      expect(await buildLocator(mac).locate(), 'adb');
     });
 
     test(
@@ -78,9 +73,45 @@ void main() {
         when(() => executor.run(any(), any()))
             .thenThrow(const ProcessException('which', ['adb'], 'missing'));
 
-        expect(await buildLocator().locate(), isNull);
-        expect(probeFailures, ['which adb', 'adb version']);
+        expect(await buildLocator(mac).locate(), isNull);
+        expect(probeFailures, ['/usr/bin/which adb', 'adb version']);
       },
     );
+  });
+
+  group('AdbBinaryLocator on Windows', () {
+    final windows = toolchainFor(HostOs.windows, {
+      'USERPROFILE': r'C:\Users\dev',
+      'LOCALAPPDATA': r'C:\Users\dev\AppData\Local',
+    });
+
+    test('takes the first match from CRLF where output', () async {
+      when(() => executor.run('where', ['adb.exe'])).thenAnswer(
+        (_) async => ProcessResult(
+          0,
+          0,
+          'C:\\tools\\adb.exe\r\nC:\\old\\adb.exe\r\n',
+          '',
+        ),
+      );
+      final locator = buildLocator(
+        windows,
+        existingFiles: {r'C:\tools\adb.exe'},
+      );
+
+      expect(await locator.locate(), r'C:\tools\adb.exe');
+    });
+
+    test('finds adb.exe in the LOCALAPPDATA SDK', () async {
+      when(() => executor.run('where', ['adb.exe']))
+          .thenAnswer((_) async => ProcessResult(0, 1, '', 'INFO: not found'));
+      const sdkAdb =
+          r'C:\Users\dev\AppData\Local\Android\Sdk\platform-tools\adb.exe';
+
+      expect(
+        await buildLocator(windows, existingFiles: {sdkAdb}).locate(),
+        sdkAdb,
+      );
+    });
   });
 }

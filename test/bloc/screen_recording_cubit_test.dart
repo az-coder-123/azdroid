@@ -1,11 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:desk_droid/core/services/host_file_launcher.dart';
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screen_recording_entity.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/screen_recording_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../helpers/fake_host_file_launcher.dart';
 
 class MockScreenRecordingRepository extends Mock
     implements ScreenRecordingRepository {}
@@ -45,7 +47,10 @@ void main() {
 
   group('ScreenRecordingCubit', () {
     test('initial state is ScreenRecordingInitial', () {
-      final cubit = ScreenRecordingCubit(repository: mockRepository);
+      final cubit = ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      );
       expect(cubit.state, isA<ScreenRecordingInitial>());
       cubit.close();
     });
@@ -60,7 +65,10 @@ void main() {
             timeLimitSeconds: any(named: 'timeLimitSeconds'),
           ),
         ).thenAnswer((_) async => testRemotePath);
-        return ScreenRecordingCubit(repository: mockRepository);
+        return ScreenRecordingCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.startRecording(testSerial),
       expect: () => [
@@ -86,7 +94,10 @@ void main() {
             timeLimitSeconds: any(named: 'timeLimitSeconds'),
           ),
         ).thenThrow(Exception('screenrecord start failed'));
-        return ScreenRecordingCubit(repository: mockRepository);
+        return ScreenRecordingCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       act: (cubit) => cubit.startRecording(testSerial),
       expect: () => [
@@ -109,7 +120,10 @@ void main() {
             customSaveDirectory: any(named: 'customSaveDirectory'),
           ),
         ).thenAnswer((_) async => testRecording);
-        return ScreenRecordingCubit(repository: mockRepository);
+        return ScreenRecordingCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       seed: () => activeSeed,
       act: (cubit) => cubit.stopRecording(),
@@ -134,7 +148,10 @@ void main() {
             customSaveDirectory: any(named: 'customSaveDirectory'),
           ),
         ).thenAnswer((_) async => null);
-        return ScreenRecordingCubit(repository: mockRepository);
+        return ScreenRecordingCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       seed: () => activeSeed,
       act: (cubit) => cubit.stopRecording(),
@@ -157,7 +174,10 @@ void main() {
             remoteTempPath: testRemotePath,
           ),
         ).thenAnswer((_) async {});
-        return ScreenRecordingCubit(repository: mockRepository);
+        return ScreenRecordingCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       seed: () => activeSeed,
       act: (cubit) => cubit.cancelRecording(),
@@ -174,7 +194,10 @@ void main() {
 
     blocTest<ScreenRecordingCubit, ScreenRecordingState>(
       'prepareRecording emits ScreenRecordingPreparing',
-      build: () => ScreenRecordingCubit(repository: mockRepository),
+      build: () => ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       act: (cubit) => cubit.prepareRecording(testSerial),
       expect: () => [
         isA<ScreenRecordingPreparing>()
@@ -185,7 +208,10 @@ void main() {
 
     blocTest<ScreenRecordingCubit, ScreenRecordingState>(
       'prepareRecording toggles back to Initial if already preparing',
-      build: () => ScreenRecordingCubit(repository: mockRepository),
+      build: () => ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       seed: () => const ScreenRecordingPreparing(deviceSerial: testSerial),
       act: (cubit) => cubit.prepareRecording(testSerial),
       expect: () => [isA<ScreenRecordingInitial>()],
@@ -193,7 +219,10 @@ void main() {
 
     blocTest<ScreenRecordingCubit, ScreenRecordingState>(
       'toggleCountdown toggles countdownEnabled flag',
-      build: () => ScreenRecordingCubit(repository: mockRepository),
+      build: () => ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       seed: () => const ScreenRecordingPreparing(
         deviceSerial: testSerial,
         countdownEnabled: true,
@@ -210,7 +239,10 @@ void main() {
 
     blocTest<ScreenRecordingCubit, ScreenRecordingState>(
       'cancelPreparation returns to ScreenRecordingInitial',
-      build: () => ScreenRecordingCubit(repository: mockRepository),
+      build: () => ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       seed: () => const ScreenRecordingPreparing(deviceSerial: testSerial),
       act: (cubit) => cubit.cancelPreparation(),
       expect: () => [isA<ScreenRecordingInitial>()],
@@ -226,7 +258,10 @@ void main() {
             timeLimitSeconds: any(named: 'timeLimitSeconds'),
           ),
         ).thenAnswer((_) async => testRemotePath);
-        return ScreenRecordingCubit(repository: mockRepository);
+        return ScreenRecordingCubit(
+          repository: mockRepository,
+          fileLauncher: FakeHostFileLauncher(),
+        );
       },
       seed: () => const ScreenRecordingPreparing(
         deviceSerial: testSerial,
@@ -238,7 +273,10 @@ void main() {
 
     blocTest<ScreenRecordingCubit, ScreenRecordingState>(
       'reset emits ScreenRecordingInitial',
-      build: () => ScreenRecordingCubit(repository: mockRepository),
+      build: () => ScreenRecordingCubit(
+        repository: mockRepository,
+        fileLauncher: FakeHostFileLauncher(),
+      ),
       seed: () => ScreenRecordingSuccess(testRecording),
       act: (cubit) => cubit.reset(),
       expect: () => [isA<ScreenRecordingInitial>()],
@@ -252,16 +290,16 @@ void main() {
     setUp(() {
       launcher = MockHostFileLauncher();
       when(() => launcher.open(any())).thenAnswer((_) async => true);
-      when(() => launcher.revealInFinder(any())).thenAnswer((_) async => true);
+      when(() => launcher.reveal(any())).thenAnswer((_) async => true);
     });
 
-    test('revealInFinder delegates to HostFileLauncher', () async {
+    test('revealFile delegates to HostFileLauncher', () async {
       final cubit = ScreenRecordingCubit(
         repository: mockRepository,
         fileLauncher: launcher,
       );
-      await cubit.revealInFinder(filePath);
-      verify(() => launcher.revealInFinder(filePath)).called(1);
+      await cubit.revealFile(filePath);
+      verify(() => launcher.reveal(filePath)).called(1);
       await cubit.close();
     });
 

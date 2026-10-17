@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:desk_droid/core/platform/host_paths.dart';
+import 'package:desk_droid/core/platform/image_clipboard/image_clipboard.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/data/utils/image_crop_util.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_destination.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
@@ -21,16 +22,16 @@ abstract class ScreenshotDatasource {
 /// Implementation using ADB `exec-out screencap -p` and macOS system clipboard integration.
 class ScreenshotDatasourceImpl implements ScreenshotDatasource {
   /// Upper bound for the AppleScript that copies a PNG to the pasteboard.
-  static const Duration _clipboardScriptTimeout = Duration(seconds: 3);
-
   ScreenshotDatasourceImpl({
     AdbService? adbService,
-    ProcessExecutor? processExecutor,
+    HostPaths? hostPaths,
+    required this._imageClipboard,
   }) : _adbService = adbService ?? AdbService(),
-       _executor = processExecutor ?? const DefaultProcessExecutor();
+       _paths = hostPaths ?? SystemHostPaths();
 
   final AdbService _adbService;
-  final ProcessExecutor _executor;
+  final HostPaths _paths;
+  final ImageClipboard _imageClipboard;
 
   @override
   Future<ScreenshotEntity?> captureScreenshot({
@@ -49,10 +50,9 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
     final shouldCopyToClipboard = destination != ScreenshotDestination.file;
 
     // Determine target save directory
-    final home = Platform.environment['HOME'] ?? Directory.systemTemp.path;
     final targetDir = isClipboardOnly
         ? Directory.systemTemp
-        : Directory(customSaveDirectory ?? '$home/Downloads');
+        : Directory(customSaveDirectory ?? _paths.downloadsDirectory);
     if (!await targetDir.exists()) {
       await targetDir.create(recursive: true);
     }
@@ -65,7 +65,7 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
     final min = now.minute.toString().padLeft(2, '0');
     final s = now.second.toString().padLeft(2, '0');
     final fileName = 'DeskDroid_Screenshot_$y$m${d}_$h$min$s.png';
-    final filePath = '${targetDir.path}/$fileName';
+    final filePath = _paths.context.join(targetDir.path, fileName);
     final targetFile = File(filePath);
 
     try {
@@ -106,11 +106,9 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
         throw const FormatException('Captured screenshot produced 0 bytes');
       }
 
-      // Copy PNG directly to macOS system clipboard if required
-      var copiedToClipboard = false;
-      if (shouldCopyToClipboard && Platform.isMacOS) {
-        copiedToClipboard = await _copyImageToMacClipboard(filePath);
-      }
+      // Copy PNG to the host clipboard if required
+      final copiedToClipboard =
+          shouldCopyToClipboard && await _imageClipboard.copyPng(filePath);
 
       // If clipboard-only, remove temporary disk file
       if (isClipboardOnly) {
@@ -139,22 +137,6 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
         await targetFile.delete();
       }
       rethrow;
-    }
-  }
-
-  Future<bool> _copyImageToMacClipboard(String pngPath) async {
-    try {
-      final escapedPath = pngPath.replaceAll('"', r'\"');
-      final script =
-          'set the clipboard to (read (POSIX file "$escapedPath") as «class PNGf»)';
-      final res = await _executor.run('/usr/bin/osascript', [
-        '-e',
-        script,
-      ], timeout: _clipboardScriptTimeout);
-      return res.exitCode == 0;
-    } catch (e) {
-      AppLogger.debug('Clipboard copy failed: $e');
-      return false;
     }
   }
 }

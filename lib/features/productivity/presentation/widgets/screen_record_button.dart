@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_cubit.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/screen_recording_state.dart';
@@ -12,6 +13,7 @@ class ScreenRecordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     return BlocBuilder<ScreenRecordingCubit, ScreenRecordingState>(
       builder: (context, state) {
         if (state is ScreenRecordingFinalizing) {
@@ -55,7 +57,7 @@ class ScreenRecordButton extends StatelessWidget {
               context.read<ScreenRecordingCubit>().cancelPreparation();
         } else {
           icon = Icons.videocam_outlined;
-          tooltip = 'Record Screen (Cmd+Shift+R)';
+          tooltip = 'Record Screen (${keys.label('R', shift: true)})';
           color = null;
           onPressed = () => context
               .read<ScreenRecordingCubit>()

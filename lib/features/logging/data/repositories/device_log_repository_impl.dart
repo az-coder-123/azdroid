@@ -5,6 +5,7 @@ import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/logging/data/datasources/log_file_recorder.dart';
 import 'package:desk_droid/features/logging/data/datasources/logcat_stream_datasource.dart';
 import 'package:desk_droid/features/logging/data/models/logcat_threadtime_parser.dart';
+import 'package:desk_droid/features/logging/data/services/log_file_path_builder.dart';
 import 'package:desk_droid/features/logging/domain/entities/device_log_entry.dart';
 import 'package:desk_droid/features/logging/domain/entities/log_file_recording_status.dart';
 import 'package:desk_droid/features/logging/domain/repositories/device_log_repository.dart';
@@ -19,6 +20,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
     LogcatStreamDatasource? datasource,
     LogFileRecorder? fileRecorder,
     LogcatThreadtimeParser? parser,
+    required this._pathBuilder,
     this.batchInterval = const Duration(milliseconds: 100),
     this.maxBufferEntries = 5000,
   }) : _datasource = datasource ?? LogcatStreamDatasource(),
@@ -28,6 +30,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
   final LogcatStreamDatasource _datasource;
   final LogFileRecorder _fileRecorder;
   final LogcatThreadtimeParser _parser;
+  final LogFilePathBuilder _pathBuilder;
   final Duration batchInterval;
   final int maxBufferEntries;
 
@@ -139,9 +142,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
   }) async {
     final destination =
         customFilePath ??
-        (customDirectory != null
-            ? '$customDirectory/logcat_${deviceSerial.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_')}_${DateTime.now().millisecondsSinceEpoch}.log'
-            : _fileRecorder.generateDefaultLogFilePath(deviceSerial));
+        _pathBuilder.recordingPath(deviceSerial, directory: customDirectory);
 
     return _fileRecorder.startRecording(destination);
   }
@@ -149,6 +150,10 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
   @override
   Future<LogFileRecordingStatus> stopRecordingToFile() =>
       _fileRecorder.stopRecording();
+
+  @override
+  String defaultSnapshotPath(String deviceSerial) =>
+      _pathBuilder.snapshotPath(deviceSerial);
 
   @override
   Future<String> exportLogsToFile({

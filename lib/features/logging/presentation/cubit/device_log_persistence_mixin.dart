@@ -61,9 +61,14 @@ mixin DeviceLogPersistenceMixin on Cubit<DeviceLogState> {
   }
 
   /// Exports current in-memory filtered logs to a file.
-  Future<void> exportLogs({required String destinationPath}) async {
+  ///
+  /// Uses the repository's default snapshot path when [destinationPath] is
+  /// omitted.
+  Future<void> exportLogs({String? destinationPath}) async {
     final current = state;
     if (current is! DeviceLogStreaming) return;
+    final target =
+        destinationPath ?? repository.defaultSnapshotPath(current.deviceSerial);
 
     final targetEntries = current.filteredEntries.isNotEmpty
         ? current.filteredEntries
@@ -71,12 +76,12 @@ mixin DeviceLogPersistenceMixin on Cubit<DeviceLogState> {
 
     await repository.exportLogsToFile(
       entries: targetEntries,
-      destinationPath: destinationPath,
+      destinationPath: target,
     );
     emit(
       current.copyWith(
         feedbackMessage: () =>
-            'Exported ${targetEntries.length} logs to $destinationPath',
+            'Exported ${targetEntries.length} logs to $target',
       ),
     );
   }

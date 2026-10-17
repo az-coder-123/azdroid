@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 import 'dart:io';
 
+import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:flutter/foundation.dart';
 
 /// Centralized, structured application logger adhering to AGENTS.md error handling standards.
@@ -8,7 +9,7 @@ class AppLogger {
   const AppLogger._();
 
   /// Append-only diagnostic log file used for post-mortem debugging.
-  static const String logFilePath = '/tmp/deskdroid_dart.log';
+  static final String logFilePath = SystemHostPaths().diagnosticLogFile;
 
   /// Logger name used when the diagnostic log file itself cannot be written.
   static const String _fileSinkTag = 'DeskDroid.LogFile';

@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
@@ -20,6 +21,7 @@ void registerDiscoveryDependencies(GetIt sl) {
       networkInfoService: sl<NetworkInfoService>(),
       historyService: sl<DeviceHistoryService>(),
       processExecutor: sl<ProcessExecutor>(),
+      toolchain: sl<HostToolchain>(),
     ),
   );
 

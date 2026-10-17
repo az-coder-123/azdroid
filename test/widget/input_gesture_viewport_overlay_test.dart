@@ -1,4 +1,6 @@
 import 'package:desk_droid/core/constants/android_key_codes.dart';
+import 'package:desk_droid/core/platform/host_os.dart';
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
@@ -120,6 +122,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('R-Click: Back  •  M-Click: Home'), findsOneWidget);
-    expect(find.text('⌘K Text'), findsOneWidget);
+    final keys = ShortcutScheme.forOs(HostOs.current);
+    expect(find.text('${keys.label('K')} Text'), findsOneWidget);
   });
 }

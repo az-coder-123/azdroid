@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/models/adb_device.dart';
 import 'package:desk_droid/core/models/adb_mdns_service.dart';
 
@@ -8,7 +9,7 @@ class AdbOutputParser {
   /// Parses the stdout text from `adb devices -l`.
   List<AdbDevice> parseDevices(String stdout) {
     final devices = <AdbDevice>[];
-    final lines = stdout.split('\n');
+    final lines = stdout.splitLines();
 
     for (final rawLine in lines) {
       final line = rawLine.trim();
@@ -58,7 +59,7 @@ class AdbOutputParser {
   /// Parses stdout output from `adb mdns services`.
   List<AdbMdnsService> parseMdnsServices(String stdout) {
     final services = <AdbMdnsService>[];
-    final lines = stdout.split('\n');
+    final lines = stdout.splitLines();
 
     for (final rawLine in lines) {
       final line = rawLine.trim();

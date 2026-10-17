@@ -1,19 +1,37 @@
 import 'dart:io';
 
+import 'dart:typed_data';
+
+import 'package:desk_droid/core/platform/host_os.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/apk_installer/data/datasources/apk_metadata_datasource.dart';
+import 'package:desk_droid/features/apk_installer/data/services/aapt_path_resolver.dart';
+import 'package:desk_droid/features/apk_installer/data/services/apk_entry_reader.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/test_toolchains.dart';
+
 class MockProcessExecutor extends Mock implements ProcessExecutor {}
+
+class MockApkEntryReader extends Mock implements ApkEntryReader {}
 
 void main() {
   late MockProcessExecutor mockExecutor;
   late ApkMetadataDatasourceImpl datasource;
+  late MockApkEntryReader entryReader;
 
   setUp(() {
     mockExecutor = MockProcessExecutor();
-    datasource = ApkMetadataDatasourceImpl(processExecutor: mockExecutor);
+    entryReader = MockApkEntryReader();
+    datasource = ApkMetadataDatasourceImpl(
+      processExecutor: mockExecutor,
+      aaptResolver: AaptPathResolver(
+        processExecutor: mockExecutor,
+        toolchain: toolchainFor(HostOs.macos, {'HOME': '/nonexistent'}),
+      ),
+      entryReader: entryReader,
+    );
   });
 
   group('ApkMetadataDatasourceImpl', () {
@@ -37,14 +55,13 @@ application-icon-640:'res/mipmap/ic_launcher.png'
           '/test/app.apk',
         ], timeout: any(named: 'timeout')),
       ).thenAnswer((_) async => ProcessResult(0, 0, badgingOutput, ''));
-      // 3. unzip icon
+      // 3. icon entry from the APK archive
       when(
-        () => mockExecutor.run('/usr/bin/unzip', [
-          '-p',
+        () => entryReader.readEntry(
           '/test/app.apk',
           'res/mipmap/ic_launcher.png',
-        ], timeout: any(named: 'timeout')),
-      ).thenAnswer((_) async => ProcessResult(0, 0, [1, 2, 3], ''));
+        ),
+      ).thenAnswer((_) async => Uint8List.fromList([1, 2, 3]));
 
       final info = await datasource.inspectApk('/test/app.apk');
 

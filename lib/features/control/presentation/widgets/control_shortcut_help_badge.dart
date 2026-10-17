@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ class ControlShortcutHelpBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -43,18 +45,18 @@ class ControlShortcutHelpBadge extends StatelessWidget {
                 color: AppColors.accent.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.keyboard_alt_outlined,
                     size: 11,
                     color: AppColors.accentLight,
                   ),
-                  SizedBox(width: 3),
+                  const SizedBox(width: 3),
                   Text(
-                    '⌘K Text',
-                    style: TextStyle(
+                    '${keys.label('K')} Text',
+                    style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                       color: AppColors.accentLight,

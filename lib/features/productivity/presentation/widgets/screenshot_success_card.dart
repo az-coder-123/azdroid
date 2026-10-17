@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/productivity/domain/entities/screenshot_entity.dart';
@@ -13,6 +14,7 @@ class ScreenshotSuccessCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = context.shortcuts;
     final kbSize = (screenshot.fileSizeBytes / 1024).toStringAsFixed(0);
 
     return Container(
@@ -82,9 +84,9 @@ class ScreenshotSuccessCard extends StatelessWidget {
                           color: AppColors.accent.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text(
-                          '⌘V Ready',
-                          style: TextStyle(
+                        child: Text(
+                          '${keys.label('V')} Ready',
+                          style: const TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             color: AppColors.accentLight,
@@ -98,7 +100,7 @@ class ScreenshotSuccessCard extends StatelessWidget {
                 Text(
                   screenshot.savedToFile
                       ? '${screenshot.fileName} • $kbSize KB'
-                      : 'Image ready to paste (⌘V) • $kbSize KB',
+                      : 'Image ready to paste (${keys.label('V')}) • $kbSize KB',
                   style: AppTypography.caption.copyWith(
                     fontSize: 11,
                     color: AppColors.textSecondary,
@@ -113,9 +115,9 @@ class ScreenshotSuccessCard extends StatelessWidget {
                       _buildActionButton(
                         icon: Icons.folder_open_rounded,
                         label: 'Finder',
-                        onTap: () => context
-                            .read<ScreenshotCubit>()
-                            .revealInFinder(screenshot.filePath),
+                        onTap: () => context.read<ScreenshotCubit>().revealFile(
+                          screenshot.filePath,
+                        ),
                       ),
                       const SizedBox(width: 6),
                       _buildActionButton(

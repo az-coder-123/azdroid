@@ -12,6 +12,10 @@ abstract class LocalFileSystemGateway {
 
   /// Returns the size of the file at [path] in bytes, or `0` if unreadable.
   int fileSizeOf(String path);
+
+  /// Creates [path] and missing parents. Throws [FileSystemException] on
+  /// failure so callers can report it to the user.
+  Future<void> ensureDirectory(String path);
 }
 
 /// `dart:io` implementation of [LocalFileSystemGateway].
@@ -44,6 +48,11 @@ class IoLocalFileSystemGateway implements LocalFileSystemGateway {
       AppLogger.warning('Failed to read size of $path', error: error);
       return 0;
     }
+  }
+
+  @override
+  Future<void> ensureDirectory(String path) async {
+    await Directory(path).create(recursive: true);
   }
 
   List<String> _listFilesRecursively(String directory) {

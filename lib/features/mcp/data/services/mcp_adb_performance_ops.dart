@@ -18,7 +18,7 @@ class McpAdbPerformanceOps {
         'dumpsys',
         'cpuinfo',
       ]);
-      final lines = res.stdout.toString().split('\n');
+      final lines = res.stdout.toString().splitLines();
       final matched = lines
           .where((l) => l.toLowerCase().contains(package.toLowerCase()))
           .join('\n');

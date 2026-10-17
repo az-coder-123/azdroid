@@ -1,28 +1,34 @@
-import 'dart:io';
-
 import 'package:desk_droid/core/constants/productivity_constants.dart';
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
+import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/local_file_system_gateway.dart';
 import 'package:desk_droid/features/productivity/domain/repositories/file_transfer_repository.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/device_file_manager_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Cubit managing remote Android filesystem exploration and pulling files to macOS.
+/// Cubit managing remote Android filesystem exploration and pulling files to the host.
 class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
   DeviceFileManagerCubit({
     required this.repository,
-    ProcessExecutor processExecutor = const DefaultProcessExecutor(),
-  }) : _executor = processExecutor,
+    required HostPaths hostPaths,
+    required this._fileLauncher,
+    this._fileSystem = const IoLocalFileSystemGateway(),
+  }) : defaultDownloadDirectory = hostPaths.context.join(
+         hostPaths.downloadsDirectory,
+         downloadFolderName,
+       ),
        super(const DeviceFileManagerInitial());
 
-  final FileTransferRepository repository;
-  final ProcessExecutor _executor;
+  /// Folder created inside the user's Downloads for pulled files.
+  static const String downloadFolderName = 'DeskDroid';
 
-  /// Default local storage folder for downloaded files on Mac host.
-  static String get defaultDownloadDirectory {
-    final home = Platform.environment['HOME'] ?? '';
-    return '$home/Downloads/DeskDroid';
-  }
+  final FileTransferRepository repository;
+  final HostFileLauncher _fileLauncher;
+  final LocalFileSystemGateway _fileSystem;
+
+  /// Default local folder for files pulled from the device.
+  final String defaultDownloadDirectory;
 
   String? _cachedExternalStoragePath;
 
@@ -146,7 +152,7 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
     );
   }
 
-  /// Downloads all currently selected remote files to [destinationDirectory] on macOS.
+  /// Downloads all currently selected remote files to [destinationDirectory] on the host.
   Future<void> downloadSelected(
     String deviceSerial, {
     String? destinationDirectory,
@@ -159,11 +165,8 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
     final targetDir = destinationDirectory ?? defaultDownloadDirectory;
 
     try {
-      final dir = Directory(targetDir);
-      if (!dir.existsSync()) {
-        dir.createSync(recursive: true);
-      }
-    } catch (e) {
+      await _fileSystem.ensureDirectory(targetDir);
+    } on Exception catch (e) {
       emit(
         DeviceFileManagerError(
           message: 'Failed to create local destination folder: $e',
@@ -197,13 +200,8 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
     );
   }
 
-  /// Opens the downloaded folder in macOS Finder.
-  Future<void> openInFinder([String? targetDir]) async {
-    final path = targetDir ?? defaultDownloadDirectory;
-    try {
-      await _executor.run('open', [path]);
-    } catch (e) {
-      AppLogger.warning('Failed to open folder in Finder: $e');
-    }
+  /// Opens the download folder in the OS file manager.
+  Future<void> openDownloadFolder([String? targetDir]) async {
+    await _fileLauncher.open(targetDir ?? defaultDownloadDirectory);
   }
 }

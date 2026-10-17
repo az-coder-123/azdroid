@@ -1,3 +1,7 @@
+import 'package:desk_droid/core/platform/file_launcher/host_file_launcher.dart';
+import 'package:desk_droid/core/platform/file_picker/host_file_picker.dart';
+import 'package:desk_droid/core/platform/host_paths.dart';
+import 'package:desk_droid/core/platform/image_clipboard/image_clipboard.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/productivity/data/datasources/clipboard_datasource.dart';
@@ -46,12 +50,16 @@ void registerProductivityDependencies(GetIt sl) {
     () => FileTransferRepositoryImpl(datasource: sl<FileTransferDatasource>()),
   );
   sl.registerFactory<FileTransferCubit>(
-    () => FileTransferCubit(repository: sl<FileTransferRepository>()),
+    () => FileTransferCubit(
+      repository: sl<FileTransferRepository>(),
+      filePicker: sl<HostFilePicker>(),
+    ),
   );
   sl.registerFactory<DeviceFileManagerCubit>(
     () => DeviceFileManagerCubit(
       repository: sl<FileTransferRepository>(),
-      processExecutor: sl<ProcessExecutor>(),
+      hostPaths: sl<HostPaths>(),
+      fileLauncher: sl<HostFileLauncher>(),
     ),
   );
 
@@ -59,14 +67,18 @@ void registerProductivityDependencies(GetIt sl) {
   sl.registerLazySingleton<ScreenshotDatasource>(
     () => ScreenshotDatasourceImpl(
       adbService: sl<AdbService>(),
-      processExecutor: sl<ProcessExecutor>(),
+      hostPaths: sl<HostPaths>(),
+      imageClipboard: sl<ImageClipboard>(),
     ),
   );
   sl.registerLazySingleton<ScreenshotRepository>(
     () => ScreenshotRepositoryImpl(datasource: sl<ScreenshotDatasource>()),
   );
   sl.registerFactory<ScreenshotCubit>(
-    () => ScreenshotCubit(repository: sl<ScreenshotRepository>()),
+    () => ScreenshotCubit(
+      repository: sl<ScreenshotRepository>(),
+      fileLauncher: sl<HostFileLauncher>(),
+    ),
   );
 
   // Screen Recording
@@ -74,6 +86,7 @@ void registerProductivityDependencies(GetIt sl) {
     () => ScreenRecordingDatasourceImpl(
       adbService: sl<AdbService>(),
       processExecutor: sl<ProcessExecutor>(),
+      hostPaths: sl<HostPaths>(),
     ),
   );
   sl.registerLazySingleton<ScreenRecordingRepository>(
@@ -82,6 +95,9 @@ void registerProductivityDependencies(GetIt sl) {
     ),
   );
   sl.registerFactory<ScreenRecordingCubit>(
-    () => ScreenRecordingCubit(repository: sl<ScreenRecordingRepository>()),
+    () => ScreenRecordingCubit(
+      repository: sl<ScreenRecordingRepository>(),
+      fileLauncher: sl<HostFileLauncher>(),
+    ),
   );
 }
