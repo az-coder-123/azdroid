@@ -42,10 +42,11 @@ Put a type in `core` when two or more features need it.
 | `DeviceEntity`, `DeviceConnectionType` | `core/models/device_entity.dart` | discovery, streaming |
 | `AdbPortForwarder` (contract) | `core/services/adb_port_forwarder.dart` | audio (implemented by streaming's `ScrcpyServerManager`) |
 | `AdbBinaryLocator` (pure Dart) | `core/services/adb_binary_locator.dart` | app `AdbPathResolver`, MCP server |
-| `HostFileLauncher`, `LocalFileSystemGateway`, `MacFilePickerService` | `core/services/` | productivity, apk_installer |
+| `HostPaths`, `HostToolchain`, `HostFilePicker`, `HostFileLauncher`, `ImageClipboard`, `ShortcutScheme` | `core/platform/` (see [platform-abstraction.md](platform-abstraction.md)) | all features |
+| `LocalFileSystemGateway`, `splitLines()` | `core/services/`, `core/extensions/` | productivity, MCP, parsers |
 | `tryRead<T>()` | `core/extensions/optional_read_extension.dart` | widgets with optional providers |
 
-`AdbBinaryLocator`, `ProcessExecutor`, and `core/constants` must stay free of Flutter imports because the MCP server runs on the plain `dart` VM.
+`AdbBinaryLocator`, `ProcessExecutor`, `HostOs`, `HostPaths`, `HostToolchain`, and `core/constants` must stay free of Flutter imports because the MCP server runs on the plain `dart` VM.
 
 ---
 
@@ -60,7 +61,7 @@ home: const DiscoveryPage(mirroringRouteBuilder: _mirroringRoute),
 
 `DiscoveryPage` only knows the `MirroringRouteBuilder` typedef, so discovery does not import streaming.
 
-App-wide cubits (`DiscoveryCubit`, `HostContextCubit`, `MenuBarCubit`) are provided above `MaterialApp`, so dialogs pushed on the root navigator can read them.
+App-wide cubits (`DiscoveryCubit`, `HostContextCubit`, `MenuBarCubit`) and the `ShortcutScheme` are provided above `MaterialApp`, so dialogs pushed on the root navigator can read them.
 
 ---
 

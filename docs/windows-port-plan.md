@@ -1,6 +1,6 @@
 # Windows Port Plan
 
-> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **proposed**.
+> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, Phase 1 next.
 
 ---
 
@@ -75,6 +75,8 @@ flowchart LR
 
 Exit criteria: `flutter analyze` and `flutter test` are green on macOS, and no `dart:io` path literal remains outside `HostPaths`.
 
+**Status (2026-10-17): done.** Implemented as described in [platform-abstraction.md](platform-abstraction.md) and enforced by `test/architecture/platform_isolation_test.dart`. Also delivered early: `HostFileLauncher` and `ImageClipboard` strategies (from Phase 2), and the bundled jar path (`HostPaths.flutterAssetPath`). Remaining copy changes (showcase catalog prose, "macOS" titles in the guide) move to Phase 3.
+
 ### Phase 1 — Windows Video Pipeline (≈ 2–3 weeks, highest risk)
 
 | Milestone | Scope | Notes |
@@ -87,10 +89,9 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 
 ### Phase 2 — Windows Service Implementations (≈ 1 week)
 
-- `HostFileLauncher`: `explorer.exe /select,"<path>"` for reveal, `ShellExecuteW` (via `cmd /c start ""`) for open.
-- `ImageClipboard`: a native method on the plugin that writes `CF_DIB` / `PNG` formats, or the `super_clipboard` package.
+- ~~`HostFileLauncher`~~ and ~~`ImageClipboard`~~: done in Phase 0 (`explorer.exe`, PowerShell `-STA`). Verify both on a real Windows machine; replace the PowerShell clipboard with a native plugin method if start-up latency is noticeable.
 - Screen recording: keep remote `adb shell kill -2 <pid>`. Never rely on `Process.kill(ProcessSignal.sigint)`, because Windows ignores the signal and terminates the process, which leaves a corrupt MP4.
-- Resolve the scrcpy jar from `<exeDir>\data\flutter_assets\assets\scrcpy-server.jar`.
+- ~~Resolve the scrcpy jar from the Windows bundle~~: done in Phase 0 (`ScrcpyServerJarLocator`).
 - Logger: write to `HostPaths.logFile` instead of `/tmp`.
 
 ### Phase 3 — UX Adaptation (≈ 1 week)

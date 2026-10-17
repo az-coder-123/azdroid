@@ -1,4 +1,4 @@
-# DeskDroid — Mouse Gestures & macOS Keyboard Shortcuts
+# DeskDroid — Mouse Gestures & Keyboard Shortcuts
 
 > Complete reference for navigation keys, trackpad gestures, and input injection.
 
@@ -16,7 +16,9 @@
 
 ---
 
-## ⌨️ macOS Keyboard Shortcuts
+## ⌨️ Keyboard Shortcuts
+
+> The tables use the macOS **Cmd** key. On Windows (and Linux) every shortcut uses **Ctrl** instead, for example <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>. Tooltips in the app always show the keys of the running platform (`⌘⇧S` on macOS, `Ctrl+Shift+S` on Windows).
 
 | Shortcut | Function | Description |
 | :--- | :--- | :--- |

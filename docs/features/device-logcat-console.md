@@ -60,10 +60,10 @@ Switch instantly between common developer workflows using the Preset dropdown:
 
 ### 6. macOS Native Keyboard Shortcuts & Navigation
 Ergonomic keyboard bindings orchestrated via `LogcatShortcutHandler`:
-- <kbd>Cmd</kbd> + <kbd>F</kbd> / <kbd>Ctrl</kbd> + <kbd>F</kbd>: Instantly focus the search input field.
-- <kbd>Cmd</kbd> + <kbd>K</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd>: Clear the in-memory console buffer (`cubit.clearConsole()`).
+- <kbd>Cmd</kbd> + <kbd>F</kbd> (macOS) / <kbd>Ctrl</kbd> + <kbd>F</kbd> (Windows): Instantly focus the search input field.
+- <kbd>Cmd</kbd> + <kbd>K</kbd> (macOS) / <kbd>Ctrl</kbd> + <kbd>K</kbd> (Windows): Clear the in-memory console buffer (`cubit.clearConsole()`).
 - <kbd>Space</kbd>: Pause / resume the live stream (safely inhibited while actively typing in any text input).
-- <kbd>Cmd</kbd> + <kbd>Down</kbd> / <kbd>Ctrl</kbd> + <kbd>Down</kbd>: Instantly jump to the latest log entries and re-engage auto-scroll.
+- <kbd>Cmd</kbd> + <kbd>Down</kbd> (macOS) / <kbd>Ctrl</kbd> + <kbd>Down</kbd> (Windows): Instantly jump to the latest log entries and re-engage auto-scroll.
 - <kbd>Esc</kbd>: Context-sensitive back navigation: Unfocus search field if focused $\rightarrow$ Close Detail Drawer if open $\rightarrow$ Dismiss the Console Dialog.
 
 ### 7. Search Query In-Line Match Highlighting

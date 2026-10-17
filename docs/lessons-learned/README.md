@@ -37,6 +37,13 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Large File SRP Mixin Decomposition** | Architecture & SOLID / Clean Code | Decompose monolithic clients & cubits (< 250 lines) via mixins preserving mock interfaces and reactivity. | [large-file-srp-mixin-decomposition.md](large-file-srp-mixin-decomposition.md) |
 | **build-tools Lexicographic Version Sort** | Android SDK Tooling & APK Inspection | Compare dotted versions numerically so `34.0.0` beats `9.0.0` when picking `aapt2`. | [build-tools-lexicographic-version-sort.md](build-tools-lexicographic-version-sort.md) |
 | **Silent Catch Masked Defects** | Error Handling & Test Reliability | Replace `catch (_) {}` with typed handlers, `tryRead<T>()`, and lints to expose hidden bugs. | [silent-catch-masked-defects.md](silent-catch-masked-defects.md) |
+| **Staged Rename Leaked Into Commit** | Git Workflow & Commit Hygiene | Check `git diff --cached` per commit and analyze every commit of a split series in a worktree. | [git-staged-rename-leaked-into-commit.md](git-staged-rename-leaked-into-commit.md) |
+| **Bulk Replacement Semantic Drift** | Refactoring Workflow | Audit value-based bulk replacements by call context; equal numbers do not imply equal meaning. | [bulk-replacement-semantic-drift.md](bulk-replacement-semantic-drift.md) |
+| **ParallelWaitError Catch Typing** | Dart Async & Error Handling | Generic `on` clauses can silently never match; let each parallel future return its own result. | [dart-parallel-wait-error-typing.md](dart-parallel-wait-error-typing.md) |
+| **macOS systemTemp Is Not /tmp** | Host Paths & Diagnostics | `Directory.systemTemp` is `$TMPDIR` on macOS; pin per-OS paths in tests before centralizing. | [macos-systemtemp-is-not-tmp.md](macos-systemtemp-is-not-tmp.md) |
+| **Windows Command Output Differences** | Cross-Platform Parsing | Use `splitLines()`, take the first `where` match, and parse ARP output format-agnostically. | [windows-command-output-differences.md](windows-command-output-differences.md) |
+| **Foreign-OS Paths in Host Tests** | Cross-Platform Testing | Test foreign path construction as strings; touch disk only with the host path style. | [foreign-os-paths-in-host-tests.md](foreign-os-paths-in-host-tests.md) |
+| **Host-Dependent Test Expectations** | Cross-Platform Testing | Inject relative paths and derive OS-specific labels from production sources so tests pass on any runner. | [host-dependent-test-expectations.md](host-dependent-test-expectations.md) |
 
 ---
 
