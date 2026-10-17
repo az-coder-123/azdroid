@@ -34,6 +34,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Action Footer RenderFlex Overflow** | UI Layout & Universal Responsiveness | Eliminate horizontal overflow via adaptive `LayoutBuilder`, scrollable `ConstrainedBox`, and dynamic badges. | [renderflex-overflow-action-footer-resilience.md](renderflex-overflow-action-footer-resilience.md) |
 | **Accessibility Tree Semantic Pruning** | MCP Server & AI Agent Grounding | Prune 97% of redundant layout nodes and assign sequential [#ID] tags for deterministic click actions. | [accessibility-tree-semantic-pruning.md](accessibility-tree-semantic-pruning.md) |
 | **IME Predictive Text & Gesture Latency** | Android IME & MCP Execution | Bypass Telex/IME corruption via atomic clipboard paste and chain double-tap to beat IPC latency. | [ime-predictive-text-and-gesture-latency.md](ime-predictive-text-and-gesture-latency.md) |
+| **Large File SRP Mixin Decomposition** | Architecture & SOLID / Clean Code | Decompose monolithic clients & cubits (< 250 lines) via mixins preserving mock interfaces and reactivity. | [large-file-srp-mixin-decomposition.md](large-file-srp-mixin-decomposition.md) |
 
 ---
 
