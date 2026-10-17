@@ -2,20 +2,23 @@
 
 > **Subsystem:** `lib/features/streaming/`  
 > **Key Interfaces:** `StreamingRepository`, `VideoStreamNativeService`, `ScrcpyServerManager`  
-> **Presentation:** `StreamingCubit`, `MirroringPage`, `VideoDisplayViewport`, `StreamTelemetryHeader`
+> **Presentation:** `StreamingCubit`, `MirroringPage`, `VideoDisplayViewport`, `StreamTelemetryHeader`  
+> **Platforms:** macOS ✅ (VideoToolbox) · Windows ✅ (Media Foundation) ([status](../platform-support.md))
 
 ---
 
 ## 📌 Overview
 
-The display engine delivers low-latency, hardware-accelerated video mirroring over local Wi-Fi or USB links. It achieves sub-30ms glass-to-glass latency by combining on-device Android hardware capture with native Apple VideoToolbox decoding on macOS.
+The display engine delivers low-latency, hardware-accelerated video mirroring over local Wi-Fi or USB links. It achieves sub-30ms glass-to-glass latency by combining on-device Android hardware capture with native decoding on the desktop: Apple VideoToolbox on macOS, Media Foundation on Windows. Both plugins follow the shared [native video contract](../native-video-contract.md).
 
 ```mermaid
 flowchart LR
     Android["Android SurfaceControl\n(Direct Display Buffer)"] --> MediaCodec["MediaCodec Encoder\n(Hardware H.264/HEVC)"]
     MediaCodec --> Socket["TCP Socket Stream\n(Raw NAL Units)"]
-    Socket --> VideoToolbox["macOS VideoToolbox\n(Apple Silicon / Metal GPU)"]
-    VideoToolbox --> Texture["Flutter Texture Widget\n(Zero-Copy Display)"]
+    Socket --> VideoToolbox["macOS: VideoToolbox\n(Apple Silicon / Metal GPU)"]
+    Socket --> MediaFoundation["Windows: Media Foundation\n(H.264 decoder, NV12 to RGBA)"]
+    VideoToolbox --> Texture["Flutter Texture Widget"]
+    MediaFoundation --> Texture
 ```
 
 ---
@@ -31,6 +34,11 @@ flowchart LR
 - **Zero-Copy Native Texture:** Streams raw H.264 packets directly to a macOS platform plugin utilizing Apple's **VideoToolbox** framework.
 - **Hardware Accelerated:** Decodes frames directly on Apple Silicon / Metal GPUs and renders them via Flutter's hardware `Texture` widget, bypassing Dart memory copying.
 - **Sub-30ms Latency:** Achieves ultra-fast 20–35ms glass-to-glass response times over 5 GHz Wi-Fi networks.
+
+### 2b. Windows Media Foundation Decoding (Preview)
+- **Native Plugin:** `windows/scrcpy_stream` connects with Winsock, parses frames with the shared `native/scrcpy_core` library, and decodes H.264 with the Media Foundation decoder in low-latency mode.
+- **Pixel Path:** Decoded NV12 frames are converted to RGBA on the CPU and handed to a Flutter pixel-buffer texture (triple-buffered). A zero-copy GPU path (D3D11) is planned; see [windows-port-plan.md](../windows-port-plan.md).
+- **Measured, Not Estimated:** The header badges show measured FPS, bitrate, and host processing time per frame, which excludes device encoding and network time.
 
 ### 3. High Refresh Rate & Dynamic Bitrate Scaling
 - **Up to 120 FPS:** Supports high-refresh-rate displays (60 Hz, 90 Hz, 120 Hz) for smooth navigation, gaming, and animation testing.

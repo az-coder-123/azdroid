@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/productivity/`  
 > **Key Interfaces:** `FileTransferRepository`, `FileTransferDatasource`  
 > **Presentation:** `FileTransferCubit`, `DeviceFileManagerCubit`, `DeviceFileManagerDialog`, `FileDropTargetOverlay`  
-> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>U</kbd> (Push) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> (Explorer)
+> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>U</kbd> (Push) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> (Explorer)  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 
@@ -13,11 +14,11 @@ DeskDroid provides full two-way file sharing between macOS and Android. Users ca
 
 ```mermaid
 flowchart LR
-    Mac["macOS Finder\n(Files / Photos / APKs)"] -->|Cmd + U / Drag & Drop| Push["ADB Push\n(/sdcard/Download/)"]
+    Mac["Finder / File Explorer\n(Files / Photos / APKs)"] -->|Cmd + U / Drag & Drop| Push["ADB Push\n(/sdcard/Download/)"]
     Push --> MediaScan["Android MediaScanner Broadcast\n(Immediate Gallery Reveal)"]
     
     AndroidStorage["Android Storage & SD Card\n(/sdcard/ & /storage/<UUID>/)"] -->|Cmd + Shift + F| Explorer["Device File Explorer\n(Multi-select & Search)"]
-    Explorer -->|Batch Download| MacDownloads["~/Downloads/DeskDroid/\n(1-Click Finder Reveal)"]
+    Explorer -->|Batch Download| MacDownloads["Downloads/DeskDroid/\n(1-Click Reveal)"]
 ```
 
 ---
@@ -25,7 +26,7 @@ flowchart LR
 ## ⚡️ Key Capabilities
 
 ### 1. macOS to Android Push (<kbd>Cmd</kbd> + <kbd>U</kbd> & Direct Drag-and-Drop)
-- **Full-Window Viewport Drag & Drop:** Drag files or folders directly from macOS Finder and drop anywhere onto the mirroring canvas (in both Standard and Zen fullscreen modes) with frosted-glass drag highlight.
+- **Full-Window Viewport Drag & Drop:** Drag files or folders directly from Finder (macOS) or File Explorer (Windows) and drop anywhere onto the mirroring canvas (in both Standard and Zen fullscreen modes) with frosted-glass drag highlight.
 - **Zero-Click APK Auto-Sideloading:** Dropping an `.apk` package bypasses modal dialogs and initiates non-blocking background installation with real-time HUD progress badges.
 - **Recursive Folder Expansion:** Dropping a directory recursively parses and transfers all nested files automatically.
 - **Automated Media Indexing:** Media files (JPEG, PNG, MP4, MP3) automatically trigger an Android `MediaScannerConnection` broadcast upon transfer so they appear immediately in Google Photos / Gallery.
@@ -44,4 +45,4 @@ flowchart LR
 - **Instant Search:** Real-time client-side name filtering across current directory contents.
 - **Multi-Criteria Sorting:** Sort files by Date Modified, File Size, or Name in ascending/descending order.
 - **Bulk Selection:** "Select All" toggle with checkbox multi-selection and cumulative size display.
-- **Batch Pull to Mac:** Downloads selected files to `~/Downloads/DeskDroid/` with 1-click **Reveal in Finder** (`open -R`).
+- **Batch Pull to Computer:** Downloads selected files to the `DeskDroid` folder inside Downloads, with 1-click reveal (`open -R` in Finder on macOS, `explorer.exe /select` on Windows).

@@ -1,6 +1,6 @@
 # DeskDroid — Troubleshooting & Common Issues Guide
 
-> Step-by-step solutions for network connectivity, ADB daemon authorization, and Xiaomi permission bottlenecks.
+> Step-by-step solutions for network connectivity, ADB daemon authorization, Xiaomi permission bottlenecks, and Windows-specific setup issues.
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### ❌ "No route to host" or Device Not Found When Switching Wi-Fi / Hotspot
 - **Root Cause:** 
-  1. Mac and phone are on different subnets, or the router has AP Isolation enabled.
+  1. Computer and phone are on different subnets, or the router has AP Isolation enabled.
   2. Switching from Home Wi-Fi (`192.168.1.x`) to Mobile Hotspot (`192.168.43.x`) leaves stale socket routes on the existing background ADB daemon on macOS (`EHOSTUNREACH`).
 - **Solution:**
   1. DeskDroid now features automatic self-healing: attempting a connection automatically recycles the ADB daemon when a stale route is encountered.
@@ -57,6 +57,35 @@
   3. Accept the three 5-second security warnings. (Requires SIM card inserted or Mi Account).
 
 > 💡 **Deep Dive:** For technical root-cause analyses on MIUI security and IME fallback, see [docs/lessons-learned/xiaomi-miui-input-security-restrictions.md](lessons-learned/xiaomi-miui-input-security-restrictions.md).
+
+---
+
+## 🪟 4. Windows Specifics (Preview)
+
+### ❌ "Windows protected your PC" When Starting DeskDroid
+
+- **Root Cause:** Release builds are not code-signed, so SmartScreen does not recognize the publisher.
+- **Solution:** Click **More info**, then **Run anyway**. Check the ZIP against `SHA256SUMS-windows.txt` first (see [installation.md](installation.md#5-package-a-release)).
+
+### ❌ "VCRUNTIME140.dll" or "MSVCP140.dll" Was Not Found
+
+- **Root Cause:** The Visual C++ runtime is missing. Release ZIPs normally include it, but a ZIP built on a machine without the redistributable files does not.
+- **Solution:** Install the [Microsoft Visual C++ Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe), then start DeskDroid again.
+
+### ❌ "ADB executable not found" After Installing Platform Tools
+
+- **Root Cause:** `winget` adds ADB to `PATH`, but programs that were already open keep the old `PATH`.
+- **Solution:** Close and reopen DeskDroid (and the terminal, if you started it from one). Check with `where adb`. Alternatively set `ANDROID_HOME` to your SDK folder.
+
+### ❌ Phone Connected by USB Does Not Appear
+
+- **Root Cause:** Windows has no ADB driver for the phone.
+- **Solution:** Install the [Google USB Driver](https://developer.android.com/studio/run/win-usb) (Pixel and many others) or the driver from your phone maker, then reconnect the cable. `adb devices` must list the phone. Wi-Fi connections need no driver.
+
+### 🔍 Where Are the Logs?
+
+- `%TEMP%\deskdroid_dart.log`: app log (connections, ADB commands, stream state).
+- `%TEMP%\scrcpy_stream.log`: native video plugin log (socket, header, decoder, frames).
 
 ---
 

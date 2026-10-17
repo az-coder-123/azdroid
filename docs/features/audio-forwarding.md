@@ -2,7 +2,8 @@
 
 > **Subsystem:** `lib/features/audio/`  
 > **Key Interfaces:** `AudioRepository`, `AudioSocketDatasource`  
-> **Presentation:** `AudioCubit`, `AudioControlsWidget`
+> **Presentation:** `AudioCubit`, `AudioControlsWidget`  
+> **Platforms:** ❌ Not functional yet on macOS or Windows: the scrcpy server is started with `audio=false` ([status](../platform-support.md))
 
 ---
 

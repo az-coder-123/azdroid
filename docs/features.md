@@ -1,6 +1,8 @@
 # DeskDroid — Technical Specifications & Feature Documentation
 
-> Comprehensive specification and architectural breakdown of the **DeskDroid** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS over local Wi-Fi.
+> Comprehensive specification and architectural breakdown of the **DeskDroid** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS and Windows (preview) over local Wi-Fi.
+>
+> 🖥️ **Platform status:** Not every feature below is available or verified on both platforms (audio forwarding and the menu bar companion are not functional yet). See [platform-support.md](platform-support.md).
 >
 > 💡 **Dedicated Specifications:** Each feature is thoroughly documented in its own dedicated file adhering to the Single Responsibility Principle. Browse the [Features Directory](features/README.md) for individual specifications.
 
@@ -145,7 +147,7 @@
 - **Bookmarking & Star Logs:** 1-click star toggle on console rows and the inspector drawer to bookmark critical logs, filterable with the dedicated **Starred** chip.
 - **Side Detail Drawer & Stack Trace Viewer:** 420px slide-out inspector displaying detailed log entry metadata, Java/Kotlin exception stack trace syntax highlighting, and an automatic **Format JSON** pretty-print toggle.
 - **Adaptive Soft-Wrap vs. High-Performance Fixed Extent:** Toggle between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering for long log lines.
-- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file on macOS disk (`~/Downloads/DeskDroid_Logcat_*.txt`).
+- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file in the Downloads folder (`deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`).
 
 ---
 

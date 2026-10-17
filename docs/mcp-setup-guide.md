@@ -20,19 +20,20 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
 1. **Android Physical Device or Emulator:**
    - **Developer Options & USB Debugging:** Enabled on target device (`Settings` > `Developer options` > `USB debugging`).
    - **Host Authorization:** Accept the *"Always allow from this computer"* dialog when connecting via USB.
-   - **Connection Verification:** Ensure device is online via macOS Terminal:
+   - **Connection Verification:** Ensure device is online from a terminal (Terminal on macOS, PowerShell on Windows):
      ```bash
      adb devices
      # Expected output: <device_serial> device
      ```
-2. **macOS Host Machine:**
-   - **No GUI Required:** `DeskDroid.app` does not need to be running.
-   - **Android Platform Tools (ADB):** Installed and accessible in `$PATH` (`brew install android-platform-tools`).
-   - **Dart SDK:** Installed (bundled with Flutter SDK or standalone via `brew install dart`).
-   - **Execution Permissions:** Ensure launcher script is executable:
+2. **Host Machine (macOS or Windows):**
+   - **No GUI Required:** the DeskDroid app does not need to be running.
+   - **Android Platform Tools (ADB):** Installed and accessible in `PATH` (`brew install android-platform-tools` on macOS, `winget install Google.PlatformTools` on Windows).
+   - **Dart SDK:** Installed (bundled with the Flutter SDK).
+   - **macOS only:** ensure the launcher script is executable:
      ```bash
      chmod +x scripts/start_mcp_server.sh
      ```
+   - **Windows:** there is no launcher script yet; configure clients with `dart run` as shown in [Windows Configuration](#5-windows-configuration).
 
 ---
 
@@ -40,7 +41,7 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
 
 ### 1. Claude Desktop Integration
 
-Add `deskdroid` to your `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add `deskdroid` to your `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS; for Windows see [Windows Configuration](#5-windows-configuration)):
 
 ```json
 {
@@ -87,7 +88,7 @@ Verify proper functioning using any of the following 3 methods:
 
 - **Method 1: Terminal Pipe Test (CLI Smoke Test)**
   ```bash
-  # 1. Verify all 40 tools are registered:
+  # 1. Verify all 58 tools are registered:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
 
   # 2. Test live device discovery:
@@ -96,11 +97,34 @@ Verify proper functioning using any of the following 3 methods:
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is standard stdio behavior, not a freeze. Press `Ctrl+C` to exit.)*
 
 - **Method 2: Visual Indicator in Claude / Cursor**
-  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `deskdroid` with 40 tools enabled.
-  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (40 tools)`.
+  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `deskdroid` with 58 tools enabled.
+  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (58 tools)`.
 
 - **Method 3: Direct Natural Language Prompt**
   Ask your AI: *"List all connected Android devices with DeskDroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
+
+### 5. Windows Configuration
+
+The server runs on Windows with `dart run` (verified: all 58 tools listed, `android_list_devices` sees a real device). `start_mcp_server.sh` is a bash script, so point clients at `dart` directly. Use the full path to `dart.exe` if the client does not inherit your `PATH`.
+
+Claude Desktop reads `%APPDATA%\Claude\claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "deskdroid": {
+      "command": "dart",
+      "args": ["run", "C:\\path\\to\\desk-droid\\bin\\deskdroid_mcp.dart"]
+    }
+  }
+}
+```
+
+Smoke test in PowerShell, from the repository folder:
+
+```powershell
+'{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | dart run bin/deskdroid_mcp.dart
+```
 
 ---
 

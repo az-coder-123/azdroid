@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/mcp/` & `bin/deskdroid_mcp.dart`  
 > **Key Interfaces:** `McpProtocolHandler`, `McpToolExecutor`, `McpAdbClient`, `McpToolRegistry`  
 > **Protocol:** JSON-RPC 2.0 over Standard I/O (`stdio`)  
-> **Trigger / Launcher:** `./scripts/start_mcp_server.sh` or `dart run bin/deskdroid_mcp.dart`
+> **Trigger / Launcher:** `./scripts/start_mcp_server.sh` or `dart run bin/deskdroid_mcp.dart`  
+> **Platforms:** macOS ✅ · Windows ✅ via `dart run` (no launcher script yet) ([status](../platform-support.md))
 
 ---
 

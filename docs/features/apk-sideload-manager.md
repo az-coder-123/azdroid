@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/apk_installer/`  
 > **Key Interfaces:** `ApkInstallerRepository`, `Aapt2MetadataDatasource`  
 > **Presentation:** `ApkInstallerCubit`, `ApkInstallerDialog`  
-> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>
+> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 

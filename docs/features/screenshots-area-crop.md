@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/streaming/`  
 > **Key Interfaces:** `ScreenshotRepository`, `ScreenshotDatasource`  
 > **Presentation:** `ScreenshotCubit`, `AreaScreenshotOverlay`, `AreaCropActionBar`, `ScreenshotToastHud`  
-> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>S</kbd> (Full) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> (Area Crop)
+> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>S</kbd> (Full) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> (Area Crop)  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 
@@ -17,7 +18,7 @@ flowchart TD
     Overlay --> Resize["8-Point Handle Knobs & Pan Translation\n(Pixel-exact dimension HUD W × H)"]
     Resize --> Bar["Floating Action Bar\n(Clipboard / Save File / Both)"]
     Bar --> Process["Hardware SurfaceFlinger Sub-Region Crop"]
-    Process --> Output["macOS Clipboard & ~/Downloads\n(Toast with Finder & Open Actions)"]
+    Process --> Output["Clipboard & Downloads folder\n(Toast with Reveal & Open Actions)"]
 ```
 
 ---
@@ -26,7 +27,7 @@ flowchart TD
 
 ### 1. Full Lossless Screenshot (<kbd>Cmd</kbd> + <kbd>S</kbd>)
 - **Direct Framebuffer Capture:** Captures the current Android frame via ADB SurfaceFlinger screencap in lossless PNG format.
-- **Dual Destination:** Automatically saves the image to `~/Downloads/DeskDroid_Screenshot_*.png` and simultaneously copies it to the macOS clipboard (`⌘V`).
+- **Dual Destination:** Automatically saves the image to `DeskDroid_Screenshot_*.png` in the Downloads folder and simultaneously copies it to the clipboard (on Windows through PowerShell).
 
 ### 2. Interactive Area Crop Marquee (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>)
 - **Interactive Drag Marquee:** Click and drag anywhere on the phone display to frame the region of interest.
@@ -41,9 +42,9 @@ flowchart TD
 ### 4. Floating Glassmorphism Action Bar & Shortcuts
 Upon releasing the marquee, an action capsule appears anchored to the selection box offering instant choices:
 - **Clipboard (<kbd>C</kbd>):** Copies cropped PNG directly to macOS pasteboard without disk clutter.
-- **Save File (<kbd>S</kbd>):** Saves lossless PNG to `~/Downloads/` with Finder reveal.
+- **Save File (<kbd>S</kbd>):** Saves lossless PNG to the Downloads folder with 1-click reveal.
 - **Both (<kbd>Enter</kbd>):** Highlighted primary button that executes both actions simultaneously.
 
 ### 5. Floating Toast HUD
 - **Instant Preview:** Displays a mini preview thumbnail with exact file size.
-- **One-Click Actions:** Click **Finder** to reveal the file (`open -R`) or **Open** to inspect it in macOS Preview.
+- **One-Click Actions:** Click **Finder** to reveal the file (Finder on macOS, File Explorer on Windows) or **Open** to inspect it in the default image viewer (Preview on macOS).

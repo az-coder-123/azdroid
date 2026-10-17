@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/streaming/`  
 > **Key Interfaces:** `StreamingRepository`, `ScrcpyServerManager`  
 > **Presentation:** `StreamingCubit`, `FloatingControlsToolbar`  
-> **Shortcut:** <kbd>Cmd</kbd> + <kbd>O</kbd>
+> **Shortcut:** <kbd>Cmd</kbd> + <kbd>O</kbd>  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 

@@ -1,6 +1,6 @@
 # Windows Port Plan
 
-> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a running on Windows** (visual check pending).
+> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a running on Windows** (visual check pending), **Phase 4 portable ZIP done**. Current feature status: [platform-support.md](platform-support.md).
 
 ---
 
@@ -115,13 +115,15 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 
 - GitHub Actions matrix: `macos-latest` and `windows-latest` run `flutter analyze`, `flutter test`, and `flutter build`.
 - `scripts/build_release.ps1` produces a signed MSIX (`msix` package) and a portable ZIP.
+
+**Status (2026-10-18): portable ZIP done.** `scripts/build_release.ps1` runs analyze and tests, builds the x64 release, bundles the Visual C++ runtime, and writes the ZIP with SHA-256 checksums (usage: [installation.md](installation.md#5-package-a-release)). The packaged `desk_droid.exe` starts on Windows 10. Still open: code signing, MSIX, CI, and the MCP launcher script (the server already runs with `dart run`).
 - `scripts/start_mcp_server.ps1` / `.cmd` launcher with the same PATH discovery as the bash script.
 - Bind every local socket to `127.0.0.1`, so Windows Defender Firewall does not prompt.
 
 ### Phase 5 — Documentation (alongside each phase)
 
-- `docs/windows-setup.md`: ADB install, Google USB driver, OEM drivers, firewall.
-- Platform notes in `docs/troubleshooting.md` and each `docs/features/*.md`.
+- ~~`docs/windows-setup.md`~~: covered by [installation.md](installation.md) (ADB install, Google USB driver, OEM drivers) and the Windows section of [troubleshooting.md](troubleshooting.md).
+- ~~Platform notes in `docs/troubleshooting.md` and each `docs/features/*.md`~~: done; feature status lives in [platform-support.md](platform-support.md) and each feature doc has a **Platforms** line.
 - Lessons-learned entries for Media Foundation, DXGI, and CRLF findings.
 
 ---
@@ -132,7 +134,7 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 |:---|:---|:---|
 | Media Foundation decoder adds frame buffering | High latency | Set `CODECAPI_AVLowLatencyMode`; FFmpeg fallback spike in 1b. |
 | GPU texture sharing differs across drivers | Black or flickering viewport | Keep the 1a pixel-buffer path as a runtime fallback. |
-| USB ADB needs OEM drivers on Windows | "No devices found" | Detect `unauthorized` / missing devices and link to `windows-setup.md`. |
+| USB ADB needs OEM drivers on Windows | "No devices found" | Detect `unauthorized` / missing devices (done for mirroring: `StreamDevicePreflight`) and link to [installation.md](installation.md#3-install-adb). |
 | CRLF in ADB output | Silent parse failures | Phase 0 `LineSplitter` + CRLF fixtures in every parser test. |
 | Paths with spaces or Unicode | Failed push and pull | Always pass arguments as a list. Add tests with `C:\Users\Nguyễn Văn A\`. |
 | No Windows hardware for the team | Slow feedback | CI runners for build and tests; one physical test machine for Phase 1. |

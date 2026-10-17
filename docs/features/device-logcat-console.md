@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/logging/`  
 > **Key Interfaces:** `DeviceLogRepository`, `LogcatStreamDatasource`  
 > **Presentation:** `DeviceLogCubit`, `DeviceLogDialog`, `LogDetailDrawer`, `LogConsoleTable`, `LogFilterBar`  
-> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>
+> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>  
+> **Platforms:** macOS ✅ · Windows ✅ ([status](../platform-support.md))
 
 ---
 
@@ -56,7 +57,7 @@ Switch instantly between common developer workflows using the Preset dropdown:
 
 ### 5. Adaptive Soft-Wrap & Continuous Disk Recording
 - **Performance Toggle:** Switch between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering.
-- **Live File Recording:** Stream logs directly to a timestamped file on macOS disk (`~/Downloads/DeskDroid_Logcat_*.txt`).
+- **Live File Recording:** Stream logs directly to a timestamped file in the Downloads folder (`deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`; `~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
 
 ### 6. macOS Native Keyboard Shortcuts & Navigation
 Ergonomic keyboard bindings orchestrated via `LogcatShortcutHandler`:

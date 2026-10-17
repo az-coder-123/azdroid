@@ -2,7 +2,8 @@
 
 > **Subsystem:** `lib/features/control/`  
 > **Key Interfaces:** `ControlRepository`, `ControlDatasource`  
-> **Presentation:** `ControlBloc`, `InputGestureViewportOverlay`, `QuickTextInputDialog`, `TouchIndicatorOverlay`
+> **Presentation:** `ControlBloc`, `InputGestureViewportOverlay`, `QuickTextInputDialog`, `TouchIndicatorOverlay`  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 

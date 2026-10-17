@@ -2,7 +2,8 @@
 
 > **Subsystem:** `lib/features/menubar/`  
 > **Key Interfaces:** `MenuBarStatusEntity`  
-> **Presentation:** `MenuBarCubit`, `MenuBarCompanionPopover`
+> **Presentation:** `MenuBarCubit`, `MenuBarCompanionPopover`  
+> **Platforms:** ❌ Not available yet: the popover is not wired into the app on macOS; a Windows system tray is planned ([status](../platform-support.md))
 
 ---
 

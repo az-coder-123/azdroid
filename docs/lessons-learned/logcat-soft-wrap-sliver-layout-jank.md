@@ -80,7 +80,7 @@ ListView.builder(
 ```
 
 ### B. Bounded Row Wrapping
-In [log_console_row.dart](file:///Users/trannamlong/PROJECT/desk-droid/lib/features/logging/presentation/widgets/log_console_row.dart):
+In [log_console_row.dart](../../lib/features/logging/presentation/widgets/log_console_row.dart):
 ```dart
 maxLines: softWrap ? 6 : 1,
 overflow: TextOverflow.ellipsis,

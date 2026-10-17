@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/intent_dispatcher/`  
 > **Key Interfaces:** `IntentRepository`, `IntentDatasource`  
 > **Presentation:** `IntentDispatcherCubit`, `IntentDispatcherDialog`  
-> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>
+> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 

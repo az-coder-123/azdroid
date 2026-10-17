@@ -8,16 +8,16 @@
 
 When configuring wireless connections, distinguish between these two addresses:
 
-1. **Host Mac IP (Shown in DeskDroid Pairing Dialog):**
-   - The local IP address of your Mac on your Wi-Fi network (e.g. `192.168.1.15`).
-   - Displayed in the top banner of the Pairing Dialog so you can verify that your Mac and phone are on the same local subnet.
+1. **Computer IP (Shown in DeskDroid Pairing Dialog):**
+   - The local IP address of your computer (Mac or Windows PC) on your Wi-Fi network (e.g. `192.168.1.15`).
+   - Displayed in the top banner of the Pairing Dialog so you can verify that your computer and phone are on the same local subnet.
 2. **Phone IP (Shown in Android Settings):**
    - The local IP address of your phone (e.g. `192.168.1.35`).
    - Located on your phone under **Settings ➔ Developer Options ➔ Wireless Debugging** or **Settings ➔ Wi-Fi ➔ Network Details**.
    - Used when connecting via **6-Digit Wi-Fi PIN** or **Direct IP**.
 
 > [!NOTE]
-> Both your Mac and your phone must be connected to the exact same Wi-Fi SSID and local subnet.
+> Both your computer and your phone must be connected to the exact same Wi-Fi SSID and local subnet.
 
 ---
 
@@ -25,7 +25,7 @@ When configuring wireless connections, distinguish between these two addresses:
 
 *Recommended for all Android devices (Android 5 through 15) for a foolproof setup:*
 
-1. Plug your phone into your Mac with a USB cable.
+1. Plug your phone into your computer with a USB cable (Windows may need the [Google USB Driver](https://developer.android.com/studio/run/win-usb) or your phone maker's driver).
 2. Tap **"Allow USB debugging"** on your phone screen when prompted.
 3. DeskDroid immediately detects your phone under **Discovered Devices**.
 4. Click the **"Wi-Fi Mode"** button on the device card.
@@ -49,7 +49,7 @@ When configuring wireless connections, distinguish between these two addresses:
    - **Device IP address** (e.g., `192.168.1.35`)
    - **Pairing Port** (e.g., `37129` — note: this is the *pairing* port, not port 5555)
    - **6-Digit Pairing Code** (e.g., `123456`)
-4. On DeskDroid: Click **"Pair with Wi-Fi Code"** on the macOS top bar or empty state screen.
+4. On DeskDroid: Click **"Pair with Wi-Fi Code"** on the top bar or empty state screen.
 5. Enter the IP, port, and 6-digit code.
 6. Click **"Pair & Connect"**.
 

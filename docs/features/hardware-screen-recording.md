@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/streaming/`  
 > **Key Interfaces:** `ScreenRecordingRepository`, `ScreenRecordingDatasource`  
 > **Presentation:** `ScreenRecordingCubit`, `ScreenRecordingHud`, `ScreenRecordingCountdownOverlay`  
-> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>
+> **Shortcut:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 
@@ -21,8 +22,8 @@ flowchart TD
     Prep --> Countdown["Animated 3-2-1 Countdown Overlay"]
     Countdown --> Record["Android Hardware screenrecord\n(Up to 180s Lossless H.264 MP4)"]
     Record --> HUD["Live Status HUD (REC 00:15)\n(STOP / DISCARD Controls)"]
-    HUD --> Pull["Auto-Pull to ~/Downloads/DeskDroid_Recording_*.mp4"]
-    Pull --> Complete["Preview Card with Finder & Play Actions"]
+    HUD --> Pull["Auto-Pull to Downloads/DeskDroid_Recording_*.mp4"]
+    Pull --> Complete["Preview Card with Reveal & Play Actions"]
 ```
 
 ---
@@ -47,6 +48,6 @@ flowchart TD
   - **STOP:** Interrupts the recording cleanly to finalize the MP4 container and pulls it to the host machine.
   - **DISCARD:** Immediately terminates the process and deletes the temporary device file, leaving zero host disk clutter.
 
-### 5. Auto-Pull to macOS & Quick Actions
-- **Timestamped File Naming:** Automatically pulls the finished video to `~/Downloads/DeskDroid_Recording_YYYYMMDD_HHMMSS.mp4`.
-- **Interactive Completion Card:** Displays a preview card offering 1-click **Reveal in Finder** (`open -R`) and **Play** actions.
+### 5. Auto-Pull to the Computer & Quick Actions
+- **Timestamped File Naming:** Automatically pulls the finished video to `DeskDroid_Recording_YYYYMMDD_HHMMSS.mp4` in the Downloads folder (`~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
+- **Interactive Completion Card:** Displays a preview card offering 1-click **Reveal** (Finder on macOS, File Explorer on Windows) and **Play** actions.

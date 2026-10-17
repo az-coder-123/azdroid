@@ -2,7 +2,8 @@
 
 > **Subsystem:** `lib/features/discovery/`  
 > **Key Interfaces:** `DeviceDiscoveryRepository`, `AdbTcpipService`, `UsbWifiAutoHandoffService`  
-> **Presentation:** `DiscoveryCubit`, `PairingCubit`, `DiscoveryPage`, `PairingDialog`, `ManualConnectDialog`
+> **Presentation:** `DiscoveryCubit`, `PairingCubit`, `DiscoveryPage`, `PairingDialog`, `ManualConnectDialog`  
+> **Platforms:** macOS ✅ · Windows ✅ Wi-Fi verified, 🧪 USB not yet verified ([status](../platform-support.md))
 
 ---
 

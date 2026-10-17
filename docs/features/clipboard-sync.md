@@ -3,7 +3,8 @@
 > **Subsystem:** `lib/features/productivity/`  
 > **Key Interfaces:** `ClipboardRepository`, `ClipboardDatasource`, `ClipboardSyncDaemon`  
 > **Presentation:** `ClipboardCubit`, `ClipboardSyncMenuButton`, `ClipboardFeedbackBanner`  
-> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> (Push to Android) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Pull to Mac)
+> **Shortcuts:** <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> (Push to Android) / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Pull to computer)  
+> **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 

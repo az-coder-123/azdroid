@@ -1,29 +1,39 @@
 # DeskDroid — User Guide & Setup Handbook
 
-> Complete handbook for macOS tool requirements, Android device configuration, wireless screen mirroring, touch injection, and productivity features.
+> Complete handbook for host requirements (macOS and Windows), Android device configuration, wireless screen mirroring, touch injection, and productivity features. Installing the app itself: [installation.md](installation.md). What works on each platform: [platform-support.md](platform-support.md).
 
 ---
 
 ## 🛠️ 1. Required Tools & Prerequisites
 
-### 1.1 macOS Host Preparation
-DeskDroid is engineered to require minimal host dependencies. The **only external requirement** on macOS is the Android Debug Bridge (`adb`):
+### 1.1 Computer Preparation
+DeskDroid is engineered to require minimal host dependencies. The **only external requirement** is the Android Debug Bridge (`adb`).
+
+#### macOS
 
 - **Installing ADB via Homebrew (Recommended):**
   ```bash
   brew install android-platform-tools
   ```
-- **If Android Studio is already installed:**
-  DeskDroid automatically detects ADB inside your Android SDK (`~/Library/Android/sdk/platform-tools/adb`). No extra installation is needed.
-- **Automated Path Discovery:**
-  DeskDroid searches standard locations automatically without manual configuration:
+- **If Android Studio is already installed:** DeskDroid detects ADB inside your Android SDK (`~/Library/Android/sdk/platform-tools/adb`). No extra installation is needed.
+- **Automated Path Discovery:** DeskDroid searches these locations without manual configuration:
+  - Android SDK: `~/Library/Android/sdk/platform-tools/adb`
   - Apple Silicon Homebrew: `/opt/homebrew/bin/adb`
   - Intel Mac Homebrew: `/usr/local/bin/adb`
-  - Android SDK: `~/Library/Android/sdk/platform-tools/adb`
   - Current shell `$PATH` via `which adb`
 
+#### Windows (Preview)
+
+- **Installing ADB via winget (Recommended):**
+  ```powershell
+  winget install Google.PlatformTools
+  ```
+  Restart DeskDroid afterwards so it sees the updated `PATH`.
+- **If Android Studio is already installed:** DeskDroid detects ADB inside your Android SDK (`%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe`, or the folder in `ANDROID_HOME`).
+- **USB connections** may need the [Google USB Driver](https://developer.android.com/studio/run/win-usb) or your phone maker's driver. Wi-Fi connections need no driver.
+
 > [!NOTE]
-> You do **not** need to install `scrcpy` or `ffmpeg`. The `scrcpy-server.jar` daemon is bundled inside DeskDroid, and video rendering uses native macOS **Apple VideoToolbox** GPU acceleration.
+> You do **not** need to install `scrcpy` or `ffmpeg`. The `scrcpy-server.jar` daemon is bundled inside DeskDroid. Video is decoded natively: **Apple VideoToolbox** on macOS, **Media Foundation** on Windows.
 
 ### 1.2 Android Device Preparation
 
@@ -36,9 +46,10 @@ DeskDroid is engineered to require minimal host dependencies. The **only externa
 2. Toggle **USB debugging** to **ON**.
 3. For Android 11+: Toggle **Wireless debugging** to **ON** (required for 100% cable-free pairing).
 
-#### Step 3: Authorize Mac Host
+#### Step 3: Authorize This Computer
 When connecting for the first time via USB or Wi-Fi, an authorization dialog appears on your phone screen:
 - Check **"Always allow from this computer"** and tap **Allow**.
+- Each computer has its own ADB key, so a phone that already trusts your Mac asks again for your Windows PC (and the other way round).
 
 #### Step 4: Brand-Specific Permissions (Crucial)
 - **Xiaomi / Redmi / POCO (MIUI & HyperOS):**
@@ -56,7 +67,7 @@ When connecting for the first time via USB or Wi-Fi, an authorization dialog app
 DeskDroid provides 3 connection pathways:
 
 ### Method 1: 1-Click USB to Wi-Fi Switch (Easiest & Most Reliable)
-1. Plug your phone into your Mac via USB cable.
+1. Plug your phone into your computer via USB cable.
 2. Allow USB Debugging on your phone.
 3. Your phone immediately appears under **Discovered Devices**.
 4. Click **"Wi-Fi Mode"** on the device card. DeskDroid automatically switches ADB to wireless TCP mode (`adb tcpip 5555`) and establishes the wireless connection.
@@ -74,7 +85,7 @@ DeskDroid provides 3 connection pathways:
 
 ---
 
-## 🖱️ 3. Mouse & macOS Keyboard Gestures
+## 🖱️ 3. Mouse & Keyboard Gestures
 
 ### Mouse Controls
 - **Left Click & Drag:** Tap, swipe, scroll, flick, and drag across the screen.
@@ -82,14 +93,17 @@ DeskDroid provides 3 connection pathways:
 - **Middle Click (Scroll Wheel Click):** Triggers Android system **HOME**.
 - **Mouse Wheel / Trackpad 2 Fingers:** Smooth vertical and horizontal list scrolling.
 
-### macOS Keyboard Shortcuts
+### Keyboard Shortcuts
+
+Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for example <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>.
+
 - <kbd>Cmd</kbd> + <kbd>H</kbd>: Go to Home Screen.
 - <kbd>Cmd</kbd> + <kbd>Backspace</kbd>: Back key.
 - <kbd>Cmd</kbd> + <kbd>Tab</kbd>: App Switcher (Recent Apps).
-- <kbd>Cmd</kbd> + <kbd>S</kbd>: Full Screenshot to `~/Downloads` & clipboard.
+- <kbd>Cmd</kbd> + <kbd>S</kbd>: Full Screenshot to your Downloads folder & clipboard.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>: Area Screenshot crop.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>: Hardware MP4 Screen Recording.
-- <kbd>Cmd</kbd> + <kbd>U</kbd>: Send Files / APK from macOS Finder.
+- <kbd>Cmd</kbd> + <kbd>U</kbd>: Send Files / APK with the native file picker.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>: Open Android File Explorer.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>: Open APK Sideload & Package Manager.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>: Open Real-Time Device Logcat Console.
@@ -101,9 +115,9 @@ DeskDroid provides 3 connection pathways:
 
 ## 📁 4. Productivity Features
 
-### Drag & Drop & Finder Transfers
-- Press <kbd>Cmd</kbd> + <kbd>U</kbd> or click the toolbar upload icon to select files via native macOS Finder dialog.
-- Drag files, photos, or documents directly from Finder onto the stream to push to `/sdcard/Download/`.
+### Drag & Drop & File Picker Transfers
+- Press <kbd>Cmd</kbd> + <kbd>U</kbd> or click the toolbar upload icon to select files via the native file dialog (Finder on macOS, File Explorer on Windows).
+- Drag files, photos, or documents directly from Finder or File Explorer onto the stream to push to `/sdcard/Download/`.
 - Sideload `.apk` packages automatically upon drop or selection.
 
 ### APK Sideload & Package Manager
@@ -112,9 +126,9 @@ DeskDroid provides 3 connection pathways:
 - Configure install flags (`-r`, `-g`, `-t`, `-d`) and click **Install APK**.
 - Provides 1-click **Launch App** and **Uninstall** upon completion with automated error diagnosis for permission or signature conflicts.
 
-### Device File Explorer & Pull to Mac
+### Device File Explorer & Pull to Computer
 - Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> or click the folder icon on the side dock to browse Android storage (`Downloads`, `DCIM`, `Screenshots`, `Movies`, and `SD Card`).
-- Select files and download them directly to `~/Downloads/DeskDroid` with 1-click Finder reveal.
+- Select files and download them directly to the `DeskDroid` folder inside your Downloads folder, with 1-click reveal in Finder or File Explorer.
 
 ### Real-Time Device Logcat Console & Debugging
 - Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> or click **Logs** on any device card to launch the live Logcat Console.
@@ -124,19 +138,19 @@ DeskDroid provides 3 connection pathways:
 - **Bookmarking (Star Logs):** Click the star icon on any log row to bookmark it. Toggle the **Starred** filter chip to isolate flagged logs during testing.
 - **Detail Drawer & Stack Trace Viewer:** Click any log row to open the side inspector drawer. View full metadata, colored Java/Kotlin stack traces, and click **Format JSON** to pretty-print JSON payloads.
 - **Toggle Soft-Wrap:** Click the wrap icon in the footer to toggle between multi-line text wrapping and single-line fixed-extent virtualized scrolling (60 FPS).
-- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `~/Downloads/DeskDroid_Logcat_*.txt`.
+- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log` inside your Downloads folder.
 
 ### Bidirectional Clipboard Sync
-- Text copied on macOS (<kbd>Cmd</kbd> + <kbd>C</kbd>) is automatically synced to the Android clipboard.
-- Text copied on Android is instantly available on macOS (<kbd>Cmd</kbd> + <kbd>V</kbd>).
+- Text copied on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>C</kbd>) is automatically synced to the Android clipboard.
+- Text copied on Android is instantly available on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>V</kbd>).
 
 ---
 
 ## 🔧 5. Troubleshooting & FAQ
 
 #### 1. "No route to host" or cannot connect
-- Ensure both Mac and Android are connected to the **same Wi-Fi network**.
-- Check for **AP Isolation** on cafe/public Wi-Fi networks (use a home network or Mac hotspot).
+- Ensure both the computer and Android are connected to the **same Wi-Fi network**.
+- Check for **AP Isolation** on cafe/public Wi-Fi networks (use a home network or a hotspot from the computer).
 
 #### 2. Mouse clicks do nothing on Xiaomi
 - Verify that **USB debugging (Security settings)** is turned ON in Developer options.

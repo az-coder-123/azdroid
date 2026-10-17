@@ -66,11 +66,11 @@ lib/
 │   │   ├── adb_service.dart                # ADB CLI & mDNS daemon controller
 │   │   ├── network_info_service.dart       # Host machine Wi-Fi IPv4 address resolution
 │   │   ├── process_executor.dart           # Testable process runner abstraction
-│   │   └── video_stream_native_service.dart # macOS VideoToolbox texture bridge
+│   │   └── video_stream_native_service.dart # Native video plugin bridge (VideoToolbox / Media Foundation)
 │   └── theme/                              # Apple-native design system tokens
-│       ├── app_colors.dart                 # macOS Dark Mode color palette
+│       ├── app_colors.dart                 # Dark Mode color palette
 │       ├── app_typography.dart             # Apple system font styles
-│       └── app_theme.dart                  # Material3 ThemeData for macOS
+│       └── app_theme.dart                  # Material3 ThemeData (macOS & Windows)
 ├── features/                               # Modular domain features
 │   ├── discovery/                          # Device discovery & wireless pairing
 │   │   ├── domain/
@@ -154,7 +154,7 @@ lib/
 │   │       ├── cubit/audio_cubit.dart
 │   │       ├── cubit/audio_state.dart
 │   │       └── widgets/audio_controls_widget.dart
-│   ├── menubar/                            # macOS Menu Bar companion & system status
+│   ├── menubar/                            # Menu Bar companion state (popover not wired yet)
 │   │   ├── domain/
 │   │   │   └── entities/menu_bar_status_entity.dart
 │   │   └── presentation/
@@ -225,6 +225,21 @@ lib/
 │       └── domain/entities/app_settings_entity.dart
 └── main.dart                               # Entrypoint with DI & MultiBlocProvider
 ```
+
+### Native Platform Code (outside `lib/`)
+
+```text
+macos/Runner/
+├── ScrcpyStreamPlugin.swift                # VideoToolbox decoder + texture (com.deskdroid/video_stream)
+└── ScrcpyStreamStats.swift                 # getStats state & counters
+windows/scrcpy_stream/                      # Media Foundation decoder plugin (same channel contract)
+native/scrcpy_core/                         # Platform-neutral C++17: scrcpy parsing, NV12 conversion, stats
+scripts/
+├── build_release.sh                        # macOS release ZIP
+└── build_release.ps1                       # Windows release ZIP
+```
+
+Both plugins implement [native-video-contract.md](native-video-contract.md). Dart-side platform differences are covered in [platform-abstraction.md](platform-abstraction.md); feature status per platform in [platform-support.md](platform-support.md).
 
 ---
 
