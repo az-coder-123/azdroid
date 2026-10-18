@@ -58,6 +58,27 @@ void main() {
       expect(await locator.locate(), sdkAdb);
     });
 
+    test('uses the bundled adb when nothing is installed', () async {
+      stubWhich(ProcessResult(0, 1, '', 'not found'));
+      const bundled = '/Applications/DeskDroid.app/Contents/MacOS/adb';
+
+      expect(
+        await buildLocator(mac, existingFiles: {bundled}).locate(),
+        bundled,
+      );
+    });
+
+    test('prefers an installed adb over the bundled one', () async {
+      stubWhich(ProcessResult(0, 1, '', 'not found'));
+      const homebrew = '/opt/homebrew/bin/adb';
+      const bundled = '/Applications/DeskDroid.app/Contents/MacOS/adb';
+
+      expect(
+        await buildLocator(mac, existingFiles: {homebrew, bundled}).locate(),
+        homebrew,
+      );
+    });
+
     test('falls back to bare adb when it runs from PATH', () async {
       stubWhich(ProcessResult(0, 1, '', ''));
       when(() => executor.run('adb', ['version'])).thenAnswer(

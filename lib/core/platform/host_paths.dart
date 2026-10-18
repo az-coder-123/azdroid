@@ -22,6 +22,10 @@ abstract class HostPaths {
   /// Writable temporary directory.
   String get tempDirectory;
 
+  /// Folder of the running executable. Release builds place bundled helper
+  /// tools (adb) here: `Contents/MacOS` on macOS, the exe folder on Windows.
+  String get executableDirectory;
+
   /// Location of a bundled Flutter asset (key like `assets/x.jar`) in a
   /// release build, resolved relative to the running executable.
   String flutterAssetPath(String assetKey);
@@ -99,8 +103,11 @@ class SystemHostPaths implements HostPaths {
   String get tempDirectory => _systemTemp;
 
   @override
+  String get executableDirectory => context.dirname(_executable);
+
+  @override
   String flutterAssetPath(String assetKey) {
-    final exeDir = context.dirname(_executable);
+    final exeDir = executableDirectory;
     // macOS bundles assets inside App.framework; Windows/Linux use data/.
     final assetsRoot = _os == HostOs.macos
         ? context.join(

@@ -17,6 +17,7 @@ class HostToolchain {
     required this.aaptExecutables,
     required this.androidSdkRoots,
     required this.systemAdbPaths,
+    required this.bundledToolsDirectory,
     required this.arpCommand,
     required this.arpArguments,
   });
@@ -57,6 +58,7 @@ class HostToolchain {
         HostOs.windows => const [],
         HostOs.linux => const ['/usr/bin/adb', '/usr/local/bin/adb'],
       },
+      bundledToolsDirectory: paths.executableDirectory,
       arpCommand: os.isWindows ? 'arp' : '/usr/sbin/arp',
       arpArguments: os.isWindows ? const ['-a'] : const ['-an'],
     );
@@ -102,17 +104,28 @@ class HostToolchain {
   /// OS package-manager install locations of ADB.
   final List<String> systemAdbPaths;
 
+  /// Folder where release builds ship their own adb (see
+  /// docs/bundled-platform-tools.md).
+  final String bundledToolsDirectory;
+
   /// Executable that prints the ARP neighbor table.
   final String arpCommand;
 
   /// Arguments for [arpCommand] (numeric output, no DNS lookups).
   final List<String> arpArguments;
 
-  /// Absolute ADB candidates: each SDK root first, then system installs.
+  /// adb shipped inside the app bundle.
+  String get bundledAdbPath =>
+      pathContext.join(bundledToolsDirectory, adbExecutable);
+
+  /// Absolute ADB candidates, in preference order: SDK roots, system
+  /// installs, then the bundled copy. An installed adb wins so that only one
+  /// adb server version runs on the machine.
   List<String> get adbSearchPaths => [
     for (final root in androidSdkRoots)
       pathContext.join(root, platformToolsFolder, adbExecutable),
     ...systemAdbPaths,
+    bundledAdbPath,
   ];
 
   /// `build-tools` folders of every SDK root, ordered by preference.

@@ -35,6 +35,11 @@ class AdbPathResolver {
     final path = await _locator.locate();
     if (path == null) {
       AppLogger.warning('Could not resolve ADB executable on system.');
+    } else {
+      final source = path == _locator.toolchain.bundledAdbPath
+          ? 'bundled'
+          : 'installed';
+      AppLogger.info('Using $source ADB at $path');
     }
     return path;
   }

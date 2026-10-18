@@ -106,4 +106,25 @@ void main() {
       );
     });
   });
+
+  test('executableDirectory is the folder of the running executable', () {
+    final mac = SystemHostPaths(
+      os: HostOs.macos,
+      environment: {'HOME': '/Users/dev'},
+      systemTempPath: '/tmp',
+      executablePath: '/Applications/DeskDroid.app/Contents/MacOS/DeskDroid',
+    );
+    final win = SystemHostPaths(
+      os: HostOs.windows,
+      environment: {'USERPROFILE': r'C:\Users\dev'},
+      systemTempPath: r'C:\Temp',
+      executablePath: r'C:\Program Files\DeskDroid\desk_droid.exe',
+    );
+
+    expect(
+      mac.executableDirectory,
+      '/Applications/DeskDroid.app/Contents/MacOS',
+    );
+    expect(win.executableDirectory, r'C:\Program Files\DeskDroid');
+  });
 }

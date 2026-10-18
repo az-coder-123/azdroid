@@ -13,6 +13,8 @@ void main() {
       '/Users/dev/Library/Android/sdk/platform-tools/adb',
       '/opt/homebrew/bin/adb',
       '/usr/local/bin/adb',
+      // Bundled copy is the last resort, so an installed adb always wins.
+      '/Applications/DeskDroid.app/Contents/MacOS/adb',
     ]);
     expect(mac.arpArguments, ['-an']);
   });
@@ -29,6 +31,7 @@ void main() {
     expect(win.buildToolsDirectories, [
       r'C:\Users\dev\AppData\Local\Android\Sdk\build-tools',
     ]);
+    expect(win.adbSearchPaths.last, r'C:\Program Files\DeskDroid\adb.exe');
     expect(win.arpCommand, 'arp');
     expect(win.arpArguments, ['-a']);
   });
