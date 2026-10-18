@@ -235,6 +235,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 | [🧩 Platform Abstraction](docs/platform-abstraction.md) | Where macOS/Windows differences live, and how to add a new one |
 | [🎞️ Native Video Contract](docs/native-video-contract.md) | MethodChannel, scrcpy wire format, and rules shared by the Swift and C++ plugins |
 | [📦 Bundled Platform-Tools](docs/bundled-platform-tools.md) | How adb ships inside the app, how it is found, and how to upgrade it |
+| [🧮 scrcpy Upgrade Assessment](docs/scrcpy-upgrade-assessment.md) | Why v2.1 must be upgraded, protocol compatibility by version, and the recommended path |
 | [🪟 Windows Port Plan](docs/windows-port-plan.md) | Phases, status, and risks of the Windows port |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
