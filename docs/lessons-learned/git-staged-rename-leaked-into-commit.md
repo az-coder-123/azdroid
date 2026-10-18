@@ -36,9 +36,12 @@ The branch had not been pushed yet, so it was rebuilt safely:
 4. Confirm `git diff <saved-sha> HEAD` is empty.
 5. Analyze every intermediate commit in a worktree before pushing.
 
+**Recurrence (screen-off change):** `git mv` moved `scrcpy_control_message.dart` to `core` early in the work. The first commit of the split series staged only the channel files by path, but the earlier renames were already in the index and went along (shown as `0` lines in `--stat`, easy to miss). The commit would not have compiled. It was caught before pushing because `--stat` was printed, then redone from a clean index (`git reset --soft <base> && git reset`) and every commit was tested in a worktree.
+
 ## 5. Prevention & Reusability Checklist
 
-- [ ] Run `git diff --cached --name-status` before every commit in a split series.
+- [ ] Run `git diff --cached --name-status` before every commit in a split series; a rename with 0 changed lines still changes the build.
+- [ ] Start a split series from an empty index (`git reset`), because `git mv` stages immediately.
 - [ ] Prefer a plain `mv` + `git add` at commit time over `git mv` during exploratory work.
 - [ ] Before pushing a split series, analyze (and ideally test) every commit, not only `HEAD`.
 - [ ] Rewrite history only while the branch is unpushed.
