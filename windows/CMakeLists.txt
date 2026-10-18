@@ -93,6 +93,23 @@ if(PLUGIN_BUNDLED_LIBRARIES)
     COMPONENT Runtime)
 endif()
 
+# Bundled adb (Android Platform-Tools) next to the executable, found at run
+# time through HostPaths.executableDirectory. Filled by
+# `dart run tool/fetch_platform_tools.dart`; see docs/bundled-platform-tools.md.
+set(PLATFORM_TOOLS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../vendor/platform-tools/windows")
+if(EXISTS "${PLATFORM_TOOLS_DIR}/adb.exe")
+  install(DIRECTORY "${PLATFORM_TOOLS_DIR}/"
+    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime
+    PATTERN ".version" EXCLUDE)
+else()
+  message(WARNING "Bundled adb is missing (${PLATFORM_TOOLS_DIR}); the app "
+    "will use an installed adb. Run 'dart run tool/fetch_platform_tools.dart'.")
+  install(CODE "message(FATAL_ERROR \"Release builds must bundle adb. Run 'dart run tool/fetch_platform_tools.dart --os=windows'.\")"
+    CONFIGURATIONS Release
+    COMPONENT Runtime)
+endif()
+
 # Copy the native assets provided by the build.dart from all packages.
 set(NATIVE_ASSETS_DIR "${PROJECT_BUILD_DIR}native_assets/windows/")
 install(DIRECTORY "${NATIVE_ASSETS_DIR}"

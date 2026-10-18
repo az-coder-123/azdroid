@@ -34,5 +34,10 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# Last resort: the adb fetched for bundling (dart run tool/fetch_platform_tools.dart).
+# Appended last so an installed adb wins, as in the app (HostToolchain).
+BUNDLED_ADB_DIR="${ROOT_DIR}/vendor/platform-tools/macos"
+[[ -d "$BUNDLED_ADB_DIR" ]] && export PATH="$PATH:$BUNDLED_ADB_DIR"
+
 cd "$ROOT_DIR"
 exec dart run "${ROOT_DIR}/bin/deskdroid_mcp.dart" "$@"

@@ -105,12 +105,23 @@ fi
 # 3. Compile Production Release
 echo -e "${YELLOW}🏗️  [Step 3/5] Compiling macOS desktop release bundle...${NC}"
 cd "$ROOT_DIR"
+echo -e "${BLUE}Fetching bundled adb (Android Platform-Tools, checksum-verified)...${NC}"
+dart run tool/fetch_platform_tools.dart --os=macos
 flutter build macos --release
 
 if [[ ! -d "$BUILD_APP_PATH" ]]; then
   echo -e "${RED}Error: Build failed. Application bundle not found at:${NC} $BUILD_APP_PATH"
   exit 1
 fi
+
+# The app must be self-contained: adb is bundled and every signature is valid.
+BUNDLED_ADB="$BUILD_APP_PATH/Contents/MacOS/adb"
+if [[ ! -x "$BUNDLED_ADB" ]]; then
+  echo -e "${RED}Error: Bundled adb missing at:${NC} $BUNDLED_ADB"
+  exit 1
+fi
+codesign --verify --deep --strict "$BUILD_APP_PATH"
+echo -e "${GREEN}✓ Bundled adb verified:${NC} $("$BUNDLED_ADB" version | head -1)"
 
 APP_SIZE=$(du -sh "$BUILD_APP_PATH" | awk '{print $1}')
 echo -e "${GREEN}✓ Application bundle compiled:${NC} DeskDroid.app (${APP_SIZE})"
