@@ -5,6 +5,7 @@ import 'package:desk_droid/core/di/modules/core_di.dart';
 import 'package:desk_droid/core/di/modules/discovery_di.dart';
 import 'package:desk_droid/core/di/modules/intent_dispatcher_di.dart';
 import 'package:desk_droid/core/di/modules/logging_di.dart';
+import 'package:desk_droid/core/di/modules/mcp_status_di.dart';
 import 'package:desk_droid/core/di/modules/menubar_di.dart';
 import 'package:desk_droid/core/di/modules/platform_di.dart';
 import 'package:desk_droid/core/di/modules/productivity_di.dart';
@@ -28,4 +29,5 @@ Future<void> initDependencies() async {
   registerApkInstallerDependencies(sl);
   registerIntentDispatcherDependencies(sl);
   registerMenuBarDependencies(sl);
+  registerMcpStatusDependencies(sl);
 }

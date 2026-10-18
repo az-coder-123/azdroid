@@ -8,11 +8,15 @@ import 'package:desk_droid/features/discovery/domain/repositories/device_discove
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/pairing_cubit.dart';
+import 'package:desk_droid/features/mcp_status/domain/repositories/mcp_status_repository.dart';
+import 'package:desk_droid/features/mcp_status/presentation/cubit/mcp_status_cubit.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import 'helpers/mcp_status_fixtures.dart';
 
 class MockDeviceDiscoveryRepository extends Mock
     implements DeviceDiscoveryRepository {}
@@ -20,6 +24,8 @@ class MockDeviceDiscoveryRepository extends Mock
 class MockNetworkInfoService extends Mock implements NetworkInfoService {}
 
 class MockDeviceHistoryService extends Mock implements DeviceHistoryService {}
+
+class MockMcpStatusRepository extends Mock implements McpStatusRepository {}
 
 void main() {
   late MockDeviceDiscoveryRepository mockRepository;
@@ -52,6 +58,11 @@ void main() {
       ),
     );
     sl.registerLazySingleton<MenuBarCubit>(MenuBarCubit.new);
+    final mcpRepository = MockMcpStatusRepository();
+    when(mcpRepository.load).thenAnswer((_) async => mcpStatus());
+    sl.registerFactory<McpStatusCubit>(
+      () => McpStatusCubit(repository: mcpRepository),
+    );
   });
 
   tearDown(() async {

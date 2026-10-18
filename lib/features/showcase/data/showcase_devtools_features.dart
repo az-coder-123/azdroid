@@ -64,6 +64,7 @@ const List<AppFeatureItem> showcaseDevToolsFeatures = [
       'Pure Dart JSON-RPC 2.0 server communicating via stdio (bin/deskdroid_mcp.dart).',
       'Semantic UI parsing prunes 97% of DOM noise for fast, accurate AI clicks.',
       'Supports taps, text injection, swipes, dumpsys telemetry, and macro batches.',
+      'The hub icon in the device list shows the server state, AI client setup, and connected sessions.',
     ],
     proTip: 'Connect DeskDroid to Claude Desktop or Cursor to automate mobile testing with AI.',
     docFileName: 'mcp-ai-agent-server.md',

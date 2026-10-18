@@ -6,10 +6,12 @@ import 'package:desk_droid/core/platform/file_launcher/windows_host_file_launche
 import 'package:desk_droid/core/platform/file_picker/host_file_picker.dart';
 import 'package:desk_droid/core/platform/host_os.dart';
 import 'package:desk_droid/core/platform/host_paths.dart';
+import 'package:desk_droid/core/platform/host_process_tools.dart';
 import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/platform/image_clipboard/image_clipboard.dart';
 import 'package:desk_droid/core/platform/image_clipboard/mac_image_clipboard.dart';
 import 'package:desk_droid/core/platform/image_clipboard/windows_image_clipboard.dart';
+import 'package:desk_droid/core/platform/mcp_client_locations.dart';
 import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:get_it/get_it.dart';
@@ -26,6 +28,16 @@ void registerPlatformDependencies(GetIt sl, {HostOs? os}) {
 
   sl.registerLazySingleton<HostToolchain>(
     () => HostToolchain.forHost(
+      os: hostOs,
+      paths: sl<HostPaths>(),
+      environment: Platform.environment,
+    ),
+  );
+
+  sl.registerSingleton<HostProcessTools>(HostProcessTools.forHost(hostOs));
+
+  sl.registerLazySingleton<McpClientLocations>(
+    () => McpClientLocations.forHost(
       os: hostOs,
       paths: sl<HostPaths>(),
       environment: Platform.environment,

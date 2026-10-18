@@ -10,6 +10,7 @@ class DiscoveryAppBarActions extends StatelessWidget {
     required this.onShowcase,
     required this.onUserGuide,
     required this.onRescan,
+    this.statusActions = const [],
   });
 
   final VoidCallback onPairDevice;
@@ -17,6 +18,9 @@ class DiscoveryAppBarActions extends StatelessWidget {
   final VoidCallback onShowcase;
   final VoidCallback onUserGuide;
   final VoidCallback onRescan;
+
+  /// Extra status buttons shown before the Showcase button.
+  final List<Widget> statusActions;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,10 @@ class DiscoveryAppBarActions extends StatelessWidget {
         const SizedBox(width: 6),
         Container(width: 1, height: 18, color: AppColors.border),
         const SizedBox(width: 6),
+        for (final action in statusActions) ...[
+          action,
+          const SizedBox(width: 2),
+        ],
         IconButton(
           tooltip: 'Features Showcase',
           icon: const Icon(

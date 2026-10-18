@@ -17,10 +17,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Main landing page of DeskDroid hosting the device discovery and pairing dashboard.
 class DiscoveryPage extends StatefulWidget {
-  const DiscoveryPage({required this.mirroringRouteBuilder, super.key});
+  const DiscoveryPage({
+    required this.mirroringRouteBuilder,
+    this.statusActions = const [],
+    super.key,
+  });
 
   /// Creates the navigation route used when the user starts mirroring.
   final MirroringRouteBuilder mirroringRouteBuilder;
+
+  /// Status buttons from other features (the MCP server indicator), wired
+  /// in main.dart so discovery does not import them.
+  final List<Widget> statusActions;
 
   @override
   State<DiscoveryPage> createState() => _DiscoveryPageState();
@@ -130,6 +138,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             onShowcase: () => FeatureShowcaseDialog.show(context),
             onUserGuide: () => UserGuideDialog.show(context),
             onRescan: () => context.read<DiscoveryCubit>().scanDevices(),
+            statusActions: widget.statusActions,
           ),
         ],
       ),

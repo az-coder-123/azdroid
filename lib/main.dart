@@ -6,6 +6,8 @@ import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/pages/discovery_page.dart';
+import 'package:desk_droid/features/mcp_status/presentation/cubit/mcp_status_cubit.dart';
+import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_status_indicator.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,10 @@ class DeskDroidApp extends StatelessWidget {
         BlocProvider<HostContextCubit>(
           create: (_) => sl<HostContextCubit>()..load(),
         ),
+        // App-wide, so the toolbar indicator and its panel share one check.
+        BlocProvider<McpStatusCubit>(
+          create: (_) => sl<McpStatusCubit>()..load(),
+        ),
         // App-wide singleton owned by the service locator, so do not close it.
         BlocProvider<MenuBarCubit>.value(value: sl<MenuBarCubit>()),
       ],
@@ -47,7 +53,10 @@ class DeskDroidApp extends StatelessWidget {
         title: AppConstants.appName,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
-        home: const DiscoveryPage(mirroringRouteBuilder: _mirroringRoute),
+        home: const DiscoveryPage(
+          mirroringRouteBuilder: _mirroringRoute,
+          statusActions: [McpStatusIndicator()],
+        ),
       ),
     );
   }
