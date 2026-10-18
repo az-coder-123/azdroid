@@ -80,7 +80,8 @@ Reading the full header before control connects would deadlock. Native must also
 | Resolution / rotation change mid-stream | ✅ new SPS → new session | ✅ `MF_E_TRANSFORM_STREAM_CHANGE` |
 | Color: BT.709 limited range | ✅ buffer attachments | ✅ `scrcpy_core::ConvertNv12` |
 | Texture pixel order | **BGRA** (`CVPixelBuffer`) | **RGBA** (`FlutterDesktopPixelBuffer`) |
-| Stop order: producer first, then unregister texture | ✅ | ✅ texture kept alive by unregister callback |
+| Stop order: producer first, then unregister texture | ✅ no frame after `ScrcpyVideoSession.stop()`; socket interrupted at once | ✅ texture kept alive by unregister callback |
+| Only the reader thread closes the socket and decoder | ✅ | ✅ `StreamSession::Stop` joins the thread |
 | `getStats` states and counters; `failed` / `ended` set only while not stopped | ✅ `ScrcpyStreamStats.swift` | ✅ `scrcpy_core::StreamStats` |
 | Per-frame latency start point | Packet receive time passed as the VideoToolbox frame refcon | `packet_received_at_` (decode is synchronous) |
 | Diagnostic log | `/tmp/scrcpy_stream.log` | `%TEMP%\scrcpy_stream.log` |
@@ -92,10 +93,11 @@ Reading the full header before control connects would deadlock. Native must also
 | Concern | macOS (Swift) | Windows (C++) |
 |:---|:---|:---|
 | Channel + texture | `ScrcpyStreamPlugin.swift` | `scrcpy_stream_plugin.cpp`, `frame_texture.cpp` |
-| Socket | `runStreamLoop` / `readExact` | `winsock_connection.cpp` |
-| Header / packet parsing | `runStreamLoop` | `native/scrcpy_core` (`stream_header`, `packet_header`) |
-| Config handling | `parseConfigPacket` | `native/scrcpy_core/config_packet_merger` |
-| Decoder | VideoToolbox | Media Foundation H.264 MFT (`mf_h264_decoder.cpp`) |
+| Session (reader thread, retries, stop) | `ScrcpyVideoSession.swift` | `stream_session.cpp` |
+| Socket | `ScrcpySocket.swift` (shared with audio) | `winsock_connection.cpp` |
+| Header / packet parsing | `ScrcpyVideoSession.swift` | `native/scrcpy_core` (`stream_header`, `packet_header`) |
+| Config handling | `ScrcpyH264Decoder.applyConfig`, `ScrcpyAnnexB.swift` | `native/scrcpy_core/config_packet_merger` |
+| Decoder | VideoToolbox (`ScrcpyH264Decoder.swift`) | Media Foundation H.264 MFT (`mf_h264_decoder.cpp`) |
 | Color conversion | VideoToolbox output (BGRA) | `native/scrcpy_core/nv12_converter` |
 | Frame hand-off | `CVPixelBuffer` + lock | `native/scrcpy_core/latest_frame_buffer` (triple buffer) |
 | Stats (`getStats`) | `ScrcpyStreamStats.swift` | `native/scrcpy_core/stream_stats` |
@@ -112,6 +114,7 @@ Reading the full header before control connects would deadlock. Native must also
 | `native/scrcpy_core` | `scripts/test_native_core.sh` (plain, ASan/UBSan, TSan) | macOS, Linux |
 | `native/scrcpy_core` | `cmake -S native/scrcpy_core -B build/core -DSCRCPY_CORE_BUILD_TESTS=ON && ctest` | Windows (MSVC) |
 | Windows plugin build | `flutter build windows` | Windows |
+| macOS session + decoder on a device | `scripts/check_macos_native.sh <serial> video` (frames decoded, real size, none after stop) | macOS |
 | End-to-end | Mirror a real device | Manual, both platforms |
 
 There is no CI yet (planned in Phase 4 of [windows-port-plan.md](windows-port-plan.md)). Run the Windows rows on a Windows machine before merging changes to `windows/scrcpy_stream`.

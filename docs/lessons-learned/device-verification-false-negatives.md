@@ -14,6 +14,7 @@ Upgrading scrcpy-server from v2.1 to v3.3.4 was verified on a real Redmi 9 (Andr
 | Control check, HOME (Redmi 9) | Resumed activity "unknown" | Android 10 prints `ResumedActivity:`, not `mResumedActivity`. |
 | Control check, size check | 2 ignored events, 1 expected | A wrong-size tap is a DOWN and an UP: two positional events. |
 | Unlocked Redmi 9, `--keep-screen` | `no video data in time` | A static screen produces only about 12 packets, then none; the tool waited for 30. It now accepts a healthy stream after a 2 s pause. |
+| Native video check, Redmi 9 | Stuck in `connecting`, `RESULT: FAILED` | The phone had dropped off adb (`device '192.168.1.3:5555' not found`); Wi-Fi adb connections can end silently. `adb connect` restored it and the same check passed. |
 | Screen-off check, locked Redmi 9 | `panel off while awake=false` | The PIN lock screen put the phone to sleep within seconds. The check is now skipped while the keyguard shows, like HOME/BACK. |
 | Screen-off check, Redmi 9 | Panel reported on while off | SurfaceFlinger lists two displays there and the panel is the second; the tool read only the first. |
 | Emulator just after boot | `no video data in time` once, BACK ignored once | A freshly booted emulator is slow, and a key sent the moment an activity resumes can be dropped. BACK now waits 800 ms after Settings resumes; 3 of 3 runs passed. |
@@ -52,3 +53,4 @@ The harness did not reproduce the conditions under which the product runs. The a
 - [ ] Derive the expected count of events from the protocol (DOWN + UP), not from intuition.
 - [ ] Never require a fixed number of video packets: encoders send nothing while the screen is static.
 - [ ] Parse every entry of a multi-display dump; the built-in panel is not always first.
+- [ ] Run `adb devices` before trusting a failure on a Wi-Fi device; reconnect with `adb connect <ip>:5555`.

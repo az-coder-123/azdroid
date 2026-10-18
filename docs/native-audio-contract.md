@@ -65,8 +65,8 @@ Clock drift between the phone and the computer is handled only by the buffer pol
 
 | Concern | macOS (Swift) | Windows (C++) |
 |:---|:---|:---|
-| Channel | `ScrcpyAudioPlugin.swift` | `scrcpy_stream_plugin.cpp` (second channel) |
-| Socket | `ScrcpyAudioPlugin` reader thread | `winsock_connection.cpp` |
+| Channel | `ScrcpyAudioPlugin.swift` | `audio_channel.cpp` (owned by the stream plugin) |
+| Session / socket | `ScrcpyAudioSession.swift`, `ScrcpySocket.swift` | `audio_session.cpp`, `winsock_connection.cpp` |
 | Header / packets | `scrcpy_core` C API, packet header in Swift | `scrcpy_core` (`audio_header`, `packet_header`) |
 | Jitter buffer | `scrcpy_core` C API | `scrcpy_core::PcmJitterBuffer` |
 | Output | `AVAudioEngine` | `wasapi_audio_output.cpp` |

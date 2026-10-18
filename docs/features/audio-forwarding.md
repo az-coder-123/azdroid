@@ -51,5 +51,5 @@ The audio socket is part of the mirroring session: it opens after the video sock
 
 ## ✅ Verification
 
-- `scripts/check_macos_audio.sh <serial>` compiles the app's own Swift audio classes with `scrcpy_core` and plays the phone's audio on the Mac. Android 16 emulator: `playing`, played frames keep up with real time, latency 0–95 ms after start-up. Redmi 9 (Android 10): `disabled`.
+- `scripts/check_macos_native.sh <serial> audio` compiles the app's own Swift classes with `scrcpy_core`, opens audio after the video session reports `connected` (as the app does), and plays the phone's audio on the Mac. Android 16 emulator: `playing`, played frames keep up with real time, latency 0–95 ms after start-up. Redmi 9 (Android 10): `disabled`.
 - `dart run tool/verify_scrcpy_server.dart --serial=<serial>` checks the raw audio header and data with the app's exact server arguments.

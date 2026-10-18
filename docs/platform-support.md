@@ -44,7 +44,7 @@ Legend: ✅ works · 🧪 implemented, not yet verified on this platform · ❌ 
 | Screenshot to clipboard (image) | ✅ | 🧪 | Windows copies images through PowerShell (`-STA`). |
 | Screen recording (MP4) | ✅ | 🧪 | Stopped with a remote `kill -2`, so the MP4 is finalized on both. |
 | MCP AI agent server | ✅ | ✅ | Release builds ship a precompiled `deskdroid-mcp` (no Dart SDK needed); macOS verified end to end (58 tools, real device). Windows verified with `dart run bin/deskdroid_mcp.dart`; the precompiled `.exe` is not yet built on Windows. |
-| Audio forwarding | 🧪 | 🧪 | Raw PCM, Android 11+ ([details](features/audio-forwarding.md)). macOS: the app's player classes verified with `scripts/check_macos_audio.sh` on an Android 16 emulator; not yet in the app with a real Android 11+ phone. Windows: WASAPI player written, not yet compiled. |
+| Audio forwarding | 🧪 | 🧪 | Raw PCM, Android 11+ ([details](features/audio-forwarding.md)). macOS: the app's player classes verified with `scripts/check_macos_native.sh` on an Android 16 emulator; not yet in the app with a real Android 11+ phone. Windows: WASAPI player written, not yet compiled. |
 | Menu bar companion / system tray | ❌ | ❌ | The popover widget exists but is not wired into the app; a Windows tray is planned (Phase 3). |
 
 "Verified" means exercised by hand against a real device on that platform, in addition to the automated test suite, which runs on both.

@@ -24,9 +24,11 @@ Lifecycle state was owned by the plugin, which outlives sessions, instead of by 
 - The reader thread closes its own socket when it exits. `stop()` only sets the session's flag and stops its output.
 - Pushes into the shared buffer happen under the session lock and re-check the flag, so nothing lands after `stop()` returns. Windows joins the thread in `Stop()`.
 
+**Same pattern in the older video plugin.** `ScrcpyStreamPlugin.stopStream()` (604 lines, one class) closed the socket and invalidated the VideoToolbox session on the platform thread while the reader thread could still be reading or decoding. Splitting it into `ScrcpyVideoSession` (reader, retries, stop flag), `ScrcpyH264Decoder`, and `ScrcpyAnnexB` applied the same fix: the reader thread alone closes the socket and invalidates the decoder (after waiting for frames in flight), and frames are delivered under the session lock, so none arrives after `stop()`. `ScrcpySocket.interrupt()` (`shutdown`, safe from any thread) wakes the reader at once, as the old code's immediate close did. `scripts/check_macos_native.sh <serial> video` checks this on a device: Redmi 9 decoded 1080×2336 frames, delivered none after stop, and ended in `idle`.
+
 ## 5. Prevention & Reusability Checklist
 
 - [ ] Give each connection its own object with its own stop flag; never let a long-lived owner's flag decide whether an old thread continues.
-- [ ] A thread that uses a resource closes it; other threads only signal.
+- [ ] A thread that uses a resource closes it; other threads only signal (for sockets, `shutdown` is a safe signal; `close` is not).
 - [ ] Shared resources (here the jitter buffer) are touched under a lock that `stop()` also takes.
 - [ ] Review every stop-then-start path, not only first start and final stop.

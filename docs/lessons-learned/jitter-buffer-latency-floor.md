@@ -6,7 +6,7 @@ The first jitter buffer policy primed 50 ms, filled silence on underrun, and dro
 
 ## 2. Diagnostic Traces & Evidence
 
-`scripts/check_macos_audio.sh emulator-5590 20` printed the buffer once per second:
+`scripts/check_macos_audio.sh emulator-5590 20` (now `scripts/check_macos_native.sh emulator-5590 audio 20`) printed the buffer once per second:
 
 ```text
 bufferedFrames=6628 ... 8369 ... 7910 ... 7805 ... 7499   (≈ 140–175 ms)
