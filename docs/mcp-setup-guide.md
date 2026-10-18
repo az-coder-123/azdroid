@@ -27,17 +27,39 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
      ```
 2. **Host Machine (macOS or Windows):**
    - **No GUI Required:** the DeskDroid app does not need to be running.
-   - **Android Platform Tools (ADB):** Installed and accessible in `PATH` (`brew install android-platform-tools` on macOS, `winget install Google.PlatformTools` on Windows).
-   - **Dart SDK:** Installed (bundled with the Flutter SDK).
-   - **macOS only:** ensure the launcher script is executable:
-     ```bash
-     chmod +x scripts/start_mcp_server.sh
-     ```
-   - **Windows:** there is no launcher script yet; configure clients with `dart run` as shown in [Windows Configuration](#5-windows-configuration).
+   - **Installed app (recommended):** release builds include a **precompiled server** (`deskdroid-mcp`) and a bundled `adb`. Nothing else is required: no Dart SDK, no separate ADB install.
+   - **Source checkout (developers):** needs the Dart SDK (bundled with Flutter). ADB comes from your install or from `dart run tool/fetch_platform_tools.dart`.
 
 ---
 
 ## 🚀 Quick Setup & Configuration
+
+### 0. Installed App — Precompiled Server (Recommended)
+
+Point your client at the executable inside the installed app. It finds the bundled `adb` next to it and logs its choice to stderr (`[DeskDroid MCP] Using installed|bundled adb at …`).
+
+| Platform | `command` |
+|:---|:---|
+| macOS | `/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp` |
+| Windows | `C:\path\to\DeskDroid\deskdroid-mcp.exe` (next to `desk_droid.exe`; write `\\` in JSON) |
+
+```json
+{
+  "mcpServers": {
+    "deskdroid": {
+      "command": "/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp"
+    }
+  }
+}
+```
+
+Smoke test: `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | /Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp`
+
+> [!NOTE]
+> `dart compile exe` builds for the CPU of the build machine only; Dart cannot cross-compile to macOS arm64. A macOS release built on an Intel Mac ships an **x86_64** server, which runs on Apple Silicon through Rosetta 2 (macOS offers to install it). Release builds made on Apple Silicon ship **arm64**. Windows builds are x64.
+
+The sections below configure the server **from a source checkout** instead.
+
 
 ### 1. Claude Desktop Integration
 

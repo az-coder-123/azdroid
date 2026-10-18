@@ -23,7 +23,7 @@ Shortcuts use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows. Platform l
 | **11** | **Screen-Off Streaming** | `lib/features/streaming/` | <kbd>Cmd</kbd> + <kbd>O</kbd> | ✅ | 🧪 | [screen-off-streaming.md](screen-off-streaming.md) |
 | **12** | **Menu Bar Companion** | `lib/features/menubar/` | Status bar icon (not wired yet) | ❌ | ❌ | [menu-bar-companion.md](menu-bar-companion.md) |
 | **13** | **Deep Link & Intent Dispatcher** | `lib/features/intent_dispatcher/` | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> | ✅ | 🧪 | [deep-link-intent-dispatcher.md](deep-link-intent-dispatcher.md) |
-| **14** | **Model Context Protocol (MCP) AI Agent Server** | `lib/features/mcp/` | Stdio CLI / `./scripts/start_mcp_server.sh` (macOS), `dart run bin/deskdroid_mcp.dart` (both) | ✅ | ✅ | [mcp-ai-agent-server.md](mcp-ai-agent-server.md) |
+| **14** | **Model Context Protocol (MCP) AI Agent Server** | `lib/features/mcp/` | Stdio CLI: bundled `deskdroid-mcp` (release builds), or `./scripts/start_mcp_server.sh` / `dart run bin/deskdroid_mcp.dart` (source) | ✅ | ✅ | [mcp-ai-agent-server.md](mcp-ai-agent-server.md) |
 
 ---
 

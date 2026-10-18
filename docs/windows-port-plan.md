@@ -119,7 +119,7 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 - `scripts/build_release.ps1` produces a signed MSIX (`msix` package) and a portable ZIP.
 
 **Status (2026-10-18): portable ZIP done.** `scripts/build_release.ps1` runs analyze and tests, builds the x64 release, bundles the Visual C++ runtime, and writes the ZIP with SHA-256 checksums (usage: [installation.md](installation.md#5-package-a-release)). The packaged `desk_droid.exe` starts on Windows 10. Still open: code signing, MSIX, CI, and the MCP launcher script (the server already runs with `dart run`).
-- `scripts/start_mcp_server.ps1` / `.cmd` launcher with the same PATH discovery as the bash script.
+- ~~MCP launcher for Windows~~: release builds ship `deskdroid-mcp.exe` (compiled during the Release install step), so no `.ps1` launcher is needed for users. Not yet built on Windows.
 - Bind every local socket to `127.0.0.1`, so Windows Defender Firewall does not prompt.
 
 ### Phase 5 — Documentation (alongside each phase)

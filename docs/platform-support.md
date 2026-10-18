@@ -43,7 +43,7 @@ Legend: ✅ works · 🧪 implemented, not yet verified on this platform · ❌ 
 | Clipboard sync (text) | ✅ | 🧪 | |
 | Screenshot to clipboard (image) | ✅ | 🧪 | Windows copies images through PowerShell (`-STA`). |
 | Screen recording (MP4) | ✅ | 🧪 | Stopped with a remote `kill -2`, so the MP4 is finalized on both. |
-| MCP AI agent server | ✅ | ✅ | Windows verified with `dart run bin/deskdroid_mcp.dart` (58 tools); no `.ps1` launcher yet. |
+| MCP AI agent server | ✅ | ✅ | Release builds ship a precompiled `deskdroid-mcp` (no Dart SDK needed); macOS verified end to end (58 tools, real device). Windows verified with `dart run bin/deskdroid_mcp.dart`; the precompiled `.exe` is not yet built on Windows. |
 | Audio forwarding | ❌ | ❌ | The scrcpy server is started with `audio=false`, so no audio stream exists yet. |
 | Menu bar companion / system tray | ❌ | ❌ | The popover widget exists but is not wired into the app; a Windows tray is planned (Phase 3). |
 
