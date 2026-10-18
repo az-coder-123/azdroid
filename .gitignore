@@ -46,3 +46,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Downloaded build-time binaries (tool/fetch_platform_tools.dart)
+/vendor/
