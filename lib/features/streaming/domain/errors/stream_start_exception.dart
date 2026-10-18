@@ -11,6 +11,10 @@ enum StreamStartFailure {
 
   /// The scrcpy server could not be launched on the device.
   serverStartFailed,
+
+  /// The server accepted the video socket, but the control socket could not
+  /// be opened. The server only starts streaming once control is connected.
+  controlConnectFailed,
 }
 
 /// Thrown by `StreamingRepository.startSession` when streaming cannot start.

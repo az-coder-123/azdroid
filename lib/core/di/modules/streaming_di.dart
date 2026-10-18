@@ -2,9 +2,11 @@ import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/repositories/streaming_repository_impl.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_locator.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_telemetry_sampler.dart';
@@ -35,6 +37,10 @@ void registerStreamingDependencies(GetIt sl) {
       devicePreflight: StreamDevicePreflight(adbService: sl<AdbService>()),
       telemetrySampler: StreamTelemetrySampler(
         nativeService: sl<IVideoStreamNativeService>(),
+      ),
+      controlConnector: ScrcpyControlConnector(
+        nativeService: sl<IVideoStreamNativeService>(),
+        channel: sl<ScrcpyControlChannel>(),
       ),
     ),
   );

@@ -2,6 +2,7 @@ import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/repositories/streaming_repository_impl.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,21 +15,34 @@ class MockVideoStreamNativeService extends Mock
 
 class MockStreamDevicePreflight extends Mock implements StreamDevicePreflight {}
 
+class MockScrcpyControlConnector extends Mock
+    implements ScrcpyControlConnector {}
+
 void main() {
   late MockScrcpyServerManager mockServerManager;
   late MockVideoStreamNativeService mockNativeService;
   late MockStreamDevicePreflight mockPreflight;
+  late MockScrcpyControlConnector mockControl;
   late StreamingRepositoryImpl repository;
 
   setUp(() {
     mockServerManager = MockScrcpyServerManager();
     mockNativeService = MockVideoStreamNativeService();
     mockPreflight = MockStreamDevicePreflight();
+    mockControl = MockScrcpyControlConnector();
     when(() => mockPreflight.ensureReady(any())).thenAnswer((_) async {});
+    when(
+      () => mockControl.connect(
+        deviceSerial: any(named: 'deviceSerial'),
+        port: any(named: 'port'),
+      ),
+    ).thenAnswer((_) async => true);
+    when(() => mockControl.disconnect()).thenAnswer((_) async {});
     repository = StreamingRepositoryImpl(
       serverManager: mockServerManager,
       videoStreamNativeService: mockNativeService,
       devicePreflight: mockPreflight,
+      controlConnector: mockControl,
     );
   });
 
@@ -319,5 +333,52 @@ void main() {
         ),
       ).called(1);
     });
+
+    test(
+      'startSession fails with controlConnectFailed and cleans up',
+      () async {
+        when(
+          () => mockServerManager.startServerDaemon(
+            deviceSerial: any(named: 'deviceSerial'),
+            port: any(named: 'port'),
+            maxFps: any(named: 'maxFps'),
+            bitrateMbps: any(named: 'bitrateMbps'),
+          ),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockNativeService.startStream(
+            host: any(named: 'host'),
+            port: any(named: 'port'),
+          ),
+        ).thenAnswer((_) async => 42);
+        when(() => mockNativeService.stopStream()).thenAnswer((_) async {});
+        when(
+          () => mockServerManager.stopServerDaemon(
+            deviceSerial: any(named: 'deviceSerial'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockControl.connect(
+            deviceSerial: any(named: 'deviceSerial'),
+            port: any(named: 'port'),
+          ),
+        ).thenAnswer((_) async => false);
+
+        await expectLater(
+          repository.startSession(testDevice),
+          throwsA(
+            isA<StreamStartException>().having(
+              (e) => e.failure,
+              'failure',
+              StreamStartFailure.controlConnectFailed,
+            ),
+          ),
+        );
+        verify(() => mockNativeService.stopStream()).called(1);
+        verify(
+          () => mockServerManager.stopServerDaemon(deviceSerial: testDevice.id),
+        ).called(1);
+      },
+    );
   });
 }

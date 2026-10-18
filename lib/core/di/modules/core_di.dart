@@ -5,6 +5,7 @@ import 'package:desk_droid/core/services/adb_tcpip_service.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
 import 'package:get_it/get_it.dart';
 
 /// Registers core infrastructure services and process runners.
@@ -34,5 +35,12 @@ void registerCoreDependencies(GetIt sl) {
 
   sl.registerLazySingleton<DeviceHistoryService>(
     () => DeviceHistoryServiceImpl(hostPaths: sl<HostPaths>()),
+  );
+
+  // One control socket per mirroring session, shared by streaming (opens and
+  // closes it) and control (sends input through it).
+  sl.registerLazySingleton<ScrcpyControlChannel>(
+    SocketScrcpyControlChannel.new,
+    dispose: (channel) => channel.close(),
   );
 }

@@ -17,5 +17,9 @@ extension StreamStartFailureMessage on StreamStartFailure {
     StreamStartFailure.serverStartFailed =>
       'Could not start the mirroring server on $deviceName.\n'
           'Check the ADB connection, then retry.',
+    StreamStartFailure.controlConnectFailed =>
+      'Connected to $deviceName, but the input channel did not open.\n'
+          'Unlock the phone and retry. If it keeps failing, reconnect the '
+          'device.',
   };
 }

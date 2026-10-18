@@ -1,15 +1,29 @@
 import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/core/constants/control_constants.dart';
 import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
+import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
+import 'package:desk_droid/features/control/domain/repositories/video_frame_size_source.dart';
 
 /// Concrete implementation of [ControlRepository] translating normalized coordinates and events to native device actions.
+///
+/// Normalized positions are mapped onto the real video frame size from
+/// [VideoFrameSizeSource] (the device screen in its current orientation).
+/// Explicit `displayWidth`/`displayHeight` arguments take precedence; the
+/// [ControlConstants] defaults apply only when no video is decoded yet.
 class ControlRepositoryImpl implements ControlRepository {
-  ControlRepositoryImpl({ControlDatasource? datasource})
+  ControlRepositoryImpl({ControlDatasource? datasource, this._frameSizeSource})
     : _datasource = datasource ?? ControlDatasourceImpl();
 
   final ControlDatasource _datasource;
+  final VideoFrameSizeSource? _frameSizeSource;
+
+  /// Frame used for mapping: explicit size, else the live video size.
+  Future<FrameSize?> _frameFor(int? width, int? height) async {
+    if (width != null && height != null) return FrameSize(width, height);
+    return _frameSizeSource?.current();
+  }
 
   @override
   Future<bool> sendTap(
@@ -19,13 +33,14 @@ class ControlRepositoryImpl implements ControlRepository {
     int? displayWidth,
     int? displayHeight,
   }) async {
-    final width = displayWidth ?? ControlConstants.defaultDisplayWidth;
-    final height = displayHeight ?? ControlConstants.defaultDisplayHeight;
+    final frame = await _frameFor(displayWidth, displayHeight);
+    final width = frame?.width ?? ControlConstants.defaultDisplayWidth;
+    final height = frame?.height ?? ControlConstants.defaultDisplayHeight;
 
     final targetX = (normalizedX * width).round().clamp(0, width);
     final targetY = (normalizedY * height).round().clamp(0, height);
 
-    return _datasource.injectTap(deviceSerial, targetX, targetY);
+    return _datasource.injectTap(deviceSerial, targetX, targetY, frame: frame);
   }
 
   @override
@@ -39,8 +54,9 @@ class ControlRepositoryImpl implements ControlRepository {
     int? displayWidth,
     int? displayHeight,
   }) async {
-    final width = displayWidth ?? ControlConstants.defaultDisplayWidth;
-    final height = displayHeight ?? ControlConstants.defaultDisplayHeight;
+    final frame = await _frameFor(displayWidth, displayHeight);
+    final width = frame?.width ?? ControlConstants.defaultDisplayWidth;
+    final height = frame?.height ?? ControlConstants.defaultDisplayHeight;
     final duration = durationMs ?? ControlConstants.defaultSwipeDurationMs;
 
     final x1 = (startX * width).round().clamp(0, width);
@@ -48,7 +64,15 @@ class ControlRepositoryImpl implements ControlRepository {
     final x2 = (endX * width).round().clamp(0, width);
     final y2 = (endY * height).round().clamp(0, height);
 
-    return _datasource.injectSwipe(deviceSerial, x1, y1, x2, y2, duration);
+    return _datasource.injectSwipe(
+      deviceSerial,
+      x1,
+      y1,
+      x2,
+      y2,
+      duration,
+      frame: frame,
+    );
   }
 
   @override
@@ -61,8 +85,9 @@ class ControlRepositoryImpl implements ControlRepository {
     int? displayWidth,
     int? displayHeight,
   }) async {
-    final width = displayWidth ?? ControlConstants.defaultDisplayWidth;
-    final height = displayHeight ?? ControlConstants.defaultDisplayHeight;
+    final frame = await _frameFor(displayWidth, displayHeight);
+    final width = frame?.width ?? ControlConstants.defaultDisplayWidth;
+    final height = frame?.height ?? ControlConstants.defaultDisplayHeight;
 
     final startPixelX = (normalizedX * width).round().clamp(0, width);
     final startPixelY = (normalizedY * height).round().clamp(0, height);
@@ -81,6 +106,7 @@ class ControlRepositoryImpl implements ControlRepository {
       endPixelX,
       endPixelY,
       ControlConstants.defaultSwipeDurationMs,
+      frame: frame,
     );
   }
 

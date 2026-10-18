@@ -30,9 +30,13 @@ class ScrcpyServerCommand {
     'tunnel_forward=true',
     'video_bit_rate=$videoBitRateBps',
     'max_fps=$maxFps',
-    // Video only: input uses `adb shell input`; audio playback is not built.
+    // Audio playback is not built yet.
     'audio=false',
-    'control=false',
+    // Input travels over the control socket (also lets the server turn the
+    // screen on at start: power_on defaults to true).
+    'control=true',
+    // Clipboard sync stays on the adb path; no unsolicited device messages.
+    'clipboard_autosync=false',
     // Leave device settings untouched when the server exits.
     'cleanup=false',
   ];

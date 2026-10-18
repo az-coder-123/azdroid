@@ -2,11 +2,14 @@ import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 
 /// Abstract datasource contract for injecting native input events into an Android device.
 abstract class ControlDatasource {
   /// Injects a single tap at the given pixel coordinates.
-  Future<bool> injectTap(String deviceSerial, int x, int y);
+  ///
+  /// [frame] is the video frame the coordinates refer to, when known.
+  Future<bool> injectTap(String deviceSerial, int x, int y, {FrameSize? frame});
 
   /// Injects a swipe gesture from start coordinates to end coordinates with a given duration in milliseconds.
   Future<bool> injectSwipe(
@@ -15,8 +18,9 @@ abstract class ControlDatasource {
     int startY,
     int endX,
     int endY,
-    int durationMs,
-  );
+    int durationMs, {
+    FrameSize? frame,
+  });
 
   /// Injects an Android physical keyevent by its integer keycode.
   Future<bool> injectKeyevent(String deviceSerial, int keyCode);
@@ -25,7 +29,8 @@ abstract class ControlDatasource {
   Future<bool> injectText(String deviceSerial, String text);
 }
 
-/// Concrete implementation of [ControlDatasource] leveraging ADB shell commands.
+/// [ControlDatasource] over `adb shell input`. Used when the scrcpy control
+/// socket is unavailable, and for text (see FallbackControlDatasource).
 class ControlDatasourceImpl implements ControlDatasource {
   ControlDatasourceImpl({
     AdbService? adbService,
@@ -37,7 +42,12 @@ class ControlDatasourceImpl implements ControlDatasource {
   final ProcessExecutor _executor;
 
   @override
-  Future<bool> injectTap(String deviceSerial, int x, int y) async {
+  Future<bool> injectTap(
+    String deviceSerial,
+    int x,
+    int y, {
+    FrameSize? frame,
+  }) async {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) return false;
 
@@ -69,8 +79,9 @@ class ControlDatasourceImpl implements ControlDatasource {
     int startY,
     int endX,
     int endY,
-    int durationMs,
-  ) async {
+    int durationMs, {
+    FrameSize? frame,
+  }) async {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) return false;
 

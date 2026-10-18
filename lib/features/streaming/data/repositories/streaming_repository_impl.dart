@@ -1,8 +1,10 @@
 import 'package:desk_droid/core/constants/socket_config.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_telemetry_sampler.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
@@ -17,10 +19,18 @@ class StreamingRepositoryImpl implements StreamingRepository {
     IVideoStreamNativeService? videoStreamNativeService,
     StreamDevicePreflight? devicePreflight,
     StreamTelemetrySampler? telemetrySampler,
+    ScrcpyControlConnector? controlConnector,
   }) : _serverManager = serverManager ?? ScrcpyServerManager(),
        _videoStreamNativeService =
            videoStreamNativeService ?? VideoStreamNativeService(),
        _devicePreflight = devicePreflight ?? StreamDevicePreflight(),
+       _controlConnector =
+           controlConnector ??
+           ScrcpyControlConnector(
+             nativeService:
+                 videoStreamNativeService ?? VideoStreamNativeService(),
+             channel: SocketScrcpyControlChannel(),
+           ),
        // The native service is a stateless channel wrapper, so a second
        // default instance for the sampler is harmless.
        _telemetrySampler =
@@ -34,6 +44,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
   final IVideoStreamNativeService _videoStreamNativeService;
   final StreamDevicePreflight _devicePreflight;
   final StreamTelemetrySampler _telemetrySampler;
+  final ScrcpyControlConnector _controlConnector;
 
   StreamSessionEntity? _currentSession;
 
@@ -111,6 +122,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
         );
       }
 
+      await _controlConnector.disconnect();
       await _videoStreamNativeService.stopStream();
       await _serverManager.stopServerDaemon(deviceSerial: session.deviceId);
     }
@@ -144,6 +156,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
     AppLogger.info(
       'Restarting video pipeline at $bitrateMbps Mbps for ${session.deviceId}',
     );
+    await _controlConnector.disconnect();
     await _videoStreamNativeService.stopStream();
     final textureId = await _launchVideoPipeline(
       session.deviceId,
@@ -159,8 +172,8 @@ class StreamingRepositoryImpl implements StreamingRepository {
     return updated;
   }
 
-  /// Starts the scrcpy server (replacing a running one) and connects the
-  /// native decoder. Returns the new texture ID.
+  /// Starts the scrcpy server (replacing a running one), connects the native
+  /// decoder, then opens the control socket. Returns the new texture ID.
   Future<int?> _launchVideoPipeline(
     String deviceSerial, {
     required int maxFps,
@@ -178,10 +191,24 @@ class StreamingRepositoryImpl implements StreamingRepository {
         deviceSerial: deviceSerial,
       );
     }
-    return _videoStreamNativeService.startStream(
+    final textureId = await _videoStreamNativeService.startStream(
       host: SocketConfig.loopbackHost,
       port: SocketConfig.defaultVideoStreamPort,
     );
+    // The server streams only once the control socket is connected.
+    final controlReady = await _controlConnector.connect(
+      deviceSerial: deviceSerial,
+      port: SocketConfig.defaultVideoStreamPort,
+    );
+    if (!controlReady) {
+      await _videoStreamNativeService.stopStream();
+      await _serverManager.stopServerDaemon(deviceSerial: deviceSerial);
+      throw StreamStartException(
+        StreamStartFailure.controlConnectFailed,
+        deviceSerial: deviceSerial,
+      );
+    }
+    return textureId;
   }
 
   @override
