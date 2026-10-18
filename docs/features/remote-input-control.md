@@ -27,7 +27,7 @@ flowchart LR
 | Input | Path | Notes |
 |:---|:---|:---|
 | Tap, drag, swipe, scroll | Control socket | Touch DOWN, interpolated MOVE every 16 ms, UP. |
-| Key events (BACK, HOME, shortcuts) | Control socket | DOWN then UP. |
+| Key events (BACK, HOME, App Switch: toolbar buttons, shortcuts, mouse buttons) | Control socket | DOWN then UP. All of them go through `ControlBloc` (`ControlNavigationActionDispatched`). |
 | Quick Text (<kbd>Cmd</kbd> + <kbd>K</kbd>) | `adb` | The scrcpy key map cannot type non-ASCII text such as Vietnamese. |
 | Anything while the socket is down | `adb shell input` | Automatic fallback, per event. |
 
