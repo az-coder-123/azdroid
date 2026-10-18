@@ -1,11 +1,12 @@
-// Video socket header sent once by scrcpy-server after the connection opens.
+// Video socket header sent once by scrcpy-server v4.0+ after the connection
+// opens (v5.0.1 bundled).
 //
-// Layout (77 bytes, see docs/native-video-contract.md):
+// Layout (69 bytes, see docs/native-video-contract.md):
 //   1 byte  dummy (0x00, forward-tunnel handshake)
 //  64 bytes device name, UTF-8, NUL padded
 //   4 bytes codec id, ASCII (for example "h264")
-//   4 bytes width,  big-endian
-//   4 bytes height, big-endian
+// The video size is not in the header: it arrives in the first session
+// packet (packet_header.h), and again after every rotation.
 #ifndef SCRCPY_CORE_STREAM_HEADER_H_
 #define SCRCPY_CORE_STREAM_HEADER_H_
 
@@ -18,13 +19,11 @@ namespace scrcpy_core {
 
 inline constexpr size_t kDeviceNameSize = 64;
 inline constexpr size_t kCodecIdSize = 4;
-inline constexpr size_t kStreamHeaderSize = 1 + kDeviceNameSize + kCodecIdSize + 4 + 4;
+inline constexpr size_t kStreamHeaderSize = 1 + kDeviceNameSize + kCodecIdSize;
 
 struct StreamHeader {
   std::string device_name;
   std::string codec;
-  uint32_t width = 0;
-  uint32_t height = 0;
 };
 
 // Parses a header from exactly kStreamHeaderSize bytes.

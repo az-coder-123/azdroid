@@ -9,7 +9,7 @@
   <a href="https://flutter.dev"><img src="https://img.shields.io/badge/built%20with-Flutter-02569B.svg?logo=flutter" alt="Built with Flutter"></a>
   <a href="https://github.com/az-coder-123/desk-droid/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Apple%20Silicon%20%26%20Intel-black.svg?logo=apple" alt="macOS Platform"></a>
   <a href="docs/platform-support.md"><img src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64%20(Preview)-0078D4.svg" alt="Windows Platform (Preview)"></a>
-  <a href="https://github.com/Genymobile/scrcpy/releases/tag/v3.3.4"><img src="https://img.shields.io/badge/scrcpy-v3.3.4-orange.svg" alt="scrcpy v3.3.4 Engine"></a>
+  <a href="https://github.com/Genymobile/scrcpy/releases/tag/v5.0.1"><img src="https://img.shields.io/badge/scrcpy-v5.0.1-orange.svg" alt="scrcpy v5.0.1 Engine"></a>
   <a href="https://github.com/az-coder-123/desk-droid/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 

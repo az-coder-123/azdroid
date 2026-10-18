@@ -3,6 +3,7 @@
 #ifndef SCRCPY_STREAM_STREAM_SESSION_H_
 #define SCRCPY_STREAM_STREAM_SESSION_H_
 
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
@@ -16,6 +17,7 @@
 
 #include "scrcpy_core/latest_frame_buffer.h"
 #include "scrcpy_core/nv12_converter.h"
+#include "scrcpy_core/packet_header.h"
 #include "scrcpy_core/stream_header.h"
 #include "scrcpy_core/stream_stats.h"
 #include "winsock_connection.h"
@@ -51,6 +53,11 @@ class StreamSession {
   std::optional<scrcpy_core::StreamHeader> ConnectAndReadHeader();
   // Returns false when streaming cannot start (codec or decoder failure).
   bool PumpPackets(const scrcpy_core::StreamHeader& header);
+  // Reads and parses one 12-byte packet header; nullopt on end or error.
+  std::optional<scrcpy_core::PacketHeader> ReadPacketHeader(
+      std::array<uint8_t, scrcpy_core::kPacketHeaderSize>& bytes);
+  // Records the video size announced by a session packet.
+  void ApplySession(const scrcpy_core::PacketHeader& session);
   void PublishFrame(const scrcpy_core::Nv12Image& image);
 
   // Sleeps up to [delay]; returns false early when the session stops.

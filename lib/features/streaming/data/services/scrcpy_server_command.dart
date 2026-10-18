@@ -1,9 +1,7 @@
-import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
-
 /// Builds the `adb shell app_process` command line that starts scrcpy-server.
 ///
 /// Every key/value argument must exist in the bundled server version; the
-/// server rejects unknown keys. Verified against scrcpy v3.3.4 `Options.java`.
+/// server rejects unknown keys. Verified against scrcpy v5.0.1 `Options.java`.
 class ScrcpyServerCommand {
   const ScrcpyServerCommand._();
 
@@ -43,15 +41,13 @@ class ScrcpyServerCommand {
     'control=true',
     // Clipboard sync stays on the adb path; no unsolicited device messages.
     'clipboard_autosync=false',
-    // A restore process puts back every setting the server changed (the
-    // stay-awake ones below) when the server exits, even if it is killed.
-    // It also deletes the pushed jar; DeskDroid pushes it on every start.
+    // A restore process turns the phone screen back on when the server
+    // exits after "Screen Off", even if it is killed. It also deletes the
+    // pushed jar; DeskDroid pushes it on every start.
     'cleanup=true',
-    if (stayAwake) ...[
-      // Keeps the phone awake while it charges...
-      'stay_awake=true',
-      // ...and on battery, by lengthening the screen-off timeout.
-      'screen_off_timeout=${ScrcpyServerConstants.stayAwakeScreenOffTimeoutMs}',
-    ],
+    // Reports user activity every few seconds, so the screen does not time
+    // out, on battery or charging. Unlike `stay_awake`, it changes no device
+    // setting, so nothing is left to restore.
+    if (stayAwake) 'keep_active=true',
   ];
 }

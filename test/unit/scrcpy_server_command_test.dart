@@ -29,18 +29,14 @@ void main() {
     expect(args, containsAll(['video_bit_rate=8000000', 'max_fps=60']));
   });
 
-  test('stay awake keeps the phone on while charging and on battery', () {
-    expect(
-      args,
-      containsAll([
-        'cleanup=true',
-        'stay_awake=true',
-        'screen_off_timeout=${ScrcpyServerConstants.stayAwakeScreenOffTimeoutMs}',
-      ]),
-    );
+  test('stay awake reports user activity instead of changing settings', () {
+    expect(args, containsAll(['cleanup=true', 'keep_active=true']));
+    // The setting-changing options are gone (nothing to restore).
+    expect(args.where((a) => a.startsWith('stay_awake')), isEmpty);
+    expect(args.where((a) => a.startsWith('screen_off_timeout')), isEmpty);
   });
 
-  test('without stay awake, no device setting is changed', () {
+  test('without stay awake, the server does not keep the phone active', () {
     final plain = ScrcpyServerCommand.adbArguments(
       deviceSerial: '192.168.1.3:5555',
       remoteJarPath: ScrcpyServerConstants.remoteJarPath,
@@ -51,8 +47,7 @@ void main() {
       stayAwake: false,
       audio: false,
     );
-    expect(plain.where((a) => a.startsWith('stay_awake')), isEmpty);
-    expect(plain.where((a) => a.startsWith('screen_off_timeout')), isEmpty);
+    expect(plain.where((a) => a.startsWith('keep_active')), isEmpty);
     expect(plain, contains('cleanup=true'));
   });
 

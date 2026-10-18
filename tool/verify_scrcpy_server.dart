@@ -17,7 +17,7 @@ import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output
 import 'scrcpy_verify/audio_probe.dart';
 import 'scrcpy_verify/control_probe.dart';
 import 'scrcpy_verify/display_power_probe.dart';
-import 'scrcpy_verify/stay_awake_probe.dart';
+import 'scrcpy_verify/keep_active_probe.dart';
 import 'scrcpy_verify/stream_probe.dart';
 
 const String _scid = '7a5e0001';
@@ -52,7 +52,7 @@ Future<void> main(List<String> args) async {
       keepScreen ? 'KEYCODE_WAKEUP' : 'KEYCODE_SLEEP',
     ]);
     final screenOffBefore = !await isScreenOn(adb, serial);
-    final awake = StayAwakeProbe(adb: adb, serial: serial);
+    final awake = KeepActiveProbe(adb: adb, serial: serial);
     await awake.recordOriginal();
     await _adb(adb, serial, [
       'push',
@@ -153,7 +153,7 @@ Future<void> main(List<String> args) async {
     await audio.close();
     await probe.close();
     final ignored = ignoredEvents();
-    // Stopping the server (as the app does) must restore the settings.
+    // Stopping the server (as the app does) must leave the settings as found.
     server.kill();
     await awake.recordAfter();
     if (!locked) await display.checkRestoredOnExit();

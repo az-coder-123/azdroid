@@ -10,18 +10,27 @@ using namespace scrcpy_core;
 
 namespace {
 
-std::vector<uint8_t> BuildStreamHeader(const char* name, const char* codec,
-                                       uint32_t width, uint32_t height) {
+std::vector<uint8_t> BuildStreamHeader(const char* name, const char* codec) {
   std::vector<uint8_t> bytes(kStreamHeaderSize, 0);
   std::memcpy(&bytes[1], name, std::strlen(name));
   std::memcpy(&bytes[1 + kDeviceNameSize], codec, kCodecIdSize);
-  const size_t dims = 1 + kDeviceNameSize + kCodecIdSize;
+  return bytes;
+}
+
+void PutBigEndian32(std::vector<uint8_t>& bytes, size_t at, uint32_t value) {
   for (int i = 0; i < 4; ++i) {
-    const int shift = 24 - 8 * i;
-    bytes[dims + static_cast<size_t>(i)] = static_cast<uint8_t>(width >> shift);
-    bytes[dims + 4 + static_cast<size_t>(i)] =
-        static_cast<uint8_t>(height >> shift);
+    bytes[at + static_cast<size_t>(i)] =
+        static_cast<uint8_t>(value >> (24 - 8 * i));
   }
+}
+
+// Same layout as scrcpy v5.0.1 Streamer.writeSessionMeta().
+std::vector<uint8_t> BuildSessionPacket(uint32_t width, uint32_t height,
+                                        bool client_resized) {
+  std::vector<uint8_t> bytes(kPacketHeaderSize, 0);
+  PutBigEndian32(bytes, 0, 0x80000000u | (client_resized ? 1u : 0u));
+  PutBigEndian32(bytes, 4, width);
+  PutBigEndian32(bytes, 8, height);
   return bytes;
 }
 
@@ -40,34 +49,34 @@ std::vector<uint8_t> BuildPacketHeader(uint64_t raw_pts, uint32_t size) {
 
 }  // namespace
 
-SCRCPY_TEST(StreamHeaderParsesNameCodecAndSize) {
-  const auto bytes = BuildStreamHeader("Pixel 8", "h264", 1080, 2400);
+SCRCPY_TEST(StreamHeaderParsesNameAndCodec) {
+  const auto bytes = BuildStreamHeader("Pixel 8", "h264");
+  EXPECT_EQ(kStreamHeaderSize, size_t{69});
   const auto header = ParseStreamHeader(bytes.data(), bytes.size());
   EXPECT_TRUE(header.has_value());
   EXPECT_EQ(header->device_name, std::string("Pixel 8"));
   EXPECT_EQ(header->codec, std::string("h264"));
-  EXPECT_EQ(header->width, 1080u);
-  EXPECT_EQ(header->height, 2400u);
 }
 
 SCRCPY_TEST(StreamHeaderKeepsFullLengthNameWithoutNul) {
   std::string long_name(kDeviceNameSize, 'A');
-  const auto bytes = BuildStreamHeader(long_name.c_str(), "h265", 1, 2);
+  const auto bytes = BuildStreamHeader(long_name.c_str(), "h265");
   const auto header = ParseStreamHeader(bytes.data(), bytes.size());
   EXPECT_EQ(header->device_name.size(), kDeviceNameSize);
 }
 
 SCRCPY_TEST(StreamHeaderRejectsShortInput) {
-  const auto bytes = BuildStreamHeader("x", "h264", 1, 1);
+  const auto bytes = BuildStreamHeader("x", "h264");
   EXPECT_TRUE(!ParseStreamHeader(bytes.data(), bytes.size() - 1).has_value());
   EXPECT_TRUE(!ParseStreamHeader(nullptr, kStreamHeaderSize).has_value());
 }
 
-SCRCPY_TEST(PacketHeaderDecodesFlagsAndPts) {
-  const uint64_t raw = (uint64_t{1} << 62) | 123456u;
+SCRCPY_TEST(PacketHeaderDecodesKeyFrameAndPts) {
+  const uint64_t raw = (uint64_t{1} << 61) | 123456u;
   const auto bytes = BuildPacketHeader(raw, 4096);
   const auto header = ParsePacketHeader(bytes.data(), bytes.size());
   EXPECT_TRUE(header.has_value());
+  EXPECT_TRUE(!header->is_session);
   EXPECT_TRUE(header->is_key_frame);
   EXPECT_TRUE(!header->is_config);
   EXPECT_EQ(header->pts_us, uint64_t{123456});
@@ -75,18 +84,43 @@ SCRCPY_TEST(PacketHeaderDecodesFlagsAndPts) {
 }
 
 SCRCPY_TEST(PacketHeaderDecodesConfigFlag) {
-  const auto bytes = BuildPacketHeader(uint64_t{1} << 63, 30);
+  const auto bytes = BuildPacketHeader(uint64_t{1} << 62, 30);
   const auto header = ParsePacketHeader(bytes.data(), bytes.size());
   EXPECT_TRUE(header->is_config);
+  EXPECT_TRUE(!header->is_key_frame);
   EXPECT_EQ(header->pts_us, uint64_t{0});
 }
 
-SCRCPY_TEST(PacketHeaderRejectsEmptyAndOversizedPayloads) {
+SCRCPY_TEST(PacketHeaderPtsUsesSixtyOneBits) {
+  const uint64_t pts = (uint64_t{1} << 61) - 1;  // Largest PTS value.
+  const auto bytes = BuildPacketHeader(pts, 1);
+  const auto header = ParsePacketHeader(bytes.data(), bytes.size());
+  EXPECT_EQ(header->pts_us, pts);
+  EXPECT_TRUE(!header->is_key_frame && !header->is_config);
+}
+
+SCRCPY_TEST(PacketHeaderDecodesSessionPacket) {
+  const auto bytes = BuildSessionPacket(1080, 2336, false);
+  const auto header = ParsePacketHeader(bytes.data(), bytes.size());
+  EXPECT_TRUE(header.has_value());
+  EXPECT_TRUE(header->is_session);
+  EXPECT_EQ(header->session_width, 1080u);
+  EXPECT_EQ(header->session_height, 2336u);
+  EXPECT_TRUE(!header->client_resized);
+  EXPECT_EQ(header->payload_size, 0u);  // A session packet has no payload.
+
+  const auto resized = BuildSessionPacket(2336, 1080, true);
+  EXPECT_TRUE(ParsePacketHeader(resized.data(), resized.size())->client_resized);
+}
+
+SCRCPY_TEST(PacketHeaderRejectsInvalidPackets) {
   const auto empty = BuildPacketHeader(0, 0);
   EXPECT_TRUE(!ParsePacketHeader(empty.data(), empty.size()).has_value());
   const auto huge = BuildPacketHeader(0, kMaxPacketPayloadSize + 1);
   EXPECT_TRUE(!ParsePacketHeader(huge.data(), huge.size()).has_value());
   EXPECT_TRUE(!ParsePacketHeader(empty.data(), 11).has_value());
+  const auto no_size = BuildSessionPacket(0, 2336, false);
+  EXPECT_TRUE(!ParsePacketHeader(no_size.data(), no_size.size()).has_value());
 }
 
 SCRCPY_TEST(MergerPrependsConfigToNextMediaPacketOnce) {

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-/// Serializes scrcpy control messages (client -> server), protocol v3.3.x.
+/// Serializes scrcpy control messages (client -> server); types 0-17 are
+/// identical from v3.3.x through v5.0.x.
 ///
 /// Byte layouts mirror `app/src/control_msg.c` and are checked against the
 /// scrcpy project's own serialization tests (see the unit tests). All

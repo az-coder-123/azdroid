@@ -120,8 +120,8 @@ class ScrcpyServerManager {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) return false;
 
-    // A previous server's restore process must finish first, or this server
-    // would record its changed settings as the originals.
+    // A previous server's restore process must finish first, or it could
+    // turn the screen back on after this session turned it off.
     await _cleanupWaiter.waitForIdle(adbPath: adb, deviceSerial: deviceSerial);
 
     // Ensure remote scrcpy-server.jar is pushed and available

@@ -91,8 +91,8 @@ std::optional<scrcpy_core::StreamHeader> StreamSession::ConnectAndReadHeader() {
       continue;
     }
     // The dummy byte proves the server accepted this video socket. The rest of
-    // the header arrives only after the client connects the control socket,
-    // so report "connected" for the Dart side to open it.
+    // the header arrives only after the client connects the other sockets
+    // (audio, control), so report "connected" for the Dart side to open them.
     if (connection_.ReadExact(bytes.data(), 1, running_) != ReadResult::kOk) {
       StreamLog("Attempt " + std::to_string(attempt) +
                 ": connected but server not ready, retrying");
@@ -112,11 +112,8 @@ std::optional<scrcpy_core::StreamHeader> StreamSession::ConnectAndReadHeader() {
     }
     auto header = scrcpy_core::ParseStreamHeader(bytes.data(), bytes.size());
     if (header) {
-      width_ = header->width;
-      height_ = header->height;
       StreamLog("Header OK: device=" + header->device_name + ", codec=" +
-                header->codec + ", " + std::to_string(header->width) + "x" +
-                std::to_string(header->height));
+                header->codec);
     }
     return header;
   }
@@ -128,14 +125,22 @@ bool StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
     StreamLog("Codec '" + header.codec + "' is not supported; expected h264");
     return false;
   }
+  // The first packet is a session packet with the video size (v4.0+), like
+  // the official client expects.
+  std::array<uint8_t, scrcpy_core::kPacketHeaderSize> header_bytes = {};
+  const auto session = ReadPacketHeader(header_bytes);
+  if (!session || !session->is_session) {
+    StreamLog("Expected a session packet with the video size; closing stream");
+    return false;
+  }
+  ApplySession(*session);
   MfH264Decoder decoder;
-  if (!decoder.Initialize(header.width, header.height)) {
+  if (!decoder.Initialize(session->session_width, session->session_height)) {
     return false;
   }
   stats_.SetState(StreamState::kStreaming);
 
   scrcpy_core::ConfigPacketMerger merger;
-  std::array<uint8_t, scrcpy_core::kPacketHeaderSize> header_bytes = {};
   std::vector<uint8_t> payload;
   std::vector<uint8_t> access_unit;
   const auto on_frame = [this](const scrcpy_core::Nv12Image& image) {
@@ -143,15 +148,13 @@ bool StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
   };
 
   for (int index = 1; running_; ++index) {
-    if (connection_.ReadExact(header_bytes.data(), header_bytes.size(), running_) !=
-        ReadResult::kOk) {
-      break;
-    }
-    const auto packet =
-        scrcpy_core::ParsePacketHeader(header_bytes.data(), header_bytes.size());
-    if (!packet) {
-      StreamLog("Invalid packet header; closing stream");
-      break;
+    const auto packet = ReadPacketHeader(header_bytes);
+    if (!packet) break;
+    if (packet->is_session) {
+      // A new capture session (rotation): the decoder adapts through
+      // MF_E_TRANSFORM_STREAM_CHANGE; only the reported size changes here.
+      ApplySession(*packet);
+      continue;
     }
     payload.resize(packet->payload_size);
     if (connection_.ReadExact(payload.data(), payload.size(), running_) !=
@@ -173,6 +176,24 @@ bool StreamSession::PumpPackets(const scrcpy_core::StreamHeader& header) {
   }
   decoder.Shutdown();
   return true;
+}
+
+std::optional<scrcpy_core::PacketHeader> StreamSession::ReadPacketHeader(
+    std::array<uint8_t, scrcpy_core::kPacketHeaderSize>& bytes) {
+  if (connection_.ReadExact(bytes.data(), bytes.size(), running_) !=
+      ReadResult::kOk) {
+    return std::nullopt;
+  }
+  auto packet = scrcpy_core::ParsePacketHeader(bytes.data(), bytes.size());
+  if (!packet) StreamLog("Invalid packet header; closing stream");
+  return packet;
+}
+
+void StreamSession::ApplySession(const scrcpy_core::PacketHeader& session) {
+  width_ = session.session_width;
+  height_ = session.session_height;
+  StreamLog("Session: " + std::to_string(session.session_width) + "x" +
+            std::to_string(session.session_height));
 }
 
 void StreamSession::PublishFrame(const scrcpy_core::Nv12Image& image) {

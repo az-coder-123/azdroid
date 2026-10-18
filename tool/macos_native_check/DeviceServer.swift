@@ -24,7 +24,7 @@ final class DeviceServer {
     process.executableURL = URL(fileURLWithPath: adb)
     process.arguments = [
       "-s", serial, "shell", "CLASSPATH=\(Self.remoteJar)", "app_process", "/",
-      "com.genymobile.scrcpy.Server", "3.3.4", "scid=\(Self.scid)", "tunnel_forward=true",
+      "com.genymobile.scrcpy.Server", "5.0.1", "scid=\(Self.scid)", "tunnel_forward=true",
       "control=false", "audio=\(audio)", "audio_codec=raw", "cleanup=true",
       "video_bit_rate=2000000",
     ]

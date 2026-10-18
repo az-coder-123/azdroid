@@ -5,12 +5,12 @@ import 'package:desk_droid/core/services/process_executor.dart';
 
 /// Waits until the restore process of a previous scrcpy-server has finished.
 ///
-/// With `cleanup=true`, each server starts a restore process that puts the
-/// stay-awake settings back about half a second after the server exits. A
-/// server started before that reads the still-changed values as the
-/// originals, so the device would end up with the wrong settings. Waiting
-/// for the old restore process first avoids that race when the pipeline
-/// restarts (bitrate or stay-awake change, quick reconnect).
+/// With `cleanup=true`, each server starts a restore process that turns the
+/// phone screen back on (after "Screen Off") about half a second after the
+/// server exits. On a pipeline restart (bitrate or stay-awake change, quick
+/// reconnect), DeskDroid turns the screen off again on the new server; an
+/// old restore process that runs after that would turn it back on. Waiting
+/// for it first keeps the order.
 class ScrcpyCleanupWaiter {
   ScrcpyCleanupWaiter({
     ProcessExecutor? processExecutor,

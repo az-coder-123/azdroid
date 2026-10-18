@@ -15,8 +15,11 @@ final class ScrcpyVideoSession {
   private static let deviceNameSize = 64
   private static let codecIdSize = 4
   private static let packetHeaderSize = 12
-  private static let configFlag: UInt64 = 1 << 63
-  private static let keyFrameFlag: UInt64 = 1 << 62
+  // scrcpy v4.0+ media flags: bit 63 marks a session packet (video size),
+  // bit 62 a codec config packet, bit 61 a key frame.
+  private static let sessionFlag: UInt64 = 1 << 63
+  private static let configFlag: UInt64 = 1 << 62
+  private static let keyFrameFlag: UInt64 = 1 << 61
   private static let packetLogCount = 5
   private static let packetLogInterval = 60
 
@@ -155,7 +158,9 @@ final class ScrcpyVideoSession {
       report(.connected)
       ScrcpyLog.write("Attempt \(attempt): Video socket accepted; waiting for stream header")
 
-      let metaSize = Self.deviceNameSize + Self.codecIdSize + 8
+      // 2. Device name and codec id. The video size follows in the first
+      //    session packet.
+      let metaSize = Self.deviceNameSize + Self.codecIdSize
       guard let meta = socket.readExact(metaSize, isRunning: isRunning) else {
         ScrcpyLog.write("Attempt \(attempt): Stream header not received, retrying...")
         report(.connecting)
@@ -166,24 +171,29 @@ final class ScrcpyVideoSession {
       let name = String(decoding: meta.prefix(Self.deviceNameSize), as: UTF8.self)
         .replacingOccurrences(of: "\0", with: "")
       let codec = String(decoding: meta.dropFirst(Self.deviceNameSize).prefix(Self.codecIdSize), as: UTF8.self)
-      let sizeOffset = Self.deviceNameSize + Self.codecIdSize
-      let width = meta.withUnsafeBytes { $0.loadUnaligned(fromByteOffset: sizeOffset, as: UInt32.self).bigEndian }
-      let height = meta.withUnsafeBytes { $0.loadUnaligned(fromByteOffset: sizeOffset + 4, as: UInt32.self).bigEndian }
-      setVideoSize(width: Int(width), height: Int(height))
-      ScrcpyLog.write(
-        "Attempt \(attempt): Header OK! dev=\(name), codec=\(codec), resolution=\(width)x\(height)")
+      ScrcpyLog.write("Attempt \(attempt): Header OK! dev=\(name), codec=\(codec)")
       return socket
     }
     return nil
   }
 
-  /// Packets: 8 bytes PTS and flags, 4 bytes size, then the payload.
+  /// Packets: 8 bytes PTS and flags, 4 bytes size, then the payload. A
+  /// session packet instead carries flags (4), width (4) and height (4), and
+  /// no payload; it comes first and again on each capture change.
   private func readPackets(from socket: ScrcpySocket, into decoder: ScrcpyH264Decoder) {
     var index = 0
     while isRunning() {
       guard let meta = socket.readExact(Self.packetHeaderSize, isRunning: isRunning) else { return }
       let flags = meta.withUnsafeBytes { $0.loadUnaligned(as: UInt64.self).bigEndian }
       let size = Int(meta.withUnsafeBytes { $0.loadUnaligned(fromByteOffset: 8, as: UInt32.self).bigEndian })
+      if flags & Self.sessionFlag != 0 {
+        let width = Int(meta.withUnsafeBytes { $0.loadUnaligned(fromByteOffset: 4, as: UInt32.self).bigEndian })
+        let height = size  // Bytes 8..<12 hold the height in a session packet.
+        ScrcpyLog.write("Session: \(width)x\(height)")
+        stats.addBytes(Self.packetHeaderSize)
+        setVideoSize(width: width, height: height)
+        continue
+      }
       guard size > 0, let payload = socket.readExact(size, isRunning: isRunning) else { return }
       let receivedAt = DispatchTime.now().uptimeNanoseconds
       stats.addBytes(Self.packetHeaderSize + size)

@@ -7,7 +7,9 @@ import Foundation
 /// never affect the next one. Free of Flutter (docs/native-audio-contract.md).
 final class ScrcpyAudioSession {
   private static let packetHeaderSize = 12
-  private static let configFlag: UInt64 = 1 << 63
+  // scrcpy v4.0+: bit 62 marks a codec config packet (bit 63 is the
+  // video-only session flag).
+  private static let configFlag: UInt64 = 1 << 62
   /// Upper bound for one packet; raw packets are about 4 KiB.
   private static let maxPacketSize = 1 << 20
 

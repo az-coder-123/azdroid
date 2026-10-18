@@ -90,6 +90,7 @@ void AudioSession::Run() {
     }
     const auto packet = scrcpy_core::ParsePacketHeader(meta.data(), meta.size());
     if (!packet) break;
+    if (packet->is_session) continue;  // Video only; never sent for audio.
     payload.resize(packet->payload_size);
     if (connection_.ReadExact(payload.data(), payload.size(), running_) !=
         ReadResult::kOk) {

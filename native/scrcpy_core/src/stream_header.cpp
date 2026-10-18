@@ -2,8 +2,6 @@
 
 #include <cstring>
 
-#include "scrcpy_core/big_endian.h"
-
 namespace scrcpy_core {
 
 namespace {
@@ -29,9 +27,6 @@ std::optional<StreamHeader> ParseStreamHeader(const uint8_t* data, size_t size) 
   header.device_name = ReadPaddedText(cursor, kDeviceNameSize);
   cursor += kDeviceNameSize;
   header.codec = ReadPaddedText(cursor, kCodecIdSize);
-  cursor += kCodecIdSize;
-  header.width = ReadBigEndian32(cursor);
-  header.height = ReadBigEndian32(cursor + 4);
   return header;
 }
 

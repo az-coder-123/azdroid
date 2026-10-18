@@ -16,7 +16,7 @@ void main() {
       expect(
         ScrcpyServerOutput.classify(
           '[server] ERROR: The server version (2.1) does not match the client '
-          '(3.3.4)',
+          '(5.0.1)',
         ),
         ScrcpyServerEvent.versionMismatch,
       );
