@@ -1,2 +1,2 @@
-e36d0596a0294723f87653bc58e4835c9fabbb601817311e667686fd9502607d  DeskDroid-v1.0.1-Windows-x64.zip
-e36d0596a0294723f87653bc58e4835c9fabbb601817311e667686fd9502607d  DeskDroid-Windows-x64-latest.zip
+5a7c872bdaa2e3b12ae27ebad8606c464753fbe39b3221dc11af4e11f6a391e7  DeskDroid-v1.2.0-Windows-x64.zip
+5a7c872bdaa2e3b12ae27ebad8606c464753fbe39b3221dc11af4e11f6a391e7  DeskDroid-Windows-x64-latest.zip
