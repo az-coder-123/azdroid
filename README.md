@@ -35,7 +35,7 @@
 
 DeskDroid turns your Mac or Windows PC into the ultimate Android command center. Whether you are an Android developer debugging apps, a content creator recording mobile gameplay, or a power user seeking desktop control over your phone, DeskDroid delivers:
 
-- ⚡️ **Low-Latency Native Decoding:** Hardware H.264 encoding on the phone, decoded natively on the desktop (Apple VideoToolbox on macOS, Media Foundation on Windows) at up to 60–120 FPS.
+- ⚡️ **Low-Latency Native Decoding:** Hardware H.264 encoding on the phone, decoded natively on the desktop (Apple VideoToolbox on macOS, Media Foundation on Windows) at up to 60 FPS, at the phone's own resolution.
 - 📶 **Dual Connection (Wi-Fi & USB):** Subnet ARP auto-discovery, mDNS wireless debugging, 1-click USB-to-Wi-Fi switch, or instant plug-and-play USB cable mode.
 - 🔋 **Screen-Off Streaming:** Keep the physical phone screen dark during mirroring to eliminate heat and save up to 70% battery.
 - 🔒 **100% Private & P2P:** Zero cloud servers, zero analytics, and zero telemetry. All video, audio, and inputs remain strictly inside your local network.
@@ -116,7 +116,7 @@ DeskDroid includes **13 built-in modules** engineered for speed, reliability, an
 
 | # | Feature | Highlights & Capabilities | Shortcut | Docs |
 | :-: | :--- | :--- | :--- | :-: |
-| **01** | **Wireless Display & Low-Latency Streaming** | 60–120 FPS, native H.264 decoding (VideoToolbox on macOS, Media Foundation on Windows), live FPS / bitrate / latency badges | Auto | [Guide](docs/features/wireless-display-streaming.md) |
+| **01** | **Wireless Display & Low-Latency Streaming** | Up to 60 FPS at native resolution, H.264 hardware decoding (VideoToolbox on macOS, Media Foundation on Windows), live FPS / bitrate / latency badges | Auto | [Guide](docs/features/wireless-display-streaming.md) |
 | **02** | **Device Discovery & Wireless Pairing** | Subnet ARP scan, 1-click USB-to-Wi-Fi, mDNS discovery for Android 11+ pairing | Auto / Toolbar | [Guide](docs/features/device-discovery-pairing.md) |
 | **03** | **Remote Input & Gesture Control** | Trackpad and mouse gestures over the low-latency scrcpy control socket, smooth scrolling, right-click back | Mouse / Trackpad | [Guide](docs/features/remote-input-control.md) |
 | **04** | **Universal Keyboard & Text Injection** | Native desktop keyboard shortcuts, Unicode & IME international text input modal | <kbd>Cmd</kbd>+<kbd>K</kbd> | [Guide](docs/features/remote-input-control.md) |
@@ -160,7 +160,7 @@ Use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows (for example <kbd>Ctr
 ```mermaid
 flowchart LR
     subgraph AndroidDevice ["📱 Android Device"]
-        A1["SurfaceControl / Display Capture"] --> A2["MediaCodec (H.264 / H.265 GPU)"]
+        A1["SurfaceControl / Display Capture"] --> A2["MediaCodec (H.264 hardware)"]
         A2 --> A3["scrcpy-server (Shell-level daemon)"]
         A4["InputManager (Touch / Key Injection)"] <--- A3
     end

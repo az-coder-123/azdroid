@@ -43,16 +43,16 @@
 
 ### 2.1 Hardware-Accelerated Video Pipeline
 - **Direct Frame Capture:** Interacts directly with Android's internal `SurfaceControl` API to bypass UI toolkit overhead.
-- **On-Device Hardware Encoding:** Encodes raw video frames directly via the device's GPU/VPU using `MediaCodec` (H.264 Baseline/High Profile and optional H.265/HEVC).
-- **Sub-30ms Glass-to-Glass Latency:** Streams raw NAL units over raw TCP sockets directly into native hardware decoders on macOS (Apple VideoToolbox / Metal).
+- **On-Device Hardware Encoding:** scrcpy-server encodes the screen with the device's hardware H.264 encoder (`MediaCodec`).
+- **Low Latency:** NAL units travel over the local `adb forward` socket straight into the native hardware decoder (VideoToolbox on macOS, Media Foundation on Windows). The header shows the measured host processing time per frame; end-to-end latency is not measured.
 
-### 2.2 High Refresh Rate & Fluid Rendering
-- **High Frame Rates (60 / 90 / 120 FPS):** Fully supports modern Android high-refresh-rate displays for butter-smooth animations and responsiveness.
-- **Dynamic Bitrate Scaling:** Automatically throttles bitrate (ranging from 2 Mbps to 20 Mbps) based on Wi-Fi packet jitter, dropped frames, and network congestion.
+### 2.2 Frame Rate & Bitrate
+- **Up to 60 FPS:** The server is asked for at most 60 frames per second; a still screen sends fewer. The header shows the measured rate.
+- **Bitrate Presets:** 4, 8, or 16 Mbps, chosen in the side dock (8 Mbps by default). The bitrate does not change by itself.
 
 ### 2.3 Apple Retina & HiDPI Optimization
 - **Pixel-Perfect Scaling:** Adapts to Apple Retina displays with automatic pixel density compensation (HiDPI integer/fractional scaling), eliminating blurriness and visual artifacts.
-- **Configurable Resolutions:** Presets available for 720p, 1080p, 2K, and native device resolution.
+- **Native Resolution:** The stream uses the phone's own resolution (for example 1080 × 2336); no downscaling option exists yet.
 
 ---
 

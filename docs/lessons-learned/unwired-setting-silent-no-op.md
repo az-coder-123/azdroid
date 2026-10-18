@@ -16,7 +16,7 @@ The setting was added at the edges (an entity field and a method parameter) but 
 
 ## 4. Architectural Solution
 
-- One source of truth: `MirroringPreferences.stayAwake` in the streaming domain, loaded by `StreamingCubit.startSession` and saved on toggle. The duplicate field was removed from the unused `AppSettingsEntity`.
+- One source of truth: `MirroringPreferences.stayAwake` in the streaming domain, loaded by `StreamingCubit.startSession` and saved on toggle. The duplicate field was removed from the unused `AppSettingsEntity`, and later the whole entity and its empty `settings` feature were deleted.
 - The value travels explicitly: cubit → `StreamingRepository.startSession(stayAwake:)` → `ScrcpyServerManager.startServerDaemon(stayAwake:)` → `ScrcpyServerCommand.adbArguments(required stayAwake)`. The command builder makes the flag **required**, so a new caller cannot forget it.
 - Tests cover each hop: command arguments with and without the flag, the repository passing it to the server and keeping it across a bitrate restart, the cubit using the saved value, and an on-device check in the verification tool.
 

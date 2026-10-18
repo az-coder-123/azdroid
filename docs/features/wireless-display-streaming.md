@@ -9,11 +9,11 @@
 
 ## 📌 Overview
 
-The display engine delivers low-latency, hardware-accelerated video mirroring over local Wi-Fi or USB links. It achieves sub-30ms glass-to-glass latency by combining on-device Android hardware capture with native decoding on the desktop: Apple VideoToolbox on macOS, Media Foundation on Windows. Both plugins follow the shared [native video contract](../native-video-contract.md).
+The display engine delivers low-latency, hardware-accelerated video mirroring over local Wi-Fi or USB links. It combines on-device hardware H.264 encoding with native decoding on the desktop: Apple VideoToolbox on macOS, Media Foundation on Windows. Both plugins follow the shared [native video contract](../native-video-contract.md).
 
 ```mermaid
 flowchart LR
-    Android["Android SurfaceControl\n(Direct Display Buffer)"] --> MediaCodec["MediaCodec Encoder\n(Hardware H.264/HEVC)"]
+    Android["Android SurfaceControl\n(Direct Display Buffer)"] --> MediaCodec["MediaCodec Encoder\n(Hardware H.264)"]
     MediaCodec --> Socket["TCP Socket Stream\n(Raw NAL Units)"]
     Socket --> VideoToolbox["macOS: VideoToolbox\n(Apple Silicon / Metal GPU)"]
     Socket --> MediaFoundation["Windows: Media Foundation\n(H.264 decoder, NV12 to RGBA)"]
@@ -33,18 +33,18 @@ flowchart LR
 ### 2. Apple VideoToolbox & Metal Native Decoding
 - **Zero-Copy Native Texture:** Streams raw H.264 packets directly to a macOS platform plugin utilizing Apple's **VideoToolbox** framework.
 - **Hardware Accelerated:** Decodes frames directly on Apple Silicon / Metal GPUs and renders them via Flutter's hardware `Texture` widget, bypassing Dart memory copying.
-- **Sub-30ms Latency:** Achieves ultra-fast 20–35ms glass-to-glass response times over 5 GHz Wi-Fi networks.
+- **Measured Processing Time:** The header shows how long the computer takes per frame, from packet received to frame on screen. Glass-to-glass latency (including the phone's encoder and the network) is not measured.
 
 ### 2b. Windows Media Foundation Decoding (Preview)
 - **Native Plugin:** `windows/scrcpy_stream` connects with Winsock, parses frames with the shared `native/scrcpy_core` library, and decodes H.264 with the Media Foundation decoder in low-latency mode.
 - **Pixel Path:** Decoded NV12 frames are converted to RGBA on the CPU and handed to a Flutter pixel-buffer texture (triple-buffered). A zero-copy GPU path (D3D11) is planned; see [windows-port-plan.md](../windows-port-plan.md).
 - **Measured, Not Estimated:** The header badges show measured FPS, bitrate, and host processing time per frame, which excludes device encoding and network time.
 
-### 3. High Refresh Rate & Dynamic Bitrate Scaling
-- **Up to 120 FPS:** Supports high-refresh-rate displays (60 Hz, 90 Hz, 120 Hz) for smooth navigation, gaming, and animation testing.
+### 3. Frame Rate, Bitrate & Resolution
+- **Up to 60 FPS:** DeskDroid asks the server for at most 60 frames per second (`max_fps=60`); a still screen sends fewer. The header shows the measured rate.
 - **Bitrate Presets:** Pick 4, 8, or 16 Mbps from the side dock. scrcpy fixes the bitrate at launch, so a change restarts the video pipeline (about 1 second, at most 3; shown as *"Applying 16 Mbps…"*); the menu is disabled until it finishes. The header's Mbps badge shows the measured rate, which stays below the preset when the screen is still.
 - **Keep Phone Awake:** On by default; toggle it with the sun icon under the bitrate menu (filled = on). While mirroring, the phone does not sleep, on a charger or on battery. DeskDroid starts scrcpy-server with `stay_awake=true` and a 24-hour `screen_off_timeout`, and `cleanup=true` makes a restore process put the phone's own values back when mirroring stops, even if DeskDroid quits or the connection drops. The choice is saved in `mirroring_preferences.json` in the app data folder. Like the bitrate, it applies at launch, so toggling restarts the pipeline (*"Keeping the phone awake…"*).
-- **Adaptive Resolution:** Configure resolution targets (720p, 1080p, 2K, or Native) to balance network congestion with visual fidelity.
+- **Native Resolution:** The stream keeps the phone's own resolution (no `max_size` is sent). A lower-resolution option for weak Wi-Fi is not implemented.
 
 ### 4. Apple Retina & HiDPI Pixel Density Compensation
 - **Automatic Density Scaling:** Automatically compensates for Apple Retina display backing scale factors ($2\times / 3\times$), ensuring crisp text and sharp UI rendering without blurriness.
