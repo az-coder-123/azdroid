@@ -4,31 +4,29 @@ part of 'mcp_adb_client.dart';
 class McpAdbAppOps {
   const McpAdbAppOps._();
 
-  /// Retrieves the package and activity of the app currently focused on the screen.
+  /// The foreground app (`package`, `activity`) and, when a system window
+  /// such as the lock screen is in front of it, `overlay`.
   static Future<Map<String, String>?> getCurrentApp(
     McpAdbClient client,
     String serial,
   ) async {
-    final res = await client.run([
-      '-s',
-      serial,
-      'shell',
-      'dumpsys',
-      'window',
-      'displays',
-    ]);
-    final out = res.stdout.toString();
-    final match =
-        RegExp(
-          r'mCurrentFocus=Window\{[^\}]*\s+([a-zA-Z0-9_\.]+)/([a-zA-Z0-9_\.]+)',
-        ).firstMatch(out) ??
-        RegExp(
-          r'mFocusedApp=ActivityRecord\{[^\}]*\s+([a-zA-Z0-9_\.]+)/([a-zA-Z0-9_\.]+)',
-        ).firstMatch(out);
-    if (match != null) {
-      return {'package': match.group(1)!, 'activity': match.group(2)!};
-    }
-    return null;
+    Future<String> dump(List<String> args) async =>
+        (await client.run(['-s', serial, 'shell', 'dumpsys', ...args])).stdout
+            .toString();
+
+    final windows = await dump(['window', 'displays']);
+    final app =
+        McpForegroundAppParser.parse(windowDump: windows) ??
+        McpForegroundAppParser.parse(
+          windowDump: windows,
+          activityDump: await dump(['activity', 'activities']),
+        );
+    if (app == null) return null;
+    return {
+      'package': app.package,
+      'activity': app.activity,
+      'overlay': ?app.overlayWindow,
+    };
   }
 
   /// Launches an application by its package name using monkey launcher event.

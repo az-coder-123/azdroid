@@ -30,13 +30,18 @@ class McpAppDeviceToolExecutor {
     switch (toolName) {
       case 'android_get_current_app':
         final appInfo = await _adb.getCurrentApp(serial);
-        return appInfo != null
-            ? McpToolResult.text(
-                'Active Foreground App on $serial:\nPackage: ${appInfo['package']}\nActivity: ${appInfo['activity']}',
-              )
-            : McpToolResult.error(
-                'Unable to detect active foreground application.',
-              );
+        if (appInfo == null) {
+          return McpToolResult.error(
+            'Unable to detect active foreground application.',
+          );
+        }
+        final overlay = appInfo['overlay'];
+        return McpToolResult.text(
+          'Active Foreground App on $serial:\n'
+          'Package: ${appInfo['package']}\n'
+          'Activity: ${appInfo['activity']}'
+          '${overlay == null ? '' : '\nNote: the system window "$overlay" is in front of it (lock screen or notification shade); unlock or close it before tapping the app.'}',
+        );
 
       case 'android_launch_app':
         final pkg = arguments['package'] as String;

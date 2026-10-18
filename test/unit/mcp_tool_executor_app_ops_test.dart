@@ -35,6 +35,27 @@ void main() {
       },
     );
 
+    test(
+      'android_get_current_app warns when the lock screen is in front',
+      () async {
+        when(() => mockAdb.getCurrentApp('192.168.1.100:5555')).thenAnswer(
+          (_) async => {
+            'package': 'com.miui.home',
+            'activity': 'com.miui.home.launcher.Launcher',
+            'overlay': 'StatusBar',
+          },
+        );
+
+        final result = await executor.execute('android_get_current_app', {
+          'deviceSerial': '192.168.1.100:5555',
+        });
+
+        expect(result.isError, isFalse);
+        expect(result.content.first.text, contains('com.miui.home'));
+        expect(result.content.first.text, contains('"StatusBar" is in front'));
+      },
+    );
+
     test('android_launch_app launches target package', () async {
       when(() => mockAdb.launchApp('192.168.1.100:5555', 'com.spotify.music'))
           .thenAnswer((_) async => true);
