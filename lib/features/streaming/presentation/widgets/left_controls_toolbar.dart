@@ -54,7 +54,20 @@ class LeftControlsToolbar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Group 1: Android System Navigation & Power
+            // Group 1: Device Power & Screen Lock (top-level, isolated with distinct accent)
+            _buildToolButton(
+              icon: Icons.power_settings_new_rounded,
+              tooltip: 'Lock Phone / Power (${keys.label('P')})',
+              color: AppColors.statusError,
+              backgroundColor: AppColors.statusError.withValues(alpha: 0.14),
+              onPressed: onPower,
+            ),
+
+            const SizedBox(height: 10),
+            _buildDivider(),
+            const SizedBox(height: 10),
+
+            // Group 2: Android System Navigation
             _buildToolButton(
               icon: Icons.arrow_back_rounded,
               tooltip: 'Back (Right Click)',
@@ -71,12 +84,6 @@ class LeftControlsToolbar extends StatelessWidget {
               icon: Icons.crop_square_rounded,
               tooltip: 'App Switcher (${keys.label('Tab')})',
               onPressed: onAppSwitch,
-            ),
-            const SizedBox(height: 4),
-            _buildToolButton(
-              icon: Icons.power_settings_new_rounded,
-              tooltip: 'Lock Phone / Power (${keys.label('P')})',
-              onPressed: onPower,
             ),
 
             const SizedBox(height: 6),
@@ -143,13 +150,24 @@ class LeftControlsToolbar extends StatelessWidget {
     required String tooltip,
     required VoidCallback onPressed,
     Color? color,
+    Color? backgroundColor,
   }) {
-    return IconButton(
+    final button = IconButton(
       icon: Icon(icon, size: 20, color: color ?? AppColors.textPrimary),
       tooltip: tooltip,
       splashRadius: 18,
       onPressed: onPressed,
     );
+    if (backgroundColor != null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: button,
+      );
+    }
+    return button;
   }
 
   Widget _buildDivider() {

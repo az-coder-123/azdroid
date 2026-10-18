@@ -1,4 +1,5 @@
 import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
+import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
@@ -91,6 +92,21 @@ void main() {
       findsOneWidget,
     );
     expect(find.byTooltip('User Guide & Keyboard Shortcuts'), findsOneWidget);
+
+    // Verify Power button is at the very top (above Back button) with red error color
+    final powerTop = tester.getTopLeft(
+      find.byTooltip('Lock Phone / Power (⌘P)'),
+    );
+    final backTop = tester.getTopLeft(find.byTooltip('Back (Right Click)'));
+    expect(powerTop.dy, lessThan(backTop.dy));
+
+    final powerIcon = tester.widget<Icon>(
+      find.descendant(
+        of: find.byTooltip('Lock Phone / Power (⌘P)'),
+        matching: find.byType(Icon),
+      ),
+    );
+    expect(powerIcon.color, AppColors.statusError);
 
     // Tap each button and verify callback triggers
     await tester.tap(find.byTooltip('Back (Right Click)'));
