@@ -29,12 +29,12 @@
 - **Authentic 6-Digit PIN Pairing:** Provides a clean graphical guide for one-time 6-digit PIN verification and pairing port entry without relying on fake or non-functional QR pairing mechanisms.
 - **Recent Device Persistence:** Persists previously connected devices locally in `history.json` for instant 1-click reconnecting from the dashboard.
 
-### 1.3 Automatic Session Recovery
-- **Heartbeat & Keep-Alive:** Monitors TCP socket connectivity in real time.
-- **Instant Reconnection:** Seamlessly detects when a device drops from the Wi-Fi network and automatically re-establishes the streaming session upon rejoining.
+### 1.3 Session Loss Handling
+- **Clear Stop:** When the video stream fails or the device closes it, mirroring stops with an explanation and a **Retry Connection** button.
+- **No Automatic Reconnect Yet:** DeskDroid does not reconnect by itself when a device drops off the network; reconnect from the device list or press Retry.
 
 ### 1.4 1-Click USB-to-Wi-Fi Mode Switch (`adb tcpip 5555`)
-- **Automated Network Query:** Automatically interrogates the connected device via `adb shell ip` to extract internal Wi-Fi IP address.
+- **Automated Network Query:** Reads the phone's Wi-Fi address with `adb shell ip addr show wlan0`, falling back to `ip route`.
 - **Zero-Terminal Activation:** Runs `adb tcpip 5555` and establishes wireless connection in 1 click, allowing users to unplug the USB cable immediately.
 
 ---
@@ -58,26 +58,26 @@
 
 ## 3. Comprehensive Remote Control & Input Injection
 
-### 3.1 Advanced Mouse & Multi-Touch Emulation
+### 3.1 Mouse Emulation (Single Pointer)
 - **Pointer Event Normalization:** Normalizes cursor coordinates ($0.0 \to 1.0$) to guarantee precision across differing display aspect ratios and resolutions.
 - **Primary Actions:**
   - **Left Click:** Touch down, drag, and touch up.
   - **Right Click:** Android system **Back** action (`KEYCODE_BACK`).
   - **Middle Click / Command + H:** Android system **Home** action (`KEYCODE_HOME`).
-  - **Command + Tab:** Android **Recent Apps / App Switcher** (`KEYCODE_APP_SWITCH`).
+  - **App Switcher button / Ctrl + Tab (Windows):** Android **Recent Apps** (`KEYCODE_APP_SWITCH`). On macOS, Cmd + Tab belongs to the system app switcher, so use the toolbar button.
   - **Command + S:** Device **Screenshot Capture** (Lossless PNG to `~/Downloads` & macOS clipboard).
-- **Smooth Inertial Scrolling:** Converts macOS trackpad and mouse wheel scroll events into natural Android gesture scroll velocity.
+- **Scrolling:** Converts trackpad and mouse wheel scrolling into short touch swipes, so Android lists scroll with their own inertia.
 
 ### 3.2 Keyboard & International Text Input
 - **Direct Keystroke Forwarding:** Maps macOS hardware keys to Android standard Linux/Android keycodes.
-- **IME & Unicode Text Synchronization:** Injects complex international characters and multi-byte input (e.g., Vietnamese Telex/VNI, Japanese, Chinese) directly into the active Android text field without character loss.
+- **Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>):** Sends text with `adb shell input text`, which types ASCII characters. Accented and CJK characters (Vietnamese, Japanese, Chinese) are not typed yet; copy them on the computer and paste on the phone through clipboard sync instead.
 
 ---
 
 ## 4. Mac-First Productivity Features
 
 ### 4.1 Bidirectional Clipboard Synchronization
-- **Real-Time Clipboard Sync:** Automatically synchronizes text copies between the macOS Pasteboard and the Android System Clipboard (`Cmd + C` on Mac $\to$ `Paste` on Android, and vice versa).
+- **Automatic Clipboard Sync:** Every 2 seconds, text copied on either side is copied to the other, with loop prevention. Force a push with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> or a pull with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd>.
 
 ### 4.2 Drag & Drop File Sharing
 - **File Transfer:** Drag images, documents, and videos from macOS Finder directly onto the device viewport to store them in the Android `Downloads` directory.
@@ -85,10 +85,10 @@
 
 ### 4.3 Screen-Off Mirroring (Energy & Privacy Optimization)
 - **Host Display Power Management:** Turns the phone's screen off on demand (<kbd>Cmd</kbd> + <kbd>O</kbd>) while mirroring continues, through scrcpy's `SET_DISPLAY_POWER` control message ([details](features/screen-off-streaming.md)).
-- **Thermal & Battery Protection:** Dramatically reduces device heat dissipation and battery consumption while safeguarding user privacy in public settings.
+- **Privacy & Power:** The phone's screen stays dark in public places, and the display panel draws no power while off.
 
-### 4.4 macOS Menu Bar Companion
-- **System Tray Integration:** Runs discretely in the macOS Menu Bar. Users can quickly toggle device windows, check Wi-Fi connection quality, and monitor device battery levels with a single click.
+### 4.4 macOS Menu Bar Companion (Planned)
+- **Not Available Yet:** A menu bar popover is designed but not wired into the app ([status](features/menu-bar-companion.md)).
 
 ### 4.5 Audio Forwarding
 - **Device Audio on the Computer:** Raw PCM from Android 11+ plays on the computer's default output with a 50 ms jitter buffer; the phone goes quiet while mirroring ([details](features/audio-forwarding.md)).
@@ -100,7 +100,7 @@
   - **8 Handle Knobs:** Circular Apple-style knobs on all 4 corners and 4 edge midpoints with responsive directional cursors (`resizeUpDown`, `resizeLeftRight`, `resizeUpLeftDownRight`, `resizeUpRightDownLeft`).
   - **Whole-Box Pan/Move:** Dragging inside the selection body translates the entire frame smoothly with `move` cursor.
   - **Outside Re-Selection:** Dragging outside immediately starts drawing a fresh marquee.
-- **Direct SurfaceFlinger & Sub-Region Cropping:** Normalizes selection coordinates ($0.0 \to 1.0$) and maps with pixel precision to raw Android device resolution via hardware-accelerated image pipeline.
+- **Crop on the Computer:** Captures the full screen with `screencap` (PNG), then crops it on the computer to the selection, mapped from normalized coordinates ($0.0 \to 1.0$) to device pixels.
 - **Interactive Floating Action Bar:** Upon completing area selection, an exquisite floating glassmorphism capsule appears anchored to the crop marquee offering instant destination choices:
   - **Clipboard:** Copies cropped PNG directly to macOS clipboard (`⌘V`) without saving temporary files to disk.
   - **Save File:** Persists lossless PNG to `~/Downloads` with Finder and Open actions.
@@ -112,8 +112,8 @@
 - **Unobstructed Viewport Ergonomics:** Productivity tools (Streaming Bitrate, Screenshot, Screen Recording, Text Injector, Clipboard Sync) are isolated from the bottom navigation dock and placed in an elegant vertical floating dock along the right edge of the real-time phone display.
 - **Dynamic Proximity & Gap Preservation:** Positioned outside the phone frame with a consistent 16px ergonomic gap, scaling responsively with window size and device aspect ratio while maintaining symmetrical window centering.
 
-### 4.8 Hardware Screen Recording (Lossless MP4)
-- **On-Device Hardware Video Recording:** Directly invokes Android's native `screenrecord` binary to record video up to 180s in hardware H.264 MP4 without desktop rendering overhead.
+### 4.8 Hardware Screen Recording (H.264 MP4)
+- **On-Device Hardware Video Recording:** Runs Android's `screenrecord` to record up to 180 seconds (Android's own limit) of H.264 MP4 at 8 Mbps, encoded on the phone.
 - **Intentional Recording Preparation HUD:** Clicking the camera tool button or pressing <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> enters a preparation state with an Apple-style floating HUD rather than recording abruptly, featuring a 3-second countdown toggle, Start button, and quick cancel.
 - **Animated 3-2-1 Countdown Overlay:** Displays an animated pulsating circular dial over the phone display during the 3-second buffer, allowing users to prepare phone context or skip directly with "Start Now" or abort with <kbd>Esc</kbd>.
 - **Live Elapsed Duration & Dual Actions:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot, 1-click **STOP** (finalize & pull MP4), and **DISCARD** (purge temporary file without host disk clutter).
@@ -145,8 +145,8 @@
   - `Android System`: OS core subsystems (`ActivityManager`, `WindowManager`).
   - `Starred Only`: Isolate developer-flagged lines.
 - **Bookmarking & Star Logs:** 1-click star toggle on console rows and the inspector drawer to bookmark critical logs, filterable with the dedicated **Starred** chip.
-- **Side Detail Drawer & Stack Trace Viewer:** 420px slide-out inspector displaying detailed log entry metadata, Java/Kotlin exception stack trace syntax highlighting, and an automatic **Format JSON** pretty-print toggle.
-- **Adaptive Soft-Wrap vs. High-Performance Fixed Extent:** Toggle between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering for long log lines.
+- **Side Detail Drawer & Stack Trace Viewer:** Slide-out inspector with the entry's metadata, Java/Kotlin stack trace highlighting, and a **JSON: Raw / Formatted** toggle for JSON payloads.
+- **Adaptive Soft-Wrap vs. Fixed Row Height:** Toggle between fixed 26 px rows (fastest virtualized scrolling) and soft-wrap multi-line rendering for long log lines.
 - **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file in the Downloads folder (`deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`).
 
 ---
@@ -170,5 +170,5 @@
 ```mermaid
 flowchart LR
     A["Phase 1: Core MVP\n• Wireless ADB Connect\n• 60 FPS Hardware Stream\n• Basic Mouse & Keyboard"] --> B["Phase 2: Mac Polish\n• mDNS Auto-Discovery\n• Shared Clipboard\n• Drag-and-Drop Files\n• Screen-Off Streaming"]
-    B --> C["Phase 3: Power Features\n• Audio Forwarding\n• macOS Menu Bar Agent\n• Multi-Device Dashboard\n• Low-Latency Game Mapping"]
+    B --> C["Phase 3: Power Features\n• Audio Forwarding (done, Android 11+)\n• macOS Menu Bar Agent\n• Multi-Device Dashboard\n• Low-Latency Game Mapping"]
 ```

@@ -39,7 +39,7 @@ flowchart LR
 
 ## ⚡️ Key Capabilities
 
-### 1. Advanced Pointer & Multi-Touch Emulation
+### 1. Pointer Emulation (Single Touch)
 - **Coordinate Normalization:** Normalizes cursor coordinates ($0.0 \to 1.0$) relative to the active video viewport, ensuring precision across arbitrary window sizes and device display resolutions.
 - **Mouse Button Mapping:**
   - **Left Click & Drag:** Natural touch down, drag/swipe, and touch up.
@@ -56,13 +56,13 @@ flowchart LR
 - **System Navigation Shortcuts:**
   - <kbd>Cmd</kbd> + <kbd>H</kbd>: Return to Home Screen.
   - <kbd>Cmd</kbd> + <kbd>Backspace</kbd>: Back button.
-  - <kbd>Cmd</kbd> + <kbd>Tab</kbd>: App Switcher / Recent Apps (`KEYCODE_APP_SWITCH`).
-  - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate display orientation 90 degrees.
+  - <kbd>Ctrl</kbd> + <kbd>Tab</kbd> (Windows) or the toolbar button: App Switcher / Recent Apps (`KEYCODE_APP_SWITCH`). On macOS, <kbd>Cmd</kbd> + <kbd>Tab</kbd> is the system app switcher and never reaches DeskDroid.
+  - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate the mirror view on the computer by 90 degrees (the phone does not rotate).
   - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on while mirroring continues ([Screen Off](screen-off-streaming.md)).
 
-### 4. International Unicode & IME Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>)
-- **Direct Character Stream:** While standard hardware keyboard forwarding can encounter difficulties with complex multi-byte input, the **Quick Text Injector** modal (<kbd>Cmd</kbd> + <kbd>K</kbd>) directly injects UTF-8 text strings into the focused Android text field.
-- **Accented & Asian Language Support:** Flawlessly supports Vietnamese (Telex, VNI), Japanese, Chinese, Korean, and emoji glyphs without dropping characters.
+### 4. Quick Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>)
+- **How It Works:** The **Quick Text Injector** modal sends the text with `adb shell input text` into the focused Android text field.
+- **Current Limit:** `input text` types ASCII only. Accented and CJK characters (Vietnamese, Japanese, Chinese, Korean) and emoji are not typed yet. Workaround: copy the text on the computer and paste it on the phone (clipboard sync). The MCP server already uses a clipboard-paste path for such text; the app does not yet.
 
 ---
 

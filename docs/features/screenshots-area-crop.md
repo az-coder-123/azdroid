@@ -17,7 +17,7 @@ flowchart TD
     Trigger["Cmd + S (Full) or Cmd + Shift + S (Crop)"] --> Overlay["AreaScreenshotOverlay\n(Interactive Drag Marquee & Mask)"]
     Overlay --> Resize["8-Point Handle Knobs & Pan Translation\n(Pixel-exact dimension HUD W × H)"]
     Resize --> Bar["Floating Action Bar\n(Clipboard / Save File / Both)"]
-    Bar --> Process["Hardware SurfaceFlinger Sub-Region Crop"]
+    Bar --> Process["Full screencap (PNG), cropped on the computer"]
     Process --> Output["Clipboard & Downloads folder\n(Toast with Reveal & Open Actions)"]
 ```
 

@@ -95,6 +95,8 @@ Following the Single Responsibility Principle, the action cluster was extracted 
 
 ---
 
+**Recurrence (feature showcase card, 2026-10-18):** correcting a badge text ("Save 70% Battery & Heat" → "Screen Dark • Still Mirroring") made the badge longer, and the card's title row overflowed by 51 px in `feature_showcase_dialog_test.dart`. The badge sat in a plain `Row` next to an `Expanded` title, so its width was never constrained. It is now `Flexible` with a one-line ellipsis, and `feature_card_test.dart` pumps every catalog card at 300 px plus a very long badge at 260–520 px (it fails without the fix).
+
 ## 5. Prevention & Reusability Checklist
 
 - [ ] **Zero Passive State Badges:** Do not display static badges for idle/negative states (e.g., "Not Recording", "No Filter") in horizontal status toolbars. Keep status bars reserved for active signals.

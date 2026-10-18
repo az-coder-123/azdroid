@@ -53,10 +53,10 @@ Switch instantly between common developer workflows using the Preset dropdown:
 - **Line Bookmarking:** Click the star icon on any row or inside the drawer to flag entries for later review.
 - **Inspector Drawer:** 420px slide-out drawer displaying comprehensive entry metadata (Timestamp, PID, TID, Level, Tag).
 - **Stack Trace Color Coding:** Automatically identifies and syntax-highlights Java/Kotlin exception stack traces (`at package.Class.method(File.java:123)`).
-- **Format JSON / Raw:** Automatically detects JSON strings embedded in log bodies and formats them with 2-space indentation.
+- **JSON: Raw / Formatted:** Detects a JSON message body and pretty-prints it with 2-space indentation on demand.
 
 ### 5. Adaptive Soft-Wrap & Continuous Disk Recording
-- **Performance Toggle:** Switch between fixed `itemExtent: 26.0` (ultra-fast virtualized 60 FPS scrolling) and soft-wrap multi-line rendering.
+- **Performance Toggle:** Switch between fixed 26 px rows (`itemExtent`, fastest virtualized scrolling) and soft-wrap multi-line rendering.
 - **Live File Recording:** Stream logs directly to a timestamped file in the Downloads folder (`deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`; `~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
 
 ### 6. macOS Native Keyboard Shortcuts & Navigation

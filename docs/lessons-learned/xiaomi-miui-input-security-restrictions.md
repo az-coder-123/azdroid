@@ -56,7 +56,10 @@ In `UserGuideDialog` and `DeviceCardView`, DeskDroid detects Xiaomi/Redmi device
 3. Accept the three consecutive 5-second security warnings. (Requires SIM card inserted or Mi Account session).
 
 ### B. Two-Tier Text Injection Architecture
-Implemented resilient Unicode text delivery in `ControlBloc` and `ControlDatasource`:
+
+> ⚠️ **Correction (2026-10-18):** This section described the design as implemented in `ControlBloc` and `ControlDatasource`. It is not: only the MCP server (`mcp_adb_input_ops.dart`) has the clipboard-paste path. The app's Quick Text Injector (<kbd>Cmd</kbd> + <kbd>K</kbd>) still uses `adb shell input text` alone, so accented and CJK text is not typed. See [docs-claims-without-code.md](docs-claims-without-code.md).
+
+Intended design:
 
 ```mermaid
 flowchart TD
@@ -65,7 +68,7 @@ flowchart TD
     B -- No --> D["Unicode path:\nPush text to remote clipboard via scrcpy/ADB\nDispatch KeyEvent 279 (KEYCODE_PASTE)"]
 ```
 
-By leveraging the Android system clipboard for non-ASCII characters, full Vietnamese, East Asian, and accented European texts paste seamlessly with zero character loss.
+With the Android clipboard for non-ASCII characters, Vietnamese, East Asian, and accented European text would paste intact.
 
 ---
 

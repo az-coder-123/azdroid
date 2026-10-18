@@ -7,6 +7,8 @@
 
 ---
 
+> ⚠️ **Planned design.** Everything below describes how the companion is meant to work. It is not available in the app yet.
+
 ## 📌 Overview
 
 The **macOS Menu Bar Companion** anchors DeskDroid directly into the macOS system status bar. It provides instantaneous visibility into active device sessions, connection telemetry, and quick window toggle actions without interrupting your desktop workflow.

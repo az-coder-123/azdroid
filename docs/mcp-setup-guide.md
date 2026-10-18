@@ -247,7 +247,7 @@ Once configured, your AI assistant can execute autonomous mobile QA and engineer
 > **AI Autonomous Execution:**
 > 1. Invokes `android_list_devices()` ➔ Identifies online device serial.
 > 2. Invokes `android_launch_app(package="com.google.android.youtube")` ➔ Brings app to foreground.
-> 3. Invokes `android_click_element(text="Search", contentDesc="Search")` ➔ Inspects accessibility tree and taps exact element center with 100% precision.
+> 3. Invokes `android_click_element(text="Search", contentDesc="Search")` ➔ Inspects the accessibility tree and taps the center of the matching element.
 
 ### 📸 Scenario 2: Automated Visual Inspection & Layout QA
 

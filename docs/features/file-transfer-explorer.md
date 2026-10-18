@@ -28,8 +28,8 @@ flowchart LR
 ### 1. macOS to Android Push (<kbd>Cmd</kbd> + <kbd>U</kbd> & Direct Drag-and-Drop)
 - **Full-Window Viewport Drag & Drop:** Drag files or folders directly from Finder (macOS) or File Explorer (Windows) and drop anywhere onto the mirroring canvas (in both Standard and Zen fullscreen modes) with frosted-glass drag highlight.
 - **Zero-Click APK Auto-Sideloading:** Dropping an `.apk` package bypasses modal dialogs and initiates non-blocking background installation with real-time HUD progress badges.
-- **Recursive Folder Expansion:** Dropping a directory recursively parses and transfers all nested files automatically.
-- **Automated Media Indexing:** Media files (JPEG, PNG, MP4, MP3) automatically trigger an Android `MediaScannerConnection` broadcast upon transfer so they appear immediately in Google Photos / Gallery.
+- **Folders:** Dropping a folder pushes it with all its contents (`adb push` copies folders recursively).
+- **Automated Media Indexing:** A pushed media file (JPEG, PNG, MP4, MP3) triggers a `MEDIA_SCANNER_SCAN_FILE` broadcast, so it shows up in the Gallery. Files inside a pushed folder are indexed by Android on its own schedule.
 - **Transfer Status Banner:** A floating dynamic HUD banner displays live transfer and install progress (`Installing APK: app.apk`, `Item 2 of 5`), file sizes, and automatically dismisses after 4 seconds upon successful completion.
 
 ### 2. Android Device File Explorer (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>)

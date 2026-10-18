@@ -118,7 +118,7 @@ Add to `cline_mcp_settings.json`:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
   ```
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is normal MCP behavior. Press `Ctrl+C` to exit.)*
-- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `deskdroid` with 40 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
+- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `deskdroid` with 58 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
 
 ---
 
@@ -131,7 +131,7 @@ Add to `cline_mcp_settings.json`:
 > **AI Autonomous Execution:**
 > 1. Invokes `android_list_devices()` ➔ Identifies online device serial.
 > 2. Invokes `android_launch_app(package="com.google.android.youtube")` ➔ Brings app to foreground.
-> 3. Invokes `android_click_element(text="Search", contentDesc="Search")` ➔ Inspects accessibility tree and taps exact element center with 100% precision.
+> 3. Invokes `android_click_element(text="Search", contentDesc="Search")` ➔ Inspects the accessibility tree and taps the center of the matching element.
 
 ### 📸 Scenario 2: Automated Visual Inspection & Layout QA
 

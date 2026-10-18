@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-DeskDroid provides lossless on-device video recording without placing computational capture burden on your Mac. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
+DeskDroid records the phone's screen on the phone itself, so the computer does no capturing or encoding. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
 
 <p align="center">
   <img src="../images/deskdroid_screen_recording.png" alt="DeskDroid Hardware Screen Recording HUD" width="480">
@@ -20,7 +20,7 @@ DeskDroid provides lossless on-device video recording without placing computatio
 flowchart TD
     Trigger["Shortcut Cmd + Shift + R or Dock Button"] --> Prep["Preparation HUD\n(3s Countdown Toggle & Controls)"]
     Prep --> Countdown["Animated 3-2-1 Countdown Overlay"]
-    Countdown --> Record["Android Hardware screenrecord\n(Up to 180s Lossless H.264 MP4)"]
+    Countdown --> Record["Android Hardware screenrecord\n(Up to 180 s, H.264 MP4, 8 Mbps)"]
     Record --> HUD["Live Status HUD (REC 00:15)\n(STOP / DISCARD Controls)"]
     HUD --> Pull["Auto-Pull to Downloads/DeskDroid_Recording_*.mp4"]
     Pull --> Complete["Preview Card with Reveal & Play Actions"]
@@ -31,8 +31,8 @@ flowchart TD
 ## ⚡️ Key Capabilities
 
 ### 1. On-Device Hardware Video Recording
-- **Native Encoder Pipeline:** Executes Android's internal `/system/bin/screenrecord` utility directly on the target device, recording display frames in hardware H.264 MP4 format.
-- **Zero Host Overhead:** Eliminates desktop frame grabbing and re-encoding overhead on macOS, preserving 100% of host CPU and GPU resources for development.
+- **Native Encoder Pipeline:** Runs Android's `screenrecord` on the device, which records the display as hardware-encoded H.264 MP4 at 8 Mbps. Android limits one recording to 180 seconds; DeskDroid stops there and pulls the file.
+- **No Host Encoding:** The computer only pulls the finished file; it does not grab or re-encode frames. Mirroring keeps running in parallel.
 
 ### 2. Intentional Recording Preparation HUD
 - **Ergonomic Initiation:** Clicking the recording icon or pressing <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> summons a floating glassmorphic preparation HUD rather than recording abruptly.

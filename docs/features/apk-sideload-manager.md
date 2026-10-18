@@ -30,7 +30,7 @@ flowchart TD
 ## ⚡️ Key Capabilities
 
 ### 1. Pre-Install Metadata Inspection (AAPT2 Engine)
-- **Host-Side Extraction:** Utilizes bundled `aapt2` or Android SDK tools to parse package manifests before pushing bytes across the network.
+- **Host-Side Extraction:** Uses `aapt2` from the Android SDK `build-tools` (or on `PATH`) to read the manifest before the APK is pushed. It is not bundled with DeskDroid; without it, the APK still installs, and the card shows only the file name and size.
 - **Detailed Inspection Card:**
   - **App Identity:** Display Name, Package ID (`applicationId`), and high-resolution App Icon.
   - **Versioning:** Version Name (e.g. `1.4.2`) and Version Code (`142`).

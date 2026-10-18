@@ -37,7 +37,7 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 
 - ⚡️ **Low-Latency Native Decoding:** Hardware H.264 encoding on the phone, decoded natively on the desktop (Apple VideoToolbox on macOS, Media Foundation on Windows) at up to 60 FPS, at the phone's own resolution.
 - 📶 **Dual Connection (Wi-Fi & USB):** Subnet ARP auto-discovery, mDNS wireless debugging, 1-click USB-to-Wi-Fi switch, or instant plug-and-play USB cable mode.
-- 🔋 **Screen-Off Streaming:** Keep the physical phone screen dark during mirroring to eliminate heat and save up to 70% battery.
+- 🔋 **Screen-Off Streaming:** Keep the physical phone screen dark while you keep mirroring and controlling it, for privacy and less battery drain from the display.
 - 🔒 **100% Private & P2P:** Zero cloud servers, zero analytics, and zero telemetry. All video, audio, and inputs remain strictly inside your local network.
 
 ---
@@ -66,7 +66,7 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
     <td width="50%" align="center" valign="top">
       <img src="docs/images/deskdroid_logcat_console.png" alt="DeskDroid Real-Time Logcat Console with Multi-Tier Filters" width="100%">
       <br><b>Device Logcat Console (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd>)</b>
-      <br><sub>Live 60 FPS stream, 5k ring buffer, regex/PID/tag filters, star bookmarks & export.</sub>
+      <br><sub>Live stream (batched every 100 ms), 5k ring buffer, regex/PID/tag filters, star bookmarks & recording to a file.</sub>
     </td>
     <td width="50%" align="center" valign="top">
       <img src="docs/images/deskdroid_intent_dispatcher.png" alt="DeskDroid Deep Link Tester and Android Intent Dispatcher" width="100%">
@@ -98,12 +98,12 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
     <td width="50%" align="center" valign="top">
       <img src="docs/images/deskdroid_screen_recording.png" alt="DeskDroid Hardware Screen Recording HUD" width="100%">
       <br><b>Hardware Screen Recording (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>)</b>
-      <br><sub>Cinema-grade MP4 video encoded directly on phone GPU with 3s countdown HUD.</sub>
+      <br><sub>H.264 MP4 encoded by the phone's hardware encoder (up to 3 minutes), with a 3 s countdown HUD.</sub>
     </td>
     <td width="50%" align="center" valign="top">
       <img src="docs/images/deskdroid_area_crop.png" alt="DeskDroid Interactive Area Screenshot Crop Marquee" width="100%">
       <br><b>Interactive Area Crop (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>)</b>
-      <br><sub>Lossless marquee crop with live pixel badge & auto-copy to the clipboard.</sub>
+      <br><sub>PNG marquee crop with live pixel badge; copy, save, or both.</sub>
     </td>
   </tr>
 </table>
@@ -112,23 +112,23 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 
 ## ⚡️ Complete Feature Catalog
 
-DeskDroid includes **13 built-in modules** engineered for speed, reliability, and developer productivity:
+DeskDroid includes **14 built-in modules** (plus a planned menu bar companion):
 
 | # | Feature | Highlights & Capabilities | Shortcut | Docs |
 | :-: | :--- | :--- | :--- | :-: |
 | **01** | **Wireless Display & Low-Latency Streaming** | Up to 60 FPS at native resolution, H.264 hardware decoding (VideoToolbox on macOS, Media Foundation on Windows), live FPS / bitrate / latency badges | Auto | [Guide](docs/features/wireless-display-streaming.md) |
 | **02** | **Device Discovery & Wireless Pairing** | Subnet ARP scan, 1-click USB-to-Wi-Fi, mDNS discovery for Android 11+ pairing | Auto / Toolbar | [Guide](docs/features/device-discovery-pairing.md) |
 | **03** | **Remote Input & Gesture Control** | Trackpad and mouse gestures over the low-latency scrcpy control socket, smooth scrolling, right-click back | Mouse / Trackpad | [Guide](docs/features/remote-input-control.md) |
-| **04** | **Universal Keyboard & Text Injection** | Native desktop keyboard shortcuts, Unicode & IME international text input modal | <kbd>Cmd</kbd>+<kbd>K</kbd> | [Guide](docs/features/remote-input-control.md) |
-| **05** | **Screen-Off Streaming** | Powers down phone screen while streaming to eliminate heat and save 70% battery | <kbd>Cmd</kbd>+<kbd>O</kbd> | [Guide](docs/features/screen-off-streaming.md) |
-| **06** | **Device Logcat Console & Debugger** | 60 FPS live stream, 5k ring buffer, regex/PID/tag filters, star bookmarks, export | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | [Guide](docs/features/device-logcat-console.md) |
+| **04** | **Keyboard & Text Injection** | Desktop keyboard shortcuts and a text input modal (ASCII; accented and CJK text not yet) | <kbd>Cmd</kbd>+<kbd>K</kbd> | [Guide](docs/features/remote-input-control.md) |
+| **05** | **Screen-Off Streaming** | Turns the phone's display panel off while mirroring and control continue | <kbd>Cmd</kbd>+<kbd>O</kbd> | [Guide](docs/features/screen-off-streaming.md) |
+| **06** | **Device Logcat Console & Debugger** | Live stream (batched every 100 ms), 5k ring buffer, regex/PID/tag filters, star bookmarks, recording to a file | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | [Guide](docs/features/device-logcat-console.md) |
 | **07** | **Deep Link & Intent Dispatcher** | Test URI schemes, system actions (`VIEW`, `SEND`), packages & typed extras | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | [Guide](docs/features/deep-link-intent-dispatcher.md) |
 | **08** | **APK Sideload & Package Manager** | AAPT2 package inspection, install flags (`-r`, `-g`, `-t`), launch & uninstall | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> | [Guide](docs/features/apk-sideload-manager.md) |
 | **09** | **Two-Way File Explorer** | Two-way file manager, quick folders (Downloads, DCIM, Docs) & download to the computer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> | [Guide](docs/features/file-transfer-explorer.md) |
 | **10** | **Viewport Drag & Drop Push** | Drag any file or APK onto the mirroring window for instant push or sideload | Drag-and-drop | [Guide](docs/features/file-transfer-explorer.md) |
-| **11** | **Bidirectional Clipboard Sync** | Real-time desktop clipboard ⇄ Android clipboard with loop prevention | <kbd>Cmd</kbd>+<kbd>C</kbd> / <kbd>V</kbd> | [Guide](docs/features/clipboard-sync.md) |
-| **12** | **Hardware MP4 Screen Recording** | Lossless MP4 video encoded on phone GPU, 3s countdown HUD, live timer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | [Guide](docs/features/hardware-screen-recording.md) |
-| **13** | **Lossless Screenshots & Area Crop** | Full display capture or interactive 8-handle marquee crop saved to your Downloads folder | <kbd>Cmd</kbd>+<kbd>S</kbd> / <kbd>Shift</kbd>+<kbd>S</kbd> | [Guide](docs/features/screenshots-area-crop.md) |
+| **11** | **Bidirectional Clipboard Sync** | Desktop clipboard ⇄ Android clipboard every 2 s, with loop prevention | Auto, or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> / <kbd>V</kbd> | [Guide](docs/features/clipboard-sync.md) |
+| **12** | **Hardware MP4 Screen Recording** | H.264 MP4 (8 Mbps, up to 3 minutes) encoded on the phone, 3 s countdown HUD, live timer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | [Guide](docs/features/hardware-screen-recording.md) |
+| **13** | **Lossless Screenshots & Area Crop** | Full PNG capture or interactive 8-handle marquee crop, to the clipboard, your Downloads folder, or both | <kbd>Cmd</kbd>+<kbd>S</kbd> / <kbd>Shift</kbd>+<kbd>S</kbd> | [Guide](docs/features/screenshots-area-crop.md) |
 | **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 58 tools for Claude Desktop, Cursor & Antigravity | Stdio CLI | [Guide](docs/mcp-setup-guide.md) |
 | **+** | **Menu Bar Companion** *(not yet available)* | Status bar popover for quick window toggle and live telemetry (FPS & latency); designed, not yet wired into the app | Menu Bar | [Guide](docs/features/menu-bar-companion.md) |
 
@@ -144,13 +144,13 @@ Use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows (for example <kbd>Ctr
 | :--- | :--- | :--- |
 | <kbd>Cmd</kbd> / <kbd>Ctrl</kbd> + <kbd>S</kbd> | Full Screenshot | Captures full phone screen to your Downloads folder & clipboard |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag interactive marquee to crop custom screen region |
-| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Lossless hardware MP4 recording with countdown HUD & timer |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Hardware H.264 MP4 recording (up to 3 minutes) with countdown HUD & timer |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | APK Manager | Inspect package metadata, configure install flags & sideload |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> | Intent Dispatcher | Fire deep link URLs, system intents & typed extras |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Browse phone directories & download files to the computer |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Real-time log stream with level/tag/PID filtering & export |
-| <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen-Off Toggle | Power down physical phone screen to reduce heat and save battery |
-| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Open Unicode & international IME text input modal |
+| <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen-Off Toggle | Turn the phone's screen off or on; mirroring continues |
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Open the text input modal (ASCII text) |
 | <kbd>Cmd</kbd> + <kbd>H</kbd> / <kbd>Backspace</kbd> | Home / Back | Standard Android navigation controls |
 
 ---
@@ -167,7 +167,8 @@ flowchart LR
 
     subgraph Transport ["📶 Local Wi-Fi (LAN) / 🔌 USB Cable"]
         V_STREAM["TCP Video Stream (Raw NAL Units)"]
-        C_SOCKET["TCP / UDP Control Events (Input Packets)"]
+        A_STREAM["TCP Audio Stream (Raw PCM, Android 11+)"]
+        C_SOCKET["TCP Control Socket (scrcpy Control Messages)"]
     end
 
     subgraph DesktopApp ["💻 macOS / Windows (DeskDroid App - Flutter)"]
@@ -176,6 +177,7 @@ flowchart LR
     end
 
     A3 === V_STREAM ===> M3
+    A3 === A_STREAM ===> M4["Native Audio Player (AVAudioEngine / WASAPI)"]
     M2 === C_SOCKET ===> A3
 ```
 
@@ -229,7 +231,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 | [📖 User Guide](docs/user-guide.md) | Getting started, first-time setup, and device permissions |
 | [📶 Pairing Guide](docs/pairing-guide.md) | Wireless pairing instructions for Android 11+ and USB fallback |
 | [⌨️ Shortcuts & Gestures](docs/shortcuts.md) | Complete mouse gestures and keyboard shortcuts (<kbd>Cmd</kbd> on macOS, <kbd>Ctrl</kbd> on Windows) |
-| [⚡️ Features Catalog](docs/features/README.md) | Modular in-depth documentation across all 13 built-in features |
+| [⚡️ Features Catalog](docs/features/README.md) | Modular in-depth documentation across all 14 built-in features |
 | [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
 | [🧭 Dependency Boundaries](docs/dependency-boundaries.md) | Allowed imports between features, shared kernel, and composition root |
 | [🧩 Platform Abstraction](docs/platform-abstraction.md) | Where macOS/Windows differences live, and how to add a new one |

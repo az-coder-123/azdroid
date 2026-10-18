@@ -100,7 +100,7 @@ Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for e
 
 - <kbd>Cmd</kbd> + <kbd>H</kbd>: Go to Home Screen.
 - <kbd>Cmd</kbd> + <kbd>Backspace</kbd>: Back key.
-- <kbd>Cmd</kbd> + <kbd>Tab</kbd>: App Switcher (Recent Apps).
+- App Switcher (Recent Apps): the toolbar button, or <kbd>Ctrl</kbd> + <kbd>Tab</kbd> on Windows (on macOS, <kbd>Cmd</kbd> + <kbd>Tab</kbd> is the system app switcher).
 - <kbd>Cmd</kbd> + <kbd>S</kbd>: Full Screenshot to your Downloads folder & clipboard.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>: Area Screenshot crop.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>: Hardware MP4 Screen Recording.
@@ -108,8 +108,8 @@ Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for e
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>: Open Android File Explorer.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>: Open APK Sideload & Package Manager.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>: Open Real-Time Device Logcat Console.
-- <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector (Direct Unicode & Vietnamese accents).
-- <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate display 90 degrees.
+- <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector (ASCII text; for Vietnamese or other accented text, copy on the computer and paste on the phone).
+- <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate the mirror view 90 degrees (the phone does not rotate).
 - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on; mirroring continues.
 
 ---
@@ -137,13 +137,14 @@ Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for e
 - **Multi-Tier Filtering:** Filter by minimum priority level (`V`, `D`, `I`, `W`, `E`, `F`), text query, regular expressions, dynamic Tag, and PID.
 - **Exclude Tags:** Exclude spammy system tags by clicking **Exclude Tag** in the drawer or managing `-tag` chips with 1-click removal.
 - **Bookmarking (Star Logs):** Click the star icon on any log row to bookmark it. Toggle the **Starred** filter chip to isolate flagged logs during testing.
-- **Detail Drawer & Stack Trace Viewer:** Click any log row to open the side inspector drawer. View full metadata, colored Java/Kotlin stack traces, and click **Format JSON** to pretty-print JSON payloads.
-- **Toggle Soft-Wrap:** Click the wrap icon in the footer to toggle between multi-line text wrapping and single-line fixed-extent virtualized scrolling (60 FPS).
+- **Detail Drawer & Stack Trace Viewer:** Click any log row to open the side inspector drawer. View full metadata, colored Java/Kotlin stack traces, and switch **JSON: Raw / Formatted** to pretty-print JSON payloads.
+- **Toggle Soft-Wrap:** Click the wrap icon in the footer to toggle between multi-line text wrapping and single-line fixed-height rows (fastest scrolling).
 - **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log` inside your Downloads folder.
 
 ### Bidirectional Clipboard Sync
-- Text copied on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>C</kbd>) is automatically synced to the Android clipboard.
-- Text copied on Android is instantly available on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>V</kbd>).
+- Text copied on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>C</kbd>) is synced to the Android clipboard within about 2 seconds.
+- Text copied on Android becomes available on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>V</kbd>) within about 2 seconds.
+- Force a sync at once: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> (push to the phone), <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (pull to the computer).
 
 ---
 

@@ -24,15 +24,17 @@
 | :--- | :--- | :--- |
 | <kbd>Cmd</kbd> + <kbd>H</kbd> | Home Screen | Navigates immediately to Android Home |
 | <kbd>Cmd</kbd> + <kbd>Backspace</kbd> | Back | Simulates Android Back navigation |
-| <kbd>Cmd</kbd> + <kbd>Tab</kbd> | App Switcher | Opens Android Recent Apps list |
+| <kbd>Ctrl</kbd> + <kbd>Tab</kbd> (Windows) | App Switcher | Opens Android Recent Apps. On macOS use the toolbar button: <kbd>Cmd</kbd> + <kbd>Tab</kbd> is the system app switcher |
 | <kbd>Cmd</kbd> + <kbd>S</kbd> | Full Screenshot | Lossless full-screen PNG saved to your Downloads folder & copied to the clipboard |
-| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag marquee to crop region on phone screen; saves & copies to clipboard |
-| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Starts / stops hardware MP4 recording saved to your Downloads folder |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Area Screenshot | Drag marquee to crop a region; then <kbd>C</kbd> copy, <kbd>S</kbd> save, <kbd>Enter</kbd> both |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Screen Recording | Starts / stops hardware MP4 recording (up to 3 minutes) saved to your Downloads folder |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> | Intent Dispatcher | Opens the Deep Link & Intent Dispatcher |
+| <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> / <kbd>V</kbd> | Clipboard Push / Pull | Forces a clipboard sync to the phone / to the computer |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | Install APK | Opens APK Sideload & Manager dialog with metadata inspection |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Opens real-time logcat inspection, filtering & recording console |
 | <kbd>Cmd</kbd> + <kbd>U</kbd> | Send Files | Native file picker (Finder on macOS, File Explorer on Windows) to send files/media/APKs to Android |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Manager dialog with quick folders & download to the computer |
-| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send Unicode / Vietnamese text |
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send text (ASCII; paste accented text through the clipboard) |
 | <kbd>Cmd</kbd> + <kbd>R</kbd> | Rotate Screen | Rotates video viewport by 90° clockwise |
 | <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen Toggle | Turns the phone's screen off or on while mirroring continues ([details](features/screen-off-streaming.md)) |
 | <kbd>Escape</kbd> | Back | Closes dialogs or navigates back |

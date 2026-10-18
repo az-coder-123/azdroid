@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-DeskDroid provides seamless bidirectional clipboard synchronization between macOS and Android. Any text copied on your Mac is instantly pasteable on Android, and text selected and copied on Android is immediately available in the macOS pasteboard.
+DeskDroid provides seamless bidirectional clipboard synchronization between macOS and Android. Text copied on your computer can be pasted on Android, and text copied on Android can be pasted on the computer, within about 2 seconds.
 
 ```mermaid
 flowchart LR
@@ -25,9 +25,9 @@ flowchart LR
 
 ## ⚡️ Key Capabilities
 
-### 1. Real-Time Two-Way Background Daemon
+### 1. Two-Way Background Daemon (Every 2 Seconds)
 - **Background Daemon:** `ClipboardSyncDaemon` runs a non-intrusive 2-second background loop monitoring both macOS pasteboard and Android clipboard without user interaction.
-- **Mac to Android:** When you copy text, URLs, API keys, or verification codes on macOS, DeskDroid immediately forwards the string to Android clipboard.
+- **Mac to Android:** When you copy text, URLs, API keys, or verification codes on the computer, the next tick forwards the string to the Android clipboard.
 - **Android to Mac:** When you select and copy text on the phone, the daemon detects the clipboard change and pushes the text to the macOS clipboard, ready for <kbd>Cmd</kbd> + <kbd>V</kbd>.
 
 ### 2. Dual Strategy & Broad Android Compatibility
@@ -35,7 +35,7 @@ flowchart LR
 - **Broadcast Fallback:** Automatic fallback to `am broadcast -a clipper.set / clipper.get` when `cmd clipboard` is unavailable on custom ROMs.
 
 ### 3. Bidirectional Echo Loop Suppression
-- **Dual Content Caching:** Maintains independent string hashes for host and device clipboards.
+- **Last-Synced Text:** Remembers the last text seen on each side.
 - **Loop Prevention:** Text received from Mac is marked before pushing to Android, ensuring subsequent Android polling does not reflect it back to Mac, completely preventing infinite ping-pong loops.
 
 ### 4. Desktop Shortcuts & HUD Feedback

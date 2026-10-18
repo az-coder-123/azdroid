@@ -28,12 +28,12 @@ flowchart TD
 ## ⚡️ Key Capabilities
 
 ### 1. Zero-Config Subnet Probing (ARP + Fast TCP Scan)
-- **Local Network Interrogation:** Automatically queries the macOS local ARP cache (`arp -an`) to identify active IPv4 hosts on the current Wi-Fi subnet.
-- **Fast Non-Blocking Probing:** Dispatches asynchronous, concurrent TCP socket probes (150ms timeout) across standard ADB daemon ports (default `5555` and dynamic ranges `37000–44000`).
-- **Instant Device Resolution:** Active Android endpoints are resolved to manufacturer model names (e.g. `Samsung Galaxy S23`, `Xiaomi Redmi 9`, `Google Pixel 8`) and displayed on the discovery grid with connection latency badges.
+- **Local Network Interrogation:** Reads the computer's ARP cache to find active hosts on the current Wi-Fi subnet, then also sweeps the whole /24 subnet (`.1`–`.254`).
+- **Fast Non-Blocking Probing:** Concurrent TCP probes (400 ms timeout) on ADB port `5555`; known and recent addresses are also tried on `5554`, `5556`, and `5558`. Wireless-debugging ports (Android 11+) are found through mDNS instead.
+- **Device Resolution:** Endpoints are shown with the model name ADB reports (for example `M2004J19C` for a Redmi 9), a connection type (USB / Wi-Fi), and a status badge.
 
 ### 2. Automated USB-to-Wi-Fi Auto-Handoff
-- **Plug-and-Play Provisioning:** When an authorized Android device is plugged into the Mac via USB, `UsbWifiAutoHandoffService` automatically extracts the device's internal Wi-Fi IP address via `adb shell ip route`.
+- **Plug-and-Play Provisioning:** When an authorized Android device is plugged in via USB, `UsbWifiAutoHandoffService` reads its Wi-Fi IP address (`adb shell ip addr show wlan0`, falling back to `ip route`).
 - **Zero-Terminal Switch:** Dispatches `adb tcpip 5555` in the background, provisions the device for network debugging, and connects wirelessly.
 - **Deduplication Safeguard:** Remembers previously provisioned hardware serials during the session to avoid redundant TCP/IP restarts.
 
@@ -53,4 +53,4 @@ flowchart TD
 1. `DiscoveryCubit.startDiscovery()` launches concurrent discovery tasks via `DeviceDiscoveryRepository`.
 2. `DeviceDiscoveryDatasourceImpl` aggregates attached ADB devices, ARP cache entries, and active TCP socket probes.
 3. State transitions from `DiscoveryInitial` $\to$ `DiscoveryLoading` $\to$ `DiscoveryLoaded(devices)` or `DiscoveryError`.
-4. Connected devices trigger `StreamingCubit.startStream(device)` to initialize mirroring.
+4. Opening a device calls `StreamingCubit.startSession(device)` to start mirroring.
