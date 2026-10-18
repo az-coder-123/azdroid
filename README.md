@@ -118,7 +118,7 @@ DeskDroid includes **14 built-in modules** (plus a planned menu bar companion):
 | :-: | :--- | :--- | :--- | :-: |
 | **01** | **Wireless Display & Low-Latency Streaming** | Up to 60 FPS at native resolution, H.264 hardware decoding (VideoToolbox on macOS, Media Foundation on Windows), live FPS / bitrate / latency badges | Auto | [Guide](docs/features/wireless-display-streaming.md) |
 | **02** | **Device Discovery & Wireless Pairing** | Subnet ARP scan, 1-click USB-to-Wi-Fi, mDNS discovery for Android 11+ pairing | Auto / Toolbar | [Guide](docs/features/device-discovery-pairing.md) |
-| **03** | **Remote Input & Gesture Control** | Trackpad and mouse gestures over the low-latency scrcpy control socket, smooth scrolling, right-click back | Mouse / Trackpad | [Guide](docs/features/remote-input-control.md) |
+| **03** | **Remote Input & Gesture Control** | Trackpad scrolling, two-finger pinch and rotate (trackpad or Alt + drag), right-click back, over the scrcpy control socket | Mouse / Trackpad | [Guide](docs/features/remote-input-control.md) |
 | **04** | **Keyboard & Text Injection** | Desktop keyboard shortcuts and a text input modal; Vietnamese, CJK, and emoji are pasted intact | <kbd>Cmd</kbd>+<kbd>K</kbd> | [Guide](docs/features/remote-input-control.md) |
 | **05** | **Screen-Off Streaming** | Turns the phone's display panel off while mirroring and control continue | <kbd>Cmd</kbd>+<kbd>O</kbd> | [Guide](docs/features/screen-off-streaming.md) |
 | **06** | **Device Logcat Console & Debugger** | Live stream (batched every 100 ms), 5k ring buffer, regex/PID/tag filters, star bookmarks, recording to a file | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | [Guide](docs/features/device-logcat-console.md) |

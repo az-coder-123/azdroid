@@ -21,7 +21,7 @@ Several feature descriptions in `README.md` and `docs/` promised behavior that n
 | Docs, in-app catalog | Logcat streams "at 60 FPS" | Batches every 100 ms. |
 | Docs, in-app catalog | "Lossless" MP4, 4–24 Mbps and resolution presets | `screenrecord` H.264 at 8 Mbps, at most 180 s; no recording options in the UI. |
 | Docs | Area crop by "hardware SurfaceFlinger sub-region crop" | Full `screencap`, cropped on the computer. |
-| Docs, in-app catalog | Multi-touch emulation | One pointer. |
+| Docs, in-app catalog | Multi-touch emulation | One pointer. **Fixed afterwards in code**: trackpad pinch/rotate and Alt-drag send two live fingers, verified on a Redmi 9 (`P: 2 / 2`). |
 | Docs, in-app guide | <kbd>Cmd</kbd>+<kbd>Tab</kbd> opens the app switcher on macOS | macOS keeps Cmd+Tab for its own app switcher; use the toolbar button (Ctrl+Tab works on Windows). |
 | Docs, in-app guide | <kbd>Cmd</kbd>+<kbd>R</kbd> rotates the device display | Rotates the mirror view on the computer. |
 | Docs | Automatic session recovery with heartbeats | A failed stream stops with a Retry button; no automatic reconnect. |

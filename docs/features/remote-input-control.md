@@ -26,7 +26,9 @@ flowchart LR
 
 | Input | Path | Notes |
 |:---|:---|:---|
-| Tap, drag, swipe, scroll | Control socket | Touch DOWN, interpolated MOVE every 16 ms, UP. |
+| Tap, mouse drag, mouse wheel | Control socket | Touch DOWN, interpolated MOVE every 16 ms, UP (a mouse drag is replayed when the button is released). |
+| Trackpad two-finger pan | Control socket | One **live** finger: DOWN, MOVE as the fingers move, UP, so lists scroll and fling as on the phone. |
+| Trackpad pinch / rotate, Alt + drag | Control socket | Two **live** fingers (pointer ids -2 and -3); the server turns the second into POINTER_DOWN/UP. Not possible over adb. |
 | Key events (BACK, HOME, App Switch: toolbar buttons, shortcuts, mouse buttons) | Control socket | DOWN then UP. All of them go through `ControlBloc` (`ControlNavigationActionDispatched`). |
 | Quick Text (<kbd>Cmd</kbd> + <kbd>K</kbd>), ASCII only | `adb shell input text` | Leaves the phone's clipboard alone. |
 | Quick Text with accents, CJK, or emoji | Control socket: `SET_CLIPBOARD` with paste | The server sets the phone's clipboard and presses PASTE (Android 7+). Key-map typing cannot produce these characters. |
@@ -40,16 +42,21 @@ flowchart LR
 
 ## ⚡️ Key Capabilities
 
-### 1. Pointer Emulation (Single Touch)
+### 1. Pointer & Multi-Touch Emulation
 - **Coordinate Normalization:** Normalizes cursor coordinates ($0.0 \to 1.0$) relative to the active video viewport, ensuring precision across arbitrary window sizes and device display resolutions.
+- **Two-Finger Gestures:**
+  - **Trackpad pinch:** Two fingers centered on the pointer, apart by 30 % of the viewport's shorter side × the pinch scale, turned by the trackpad rotation: zoom maps and photos, rotate maps.
+  - **Alt (Option) + left drag:** For a mouse. The second finger mirrors the pointer through the screen center (like scrcpy's Ctrl-drag): drag away from the center to zoom in, around it to rotate.
+  - `TouchGestureTracker` decides per gesture: a scale or rotation change starts a pinch, a pan starts a one-finger drag, and the finger count stays fixed until the gesture ends. A hand resting on the trackpad sends nothing.
 - **Mouse Button Mapping:**
-  - **Left Click & Drag:** Natural touch down, drag/swipe, and touch up.
+  - **Left Click & Drag:** A click is a tap; a drag is sent as a swipe when the button is released.
   - **Right Click:** Triggers Android system **BACK** navigation (`KEYCODE_BACK`).
   - **Middle Click (Wheel Click):** Triggers Android system **HOME** (`KEYCODE_HOME`).
 - **Visual Feedback:** `TouchIndicatorOverlay` renders an Apple-styled animated ripple at the pointer contact point.
 
-### 2. Smooth Inertial Trackpad & Wheel Scrolling
-- **Gesture Conversion:** Converts two-finger trackpad flicks and mouse wheel rotations into short touch swipes (`ControlConstants.scrollFactor`), so lists scroll with native inertia.
+### 2. Trackpad & Wheel Scrolling
+- **Trackpad:** A two-finger pan is a live one-finger drag on the phone, following the fingers; lifting them flings the list with Android's own inertia. (Before, trackpad scrolling did nothing: Flutter delivers trackpad gestures as `PointerPanZoom` events, which the overlay did not handle.)
+- **Mouse Wheel:** Each wheel step becomes a short touch swipe (`ControlConstants.scrollFactor`).
 - **Directional Fidelity:** Supports horizontal and vertical scrolling.
 
 ### 3. Hardware Keyboard Forwarding & Android Shortcuts

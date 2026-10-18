@@ -12,7 +12,10 @@
 | **Left Click + Drag** | Swipe / Scroll / Pan | Touch Drag Motion |
 | **Right Click** | Secondary Click | System `BACK` Key |
 | **Middle Click** | Scroll Wheel Press | System `HOME` Key |
-| **Scroll Wheel / 2 Fingers** | Vertical / Horizontal Scroll | Touch List Scrolling |
+| **Scroll Wheel** | Vertical / Horizontal Scroll | Short touch swipe per wheel step |
+| **Trackpad 2-Finger Pan** | Live Drag | One finger follows your fingers; lists fling when you lift |
+| **Trackpad Pinch / Rotate** | Pinch, Zoom, Rotate | Two fingers around the pointer |
+| **Alt (Option) + Left Drag** | Pinch & Rotate with a Mouse | Second finger mirrored through the screen center |
 
 ---
 

@@ -48,7 +48,7 @@ class AppFeaturesCatalog {
       badgeText: 'Mouse & Mac Keys',
       badgeColor: AppColors.accentLight,
       highlights: [
-        'Left click to tap/drag; trackpad and mouse wheel for fluid scrolling.',
+        'Trackpad scroll and pinch; Alt+drag pinches with a mouse.',
         'Shortcuts: Cmd+H for Home, Cmd+Backspace for Back; right click is Back too.',
         'Typing from the computer keyboard; Cmd+K sends text in any language.',
       ],

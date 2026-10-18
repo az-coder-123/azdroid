@@ -92,7 +92,9 @@ DeskDroid provides 3 connection pathways:
 - **Left Click & Drag:** Tap, swipe, scroll, flick, and drag across the screen.
 - **Right Click:** Triggers Android system **BACK** navigation.
 - **Middle Click (Scroll Wheel Click):** Triggers Android system **HOME**.
-- **Mouse Wheel / Trackpad 2 Fingers:** Smooth vertical and horizontal list scrolling.
+- **Mouse Wheel / Trackpad 2 Fingers:** Vertical and horizontal list scrolling; on a trackpad the list follows your fingers and flings when you lift them.
+- **Trackpad Pinch / Rotate:** Zoom and rotate (maps, photos) with two fingers.
+- **Alt (Option) + Left Drag:** Pinch and rotate with a mouse, around the screen center.
 
 ### Keyboard Shortcuts
 

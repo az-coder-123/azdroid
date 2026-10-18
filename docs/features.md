@@ -58,7 +58,7 @@
 
 ## 3. Comprehensive Remote Control & Input Injection
 
-### 3.1 Mouse Emulation (Single Pointer)
+### 3.1 Mouse, Trackpad & Multi-Touch Emulation
 - **Pointer Event Normalization:** Normalizes cursor coordinates ($0.0 \to 1.0$) to guarantee precision across differing display aspect ratios and resolutions.
 - **Primary Actions:**
   - **Left Click:** Touch down, drag, and touch up.
@@ -66,7 +66,8 @@
   - **Middle Click / Command + H:** Android system **Home** action (`KEYCODE_HOME`).
   - **App Switcher button / Ctrl + Tab (Windows):** Android **Recent Apps** (`KEYCODE_APP_SWITCH`). On macOS, Cmd + Tab belongs to the system app switcher, so use the toolbar button.
   - **Command + S:** Device **Screenshot Capture** (Lossless PNG to `~/Downloads` & macOS clipboard).
-- **Scrolling:** Converts trackpad and mouse wheel scrolling into short touch swipes, so Android lists scroll with their own inertia.
+- **Scrolling:** A trackpad two-finger pan is a live one-finger drag on the phone (lists scroll and fling natively); each mouse wheel step becomes a short swipe.
+- **Pinch & Rotate:** Trackpad pinch and rotate, or Alt (Option) + drag with a mouse, become two live fingers on the phone (control socket only).
 
 ### 3.2 Keyboard & International Text Input
 - **Direct Keystroke Forwarding:** Maps macOS hardware keys to Android standard Linux/Android keycodes.
