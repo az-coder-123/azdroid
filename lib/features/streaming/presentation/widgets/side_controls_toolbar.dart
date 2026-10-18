@@ -64,30 +64,32 @@ class SideControlsToolbar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Stream launch options: bitrate and keep-awake
-            StreamSettingsControls(
-              session: session,
-              onSelectBitrate: onSelectBitrate,
-              onToggleStayAwake: onToggleStayAwake,
-            ),
+            // Group 1: Text Injection & Clipboard (Top - Highest Frequency Input)
+            if (onTextInject != null)
+              _buildToolButton(
+                icon: Icons.keyboard_alt_outlined,
+                tooltip: 'Inject Text (${keys.label('K')})',
+                onPressed: onTextInject!,
+              ),
+            if (deviceSerial != null) ...[
+              if (onTextInject != null) const SizedBox(height: 4),
+              ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
+            ],
 
             if (onScreenshot != null ||
                 onCropScreenshot != null ||
-                deviceSerial != null ||
-                onTextInject != null) ...[
+                deviceSerial != null) ...[
               const SizedBox(height: 6),
               _buildDivider(),
               const SizedBox(height: 6),
 
-              // Lossless Full Phone Screenshot
+              // Group 2: Media Capture & Screen Recording
               if (onScreenshot != null)
                 _buildToolButton(
                   icon: Icons.camera_alt_outlined,
                   tooltip: 'Take Screenshot (${keys.label('S')})',
                   onPressed: onScreenshot!,
                 ),
-
-              // Regional / Partial Screenshot
               if (onCropScreenshot != null) ...[
                 const SizedBox(height: 4),
                 _buildToolButton(
@@ -96,40 +98,24 @@ class SideControlsToolbar extends StatelessWidget {
                   onPressed: onCropScreenshot!,
                 ),
               ],
-
-              // Screen Recording Toggle
               if (deviceSerial != null) ...[
                 const SizedBox(height: 4),
                 ScreenRecordButton(deviceSerial: deviceSerial!),
               ],
+            ],
 
-              // Quick Text Injection (Unicode / IME)
-              if (onTextInject != null) ...[
-                const SizedBox(height: 4),
-                _buildToolButton(
-                  icon: Icons.keyboard_alt_outlined,
-                  tooltip: 'Inject Text (${keys.label('K')})',
-                  onPressed: onTextInject!,
-                ),
-              ],
+            if (onSendFiles != null || onBrowseFiles != null) ...[
+              const SizedBox(height: 6),
+              _buildDivider(),
+              const SizedBox(height: 6),
 
-              // Clipboard Synchronization Menu
-              if (deviceSerial != null) ...[
-                const SizedBox(height: 4),
-                ClipboardSyncMenuButton(deviceSerial: deviceSerial!),
-              ],
-
-              // Send Files from Mac to Phone (Finder Picker)
-              if (onSendFiles != null) ...[
-                const SizedBox(height: 4),
+              // Group 3: File Transfer & Storage
+              if (onSendFiles != null)
                 _buildToolButton(
                   icon: Icons.file_upload_outlined,
                   tooltip: 'Send Files to Phone (${keys.label('U')})',
                   onPressed: onSendFiles!,
                 ),
-              ],
-
-              // Browse & Download Android Files to Mac
               if (onBrowseFiles != null) ...[
                 const SizedBox(height: 4),
                 _buildToolButton(
@@ -139,30 +125,34 @@ class SideControlsToolbar extends StatelessWidget {
                   onPressed: onBrowseFiles!,
                 ),
               ],
+            ],
 
-              // Real-time Android Logcat Console
-              if (onViewLogs != null) ...[
-                const SizedBox(height: 4),
-                _buildToolButton(
-                  icon: Icons.terminal_rounded,
-                  tooltip:
-                      'Device Logcat Console (${keys.label('L', shift: true)})',
-                  onPressed: onViewLogs!,
-                ),
-              ],
+            const SizedBox(height: 6),
+            _buildDivider(),
+            const SizedBox(height: 6),
 
-              // Sideload & Install APK Package
-              if (onInstallApk != null) ...[
-                const SizedBox(height: 4),
+            // Group 4: Stream Quality & Stay Awake Settings
+            StreamSettingsControls(
+              session: session,
+              onSelectBitrate: onSelectBitrate,
+              onToggleStayAwake: onToggleStayAwake,
+            ),
+
+            if (onInstallApk != null ||
+                onDispatchIntent != null ||
+                onViewLogs != null) ...[
+              const SizedBox(height: 6),
+              _buildDivider(),
+              const SizedBox(height: 6),
+
+              // Group 5: Developer Tools (Ending with Logcat at the very bottom)
+              if (onInstallApk != null)
                 _buildToolButton(
                   icon: Icons.install_mobile_rounded,
                   tooltip:
                       'Install APK Package (${keys.label('I', shift: true)})',
                   onPressed: onInstallApk!,
                 ),
-              ],
-
-              // Deep Link & Intent Dispatcher
               if (onDispatchIntent != null) ...[
                 const SizedBox(height: 4),
                 _buildToolButton(
@@ -170,6 +160,15 @@ class SideControlsToolbar extends StatelessWidget {
                   tooltip:
                       'Deep Link & Intent Dispatcher (${keys.label('D', shift: true)})',
                   onPressed: onDispatchIntent!,
+                ),
+              ],
+              if (onViewLogs != null) ...[
+                const SizedBox(height: 4),
+                _buildToolButton(
+                  icon: Icons.terminal_rounded,
+                  tooltip:
+                      'Device Logcat Console (${keys.label('L', shift: true)})',
+                  onPressed: onViewLogs!,
                 ),
               ],
             ],
