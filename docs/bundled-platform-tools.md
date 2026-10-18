@@ -35,7 +35,7 @@ flowchart LR
 | Embed | Run Script phase **Embed Platform Tools (adb)** | `install(DIRECTORY …)` into the bundle folder |
 | Missing tools, Debug | Warning; app uses an installed adb | Warning; app uses an installed adb |
 | Missing tools, Release | **Build error** | **Install error** |
-| Release script | `scripts/build_release.sh` fetches first, then checks `Contents/MacOS/adb` and `codesign --verify --deep --strict` | Phase 4 |
+| Release script | `scripts/build_release.sh` fetches first, then checks `Contents/MacOS/adb` and `codesign --verify --deep --strict` | `scripts/build_release.ps1` fetches first, then checks that `adb.exe` runs and `deskdroid-mcp.exe` answers `tools/list` |
 
 The binaries are **not committed**. `vendor/` is gitignored; the fetch tool is idempotent (a `.version` stamp skips repeat downloads) and re-downloads after a version bump.
 

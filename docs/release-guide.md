@@ -128,7 +128,7 @@ On a Windows PC with Visual Studio 2022, after pulling the release commit:
 powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1 -Publish
 ```
 
-It writes `RELEASE\DeskDroid-v<version>-Windows-x64.zip` and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
+Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\DeskDroid-v<version>-Windows-x64.zip` (with `adb.exe` and `deskdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
 
 ---
 

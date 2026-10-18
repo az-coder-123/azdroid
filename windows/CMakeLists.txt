@@ -120,12 +120,15 @@ endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/flutter/ephemeral/generated_config.cmake")
 set(MCP_SERVER_ENTRYPOINT "${CMAKE_CURRENT_SOURCE_DIR}/../bin/deskdroid_mcp.dart")
 # install(CODE) ignores CONFIGURATIONS, so the Release check is in the code.
+# The output path is expanded now, not at install time: CMAKE_INSTALL_PREFIX
+# holds a generator expression that install(CODE) only resolves when it is
+# part of the code text (an escaped \${CMAKE_INSTALL_PREFIX} stays literal).
 install(CODE "
   if(\"\${CMAKE_INSTALL_CONFIG_NAME}\" STREQUAL \"Release\")
     execute_process(
       COMMAND \"${FLUTTER_ROOT}/bin/dart.bat\" compile exe
               \"${MCP_SERVER_ENTRYPOINT}\"
-              -o \"\${CMAKE_INSTALL_PREFIX}/deskdroid-mcp.exe\"
+              -o \"${INSTALL_BUNDLE_LIB_DIR}/deskdroid-mcp.exe\"
       RESULT_VARIABLE mcp_result)
     if(NOT mcp_result EQUAL 0)
       message(FATAL_ERROR \"Failed to compile the MCP server (deskdroid-mcp.exe).\")

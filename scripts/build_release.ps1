@@ -6,8 +6,12 @@
   Windows counterpart of scripts/build_release.sh (macOS):
     1. Reads the version from pubspec.yaml.
     2. Runs flutter analyze and flutter test (skip with -SkipTests).
-    3. Builds the x64 release with flutter build windows --release.
-    4. Stages the bundle and checks the files it needs at runtime.
+    3. Fetches the bundled adb (Android Platform-Tools, checksum-verified)
+       and builds the x64 release with flutter build windows --release,
+       which also compiles the MCP server (deskdroid-mcp.exe).
+    4. Stages the bundle, checks the files it needs at runtime, and
+       smoke-tests the bundled adb.exe and deskdroid-mcp.exe, so the ZIP
+       runs on a PC without adb, Flutter, or Dart.
     5. Adds the Visual C++ runtime DLLs when the redistributable folder is
        installed with Visual Studio (warns otherwise).
     6. Writes RELEASE\DeskDroid-v<version>-Windows-x64.zip and a "latest" copy.
@@ -59,8 +63,17 @@ $RequiredFiles = @(
   'flutter_windows.dll',
   'data\icudtl.dat',
   'data\app.so',
-  'data\flutter_assets\assets\scrcpy-server.jar'
+  'data\flutter_assets\assets\scrcpy-server.jar',
+  'adb.exe',
+  'AdbWinApi.dll',
+  'AdbWinUsbApi.dll',
+  'platform-tools-NOTICE.txt',
+  'deskdroid-mcp.exe'
 )
+
+# The bundled MCP server must answer tools/list within this time.
+$McpSmokeTimeoutMs = 20000
+$McpSmokeRequest = '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
 
 # Visual C++ runtime DLLs used by Flutter and the native video plugin.
 $VcRuntimePatterns = @('vcruntime140*.dll', 'msvcp140*.dll')
@@ -118,6 +131,30 @@ function Format-Size([long]$Bytes) {
   return '{0:N1} MB' -f ($Bytes / 1MB)
 }
 
+# Sends one JSON-RPC request to the MCP server and returns its first line,
+# or throws when it does not answer in time.
+function Invoke-McpSmokeTest([string]$McpPath) {
+  $info = New-Object System.Diagnostics.ProcessStartInfo
+  $info.FileName = $McpPath
+  $info.UseShellExecute = $false
+  $info.RedirectStandardInput = $true
+  $info.RedirectStandardOutput = $true
+  $info.RedirectStandardError = $true
+  $process = [System.Diagnostics.Process]::Start($info)
+  try {
+    $process.StandardInput.WriteLine($McpSmokeRequest)
+    $process.StandardInput.Close()
+    $readLine = $process.StandardOutput.ReadLineAsync()
+    if (-not $readLine.Wait($McpSmokeTimeoutMs)) {
+      throw "deskdroid-mcp.exe did not answer tools/list within $($McpSmokeTimeoutMs / 1000) s."
+    }
+    return $readLine.Result
+  } finally {
+    if (-not $process.HasExited) { $process.Kill() }
+    $process.Dispose()
+  }
+}
+
 # --- 1. Version ---------------------------------------------------------------
 Write-Host '======================================================================'
 Write-Host ' DeskDroid - Windows release packaging'
@@ -145,6 +182,10 @@ try {
   }
 
   # --- 3. Build ---------------------------------------------------------------
+  # Release builds fail without the bundled adb (windows/CMakeLists.txt).
+  Write-Step 'Fetching the bundled adb (Android Platform-Tools, checksum-verified)'
+  Invoke-Checked 'dart' @('run', 'tool/fetch_platform_tools.dart', '--os=windows')
+
   Write-Step 'Building the Windows release (flutter build windows --release)'
   Invoke-Checked 'flutter' @('build', 'windows', '--release')
 
@@ -160,6 +201,17 @@ try {
     throw "The build is missing required files: $($missing -join ', ')"
   }
   Write-Ok "All $($RequiredFiles.Count) required files are present"
+
+  # The package must work without an installed adb, Flutter, or Dart.
+  $adbVersion = & (Join-Path $packageDir 'adb.exe') version | Select-Object -First 1
+  if ($LASTEXITCODE -ne 0) { throw 'The bundled adb.exe does not run.' }
+  Write-Ok "Bundled adb runs: $adbVersion"
+
+  $mcpReply = Invoke-McpSmokeTest (Join-Path $packageDir 'deskdroid-mcp.exe')
+  if ($mcpReply -notmatch '"tools"') {
+    throw "deskdroid-mcp.exe did not list its tools. Reply: $mcpReply"
+  }
+  Write-Ok 'Bundled MCP server answers tools/list'
 
   # --- 5. Visual C++ runtime --------------------------------------------------
   Write-Step 'Adding the Visual C++ runtime'
