@@ -28,8 +28,10 @@ abstract class StreamingRepository {
   /// Terminates an active mirroring session identified by [sessionId].
   Future<void> stopSession(String sessionId);
 
-  /// Toggles physical Android display power off or on during streaming.
-  Future<void> toggleScreenOff(String sessionId, bool turnOff);
+  /// Turns the phone's display panel off ([turnOff]) or back on while
+  /// mirroring continues. Returns `false` when the command could not be
+  /// sent (no control socket); the session is then unchanged.
+  Future<bool> toggleScreenOff(String sessionId, bool turnOff);
 
   /// Changes the video bitrate of the active session to [bitrateMbps].
   ///

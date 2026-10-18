@@ -72,6 +72,9 @@ class StreamProbe {
     throw StateError('No stream header after $_connectAttempts attempts');
   }
 
+  /// Bytes read by the background drain so far.
+  int get drainedBytes => _activeReader?.drainedBytes ?? 0;
+
   /// Stops draining and closes the video socket.
   Future<void> close() async => _activeReader?.close();
 }
@@ -161,6 +164,7 @@ class _SocketReader {
   final Socket _socket;
   final StreamIterator<Uint8List> _chunks;
   final BytesBuilder _pending = BytesBuilder(copy: false);
+  int drainedBytes = 0;
 
   Future<Uint8List> read(int count) async {
     while (_pending.length < count) {
@@ -181,7 +185,9 @@ class _SocketReader {
   Future<void> drain() async {
     _pending.clear();
     try {
-      while (await _chunks.moveNext()) {}
+      while (await _chunks.moveNext()) {
+        drainedBytes += _chunks.current.length;
+      }
     } on Object {
       // Closed by close(); nothing left to drain.
     }

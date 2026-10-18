@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:desk_droid/features/control/data/scrcpy/scrcpy_control_message.dart';
+import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Expected bytes are copied from scrcpy v3.3.4
@@ -96,6 +96,11 @@ void main() {
       0x04,
       0x01,
     ]);
+  });
+
+  test('set_display_power matches test_serialize_set_display_power', () {
+    expect(ScrcpyControlMessage.setDisplayPower(on: true), [0x0A, 0x01]);
+    expect(ScrcpyControlMessage.setDisplayPower(on: false), [0x0A, 0x00]);
   });
 
   test('default touch uses the generic-finger pointer id (-2)', () {

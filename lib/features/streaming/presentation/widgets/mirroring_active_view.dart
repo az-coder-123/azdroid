@@ -1,4 +1,5 @@
 import 'package:desk_droid/core/models/device_entity.dart';
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
@@ -19,6 +20,7 @@ import 'package:desk_droid/features/streaming/presentation/widgets/side_controls
 import 'package:desk_droid/features/streaming/presentation/widgets/stream_reconfiguring_badge.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/stream_telemetry_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Active mirroring viewport layout with top telemetry, centered phone display,
@@ -42,6 +44,18 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<StreamingCubit>();
+    final keys = context.shortcuts;
+    return CallbackShortcuts(
+      bindings: {
+        keys.activator(LogicalKeyboardKey.keyO): cubit.toggleScreenOff,
+        keys.activator(LogicalKeyboardKey.keyR): cubit.rotateScreen,
+      },
+      child: _buildLayout(context),
+    );
+  }
+
+  Widget _buildLayout(BuildContext context) {
     return FileDropTargetOverlay(
       deviceSerial: widget.device.serial,
       child: Stack(

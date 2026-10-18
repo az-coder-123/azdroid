@@ -38,6 +38,15 @@ class ViewportKeyEventHandler {
 
     // macOS Command shortcuts
     if (isPrimary) {
+      // Screen power (O) and viewport rotation (R) belong to the streaming
+      // feature: let them bubble up to the mirroring view's shortcuts
+      // instead of typing the letter on the device.
+      if (logicalKey == LogicalKeyboardKey.keyO ||
+          (logicalKey == LogicalKeyboardKey.keyR &&
+              !HardwareKeyboard.instance.isShiftPressed)) {
+        return KeyEventResult.ignored;
+      }
+
       if (logicalKey == LogicalKeyboardKey.keyH) {
         context.read<ControlBloc>().add(
           ControlNavigationActionDispatched(

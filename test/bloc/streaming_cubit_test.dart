@@ -286,7 +286,7 @@ void main() {
       'toggleScreenOff updates session screen-off state',
       build: () {
         when(() => mockRepository.toggleScreenOff('session_123', true))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => true);
         return streamingCubit;
       },
       seed: () => const StreamingActive(session: testSession),
@@ -294,6 +294,30 @@ void main() {
       expect: () => [
         StreamingActive(session: testSession.copyWith(isScreenOff: true)),
       ],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'toggleScreenOff keeps the state when the command was not sent',
+      build: () {
+        when(() => mockRepository.toggleScreenOff(any(), any()))
+            .thenAnswer((_) async => false);
+        return streamingCubit;
+      },
+      seed: () => const StreamingActive(session: testSession),
+      act: (cubit) => cubit.toggleScreenOff(),
+      expect: () => const <StreamingState>[],
+    );
+
+    blocTest<StreamingCubit, StreamingState>(
+      'toggleScreenOff is ignored while the pipeline restarts',
+      build: () => streamingCubit,
+      seed: () => const StreamingActive(
+        session: testSession,
+        pendingChange: BitrateChange(16),
+      ),
+      act: (cubit) => cubit.toggleScreenOff(),
+      verify: (_) =>
+          verifyNever(() => mockRepository.toggleScreenOff(any(), any())),
     );
   });
 }

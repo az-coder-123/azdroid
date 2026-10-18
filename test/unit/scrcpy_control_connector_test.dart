@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:desk_droid/core/models/native_stream_stats.dart';
 import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
+import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,6 +16,8 @@ void main() {
   late MockNativeService native;
   late MockControlChannel channel;
   late ScrcpyControlConnector connector;
+
+  setUpAll(() => registerFallbackValue(Uint8List(0)));
 
   setUp(() {
     native = MockNativeService();
@@ -69,6 +74,21 @@ void main() {
 
     expect(await connector.connect(deviceSerial: 'd', port: 27183), isFalse);
     verify(() => native.getStats()).called(2);
+  });
+
+  test('setDisplayPower sends the scrcpy message and reports it', () {
+    when(() => channel.send(any())).thenReturn(true);
+
+    expect(connector.setDisplayPower(on: false), isTrue);
+
+    final sent = verify(() => channel.send(captureAny())).captured.single;
+    expect(sent, ScrcpyControlMessage.setDisplayPower(on: false));
+  });
+
+  test('setDisplayPower reports a closed channel', () {
+    when(() => channel.send(any())).thenReturn(false);
+
+    expect(connector.setDisplayPower(on: true), isFalse);
   });
 
   test('disconnect closes the channel', () async {

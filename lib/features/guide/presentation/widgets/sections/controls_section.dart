@@ -79,7 +79,7 @@ class ControlsSection extends StatelessWidget {
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('O'),
-              description: 'Turn phone screen off/on (--turn-screen-off)',
+              description: 'Turn phone screen off/on (mirroring continues)',
             ),
           ],
         ),

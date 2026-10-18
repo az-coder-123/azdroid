@@ -70,7 +70,7 @@ class FloatingControlsToolbar extends StatelessWidget {
             // Display & Stream Controls
             _buildToolButton(
               icon: Icons.rotate_right_rounded,
-              tooltip: 'Rotate Display',
+              tooltip: 'Rotate Display (${keys.label('R')})',
               onPressed: onRotate,
             ),
             const SizedBox(width: 8),
@@ -79,8 +79,8 @@ class FloatingControlsToolbar extends StatelessWidget {
                   ? Icons.screen_lock_portrait_rounded
                   : Icons.stay_current_portrait_rounded,
               tooltip: session.isScreenOff
-                  ? 'Turn Phone Screen On'
-                  : 'Turn Phone Screen Off (--turn-screen-off)',
+                  ? 'Turn Phone Screen On (${keys.label('O')})'
+                  : 'Turn Phone Screen Off, Keep Mirroring (${keys.label('O')})',
               color: session.isScreenOff ? AppColors.statusWarning : null,
               onPressed: onToggleScreenOff,
             ),

@@ -87,19 +87,23 @@ class StreamingCubit extends Cubit<StreamingState>
     return super.close();
   }
 
-  /// Toggles physical device screen display on/off.
+  /// Turns the phone's display panel off or back on; mirroring continues.
+  /// Ignored while the pipeline restarts. The state changes only when the
+  /// command was sent.
   Future<void> toggleScreenOff() async {
-    final currentState = state;
-    if (currentState is StreamingActive) {
-      final newScreenOff = !currentState.session.isScreenOff;
-      await repository.toggleScreenOff(
-        currentState.session.sessionId,
-        newScreenOff,
-      );
+    final current = state;
+    if (current is! StreamingActive || current.isReconfiguring) return;
+    final turnOff = !current.session.isScreenOff;
+    final sent = await repository.toggleScreenOff(
+      current.session.sessionId,
+      turnOff,
+    );
+    final latest = state;
+    if (!sent) {
+      AppLogger.warning('Screen power not changed: control is not connected');
+    } else if (!isClosed && latest is StreamingActive) {
       emit(
-        currentState.copyWith(
-          session: currentState.session.copyWith(isScreenOff: newScreenOff),
-        ),
+        latest.copyWith(session: latest.session.copyWith(isScreenOff: turnOff)),
       );
     }
   }

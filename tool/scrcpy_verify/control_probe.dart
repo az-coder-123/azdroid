@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:desk_droid/features/control/data/scrcpy/scrcpy_control_message.dart';
+import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 
 /// Opens the scrcpy control socket and checks, on a real device, that the
 /// app's own [ScrcpyControlMessage] bytes are understood by the server.
@@ -80,6 +80,12 @@ class ControlProbe {
         );
       }
     }
+  }
+
+  /// Turns the device display panel on or off (SET_DISPLAY_POWER).
+  Future<void> setDisplayPower({required bool on}) async {
+    _socket!.add(ScrcpyControlMessage.setDisplayPower(on: on));
+    await _socket!.flush();
   }
 
   Future<void> _key(int keyCode) async {

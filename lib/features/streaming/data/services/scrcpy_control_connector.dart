@@ -1,9 +1,11 @@
 import 'package:desk_droid/core/models/native_stream_stats.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
+import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 
-/// Opens the scrcpy control socket at the only correct moment.
+/// Opens the scrcpy control socket at the only correct moment, and sends
+/// the session-level commands that streaming owns (display power).
 ///
 /// In forward-tunnel mode the server accepts the video socket first and the
 /// control socket second, and it sends the stream header only after both
@@ -54,6 +56,11 @@ class ScrcpyControlConnector {
     );
     return false;
   }
+
+  /// Turns the device's display panel off (`on: false`) or back on while
+  /// mirroring continues. Returns `false` when control is not connected.
+  bool setDisplayPower({required bool on}) =>
+      _channel.send(ScrcpyControlMessage.setDisplayPower(on: on));
 
   /// Closes the control socket of the current session.
   Future<void> disconnect() => _channel.close();

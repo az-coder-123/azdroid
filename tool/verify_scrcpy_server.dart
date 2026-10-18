@@ -15,6 +15,7 @@ import 'package:desk_droid/features/streaming/data/services/scrcpy_server_comman
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
 
 import 'scrcpy_verify/control_probe.dart';
+import 'scrcpy_verify/display_power_probe.dart';
 import 'scrcpy_verify/stay_awake_probe.dart';
 import 'scrcpy_verify/stream_probe.dart';
 
@@ -135,12 +136,18 @@ Future<void> main(List<String> args) async {
     // Give a stray third event (it would mean the right-size tap was
     // rejected too) a moment to show up before counting.
     await Future<void>.delayed(const Duration(milliseconds: 500));
+    final display = DisplayPowerProbe(adb: adb, serial: serial);
+    await display.checkOff(
+      sendOff: () => control.setDisplayPower(on: false),
+      videoBytes: () => probe.drainedBytes,
+    );
     await control.close();
     await probe.close();
     final ignored = ignoredEvents();
     // Stopping the server (as the app does) must restore the settings.
     server.kill();
     await awake.recordAfter();
+    await display.checkRestoredOnExit();
 
     final powerOnOk = !screenOffBefore || screenOnAfter;
     final keysOk =
@@ -161,8 +168,15 @@ Future<void> main(List<String> args) async {
         'positional events ignored by the size check: ${ignored.length} '
         '(expected 2: DOWN and UP of the wrong-size tap)',
       )
-      ..writeln(awake.describe());
-    final ok = report.isHealthy && powerOnOk && keysOk && tapOk && awake.isOk;
+      ..writeln(awake.describe())
+      ..writeln(display.describe());
+    final ok =
+        report.isHealthy &&
+        powerOnOk &&
+        keysOk &&
+        tapOk &&
+        awake.isOk &&
+        display.isOk;
     stdout.writeln(ok ? 'RESULT: OK' : 'RESULT: FAILED');
     if (!ok) exitCode = 1;
   } on TimeoutException {

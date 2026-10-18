@@ -16,6 +16,7 @@ class ScrcpyControlMessage {
   static const int typeInjectTouchEvent = 2;
   static const int typeInjectScrollEvent = 3;
   static const int typeBackOrScreenOn = 4;
+  static const int typeSetDisplayPower = 10;
 
   /// Android `KeyEvent` / `MotionEvent` actions used by DeskDroid.
   static const int actionDown = 0;
@@ -102,6 +103,12 @@ class ScrcpyControlMessage {
   /// BACK, or power the screen on when it is off (2 bytes).
   static Uint8List backOrScreenOn(int action) =>
       Uint8List.fromList([typeBackOrScreenOn, action]);
+
+  /// Turns the physical display panel on or off (2 bytes). Off keeps the
+  /// device awake and mirroring; the server turns the panel back on when it
+  /// exits (with `cleanup=true`).
+  static Uint8List setDisplayPower({required bool on}) =>
+      Uint8List.fromList([typeSetDisplayPower, on ? 1 : 0]);
 
   /// `sc_float_to_u16fp`: 0.0..1.0 to u16, with 1.0 mapped to 0xFFFF.
   static int floatToU16FixedPoint(double value) {

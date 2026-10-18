@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:desk_droid/core/constants/adb_timeouts.dart';
-import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
 import 'package:desk_droid/core/services/adb_port_forwarder.dart';
@@ -250,16 +249,5 @@ class ScrcpyServerManager implements AdbPortForwarder {
       );
       return false;
     }
-  }
-
-  /// Toggles physical screen display state.
-  Future<bool> setScreenPower({
-    required String deviceSerial,
-    required bool powerOff,
-  }) async {
-    return sendKeyevent(
-      deviceSerial: deviceSerial,
-      keyCode: AndroidKeyCodes.keycodePower,
-    );
   }
 }

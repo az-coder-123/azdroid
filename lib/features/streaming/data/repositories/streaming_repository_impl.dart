@@ -1,4 +1,3 @@
-import 'package:desk_droid/core/constants/socket_config.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
@@ -7,44 +6,54 @@ import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_man
 import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_device_preflight.dart';
 import 'package:desk_droid/features/streaming/data/services/stream_telemetry_sampler.dart';
+import 'package:desk_droid/features/streaming/data/services/video_pipeline_launcher.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
-import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 
 /// Concrete implementation of [StreamingRepository] orchestrating server daemon and native decoder.
 class StreamingRepositoryImpl implements StreamingRepository {
-  StreamingRepositoryImpl({
+  factory StreamingRepositoryImpl({
     ScrcpyServerManager? serverManager,
     IVideoStreamNativeService? videoStreamNativeService,
     StreamDevicePreflight? devicePreflight,
     StreamTelemetrySampler? telemetrySampler,
     ScrcpyControlConnector? controlConnector,
-  }) : _serverManager = serverManager ?? ScrcpyServerManager(),
-       _videoStreamNativeService =
-           videoStreamNativeService ?? VideoStreamNativeService(),
-       _devicePreflight = devicePreflight ?? StreamDevicePreflight(),
-       _controlConnector =
-           controlConnector ??
-           ScrcpyControlConnector(
-             nativeService:
-                 videoStreamNativeService ?? VideoStreamNativeService(),
-             channel: SocketScrcpyControlChannel(),
-           ),
-       // The native service is a stateless channel wrapper, so a second
-       // default instance for the sampler is harmless.
-       _telemetrySampler =
-           telemetrySampler ??
-           StreamTelemetrySampler(
-             nativeService:
-                 videoStreamNativeService ?? VideoStreamNativeService(),
-           );
+  }) {
+    final native = videoStreamNativeService ?? VideoStreamNativeService();
+    return StreamingRepositoryImpl._(
+      serverManager: serverManager ?? ScrcpyServerManager(),
+      nativeService: native,
+      devicePreflight: devicePreflight ?? StreamDevicePreflight(),
+      telemetrySampler:
+          telemetrySampler ?? StreamTelemetrySampler(nativeService: native),
+      controlConnector:
+          controlConnector ??
+          ScrcpyControlConnector(
+            nativeService: native,
+            channel: SocketScrcpyControlChannel(),
+          ),
+    );
+  }
+
+  StreamingRepositoryImpl._({
+    required this._serverManager,
+    required this._nativeService,
+    required this._devicePreflight,
+    required this._telemetrySampler,
+    required this._controlConnector,
+  });
 
   final ScrcpyServerManager _serverManager;
-  final IVideoStreamNativeService _videoStreamNativeService;
+  final IVideoStreamNativeService _nativeService;
   final StreamDevicePreflight _devicePreflight;
   final StreamTelemetrySampler _telemetrySampler;
   final ScrcpyControlConnector _controlConnector;
+  late final VideoPipelineLauncher _pipeline = VideoPipelineLauncher(
+    serverManager: _serverManager,
+    native: _nativeService,
+    control: _controlConnector,
+  );
 
   StreamSessionEntity? _currentSession;
 
@@ -58,7 +67,6 @@ class StreamingRepositoryImpl implements StreamingRepository {
   }) async {
     final fps = maxFps ?? 60;
     final bitrate = bitrateMbps ?? 8;
-    final screenOff = turnScreenOff ?? false;
 
     AppLogger.info(
       'Starting streaming session for ${device.name} (${device.id})...',
@@ -67,26 +75,22 @@ class StreamingRepositoryImpl implements StreamingRepository {
     // 1. Fail fast with a clear reason instead of showing a black viewport
     await _devicePreflight.ensureReady(device.id);
 
-    // 2. Launch the scrcpy server and connect the native decoder
-    final textureId = await _launchVideoPipeline(
-      device.id,
+    // 2. Launch the scrcpy server, the native decoder, and control
+    final textureId = await _pipeline.launch(device.id, (
       maxFps: fps,
       bitrateMbps: bitrate,
       stayAwake: stayAwake,
-    );
+    ));
 
     // 3. Obtain real device frame dimensions from decoded header
-    final dims = await _videoStreamNativeService.getDimensions();
+    final dims = await _nativeService.getDimensions();
     final realWidth = dims['width'] ?? 0;
     final realHeight = dims['height'] ?? 0;
 
-    // 4. Turn screen off if requested
-    if (screenOff) {
-      await _serverManager.setScreenPower(
-        deviceSerial: device.id,
-        powerOff: true,
-      );
-    }
+    // 4. Turn the display panel off if requested (mirroring continues)
+    final screenOff =
+        (turnScreenOff ?? false) &&
+        _controlConnector.setDisplayPower(on: false);
 
     final session = StreamSessionEntity(
       sessionId:
@@ -117,31 +121,21 @@ class StreamingRepositoryImpl implements StreamingRepository {
   Future<void> stopSession(String sessionId) async {
     final session = _currentSession;
     if (session != null) {
-      // Restore physical screen if turned off
-      if (session.isScreenOff) {
-        await _serverManager.setScreenPower(
-          deviceSerial: session.deviceId,
-          powerOff: false,
-        );
-      }
-
-      await _controlConnector.disconnect();
-      await _videoStreamNativeService.stopStream();
-      await _serverManager.stopServerDaemon(deviceSerial: session.deviceId);
+      // The server's restore process would also do this when it exits; doing
+      // it here turns the panel on at once.
+      if (session.isScreenOff) _controlConnector.setDisplayPower(on: true);
+      await _pipeline.stop(session.deviceId);
     }
     _currentSession = null;
   }
 
   @override
-  Future<void> toggleScreenOff(String sessionId, bool turnOff) async {
+  Future<bool> toggleScreenOff(String sessionId, bool turnOff) async {
     final session = _currentSession;
-    if (session != null) {
-      await _serverManager.setScreenPower(
-        deviceSerial: session.deviceId,
-        powerOff: turnOff,
-      );
-      _currentSession = session.copyWith(isScreenOff: turnOff);
-    }
+    if (session == null || session.sessionId != sessionId) return false;
+    final sent = _controlConnector.setDisplayPower(on: !turnOff);
+    if (sent) _currentSession = session.copyWith(isScreenOff: turnOff);
+    return sent;
   }
 
   @override
@@ -180,59 +174,22 @@ class StreamingRepositoryImpl implements StreamingRepository {
       'Restarting video pipeline for ${session.deviceId} '
       '(${target.bitrateMbps} Mbps, stay awake: ${target.stayAwake})',
     );
-    await _controlConnector.disconnect();
-    await _videoStreamNativeService.stopStream();
-    final textureId = await _launchVideoPipeline(
-      session.deviceId,
+    await _pipeline.stopForRelaunch();
+    final textureId = await _pipeline.launch(session.deviceId, (
       maxFps: target.fps,
       bitrateMbps: target.bitrateMbps,
       stayAwake: target.stayAwake,
-    );
+    ));
+    // The old server turned the panel back on when it exited.
+    final screenOff =
+        target.isScreenOff && _controlConnector.setDisplayPower(on: false);
 
-    final updated = target.copyWith(textureId: textureId);
+    final updated = target.copyWith(
+      textureId: textureId,
+      isScreenOff: screenOff,
+    );
     _currentSession = updated;
     return updated;
-  }
-
-  /// Starts the scrcpy server (replacing a running one), connects the native
-  /// decoder, then opens the control socket. Returns the new texture ID.
-  Future<int?> _launchVideoPipeline(
-    String deviceSerial, {
-    required int maxFps,
-    required int bitrateMbps,
-    required bool stayAwake,
-  }) async {
-    final serverStarted = await _serverManager.startServerDaemon(
-      deviceSerial: deviceSerial,
-      port: SocketConfig.defaultVideoStreamPort,
-      maxFps: maxFps,
-      bitrateMbps: bitrateMbps,
-      stayAwake: stayAwake,
-    );
-    if (!serverStarted) {
-      throw StreamStartException(
-        StreamStartFailure.serverStartFailed,
-        deviceSerial: deviceSerial,
-      );
-    }
-    final textureId = await _videoStreamNativeService.startStream(
-      host: SocketConfig.loopbackHost,
-      port: SocketConfig.defaultVideoStreamPort,
-    );
-    // The server streams only once the control socket is connected.
-    final controlReady = await _controlConnector.connect(
-      deviceSerial: deviceSerial,
-      port: SocketConfig.defaultVideoStreamPort,
-    );
-    if (!controlReady) {
-      await _videoStreamNativeService.stopStream();
-      await _serverManager.stopServerDaemon(deviceSerial: deviceSerial);
-      throw StreamStartException(
-        StreamStartFailure.controlConnectFailed,
-        deviceSerial: deviceSerial,
-      );
-    }
-    return textureId;
   }
 
   @override

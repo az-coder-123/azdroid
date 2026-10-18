@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
+import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
 import 'package:desk_droid/features/control/data/datasources/fallback_control_datasource.dart';
 import 'package:desk_droid/features/control/data/datasources/scrcpy_control_datasource.dart';
-import 'package:desk_droid/features/control/data/scrcpy/scrcpy_control_message.dart';
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

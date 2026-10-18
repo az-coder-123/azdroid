@@ -24,6 +24,7 @@ import 'package:desk_droid/features/streaming/domain/repositories/streaming_repo
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -106,6 +107,8 @@ void main() {
         .thenAnswer((_) => Stream.value(testTelemetry));
     when(() => mockRepository.sendNavigationKey(any(), any()))
         .thenAnswer((_) async {});
+    when(() => mockRepository.toggleScreenOff(any(), any()))
+        .thenAnswer((_) async => true);
     when(() => mockAudioRepository.startAudioStream(any()))
         .thenAnswer((_) async => testAudioStream);
     when(() => mockAudioRepository.stopAudioStream(any()))
@@ -221,7 +224,16 @@ void main() {
         find.byTooltip('App Switcher (${keys.label('Tab')})'),
         findsOneWidget,
       );
-      expect(find.byTooltip('Rotate Display'), findsOneWidget);
+      expect(
+        find.byTooltip('Rotate Display (${keys.label('R')})'),
+        findsOneWidget,
+      );
+      expect(
+        find.byTooltip(
+          'Turn Phone Screen Off, Keep Mirroring (${keys.label('O')})',
+        ),
+        findsOneWidget,
+      );
 
       // Verify Side Controls Toolbar buttons
       expect(find.byTooltip('Streaming Bitrate & Quality'), findsOneWidget);
@@ -242,6 +254,19 @@ void main() {
         findsOneWidget,
       );
       expect(find.byTooltip('Clipboard Synchronization'), findsOneWidget);
+
+      // The screen-power shortcut reaches the streaming cubit instead of
+      // typing "o" on the device.
+      final primary = keys.usesMetaKey
+          ? LogicalKeyboardKey.metaLeft
+          : LogicalKeyboardKey.controlLeft;
+      await tester.sendKeyDownEvent(primary);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyO);
+      await tester.sendKeyUpEvent(primary);
+      await tester.pump();
+      verify(() => mockRepository.toggleScreenOff('session_123', true))
+          .called(1);
+      expect(find.text('Screen Off'), findsOneWidget);
 
       // Tap Back button
       await tester.tap(find.byTooltip('Back (Right Click)'));
