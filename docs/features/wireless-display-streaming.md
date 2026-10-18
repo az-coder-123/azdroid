@@ -43,6 +43,7 @@ flowchart LR
 ### 3. High Refresh Rate & Dynamic Bitrate Scaling
 - **Up to 120 FPS:** Supports high-refresh-rate displays (60 Hz, 90 Hz, 120 Hz) for smooth navigation, gaming, and animation testing.
 - **Bitrate Presets:** Pick 4, 8, or 16 Mbps from the side dock. scrcpy fixes the bitrate at launch, so a change restarts the video pipeline (about 1 second, at most 3; shown as *"Applying 16 Mbps…"*); the menu is disabled until it finishes. The header's Mbps badge shows the measured rate, which stays below the preset when the screen is still.
+- **Keep Phone Awake:** On by default; toggle it with the sun icon under the bitrate menu (filled = on). While mirroring, the phone does not sleep, on a charger or on battery. DeskDroid starts scrcpy-server with `stay_awake=true` and a 24-hour `screen_off_timeout`, and `cleanup=true` makes a restore process put the phone's own values back when mirroring stops, even if DeskDroid quits or the connection drops. The choice is saved in `mirroring_preferences.json` in the app data folder. Like the bitrate, it applies at launch, so toggling restarts the pipeline (*"Keeping the phone awake…"*).
 - **Adaptive Resolution:** Configure resolution targets (720p, 1080p, 2K, or Native) to balance network congestion with visual fidelity.
 
 ### 4. Apple Retina & HiDPI Pixel Density Compensation
@@ -55,5 +56,5 @@ flowchart LR
 
 - `StreamingInitial`: Idle state awaiting device connection.
 - `StreamingStarting`: Checks that ADB lists the device as authorized, launches the scrcpy server, and opens the video socket.
-- `StreamingActive`: Video texture is shown. `telemetry` holds measured FPS, bitrate, and processing latency, refreshed every second by `StreamingTelemetryTracker` (`null` until the first sample, shown as `—`).
+- `StreamingActive`: Video texture is shown. `telemetry` holds measured FPS, bitrate, and processing latency, refreshed every second by `StreamingTelemetryTracker` (`null` until the first sample, shown as `—`). `pendingChange` names the launch option (bitrate or keep-awake) that a pipeline restart is applying; `StreamingReconfigurator` handles both.
 - `StreamingError`: Actionable message for an unauthorized, offline, or missing device, a server that failed to start, or a video stream that failed or ended (native `getStats` state). The session is stopped and **Retry Connection** starts a new one.

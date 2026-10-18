@@ -66,6 +66,10 @@
 - **Root Cause:** The video connected, but the scrcpy control socket did not. DeskDroid stops the session instead of showing a mirror that ignores clicks.
 - **Solution:** Unlock the phone and tap **Retry Connection**. If it keeps failing, disconnect and reconnect the device.
 
+### ❌ The Phone's Screen Timeout Is 24 Hours After Mirroring
+- **Root Cause:** With **Keep Phone Awake** on, DeskDroid sets the phone's screen timeout to 24 hours and "Stay awake while charging" on during mirroring. A restore process on the phone puts the old values back when mirroring stops. If the phone restarts or its battery runs out during mirroring, that process never runs.
+- **Solution:** Set the screen timeout in the phone's display settings (and **Developer options → Stay awake**) back to what you want. To avoid it, turn off Keep Phone Awake (sun icon in the side dock) before long unattended sessions.
+
 ### ❌ "scrcpy-server on the device is not vX" in the App Log
 - **Root Cause:** The jar on the phone is an older version (for example when `adb push` failed for lack of storage). The server exits on a version mismatch.
 - **Solution:** Free some storage on the phone and start mirroring again; DeskDroid pushes its jar on every start. The log shows `scrcpy-server.jar push failed: …` when the push itself fails.
