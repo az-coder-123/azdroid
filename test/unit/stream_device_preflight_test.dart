@@ -34,13 +34,36 @@ void main() {
       await expectLater(preflight.ensureReady(serial), completes);
     });
 
-    test('throws deviceUnauthorized when USB debugging is not allowed', () {
-      stubDevices([const AdbDevice(serial: serial, state: 'unauthorized')]);
+    test(
+      'reconnects an unauthorized Wi-Fi device so the phone prompts again',
+      () async {
+        stubDevices([const AdbDevice(serial: serial, state: 'unauthorized')]);
+        const ok = AdbCommandResult(isSuccess: true, message: '');
+        when(() => adbService.disconnect(serial)).thenAnswer((_) async => ok);
+        when(() => adbService.connect('192.168.1.3', 5555))
+            .thenAnswer((_) async => ok);
 
-      expect(
-        preflight.ensureReady(serial),
-        throwsFailure(StreamStartFailure.deviceUnauthorized),
+        await expectLater(
+          preflight.ensureReady(serial),
+          throwsFailure(StreamStartFailure.deviceUnauthorized),
+        );
+        verifyInOrder([
+          () => adbService.disconnect(serial),
+          () => adbService.connect('192.168.1.3', 5555),
+        ]);
+      },
+    );
+
+    test('leaves an unauthorized USB device connected', () async {
+      const usbSerial = 'R58M12ABCDE';
+      stubDevices([const AdbDevice(serial: usbSerial, state: 'unauthorized')]);
+
+      await expectLater(
+        preflight.ensureReady(usbSerial),
+        throwsA(isA<StreamStartException>()),
       );
+      verifyNever(() => adbService.disconnect(any()));
+      verifyNever(() => adbService.connect(any(), any()));
     });
 
     test('throws deviceOffline for any other non-ready state', () {
@@ -58,6 +81,25 @@ void main() {
       expect(
         preflight.ensureReady(serial),
         throwsFailure(StreamStartFailure.deviceNotFound),
+      );
+    });
+  });
+
+  group('StreamDevicePreflight.wifiEndpointOf', () {
+    test('splits an ip:port serial', () {
+      expect(StreamDevicePreflight.wifiEndpointOf('192.168.1.3:5555'), (
+        host: '192.168.1.3',
+        port: 5555,
+      ));
+    });
+
+    test('returns null for USB and mDNS serials', () {
+      expect(StreamDevicePreflight.wifiEndpointOf('R58M12ABCDE'), isNull);
+      expect(
+        StreamDevicePreflight.wifiEndpointOf(
+          'adb-R58M12ABCDE-x1y2z3._adb-tls-connect._tcp',
+        ),
+        isNull,
       );
     });
   });

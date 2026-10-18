@@ -6,8 +6,9 @@ extension StreamStartFailureMessage on StreamStartFailure {
   String messageFor(String deviceName) => switch (this) {
     StreamStartFailure.deviceUnauthorized =>
       'USB debugging is not allowed on $deviceName yet.\n'
-          'Unlock the phone, tap "Allow" on the "Allow USB debugging?" '
-          'prompt, then retry.',
+          'Unlock the phone and tap "Allow" on the "Allow USB debugging?" '
+          'prompt, then retry. No prompt? Retry shows it again on Wi-Fi; '
+          'on USB, replug the cable.',
     StreamStartFailure.deviceOffline =>
       '$deviceName is offline.\n'
           'Reconnect the cable or Wi-Fi connection, then retry.',

@@ -75,6 +75,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Release Script Cross-Platform Artifacts** | Release & Packaging | Delete only your own outputs, push `HEAD:main`, pin download links to a tag when `latest` lacks the asset, guard version copies. | [release-script-cross-platform-artifacts.md](release-script-cross-platform-artifacts.md) |
 | **dumpsys Focus Format by Android Version** | Android Compatibility & MCP Tools | Focus may belong to a system window; Android 10 wraps `mFocusedApp` in `AppWindowToken`; test parsers with old and new Android fixtures in locked and open states. | [dumpsys-focus-format-by-android-version.md](dumpsys-focus-format-by-android-version.md) |
 | **CMake install(CODE) Configurations & Genex** | Windows Build & Packaging | `CONFIGURATIONS` is ignored by `install(CODE)`; guard with `CMAKE_INSTALL_CONFIG_NAME`, and use Flutter's genex prefix unescaped. | [cmake-install-code-configurations-and-genex.md](cmake-install-code-configurations-and-genex.md) |
+| **Wi-Fi ADB Authorization Prompt Missed** | ADB Authorization & Discovery | The phone prompts only when a connection opens; Retry must reconnect `ip:port` devices so the prompt appears again. | [wifi-adb-authorization-prompt-missed.md](wifi-adb-authorization-prompt-missed.md) |
 
 ---
 

@@ -41,9 +41,9 @@
   1. Unlock your phone screen.
   2. Look for the prompt: *"Allow USB debugging from this computer?"*.
   3. Check **"Always allow from this computer"** and tap **OK**.
-  4. If the prompt does not appear on a Wi-Fi connection, reconnect to show it again: `adb disconnect <ip>:5555` then `adb connect <ip>:5555`.
+  4. The phone asks only when a connection opens, so the first prompt can appear and time out while nobody is looking (for example during auto-discovery). On a Wi-Fi connection, tap **Connect** or **Retry Connection** while watching the phone: DeskDroid reconnects so the prompt appears again. On USB, replug the cable.
   5. If it still does not appear, restart ADB: `adb kill-server` then `adb start-server`.
-  6. Tap **Retry Connection** on the mirroring page.
+  6. Tap **Retry Connection** on the mirroring page once you allowed it.
 
 ### ❌ "adb server version doesn't match this client; killing..."
 - **Symptom:** Devices disconnect and reconnect repeatedly, often while Android Studio or another tool is open.
