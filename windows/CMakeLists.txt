@@ -110,6 +110,23 @@ else()
     COMPONENT Runtime)
 endif()
 
+# Precompiled MCP server (deskdroid-mcp.exe) next to the bundled adb, so MCP
+# clients need no Dart SDK. Release only; Debug users run
+# `dart run bin/deskdroid_mcp.dart`. See docs/mcp-setup-guide.md.
+# FLUTTER_ROOT is defined in the flutter/ subdirectory scope, so read it here.
+include("${CMAKE_CURRENT_SOURCE_DIR}/flutter/ephemeral/generated_config.cmake")
+set(MCP_SERVER_ENTRYPOINT "${CMAKE_CURRENT_SOURCE_DIR}/../bin/deskdroid_mcp.dart")
+install(CODE "
+  execute_process(
+    COMMAND \"${FLUTTER_ROOT}/bin/dart.bat\" compile exe
+            \"${MCP_SERVER_ENTRYPOINT}\"
+            -o \"\${CMAKE_INSTALL_PREFIX}/deskdroid-mcp.exe\"
+    RESULT_VARIABLE mcp_result)
+  if(NOT mcp_result EQUAL 0)
+    message(FATAL_ERROR \"Failed to compile the MCP server (deskdroid-mcp.exe).\")
+  endif()
+  " CONFIGURATIONS Release COMPONENT Runtime)
+
 # Copy the native assets provided by the build.dart from all packages.
 set(NATIVE_ASSETS_DIR "${PROJECT_BUILD_DIR}native_assets/windows/")
 install(DIRECTORY "${NATIVE_ASSETS_DIR}"

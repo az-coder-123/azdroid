@@ -248,6 +248,7 @@
 				3399D490228B24CF009A79C7 /* ShellScript */,
 				1C8EA51B5961457C477F8821 /* [CP] Embed Pods Frameworks */,
 				D3E5ADB0B0B1E7A1C0DEADB0 /* Embed Platform Tools (adb) */,
+				D3E5ADB0B0B1E7A1C0DEADB1 /* Embed MCP Server */,
 			);
 			buildRules = (
 			);
@@ -447,6 +448,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/scripts/embed_platform_tools.sh\"\n";
+		};
+		D3E5ADB0B0B1E7A1C0DEADB1 /* Embed MCP Server */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed MCP Server";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/embed_mcp_server.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -123,6 +123,20 @@ fi
 codesign --verify --deep --strict "$BUILD_APP_PATH"
 echo -e "${GREEN}✓ Bundled adb verified:${NC} $("$BUNDLED_ADB" version | head -1)"
 
+# The precompiled MCP server must answer a real JSON-RPC handshake.
+BUNDLED_MCP="$BUILD_APP_PATH/Contents/MacOS/deskdroid-mcp"
+if [[ ! -x "$BUNDLED_MCP" ]]; then
+  echo -e "${RED}Error: Precompiled MCP server missing at:${NC} $BUNDLED_MCP"
+  exit 1
+fi
+MCP_SMOKE_REQUEST='{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+MCP_SMOKE_REPLY=$(echo "$MCP_SMOKE_REQUEST" | perl -e 'alarm 20; exec @ARGV' "$BUNDLED_MCP")
+if ! grep -q '"tools"' <<< "$MCP_SMOKE_REPLY"; then
+  echo -e "${RED}Error: MCP server did not answer tools/list.${NC}"
+  exit 1
+fi
+echo -e "${GREEN}✓ MCP server verified:${NC} $(lipo -archs "$BUNDLED_MCP"), answers tools/list"
+
 APP_SIZE=$(du -sh "$BUILD_APP_PATH" | awk '{print $1}')
 echo -e "${GREEN}✓ Application bundle compiled:${NC} DeskDroid.app (${APP_SIZE})"
 
