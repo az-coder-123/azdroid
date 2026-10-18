@@ -2,7 +2,7 @@
 
 > What runs on each desktop platform, how it was verified, and where the platforms differ. This is the single source of truth for platform status; other documents link here instead of repeating it.
 
-Status date: **2026-10-18** (DeskDroid v1.2.0 on macOS; the latest Windows package is v1.0.1).
+Status date: **2026-10-18** (DeskDroid v1.2.0 on macOS and Windows).
 
 ---
 
@@ -17,7 +17,7 @@ Status date: **2026-10-18** (DeskDroid v1.2.0 on macOS; the latest Windows packa
 | Video decoder | Apple VideoToolbox (hardware) | Media Foundation H.264 decoder + CPU NV12→RGBA copy |
 | Maturity | Stable | **Preview**: core mirroring verified, most tools not yet tested |
 
-Both platforms need **ADB** on the host and an Android 5.0+ device with USB debugging enabled. See [installation.md](installation.md).
+Both release packages bundle **ADB** (an installed ADB takes precedence, see [bundled-platform-tools.md](bundled-platform-tools.md)). The phone needs Android 5.0+ with USB debugging enabled. See [installation.md](installation.md).
 
 ---
 

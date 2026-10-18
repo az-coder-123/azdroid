@@ -16,13 +16,13 @@
 <p align="center">
   <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.2.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.2.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download DeskDroid for macOS"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/desk-droid/releases/download/v1.0.1/DeskDroid-v1.0.1-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.0.1_(x64_Preview)-0078D4?style=for-the-badge" alt="Download DeskDroid for Windows (Preview)"></a>
+  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.2.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.2.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download DeskDroid for Windows (Preview)"></a>
   &nbsp;
   <a href="https://github.com/az-coder-123/desk-droid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
   <br>
   <sub>macOS: Universal Binary (30 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
   <br>
-  <sub>Windows (Preview): portable ZIP (13 MB) • Windows 10/11 x64 • <a href="docs/platform-support.md">what works on each platform</a></sub>
+  <sub>Windows (Preview): portable ZIP (21 MB) • Windows 10/11 x64 • <a href="docs/platform-support.md">what works on each platform</a></sub>
 </p>
 
 <p align="center">
@@ -203,7 +203,7 @@ flowchart LR
 ### Install a release
 
 - **macOS:** unzip `DeskDroid-v1.2.0-macOS.zip`, move **DeskDroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/DeskDroid.app` once if Gatekeeper blocks it.
-- **Windows:** unzip `DeskDroid-v1.0.1-Windows-x64.zip` (the latest Windows package; it needs an installed ADB) and run `DeskDroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
+- **Windows:** unzip `DeskDroid-v1.2.0-Windows-x64.zip` (ADB included) and run `DeskDroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
 
 ### Run from source
 

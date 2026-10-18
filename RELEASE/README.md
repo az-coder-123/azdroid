@@ -6,12 +6,12 @@
 
 | Package | Platform | Version | Size | SHA-256 |
 | :--- | :--- | :--- | :--- | :--- |
-| **[`DeskDroid-v1.2.0-macOS.zip`](DeskDroid-v1.2.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.2.0 | `30M` | `f1c14fbd3c62316e9f63d9a0e74582ee8903dffa1da3372915812ca43f139961` |
-| **[`DeskDroid-v1.0.1-Windows-x64.zip`](DeskDroid-v1.0.1-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.0.1 | `13M` | `e36d0596a0294723f87653bc58e4835c9fabbb601817311e667686fd9502607d` |
+| **[`DeskDroid-v1.2.0-macOS.zip`](DeskDroid-v1.2.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.2.0 | `31M` | `f1c14fbd3c62316e9f63d9a0e74582ee8903dffa1da3372915812ca43f139961` |
+| **[`DeskDroid-v1.2.0-Windows-x64.zip`](DeskDroid-v1.2.0-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.2.0 | `21M` | `5a7c872bdaa2e3b12ae27ebad8606c464753fbe39b3221dc11af4e11f6a391e7` |
 
 Each `*-latest.zip` file is a copy of the newest package for its platform.
 
-ADB and scrcpy-server are bundled. Exception: the Windows v1.0.1 package has no ADB; install it first (`winget install Google.PlatformTools`).
+ADB and scrcpy-server are bundled. An ADB you install yourself takes precedence over the bundled one.
 
 ## Install on macOS
 

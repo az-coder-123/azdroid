@@ -60,7 +60,7 @@ EOF
 
 Each `*-latest.zip` file is a copy of the newest package for its platform.
 
-ADB and scrcpy-server are bundled. Exception: the Windows v1.0.1 package has no ADB; install it first (`winget install Google.PlatformTools`).
+ADB and scrcpy-server are bundled. An ADB you install yourself takes precedence over the bundled one.
 
 ## Install on macOS
 
