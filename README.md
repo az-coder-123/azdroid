@@ -96,17 +96,24 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_screen_recording.png" alt="DeskDroid Hardware Screen Recording HUD" width="100%">
+      <img src="docs/images/deskdroid_screen_recording.png" alt="DeskDroid screen recording bar with a 3-second countdown and Start button over the mirrored phone" width="100%">
       <br><b>Hardware Screen Recording (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>)</b>
       <br><sub>H.264 MP4 encoded by the phone's hardware encoder (up to 3 minutes), with a 3 s countdown HUD.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_area_crop.png" alt="DeskDroid Interactive Area Screenshot Crop Marquee" width="100%">
+      <img src="docs/images/deskdroid_area_crop.png" alt="DeskDroid area crop: a marquee with drag handles over the mirrored phone and Clipboard, Save File, and Both actions" width="100%">
       <br><b>Interactive Area Crop (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>)</b>
       <br><sub>PNG marquee crop with live pixel badge; copy, save, or both.</sub>
     </td>
   </tr>
 </table>
+
+### 5. Remote Text Input
+<p align="center">
+  <img src="docs/images/deskdroid_text_injection.png" alt="DeskDroid Remote Text Injection dialog over the mirrored phone, with a text field and Inject Text button" width="50%">
+  <br><b>Remote Text Injection (<kbd>Cmd</kbd>+<kbd>K</kbd>)</b>
+  <br><sub>Type or paste text for the phone; Vietnamese, CJK, and emoji arrive intact.</sub>
+</p>
 
 ---
 
