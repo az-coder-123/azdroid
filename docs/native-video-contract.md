@@ -31,6 +31,8 @@ Counters only grow during one stream, so the Dart client (`StreamTelemetrySample
 
 ## 2. Wire Format (scrcpy-server video socket)
 
+Server: bundled `assets/scrcpy-server.jar`, **v2.1**. The client passes `ScrcpyServerManager.serverVersion` as the first argument, and the server refuses to start on a mismatch. `test/unit/scrcpy_server_version_test.dart` reads the version from the jar's `classes.dex` and fails if the constant or the README badge differ. To upgrade, replace the jar, update the constant and the badge, then re-check this wire format against the new release.
+
 All integers are big-endian.
 
 **Stream header** (once, 77 bytes)
