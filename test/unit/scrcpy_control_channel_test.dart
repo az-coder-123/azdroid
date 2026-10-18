@@ -34,6 +34,27 @@ void main() {
     expect(await received.future, [4, 1]);
   });
 
+  test('close sends everything queued before it', () async {
+    // Large enough that the socket cannot write it all at once, so an
+    // immediate destroy would drop the tail.
+    final payload = Uint8List(4 * 1024 * 1024)..fillRange(0, 4, 7);
+    final done = Completer<int>();
+    server.listen((client) {
+      var total = 0;
+      client.listen(
+        (d) => total += d.length,
+        onDone: () => done.complete(total),
+      );
+    });
+    await channel.connect(deviceSerial: 'dev:5555', port: server.port);
+
+    channel.send(payload);
+    await channel.close();
+
+    expect(await done.future, payload.length);
+    expect(channel.isConnected, isFalse);
+  });
+
   test('marks itself closed when the server closes the socket', () async {
     server.listen((client) => client.destroy());
     await channel.connect(deviceSerial: 'dev:5555', port: server.port);

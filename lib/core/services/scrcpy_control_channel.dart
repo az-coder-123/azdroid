@@ -9,7 +9,7 @@ import 'package:desk_droid/core/services/app_logger.dart';
 ///
 /// Opened by streaming (after the server accepted the video socket) and used
 /// by control to send input. Lives in core so neither feature imports the
-/// other. Message bytes are built by the control feature.
+/// other. Message bytes come from `ScrcpyControlMessage`.
 abstract class ScrcpyControlChannel {
   /// Serial of the device this channel is connected to, or `null`.
   String? get deviceSerial;
@@ -22,7 +22,8 @@ abstract class ScrcpyControlChannel {
   /// Queues [message] for sending. Returns `false` when not connected.
   bool send(Uint8List message);
 
-  /// Closes the socket. Safe to call when already closed.
+  /// Sends what is queued (bounded wait), then closes the socket. Safe to
+  /// call when already closed.
   Future<void> close();
 }
 
@@ -32,6 +33,9 @@ class SocketScrcpyControlChannel implements ScrcpyControlChannel {
     this._host = SocketConfig.loopbackHost,
     this._connectTimeout = SocketConfig.connectionTimeout,
   });
+
+  /// Upper bound for sending queued messages on [close].
+  static const Duration _flushTimeout = Duration(milliseconds: 500);
 
   final String _host;
   final Duration _connectTimeout;
@@ -88,9 +92,14 @@ class SocketScrcpyControlChannel implements ScrcpyControlChannel {
     final socket = _socket;
     _socket = null;
     _deviceSerial = null;
-    if (socket != null) {
-      socket.destroy();
+    if (socket == null) return;
+    try {
+      // A last message (such as "display on") must not be dropped.
+      await socket.flush().timeout(_flushTimeout);
+    } on Exception catch (error) {
+      AppLogger.debug('scrcpy control channel not flushed on close: $error');
     }
+    socket.destroy();
   }
 
   void _onClosed(Socket socket, Object? error) {
