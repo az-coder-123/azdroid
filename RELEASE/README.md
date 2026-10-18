@@ -7,7 +7,7 @@
 | Package | Platform | Version | Size | SHA-256 |
 | :--- | :--- | :--- | :--- | :--- |
 | **[`DeskDroid-v1.2.0-macOS.zip`](DeskDroid-v1.2.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.2.0 | `31M` | `f1c14fbd3c62316e9f63d9a0e74582ee8903dffa1da3372915812ca43f139961` |
-| **[`DeskDroid-v1.2.0-Windows-x64.zip`](DeskDroid-v1.2.0-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.2.0 | `21M` | `5a7c872bdaa2e3b12ae27ebad8606c464753fbe39b3221dc11af4e11f6a391e7` |
+| **[`DeskDroid-v1.2.0-Windows-x64.zip`](DeskDroid-v1.2.0-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.2.0 | `21M` | `b306b6d48d1b0fdb24f931bc200e5aaa32e16637bf585c6228b0c4937c6f73ed` |
 
 Each `*-latest.zip` file is a copy of the newest package for its platform.
 
