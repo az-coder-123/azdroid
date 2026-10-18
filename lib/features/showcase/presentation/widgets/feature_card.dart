@@ -60,24 +60,34 @@ class FeatureCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: feature.badgeColor.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: feature.badgeColor.withValues(alpha: 0.3),
+                        const SizedBox(width: 8),
+                        // Shrinks with an ellipsis on narrow cards, so a
+                        // long badge never overflows the title row.
+                        Flexible(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
                             ),
-                          ),
-                          child: Text(
-                            feature.badgeText,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: feature.badgeColor,
+                            decoration: BoxDecoration(
+                              color: feature.badgeColor.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(
+                                color: feature.badgeColor.withValues(
+                                  alpha: 0.3,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              feature.badgeText,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: feature.badgeColor,
+                              ),
                             ),
                           ),
                         ),
