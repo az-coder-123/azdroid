@@ -300,44 +300,6 @@ void main() {
       ).called(1);
     });
 
-    test('sendNavigationKey forwards keyevent to server manager', () async {
-      when(
-        () => mockServerManager.startServerDaemon(
-          deviceSerial: any(named: 'deviceSerial'),
-          port: any(named: 'port'),
-          maxFps: any(named: 'maxFps'),
-          bitrateMbps: any(named: 'bitrateMbps'),
-        ),
-      ).thenAnswer((_) async => true);
-
-      when(
-        () => mockNativeService.startStream(
-          host: any(named: 'host'),
-          port: any(named: 'port'),
-        ),
-      ).thenAnswer((_) async => 42);
-
-      when(() => mockNativeService.getDimensions())
-          .thenAnswer((_) async => {'width': 1080, 'height': 2400});
-
-      when(
-        () => mockServerManager.sendKeyevent(
-          deviceSerial: any(named: 'deviceSerial'),
-          keyCode: any(named: 'keyCode'),
-        ),
-      ).thenAnswer((_) async => true);
-
-      final session = await repository.startSession(testDevice);
-      await repository.sendNavigationKey(session.sessionId, 4);
-
-      verify(
-        () => mockServerManager.sendKeyevent(
-          deviceSerial: testDevice.id,
-          keyCode: 4,
-        ),
-      ).called(1);
-    });
-
     test(
       'startSession fails with controlConnectFailed and cleans up',
       () async {

@@ -1,4 +1,3 @@
-import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
@@ -122,39 +121,6 @@ class StreamingCubit extends Cubit<StreamingState>
     if (currentState is StreamingActive) {
       final newRotation = (currentState.rotationDegrees + 90) % 360;
       emit(currentState.copyWith(rotationDegrees: newRotation));
-    }
-  }
-
-  /// Injects the Android system Back navigation action.
-  Future<void> sendBack() async {
-    final currentState = state;
-    if (currentState is StreamingActive) {
-      await repository.sendNavigationKey(
-        currentState.session.sessionId,
-        AndroidKeyCodes.keycodeBack,
-      );
-    }
-  }
-
-  /// Injects the Android system Home navigation action.
-  Future<void> sendHome() async {
-    final currentState = state;
-    if (currentState is StreamingActive) {
-      await repository.sendNavigationKey(
-        currentState.session.sessionId,
-        AndroidKeyCodes.keycodeHome,
-      );
-    }
-  }
-
-  /// Injects the Android system App Switcher / Recent Apps action.
-  Future<void> sendAppSwitch() async {
-    final currentState = state;
-    if (currentState is StreamingActive) {
-      await repository.sendNavigationKey(
-        currentState.session.sessionId,
-        AndroidKeyCodes.keycodeAppSwitch,
-      );
     }
   }
 }

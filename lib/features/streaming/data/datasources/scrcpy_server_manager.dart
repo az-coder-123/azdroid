@@ -223,32 +223,4 @@ class ScrcpyServerManager {
     }
     await removePortForward(deviceSerial: deviceSerial, localPort: port);
   }
-
-  /// Injects an Android keyevent via ADB shell.
-  Future<bool> sendKeyevent({
-    required String deviceSerial,
-    required int keyCode,
-  }) async {
-    final adb = await _adbService.resolveAdbPath();
-    if (adb == null) return false;
-
-    try {
-      final result = await _executor.run(adb, [
-        '-s',
-        deviceSerial,
-        'shell',
-        'input',
-        'keyevent',
-        keyCode.toString(),
-      ], timeout: AdbTimeouts.quickQuery);
-      return result.exitCode == 0;
-    } catch (e, stack) {
-      AppLogger.warning(
-        'Failed to send keyevent $keyCode to $deviceSerial',
-        error: e,
-        stackTrace: stack,
-      );
-      return false;
-    }
-  }
 }

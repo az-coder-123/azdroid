@@ -91,13 +91,6 @@ void main() {
 
     expect(await repository.toggleScreenOff(session.sessionId, true), isTrue);
     expect(calls, ['display off']);
-    // The POWER key would put the phone to sleep and stop the mirror.
-    verifyNever(
-      () => serverManager.sendKeyevent(
-        deviceSerial: any(named: 'deviceSerial'),
-        keyCode: any(named: 'keyCode'),
-      ),
-    );
   });
 
   test('toggleScreenOff reports a closed control socket', () async {

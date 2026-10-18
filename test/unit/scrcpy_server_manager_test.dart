@@ -65,25 +65,5 @@ void main() {
 
       expect(success, isTrue);
     });
-
-    test('sendKeyevent dispatches input keyevent via adb shell', () async {
-      when(
-        () => mockExecutor.run('/usr/local/bin/adb', [
-          '-s',
-          testSerial,
-          'shell',
-          'input',
-          'keyevent',
-          '4',
-        ], timeout: any(named: 'timeout')),
-      ).thenAnswer((_) async => ProcessResult(1, 0, '', ''));
-
-      final success = await serverManager.sendKeyevent(
-        deviceSerial: testSerial,
-        keyCode: 4,
-      );
-
-      expect(success, isTrue);
-    });
   });
 }

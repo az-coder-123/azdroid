@@ -197,15 +197,4 @@ class StreamingRepositoryImpl implements StreamingRepository {
     _currentSession = updated;
     return updated;
   }
-
-  @override
-  Future<void> sendNavigationKey(String sessionId, int keyCode) async {
-    final session = _currentSession;
-    if (session != null) {
-      await _serverManager.sendKeyevent(
-        deviceSerial: session.deviceId,
-        keyCode: keyCode,
-      );
-    }
-  }
 }

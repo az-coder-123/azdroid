@@ -7,6 +7,7 @@ import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
@@ -49,6 +50,8 @@ class MockScreenRecordingRepository extends Mock
     implements ScreenRecordingRepository {}
 
 void main() {
+  setUpAll(() => registerFallbackValue(NavigationAction.back));
+
   late MockStreamingRepository mockRepository;
   late MockControlRepository mockControlRepository;
   late MockClipboardRepository mockClipboardRepository;
@@ -101,8 +104,8 @@ void main() {
     when(() => mockRepository.stopSession(any())).thenAnswer((_) async {});
     when(() => mockRepository.watchTelemetry())
         .thenAnswer((_) => Stream.value(testTelemetry));
-    when(() => mockRepository.sendNavigationKey(any(), any()))
-        .thenAnswer((_) async {});
+    when(() => mockControlRepository.sendNavigationAction(any(), any()))
+        .thenAnswer((_) async => true);
     when(() => mockRepository.toggleScreenOff(any(), any()))
         .thenAnswer((_) async => true);
     when(() => mockAudioRepository.watch())
@@ -264,11 +267,34 @@ void main() {
           .called(1);
       expect(find.text('Screen Off'), findsOneWidget);
 
-      // Tap Back button
+      // The toolbar buttons use the control path (control socket, adb
+      // fallback), like the shortcuts and mouse buttons.
       await tester.tap(find.byTooltip('Back (Right Click)'));
       await tester.pump();
-      verify(() => mockRepository.sendNavigationKey('session_123', 4))
-          .called(1);
+      verify(
+        () => mockControlRepository.sendNavigationAction(
+          testDevice.serial,
+          NavigationAction.back,
+        ),
+      ).called(1);
+      await tester.tap(
+        find.byTooltip('Home (${keys.label('H')} / Middle Click)'),
+      );
+      await tester.pump();
+      verify(
+        () => mockControlRepository.sendNavigationAction(
+          testDevice.serial,
+          NavigationAction.home,
+        ),
+      ).called(1);
+      await tester.tap(find.byTooltip('App Switcher (${keys.label('Tab')})'));
+      await tester.pump();
+      verify(
+        () => mockControlRepository.sendNavigationAction(
+          testDevice.serial,
+          NavigationAction.appSwitch,
+        ),
+      ).called(1);
 
       // Clean up
       await tester.pumpWidget(const SizedBox());

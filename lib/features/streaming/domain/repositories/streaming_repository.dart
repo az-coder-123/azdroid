@@ -45,7 +45,4 @@ abstract class StreamingRepository {
   /// The server applies it only at launch, so this restarts the video
   /// pipeline like [updateBitrate], with the same errors.
   Future<StreamSessionEntity> updateStayAwake(String sessionId, bool stayAwake);
-
-  /// Injects Android navigation keycode actions (Back, Home, AppSwitch).
-  Future<void> sendNavigationKey(String sessionId, int keyCode);
 }

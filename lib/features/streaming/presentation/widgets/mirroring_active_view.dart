@@ -2,6 +2,9 @@ import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/apk_installer/presentation/widgets/apk_installer_dialog.dart';
+import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
+import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/device_log_dialog.dart';
@@ -93,9 +96,12 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                     child: FloatingControlsToolbar(
                       session: widget.state.session,
-                      onBack: context.read<StreamingCubit>().sendBack,
-                      onHome: context.read<StreamingCubit>().sendHome,
-                      onAppSwitch: context.read<StreamingCubit>().sendAppSwitch,
+                      // Same path as the shortcuts and mouse buttons: the
+                      // control socket, with adb as the fallback.
+                      onBack: () => _navigate(context, NavigationAction.back),
+                      onHome: () => _navigate(context, NavigationAction.home),
+                      onAppSwitch: () =>
+                          _navigate(context, NavigationAction.appSwitch),
                       onRotate: context.read<StreamingCubit>().rotateScreen,
                       onToggleScreenOff: context
                           .read<StreamingCubit>()
@@ -162,6 +168,15 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  void _navigate(BuildContext context, NavigationAction action) {
+    context.read<ControlBloc>().add(
+      ControlNavigationActionDispatched(
+        deviceSerial: widget.device.serial,
+        action: action,
       ),
     );
   }
