@@ -34,14 +34,15 @@ final class ScrcpyAudioSession {
     thread.start()
   }
 
-  /// After this returns, the session no longer touches the buffer; the
-  /// reader closes the socket within a second.
+  /// After this returns, the session no longer touches the buffer. The
+  /// connection ends at once; the reader thread then closes the socket.
   func stop() {
     lock.lock()
     stopped = true
     let output = self.output
     self.output = nil
     lock.unlock()
+    socket.interrupt()
     output?.stop()
     stats.setState(.idle)
   }

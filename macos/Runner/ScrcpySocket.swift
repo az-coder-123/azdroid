@@ -3,11 +3,14 @@ import Foundation
 
 /// Blocking TCP socket to an `adb forward` port, for the scrcpy streams.
 ///
-/// Reads wake up every second (`SO_RCVTIMEO`) so a stop request is honored
-/// without closing the socket from another thread.
+/// Reads wake up every second (`SO_RCVTIMEO`) so a stop request is honored.
+/// Only the reading thread closes the socket; other threads use
+/// [interrupt], which wakes a blocked read at once and is safe from any
+/// thread (unlike `close`, whose descriptor number the system may reuse).
 final class ScrcpySocket {
-  private var descriptor: Int32
   private static let receiveTimeoutSeconds = 1
+  private let lock = NSLock()
+  private var descriptor: Int32
 
   private init(descriptor: Int32) {
     self.descriptor = descriptor
@@ -46,10 +49,11 @@ final class ScrcpySocket {
     var data = Data(count: count)
     var total = 0
     while total < count {
-      guard isRunning(), descriptor >= 0 else { return nil }
+      let fd = currentDescriptor()
+      guard isRunning(), fd >= 0 else { return nil }
       let read = data.withUnsafeMutableBytes { buffer -> Int in
         guard let base = buffer.baseAddress else { return -1 }
-        return Darwin.recv(descriptor, base.advanced(by: total), count - total, 0)
+        return Darwin.recv(fd, base.advanced(by: total), count - total, 0)
       }
       if read > 0 {
         total += read
@@ -62,7 +66,17 @@ final class ScrcpySocket {
     return data
   }
 
+  /// Ends the connection in both directions; a blocked read returns at once.
+  func interrupt() {
+    lock.lock()
+    defer { lock.unlock() }
+    if descriptor >= 0 { Darwin.shutdown(descriptor, SHUT_RDWR) }
+  }
+
+  /// Releases the descriptor. Call from the reading thread.
   func close() {
+    lock.lock()
+    defer { lock.unlock() }
     guard descriptor >= 0 else { return }
     Darwin.close(descriptor)
     descriptor = -1
@@ -70,5 +84,11 @@ final class ScrcpySocket {
 
   deinit {
     close()
+  }
+
+  private func currentDescriptor() -> Int32 {
+    lock.lock()
+    defer { lock.unlock() }
+    return descriptor
   }
 }

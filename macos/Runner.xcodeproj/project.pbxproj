@@ -31,10 +31,13 @@
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		33CC11252044BFA00003C045 /* ScrcpyStreamPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11242044BFA00003C045 /* ScrcpyStreamPlugin.swift */; };
 		33CC11272044BFA00003C045 /* ScrcpyStreamStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11262044BFA00003C045 /* ScrcpyStreamStats.swift */; };
+		455BD7A974EABBB0D7AC01C9 /* ScrcpyAnnexB.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5016A750788D98BF1BAEA04 /* ScrcpyAnnexB.swift */; };
+		600755CBD5E0CF9386F74B3C /* ScrcpyVideoSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74819D7063C11C42589DA33 /* ScrcpyVideoSession.swift */; };
 		7EE9C785EBAEB1A58720E7C3 /* ScrcpyAudioPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = C768BCE1DC379443C49261EC /* ScrcpyAudioPlugin.swift */; };
 		80EE5FE2AFF1626DC227F45C /* pcm_jitter_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A08767AFB0BF8E2FD3C2143A /* pcm_jitter_buffer.cpp */; };
 		91CEF3E7916D56CFCD511FD9 /* audio_header.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9453F71A9D1C2575839F2A71 /* audio_header.cpp */; };
 		938D5C52786F6B4CCC718F23 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F226E2FDF96E5EC35591811 /* Pods_RunnerTests.framework */; };
+		A09CC4D4C68303A4305B255A /* ScrcpyH264Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD71B46897AFB0AD918AA78 /* ScrcpyH264Decoder.swift */; };
 		CAD3C2607568F6226DE21A75 /* ScrcpyLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D306D3DBEBCC421BAEB9CFD /* ScrcpyLog.swift */; };
 		D4F8B50EC75FE3BA3CD7251D /* ScrcpyAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2D198558BBC2DFB32E0C46 /* ScrcpyAudioSession.swift */; };
 		E2FC0D5ED161E3B1DC3F8767 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68637E4AA5C503CBAC300B95 /* Pods_Runner.framework */; };
@@ -108,9 +111,12 @@
 		9D6F5768B623A830B5AE04DD /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		A08767AFB0BF8E2FD3C2143A /* pcm_jitter_buffer.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = pcm_jitter_buffer.cpp; sourceTree = "<group>"; };
 		A147C9196B5603B15183D2AE /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+		A74819D7063C11C42589DA33 /* ScrcpyVideoSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyVideoSession.swift; sourceTree = "<group>"; };
 		C4D40797129B8378FC875902 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		C768BCE1DC379443C49261EC /* ScrcpyAudioPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAudioPlugin.swift; sourceTree = "<group>"; };
 		D25160629643B2090A42EB12 /* ScrcpyAudioOutput.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAudioOutput.swift; sourceTree = "<group>"; };
+		EAD71B46897AFB0AD918AA78 /* ScrcpyH264Decoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyH264Decoder.swift; sourceTree = "<group>"; };
+		F5016A750788D98BF1BAEA04 /* ScrcpyAnnexB.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAnnexB.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +220,9 @@
 				7147291474C4588FC122B079 /* Runner-Bridging-Header.h */,
 				7D306D3DBEBCC421BAEB9CFD /* ScrcpyLog.swift */,
 				1A2D198558BBC2DFB32E0C46 /* ScrcpyAudioSession.swift */,
+				F5016A750788D98BF1BAEA04 /* ScrcpyAnnexB.swift */,
+				EAD71B46897AFB0AD918AA78 /* ScrcpyH264Decoder.swift */,
+				A74819D7063C11C42589DA33 /* ScrcpyVideoSession.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -535,6 +544,9 @@
 				80EE5FE2AFF1626DC227F45C /* pcm_jitter_buffer.cpp in Sources */,
 				CAD3C2607568F6226DE21A75 /* ScrcpyLog.swift in Sources */,
 				D4F8B50EC75FE3BA3CD7251D /* ScrcpyAudioSession.swift in Sources */,
+				455BD7A974EABBB0D7AC01C9 /* ScrcpyAnnexB.swift in Sources */,
+				A09CC4D4C68303A4305B255A /* ScrcpyH264Decoder.swift in Sources */,
+				600755CBD5E0CF9386F74B3C /* ScrcpyVideoSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
