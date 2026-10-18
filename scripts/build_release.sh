@@ -122,6 +122,10 @@ echo -e "${YELLOW}🏗️  [Step 3/5] Compiling macOS desktop release bundle...$
 cd "$ROOT_DIR"
 echo -e "${BLUE}Fetching bundled adb (Android Platform-Tools, checksum-verified)...${NC}"
 dart run tool/fetch_platform_tools.dart --os=macos
+# Start from no app bundle: on an incremental build Xcode re-signs the app
+# only when its own binary changes, while the embed phases always rewrite
+# deskdroid-mcp, which then no longer matches the app's seal.
+rm -rf "$BUILD_APP_PATH"
 flutter build macos --release
 
 if [[ ! -d "$BUILD_APP_PATH" ]]; then

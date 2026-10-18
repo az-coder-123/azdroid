@@ -38,3 +38,12 @@ The script was written when only macOS released. Windows packaging was added lat
 - [ ] A `releases/latest/download/<asset>` link is valid only if every release has that asset; otherwise pin the tag.
 - [ ] Keep one version source, or a test that compares every copy with it.
 - [ ] Read a rarely run publishing script fully, and dry-run it, before the real run.
+
+## Recurrence: Stale App Seal on an Incremental Release Build (2026-10-18)
+
+- **Symptom:** the first real run stopped at `codesign --verify --deep --strict`: *"nested code is modified or invalid"*, `file modified: …/Contents/MacOS/deskdroid-mcp`. The two runs before it had passed.
+- **Evidence:** `_CodeSignature/CodeResources` and the main binary were from the previous build (17:54); `deskdroid-mcp` was from this one (18:01).
+- **Cause:** the "Embed MCP Server" phase is always out of date and recompiles `deskdroid-mcp` on every build, but Xcode re-signs the app only when its own binary changes. Earlier runs passed because the Dart code had changed each time.
+- **Fix:** `build_release.sh` deletes `DeskDroid.app` before `flutter build macos --release`; two back-to-back dry runs now pass.
+- [ ] A build phase that rewrites files inside a signed bundle must run before the bundle is sealed, or the release must start from no bundle.
+

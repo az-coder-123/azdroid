@@ -103,7 +103,7 @@ The release script refuses to publish while anything outside `RELEASE/` is uncom
 | Stage | What the script does | Stops when |
 |:---|:---|:---|
 | Checks | `flutter analyze`, `flutter test` (skip with `--skip-tests`) | A warning or failing test |
-| Build | Fetches Platform-Tools (checksum-verified), `flutter build macos --release` | Build error |
+| Build | Fetches Platform-Tools (checksum-verified), deletes the old `DeskDroid.app` (so the app is always re-signed), `flutter build macos --release` | Build error |
 | Bundle checks | Bundled `adb` runs, `codesign --verify --deep --strict`, `deskdroid-mcp` answers `tools/list` | Any check fails |
 | Package | `ditto` ZIP, `-latest` copy, `SHA256SUMS.txt`; deletes older **macOS** ZIPs only | — |
 | Describe | `scripts/release/write_release_readme.sh` writes `RELEASE/README.md` for every platform with a checksum file | No checksum file |
