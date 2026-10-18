@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:desk_droid/core/services/process_output_encoding.dart';
+
 /// Abstraction for system process execution to facilitate unit testing and isolation.
 abstract class ProcessExecutor {
   /// Executes a system command with arguments and optional timeout.
@@ -36,12 +38,15 @@ class DefaultProcessExecutor implements ProcessExecutor {
     bool includeParentEnvironment = true,
     Duration? timeout,
   }) async {
+    final encoding = processOutputEncodingFor(executable);
     final future = Process.run(
       executable,
       arguments,
       workingDirectory: workingDirectory,
       environment: environment,
       includeParentEnvironment: includeParentEnvironment,
+      stdoutEncoding: encoding,
+      stderrEncoding: encoding,
     );
 
     if (timeout != null) {
