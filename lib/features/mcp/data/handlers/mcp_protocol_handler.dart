@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:desk_droid/core/constants/app_constants.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_json_rpc.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_registry.dart';
@@ -15,7 +16,7 @@ class McpProtocolHandler {
 
   static const String protocolVersion = '2024-11-05';
   static const String serverName = 'deskdroid-mcp';
-  static const String serverVersion = '1.0.0';
+  static const String serverVersion = AppConstants.appVersion;
 
   /// Processes an incoming raw JSON-RPC string message. Returns null if notification.
   Future<String?> handleMessage(String rawJson) async {
