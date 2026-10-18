@@ -34,7 +34,7 @@
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Opens real-time logcat inspection, filtering & recording console |
 | <kbd>Cmd</kbd> + <kbd>U</kbd> | Send Files | Native file picker (Finder on macOS, File Explorer on Windows) to send files/media/APKs to Android |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Manager dialog with quick folders & download to the computer |
-| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send text (ASCII; paste accented text through the clipboard) |
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send text; accented, CJK, and emoji text is pasted through the phone's clipboard |
 | <kbd>Cmd</kbd> + <kbd>R</kbd> | Rotate Screen | Rotates video viewport by 90° clockwise |
 | <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen Toggle | Turns the phone's screen off or on while mirroring continues ([details](features/screen-off-streaming.md)) |
 | <kbd>Escape</kbd> | Back | Closes dialogs or navigates back |

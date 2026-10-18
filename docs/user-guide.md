@@ -108,7 +108,7 @@ Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for e
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>: Open Android File Explorer.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>: Open APK Sideload & Package Manager.
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>: Open Real-Time Device Logcat Console.
-- <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector (ASCII text; for Vietnamese or other accented text, copy on the computer and paste on the phone).
+- <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector. Vietnamese, CJK, and emoji are pasted intact through the phone's clipboard (Android 7+).
 - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate the mirror view 90 degrees (the phone does not rotate).
 - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on; mirroring continues.
 

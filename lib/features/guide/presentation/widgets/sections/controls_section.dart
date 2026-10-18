@@ -70,7 +70,7 @@ class ControlsSection extends StatelessWidget {
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('K'),
-              description: 'Quick Text Injector (ASCII text; paste accented text through the clipboard)',
+              description: 'Quick Text Injector (Vietnamese, CJK, and emoji pasted intact)',
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('R'),

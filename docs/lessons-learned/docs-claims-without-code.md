@@ -17,7 +17,7 @@ Several feature descriptions in `README.md` and `docs/` promised behavior that n
 
 | Where | Claim | What the code does |
 |:---|:---|:---|
-| Feature docs, user guide, shortcuts, in-app guide | Quick Text Injector types Vietnamese, CJK, emoji "flawlessly" | `adb shell input text` only, which types ASCII. A lesson even described a clipboard-paste path as implemented; only the MCP server has it. |
+| Feature docs, user guide, shortcuts, in-app guide | Quick Text Injector types Vietnamese, CJK, emoji "flawlessly" | `adb shell input text` only, which types ASCII. A lesson even described a clipboard-paste path as implemented; only the MCP server had it. **Fixed afterwards in code** (scrcpy `SET_CLIPBOARD` with paste), verified on a Redmi 9. |
 | Docs, in-app catalog | Logcat streams "at 60 FPS" | Batches every 100 ms. |
 | Docs, in-app catalog | "Lossless" MP4, 4–24 Mbps and resolution presets | `screenrecord` H.264 at 8 Mbps, at most 180 s; no recording options in the UI. |
 | Docs | Area crop by "hardware SurfaceFlinger sub-region crop" | Full `screencap`, cropped on the computer. |

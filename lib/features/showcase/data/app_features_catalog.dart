@@ -50,9 +50,9 @@ class AppFeaturesCatalog {
       highlights: [
         'Left click to tap/drag; trackpad and mouse wheel for fluid scrolling.',
         'Shortcuts: Cmd+H for Home, Cmd+Backspace for Back; right click is Back too.',
-        'Typing from the computer keyboard; Cmd+K sends ASCII text in one go.',
+        'Typing from the computer keyboard; Cmd+K sends text in any language.',
       ],
-      proTip: 'For accented or CJK text, copy it on the computer and paste on the phone.',
+      proTip: 'Cmd+K pastes Vietnamese, CJK, and emoji intact through the phone clipboard.',
       docFileName: 'remote-input-control.md',
     ),
     AppFeatureItem(

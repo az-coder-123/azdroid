@@ -28,7 +28,8 @@ flowchart LR
 |:---|:---|:---|
 | Tap, drag, swipe, scroll | Control socket | Touch DOWN, interpolated MOVE every 16 ms, UP. |
 | Key events (BACK, HOME, App Switch: toolbar buttons, shortcuts, mouse buttons) | Control socket | DOWN then UP. All of them go through `ControlBloc` (`ControlNavigationActionDispatched`). |
-| Quick Text (<kbd>Cmd</kbd> + <kbd>K</kbd>) | `adb` | The scrcpy key map cannot type non-ASCII text such as Vietnamese. |
+| Quick Text (<kbd>Cmd</kbd> + <kbd>K</kbd>), ASCII only | `adb shell input text` | Leaves the phone's clipboard alone. |
+| Quick Text with accents, CJK, or emoji | Control socket: `SET_CLIPBOARD` with paste | The server sets the phone's clipboard and presses PASTE (Android 7+). Key-map typing cannot produce these characters. |
 | Anything while the socket is down | `adb shell input` | Automatic fallback, per event. |
 
 **Frame size.** The server ignores a touch whose screen size differs from the current video size. The repository therefore maps positions with the size reported by the native player (`getDimensions`, through `VideoFrameSizeSource`), not with the device display size. For example, a 1080×2340 display may stream at 1080×2336. When the size is unknown, input uses the adb path.
@@ -61,8 +62,9 @@ flowchart LR
   - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on while mirroring continues ([Screen Off](screen-off-streaming.md)).
 
 ### 4. Quick Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>)
-- **How It Works:** The **Quick Text Injector** modal sends the text with `adb shell input text` into the focused Android text field.
-- **Current Limit:** `input text` types ASCII only. Accented and CJK characters (Vietnamese, Japanese, Chinese, Korean) and emoji are not typed yet. Workaround: copy the text on the computer and paste it on the phone (clipboard sync). The MCP server already uses a clipboard-paste path for such text; the app does not yet.
+- **ASCII Text:** Typed with `adb shell input text` into the focused Android text field.
+- **Accented, CJK, and Emoji Text:** Vietnamese, Japanese, Chinese, Korean, and emoji are sent over the control socket as scrcpy's `SET_CLIPBOARD` with paste: the server puts the text on the phone's clipboard and presses PASTE, so the phone's keyboard (for example Telex) cannot rewrite it. Verified on a Redmi 9: `Tiếng Việt 你好 👋` arrived exactly.
+- **Good to Know:** Pasting needs Android 7 or newer. The pasted text stays on the phone's clipboard; with clipboard sync on, it also reaches the computer's clipboard within about 2 seconds. Without the control socket, such text falls back to `input text`, which cannot type it.
 
 ---
 

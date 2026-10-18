@@ -57,7 +57,7 @@ In `UserGuideDialog` and `DeviceCardView`, DeskDroid detects Xiaomi/Redmi device
 
 ### B. Two-Tier Text Injection Architecture
 
-> ⚠️ **Correction (2026-10-18):** This section described the design as implemented in `ControlBloc` and `ControlDatasource`. It is not: only the MCP server (`mcp_adb_input_ops.dart`) has the clipboard-paste path. The app's Quick Text Injector (<kbd>Cmd</kbd> + <kbd>K</kbd>) still uses `adb shell input text` alone, so accented and CJK text is not typed. See [docs-claims-without-code.md](docs-claims-without-code.md).
+> ⚠️ **Correction (2026-10-18):** This section described the design as implemented in `ControlBloc` and `ControlDatasource`. It is not: only the MCP server (`mcp_adb_input_ops.dart`) has the clipboard-paste path. The app's Quick Text Injector (<kbd>Cmd</kbd> + <kbd>K</kbd>) used `adb shell input text` alone, so accented and CJK text was not typed. See [docs-claims-without-code.md](docs-claims-without-code.md). **Now implemented** differently: `ScrcpyControlDatasource.injectText` sends non-ASCII text as scrcpy's `SET_CLIPBOARD` with paste over the control socket (the server sets the clipboard and presses PASTE); ASCII stays on `input text`.
 
 Intended design:
 

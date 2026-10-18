@@ -70,7 +70,7 @@
 
 ### 3.2 Keyboard & International Text Input
 - **Direct Keystroke Forwarding:** Maps macOS hardware keys to Android standard Linux/Android keycodes.
-- **Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>):** Sends text with `adb shell input text`, which types ASCII characters. Accented and CJK characters (Vietnamese, Japanese, Chinese) are not typed yet; copy them on the computer and paste on the phone through clipboard sync instead.
+- **Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>):** ASCII text is typed with `adb shell input text`. Text with accents, CJK characters, or emoji (Vietnamese, Japanese, Chinese) is pasted through the phone's clipboard over the control socket (Android 7+), so the phone's keyboard cannot alter it.
 
 ---
 

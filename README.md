@@ -119,7 +119,7 @@ DeskDroid includes **14 built-in modules** (plus a planned menu bar companion):
 | **01** | **Wireless Display & Low-Latency Streaming** | Up to 60 FPS at native resolution, H.264 hardware decoding (VideoToolbox on macOS, Media Foundation on Windows), live FPS / bitrate / latency badges | Auto | [Guide](docs/features/wireless-display-streaming.md) |
 | **02** | **Device Discovery & Wireless Pairing** | Subnet ARP scan, 1-click USB-to-Wi-Fi, mDNS discovery for Android 11+ pairing | Auto / Toolbar | [Guide](docs/features/device-discovery-pairing.md) |
 | **03** | **Remote Input & Gesture Control** | Trackpad and mouse gestures over the low-latency scrcpy control socket, smooth scrolling, right-click back | Mouse / Trackpad | [Guide](docs/features/remote-input-control.md) |
-| **04** | **Keyboard & Text Injection** | Desktop keyboard shortcuts and a text input modal (ASCII; accented and CJK text not yet) | <kbd>Cmd</kbd>+<kbd>K</kbd> | [Guide](docs/features/remote-input-control.md) |
+| **04** | **Keyboard & Text Injection** | Desktop keyboard shortcuts and a text input modal; Vietnamese, CJK, and emoji are pasted intact | <kbd>Cmd</kbd>+<kbd>K</kbd> | [Guide](docs/features/remote-input-control.md) |
 | **05** | **Screen-Off Streaming** | Turns the phone's display panel off while mirroring and control continue | <kbd>Cmd</kbd>+<kbd>O</kbd> | [Guide](docs/features/screen-off-streaming.md) |
 | **06** | **Device Logcat Console & Debugger** | Live stream (batched every 100 ms), 5k ring buffer, regex/PID/tag filters, star bookmarks, recording to a file | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | [Guide](docs/features/device-logcat-console.md) |
 | **07** | **Deep Link & Intent Dispatcher** | Test URI schemes, system actions (`VIEW`, `SEND`), packages & typed extras | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | [Guide](docs/features/deep-link-intent-dispatcher.md) |
@@ -150,7 +150,7 @@ Use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows (for example <kbd>Ctr
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Browse phone directories & download files to the computer |
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> | Device Logcat | Real-time log stream with level/tag/PID filtering & export |
 | <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen-Off Toggle | Turn the phone's screen off or on; mirroring continues |
-| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Open the text input modal (ASCII text) |
+| <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injection | Open the text input modal (any language, emoji included) |
 | <kbd>Cmd</kbd> + <kbd>H</kbd> / <kbd>Backspace</kbd> | Home / Back | Standard Android navigation controls |
 
 ---
