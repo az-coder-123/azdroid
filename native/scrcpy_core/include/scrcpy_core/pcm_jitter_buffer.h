@@ -10,6 +10,11 @@
 //   - Overflow: when more than [max_ms] is buffered (network burst, or the
 //     device clock running faster than the host), the oldest audio is
 //     dropped down to [target_ms], so latency cannot grow without bound.
+//   - Excess latency: jitter makes the fill level swing, so its *minimum*
+//     over each one-second window is what is really extra. When even that
+//     minimum stays more than kAudioLatencyToleranceMs above the target,
+//     the excess is dropped (at most once per window), so latency returns
+//     to the target instead of settling anywhere below [max_ms].
 //
 // Thread safety: Push() and the Read*() calls may run on different threads.
 // A mutex guards short copies only; no allocation happens after creation.
@@ -18,6 +23,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <mutex>
 #include <vector>
 
@@ -31,6 +37,8 @@ inline constexpr size_t kAudioBytesPerSample = 2;
 // Buffering defaults: scrcpy's own client targets 50 ms.
 inline constexpr uint32_t kAudioTargetBufferMs = 50;
 inline constexpr uint32_t kAudioMaxBufferMs = 200;
+inline constexpr uint32_t kAudioLatencyToleranceMs = 20;
+inline constexpr uint32_t kAudioLatencyWindowMs = 1000;
 
 struct PcmJitterStats {
   uint64_t buffered_frames = 0;  // Frames waiting to be played now.
@@ -81,10 +89,16 @@ class PcmJitterBuffer {
   void ReadLocked(size_t frames, Writer&& write);
   void AppendSampleLocked(int16_t sample);
   float EffectiveGainLocked() const;
+  // Excess-latency policy, run after each read. Caller holds mutex_.
+  void TrimExcessLatencyLocked(size_t frames_read);
+  void DropOldestLocked(size_t frames);
+  void ResetLatencyWindowLocked();
 
   const uint32_t channels_;
   const size_t target_frames_;
   const size_t max_frames_;
+  const size_t tolerance_frames_;
+  const size_t window_frames_;
 
   mutable std::mutex mutex_;
   std::vector<int16_t> ring_;     // Capacity: max_frames_ + headroom.
@@ -93,6 +107,8 @@ class PcmJitterBuffer {
   uint8_t pending_byte_ = 0;      // Low byte of a sample split across pushes.
   bool has_pending_byte_ = false;
   bool priming_ = true;
+  size_t window_read_frames_ = 0;
+  size_t window_min_buffered_ = std::numeric_limits<size_t>::max();
   float gain_ = 1.0f;
   bool muted_ = false;
   std::vector<int16_t> scratch_;  // Read staging, sized at creation.

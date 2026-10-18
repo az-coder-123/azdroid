@@ -23,6 +23,8 @@ PcmJitterBuffer::PcmJitterBuffer(uint32_t sample_rate, uint32_t channels,
       target_frames_(FramesFor(sample_rate, target_ms)),
       max_frames_(std::max(FramesFor(sample_rate, max_ms),
                            FramesFor(sample_rate, target_ms))),
+      tolerance_frames_(FramesFor(sample_rate, kAudioLatencyToleranceMs)),
+      window_frames_(FramesFor(sample_rate, kAudioLatencyWindowMs)),
       ring_((max_frames_ + 1) * kRingHeadroomFactor * channels_),
       scratch_(std::max<size_t>(max_frames_, 1) * channels_) {}
 
@@ -55,20 +57,39 @@ void PcmJitterBuffer::Push(const uint8_t* data, size_t size) {
   }
 
   if (frames_after > max_frames_) {
-    const size_t drop = frames_after - target_frames_;
-    read_index_ = (read_index_ + drop * channels_) % ring_.size();
-    buffered_samples_ -= drop * channels_;
-    stats_.dropped_frames += drop;
+    DropOldestLocked(frames_after - target_frames_);
   }
+}
+
+void PcmJitterBuffer::DropOldestLocked(size_t frames) {
+  read_index_ = (read_index_ + frames * channels_) % ring_.size();
+  buffered_samples_ -= frames * channels_;
+  stats_.dropped_frames += frames;
+}
+
+void PcmJitterBuffer::ResetLatencyWindowLocked() {
+  window_read_frames_ = 0;
+  window_min_buffered_ = std::numeric_limits<size_t>::max();
+}
+
+void PcmJitterBuffer::TrimExcessLatencyLocked(size_t frames_read) {
+  const size_t buffered = buffered_samples_ / channels_;
+  window_min_buffered_ = std::min(window_min_buffered_, buffered);
+  window_read_frames_ += frames_read;
+  if (window_read_frames_ < window_frames_) {
+    return;
+  }
+  if (window_min_buffered_ > target_frames_ + tolerance_frames_) {
+    DropOldestLocked(window_min_buffered_ - target_frames_);
+  }
+  ResetLatencyWindowLocked();
 }
 
 void PcmJitterBuffer::AppendSampleLocked(int16_t sample) {
   if (buffered_samples_ == ring_.size()) {
     // Only reachable with a single push larger than the ring: drop the
     // oldest frame to make room, keeping frame alignment at the read side.
-    read_index_ = (read_index_ + channels_) % ring_.size();
-    buffered_samples_ -= channels_;
-    ++stats_.dropped_frames;
+    DropOldestLocked(1);
   }
   ring_[(read_index_ + buffered_samples_) % ring_.size()] = sample;
   ++buffered_samples_;
@@ -114,9 +135,11 @@ void PcmJitterBuffer::ReadLocked(size_t frames, Writer&& write) {
     if (got < want) {
       ++stats_.underruns;
       priming_ = true;
+      ResetLatencyWindowLocked();
       return;
     }
   }
+  TrimExcessLatencyLocked(frames);
 }
 
 void PcmJitterBuffer::ReadInterleaved(float* out, size_t frames) {
@@ -163,6 +186,7 @@ void PcmJitterBuffer::Clear() {
   buffered_samples_ = 0;
   has_pending_byte_ = false;
   priming_ = true;
+  ResetLatencyWindowLocked();
 }
 
 PcmJitterStats PcmJitterBuffer::Stats() const {

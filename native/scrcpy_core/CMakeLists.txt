@@ -12,6 +12,7 @@ option(SCRCPY_CORE_BUILD_TESTS "Build scrcpy_core unit tests" OFF)
 add_library(scrcpy_core STATIC
   src/audio_c_api.cpp
   src/audio_header.cpp
+  src/audio_state.cpp
   src/config_packet_merger.cpp
   src/latest_frame_buffer.cpp
   src/nv12_converter.cpp

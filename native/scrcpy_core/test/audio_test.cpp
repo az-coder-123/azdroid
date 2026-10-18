@@ -7,6 +7,7 @@
 
 #include "scrcpy_core/audio_c_api.h"
 #include "scrcpy_core/audio_header.h"
+#include "scrcpy_core/audio_state.h"
 #include "scrcpy_core/pcm_jitter_buffer.h"
 #include "test_harness.h"
 
@@ -131,6 +132,41 @@ SCRCPY_TEST(JitterBufferDropsOldestAudioDownToTargetOnOverflow) {
   EXPECT_EQ(out[0], Pcm(152));  // The newest 50 frames remain.
 }
 
+SCRCPY_TEST(JitterBufferTrimsLatencyThatStaysAboveTarget) {
+  // 1 kHz: target 50 frames, tolerance 20 ms = 20 frames, window 1000.
+  PcmJitterBuffer buffer(kRate, kStereo, 50, 200);
+  const auto start = Frames(1, 150);  // 150 ms queued, below the 200 max.
+  buffer.Push(start.data(), start.size());
+  std::vector<float> out(10 * kStereo);
+  // Steady flow: 10 in, 10 out. The fill stays at about 150 frames.
+  for (int i = 0; i < 100; ++i) {
+    const auto chunk = Frames(1000, 10);
+    buffer.Push(chunk.data(), chunk.size());
+    buffer.ReadInterleaved(out.data(), 10);
+  }
+  const PcmJitterStats stats = buffer.Stats();
+  EXPECT_EQ(stats.underruns, 0u);
+  EXPECT_EQ(stats.buffered_frames, 50u);  // Back at the target.
+  EXPECT_EQ(stats.dropped_frames, 100u);
+}
+
+SCRCPY_TEST(JitterBufferKeepsLatencyWhenOnlyJitterIsAbove) {
+  PcmJitterBuffer buffer(kRate, kStereo, 50, 200);
+  const auto start = Frames(1, 60);
+  buffer.Push(start.data(), start.size());
+  std::vector<float> out(40 * kStereo);
+  // Bursty arrival: 40 frames every 4th read of 10. The minimum fill dips
+  // near the target, so nothing is trimmed.
+  for (int i = 0; i < 100; ++i) {
+    if (i % 4 == 0) {
+      const auto chunk = Frames(1000, 40);
+      buffer.Push(chunk.data(), chunk.size());
+    }
+    buffer.ReadInterleaved(out.data(), 10);
+  }
+  EXPECT_EQ(buffer.Stats().dropped_frames, 0u);
+}
+
 SCRCPY_TEST(JitterBufferAppliesGainAndMute) {
   PcmJitterBuffer buffer(kRate, kStereo, 1, 200);
   const auto bytes = Frames(1000, 4);
@@ -214,4 +250,13 @@ SCRCPY_TEST(AudioCApiParsesHeaderAndRoundTripsAudio) {
   EXPECT_EQ(sc_audio_buffer_stats(buffer).played_frames, 1u);
   sc_audio_buffer_destroy(buffer);
   sc_audio_buffer_destroy(nullptr);  // Safe.
+}
+
+SCRCPY_TEST(AudioStateNamesMatchChannelContract) {
+  EXPECT_EQ(std::string(AudioStateName(AudioState::kIdle)), "idle");
+  EXPECT_EQ(std::string(AudioStateName(AudioState::kConnecting)), "connecting");
+  EXPECT_EQ(std::string(AudioStateName(AudioState::kPlaying)), "playing");
+  EXPECT_EQ(std::string(AudioStateName(AudioState::kDisabled)), "disabled");
+  EXPECT_EQ(std::string(AudioStateName(AudioState::kFailed)), "failed");
+  EXPECT_EQ(std::string(AudioStateName(AudioState::kEnded)), "ended");
 }
