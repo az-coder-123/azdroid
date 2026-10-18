@@ -1,3 +1,5 @@
+import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
+
 /// Builds the `adb shell app_process` command line that starts scrcpy-server.
 ///
 /// Every key/value argument must exist in the bundled server version; the
@@ -16,6 +18,7 @@ class ScrcpyServerCommand {
     required String scid,
     required int videoBitRateBps,
     required int maxFps,
+    required bool stayAwake,
   }) => [
     '-s',
     deviceSerial,
@@ -37,7 +40,15 @@ class ScrcpyServerCommand {
     'control=true',
     // Clipboard sync stays on the adb path; no unsolicited device messages.
     'clipboard_autosync=false',
-    // Leave device settings untouched when the server exits.
-    'cleanup=false',
+    // A restore process puts back every setting the server changed (the
+    // stay-awake ones below) when the server exits, even if it is killed.
+    // It also deletes the pushed jar; DeskDroid pushes it on every start.
+    'cleanup=true',
+    if (stayAwake) ...[
+      // Keeps the phone awake while it charges...
+      'stay_awake=true',
+      // ...and on battery, by lengthening the screen-off timeout.
+      'screen_off_timeout=${ScrcpyServerConstants.stayAwakeScreenOffTimeoutMs}',
+    ],
   ];
 }

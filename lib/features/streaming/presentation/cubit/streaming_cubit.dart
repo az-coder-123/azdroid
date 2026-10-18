@@ -2,19 +2,25 @@ import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
+import 'package:desk_droid/features/streaming/domain/repositories/mirroring_preferences_repository.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/streaming_reconfigurator.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_telemetry_tracker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit managing the display mirroring session lifecycle, viewport controls, and navigation input.
 class StreamingCubit extends Cubit<StreamingState>
-    with StreamingTelemetryTracker {
-  StreamingCubit({required this.repository}) : super(const StreamingInitial());
+    with StreamingTelemetryTracker, StreamingReconfigurator {
+  StreamingCubit({required this.repository, required this.preferences})
+    : super(const StreamingInitial());
 
   @override
   final StreamingRepository repository;
+
+  @override
+  final MirroringPreferencesRepository preferences;
 
   /// Starts a low-latency video streaming session with the specified [device].
   Future<void> startSession(
@@ -25,11 +31,13 @@ class StreamingCubit extends Cubit<StreamingState>
   }) async {
     emit(StreamingStarting(device: device));
     try {
+      final saved = await preferences.load();
       final session = await repository.startSession(
         device,
         maxFps: maxFps,
         bitrateMbps: bitrateMbps,
         turnScreenOff: turnScreenOff,
+        stayAwake: saved.stayAwake,
       );
       emit(StreamingActive(session: session));
       startTelemetry();
@@ -143,41 +151,6 @@ class StreamingCubit extends Cubit<StreamingState>
         currentState.session.sessionId,
         AndroidKeyCodes.keycodeAppSwitch,
       );
-    }
-  }
-
-  /// Restarts the video pipeline at [bitrateMbps]. Ignored while another
-  /// change is in progress or when the bitrate is unchanged.
-  Future<void> updateBitrate(int bitrateMbps) async {
-    final current = state;
-    if (current is! StreamingActive ||
-        current.isReconfiguring ||
-        current.session.bitrateMbps == bitrateMbps) {
-      return;
-    }
-
-    emit(current.copyWith(pendingBitrateMbps: bitrateMbps));
-    try {
-      final session = await repository.updateBitrate(
-        current.session.sessionId,
-        bitrateMbps,
-      );
-      final latest = state;
-      if (!isClosed && latest is StreamingActive) {
-        // Keep the measured video size; the restart does not change it.
-        final restarted = session.copyWith(
-          width: latest.session.width,
-          height: latest.session.height,
-        );
-        emit(latest.copyWith(session: restarted, clearPendingBitrate: true));
-      }
-    } on StreamStartException catch (error) {
-      await endSessionWithError(
-        current,
-        error.failure.messageFor(current.session.deviceName),
-      );
-    } catch (e) {
-      await endSessionWithError(current, 'Failed to change the bitrate: $e');
     }
   }
 }

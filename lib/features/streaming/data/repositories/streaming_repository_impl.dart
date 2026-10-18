@@ -54,6 +54,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
     int? maxFps,
     int? bitrateMbps,
     bool? turnScreenOff,
+    bool stayAwake = false,
   }) async {
     final fps = maxFps ?? 60;
     final bitrate = bitrateMbps ?? 8;
@@ -71,6 +72,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
       device.id,
       maxFps: fps,
       bitrateMbps: bitrate,
+      stayAwake: stayAwake,
     );
 
     // 3. Obtain real device frame dimensions from decoded header
@@ -101,6 +103,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
       bitrateMbps: bitrate,
       textureId: textureId,
       isScreenOff: screenOff,
+      stayAwake: stayAwake,
     );
 
     _currentSession = session;
@@ -145,29 +148,48 @@ class StreamingRepositoryImpl implements StreamingRepository {
   Future<StreamSessionEntity> updateBitrate(
     String sessionId,
     int bitrateMbps,
+  ) => _restartPipeline(
+    sessionId,
+    (session) => session.copyWith(bitrateMbps: bitrateMbps),
+  );
+
+  @override
+  Future<StreamSessionEntity> updateStayAwake(
+    String sessionId,
+    bool stayAwake,
+  ) => _restartPipeline(
+    sessionId,
+    (session) => session.copyWith(stayAwake: stayAwake),
+  );
+
+  /// Relaunches the pipeline with the launch options of [change] applied to
+  /// the active session. scrcpy reads them only at launch. Returns the
+  /// session unchanged when [change] changes none of them.
+  Future<StreamSessionEntity> _restartPipeline(
+    String sessionId,
+    StreamSessionEntity Function(StreamSessionEntity session) change,
   ) async {
     final session = _currentSession;
     if (session == null || session.sessionId != sessionId) {
       throw StateError('No active streaming session $sessionId');
     }
-    if (session.bitrateMbps == bitrateMbps) return session;
+    final target = change(session);
+    if (target == session) return session;
 
-    // scrcpy reads `video_bit_rate` only at launch, so restart the pipeline.
     AppLogger.info(
-      'Restarting video pipeline at $bitrateMbps Mbps for ${session.deviceId}',
+      'Restarting video pipeline for ${session.deviceId} '
+      '(${target.bitrateMbps} Mbps, stay awake: ${target.stayAwake})',
     );
     await _controlConnector.disconnect();
     await _videoStreamNativeService.stopStream();
     final textureId = await _launchVideoPipeline(
       session.deviceId,
-      maxFps: session.fps,
-      bitrateMbps: bitrateMbps,
+      maxFps: target.fps,
+      bitrateMbps: target.bitrateMbps,
+      stayAwake: target.stayAwake,
     );
 
-    final updated = session.copyWith(
-      bitrateMbps: bitrateMbps,
-      textureId: textureId,
-    );
+    final updated = target.copyWith(textureId: textureId);
     _currentSession = updated;
     return updated;
   }
@@ -178,12 +200,14 @@ class StreamingRepositoryImpl implements StreamingRepository {
     String deviceSerial, {
     required int maxFps,
     required int bitrateMbps,
+    required bool stayAwake,
   }) async {
     final serverStarted = await _serverManager.startServerDaemon(
       deviceSerial: deviceSerial,
       port: SocketConfig.defaultVideoStreamPort,
       maxFps: maxFps,
       bitrateMbps: bitrateMbps,
+      stayAwake: stayAwake,
     );
     if (!serverStarted) {
       throw StreamStartException(

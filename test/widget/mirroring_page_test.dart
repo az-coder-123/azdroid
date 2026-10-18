@@ -29,6 +29,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/fake_host_file_launcher.dart';
+import '../helpers/fake_mirroring_preferences_repository.dart';
 
 class MockStreamingRepository extends Mock implements StreamingRepository {}
 
@@ -98,7 +99,7 @@ void main() {
     mockScreenshotRepository = MockScreenshotRepository();
     mockScreenRecordingRepository = MockScreenRecordingRepository();
 
-    when(() => mockRepository.startSession(testDevice))
+    when(() => mockRepository.startSession(testDevice, stayAwake: true))
         .thenAnswer((_) async => testSession);
     when(() => mockRepository.stopSession(any())).thenAnswer((_) async {});
     when(() => mockRepository.watchTelemetry())
@@ -114,7 +115,10 @@ void main() {
 
     sl.registerLazySingleton<StreamingRepository>(() => mockRepository);
     sl.registerFactory<StreamingCubit>(
-      () => StreamingCubit(repository: sl<StreamingRepository>()),
+      () => StreamingCubit(
+        repository: sl<StreamingRepository>(),
+        preferences: FakeMirroringPreferencesRepository(),
+      ),
     );
 
     sl.registerLazySingleton<ControlRepository>(() => mockControlRepository);

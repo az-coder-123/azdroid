@@ -15,6 +15,7 @@ import 'package:desk_droid/features/streaming/data/services/scrcpy_server_comman
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
 
 import 'scrcpy_verify/control_probe.dart';
+import 'scrcpy_verify/stay_awake_probe.dart';
 import 'scrcpy_verify/stream_probe.dart';
 
 const String _scid = '7a5e0001';
@@ -49,6 +50,8 @@ Future<void> main(List<String> args) async {
       keepScreen ? 'KEYCODE_WAKEUP' : 'KEYCODE_SLEEP',
     ]);
     final screenOffBefore = !await isScreenOn(adb, serial);
+    final awake = StayAwakeProbe(adb: adb, serial: serial);
+    await awake.recordOriginal();
     await _adb(adb, serial, [
       'push',
       ScrcpyServerConstants.assetKey,
@@ -62,6 +65,7 @@ Future<void> main(List<String> args) async {
         scid: _scid,
         videoBitRateBps: 8000000,
         maxFps: 60,
+        stayAwake: true,
       ),
       // Verification only: makes the server log ignored positional events.
       'log_level=verbose',
@@ -108,6 +112,7 @@ Future<void> main(List<String> args) async {
       },
     );
     final screenOnAfter = await screenOnAfterControl;
+    await awake.recordDuring();
     // Dismisses an insecure (swipe) lock screen; a PIN lock stays.
     await _adb(adb, serial, ['shell', 'wm', 'dismiss-keyguard'], check: false);
     await Future<void>.delayed(const Duration(milliseconds: 500));
@@ -133,6 +138,9 @@ Future<void> main(List<String> args) async {
     await control.close();
     await probe.close();
     final ignored = ignoredEvents();
+    // Stopping the server (as the app does) must restore the settings.
+    server.kill();
+    await awake.recordAfter();
 
     final powerOnOk = !screenOffBefore || screenOnAfter;
     final keysOk =
@@ -152,8 +160,9 @@ Future<void> main(List<String> args) async {
       ..writeln(
         'positional events ignored by the size check: ${ignored.length} '
         '(expected 2: DOWN and UP of the wrong-size tap)',
-      );
-    final ok = report.isHealthy && powerOnOk && keysOk && tapOk;
+      )
+      ..writeln(awake.describe());
+    final ok = report.isHealthy && powerOnOk && keysOk && tapOk && awake.isOk;
     stdout.writeln(ok ? 'RESULT: OK' : 'RESULT: FAILED');
     if (!ok) exitCode = 1;
   } on TimeoutException {

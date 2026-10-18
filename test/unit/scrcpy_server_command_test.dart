@@ -14,6 +14,7 @@ void main() {
     scid: ScrcpyServerConstants.scid,
     videoBitRateBps: 8000000,
     maxFps: 60,
+    stayAwake: true,
   );
 
   test('runs the server class with the client version first', () {
@@ -25,6 +26,32 @@ void main() {
 
   test('passes bitrate and frame rate', () {
     expect(args, containsAll(['video_bit_rate=8000000', 'max_fps=60']));
+  });
+
+  test('stay awake keeps the phone on while charging and on battery', () {
+    expect(
+      args,
+      containsAll([
+        'cleanup=true',
+        'stay_awake=true',
+        'screen_off_timeout=${ScrcpyServerConstants.stayAwakeScreenOffTimeoutMs}',
+      ]),
+    );
+  });
+
+  test('without stay awake, no device setting is changed', () {
+    final plain = ScrcpyServerCommand.adbArguments(
+      deviceSerial: '192.168.1.3:5555',
+      remoteJarPath: ScrcpyServerConstants.remoteJarPath,
+      serverVersion: ScrcpyServerConstants.version,
+      scid: ScrcpyServerConstants.scid,
+      videoBitRateBps: 8000000,
+      maxFps: 60,
+      stayAwake: false,
+    );
+    expect(plain.where((a) => a.startsWith('stay_awake')), isEmpty);
+    expect(plain.where((a) => a.startsWith('screen_off_timeout')), isEmpty);
+    expect(plain, contains('cleanup=true'));
   });
 
   // The server rejects unknown keys, so every key must exist in the bundled
@@ -45,5 +72,11 @@ void main() {
       expect(dex.contains(key), isTrue, reason: 'option "$key" not in jar');
     }
     expect(dex.contains('Lcom/genymobile/scrcpy/Server;'), isTrue);
+    // The restore process is waited for by class name (ScrcpyCleanupWaiter).
+    final cleanupClass = ScrcpyServerConstants.cleanupMainClass.replaceAll(
+      '.',
+      '/',
+    );
+    expect(dex.contains('L$cleanupClass;'), isTrue);
   });
 }

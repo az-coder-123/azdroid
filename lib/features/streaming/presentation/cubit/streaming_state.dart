@@ -1,6 +1,7 @@
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/pending_stream_change.dart';
 import 'package:equatable/equatable.dart';
 
 /// Base class for all states emitted by [StreamingCubit].
@@ -33,7 +34,7 @@ final class StreamingActive extends StreamingState {
     this.isHudVisible = true,
     this.rotationDegrees = 0,
     this.telemetry,
-    this.pendingBitrateMbps,
+    this.pendingChange,
   });
 
   final StreamSessionEntity session;
@@ -43,27 +44,27 @@ final class StreamingActive extends StreamingState {
   /// Latest measured telemetry, or `null` before the first sample.
   final StreamTelemetry? telemetry;
 
-  /// Bitrate being applied by a pipeline restart, or `null` when idle.
-  final int? pendingBitrateMbps;
+  /// Launch option being applied by a pipeline restart, or `null` when idle.
+  final PendingStreamChange? pendingChange;
 
-  bool get isReconfiguring => pendingBitrateMbps != null;
+  bool get isReconfiguring => pendingChange != null;
 
   StreamingActive copyWith({
     StreamSessionEntity? session,
     bool? isHudVisible,
     int? rotationDegrees,
     StreamTelemetry? telemetry,
-    int? pendingBitrateMbps,
-    bool clearPendingBitrate = false,
+    PendingStreamChange? pendingChange,
+    bool clearPendingChange = false,
   }) {
     return StreamingActive(
       session: session ?? this.session,
       isHudVisible: isHudVisible ?? this.isHudVisible,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       telemetry: telemetry ?? this.telemetry,
-      pendingBitrateMbps: clearPendingBitrate
+      pendingChange: clearPendingChange
           ? null
-          : pendingBitrateMbps ?? this.pendingBitrateMbps,
+          : pendingChange ?? this.pendingChange,
     );
   }
 
@@ -73,7 +74,7 @@ final class StreamingActive extends StreamingState {
     isHudVisible,
     rotationDegrees,
     telemetry,
-    pendingBitrateMbps,
+    pendingChange,
   ];
 }
 

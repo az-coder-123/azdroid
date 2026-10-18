@@ -140,13 +140,11 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
             child: const MirroringFeedbackStack(),
           ),
 
-          // Pipeline restart feedback (bitrate change)
-          if (widget.state.pendingBitrateMbps case final bitrate?)
+          // Pipeline restart feedback (bitrate or stay-awake change)
+          if (widget.state.pendingChange case final change?)
             Positioned.fill(
               child: IgnorePointer(
-                child: Center(
-                  child: StreamReconfiguringBadge(bitrateMbps: bitrate),
-                ),
+                child: Center(child: StreamReconfiguringBadge(change: change)),
               ),
             ),
         ],
@@ -179,6 +177,9 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       onSelectBitrate: widget.state.isReconfiguring
           ? null
           : (b) => context.read<StreamingCubit>().updateBitrate(b),
+      onToggleStayAwake: widget.state.isReconfiguring
+          ? null
+          : context.read<StreamingCubit>().toggleStayAwake,
       onScreenshot: () => context.read<ScreenshotCubit>().captureScreenshot(s),
       onCropScreenshot: () =>
           context.read<ScreenshotCubit>().startAreaSelection(s),

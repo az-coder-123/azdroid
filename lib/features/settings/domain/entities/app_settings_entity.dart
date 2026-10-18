@@ -6,7 +6,6 @@ class AppSettingsEntity extends Equatable {
     this.maxFps = 60,
     this.bitrateMbps = 8,
     this.turnScreenOff = true,
-    this.stayAwake = true,
     this.autoReconnect = true,
     this.audioForwarding = false,
   });
@@ -20,9 +19,6 @@ class AppSettingsEntity extends Equatable {
   /// Whether to power down the physical phone screen during streaming.
   final bool turnScreenOff;
 
-  /// Whether to keep the Android device awake while connected.
-  final bool stayAwake;
-
   /// Automatically attempt reconnection if connection drops.
   final bool autoReconnect;
 
@@ -33,7 +29,6 @@ class AppSettingsEntity extends Equatable {
     int? maxFps,
     int? bitrateMbps,
     bool? turnScreenOff,
-    bool? stayAwake,
     bool? autoReconnect,
     bool? audioForwarding,
   }) {
@@ -41,7 +36,6 @@ class AppSettingsEntity extends Equatable {
       maxFps: maxFps ?? this.maxFps,
       bitrateMbps: bitrateMbps ?? this.bitrateMbps,
       turnScreenOff: turnScreenOff ?? this.turnScreenOff,
-      stayAwake: stayAwake ?? this.stayAwake,
       autoReconnect: autoReconnect ?? this.autoReconnect,
       audioForwarding: audioForwarding ?? this.audioForwarding,
     );
@@ -52,7 +46,6 @@ class AppSettingsEntity extends Equatable {
     maxFps,
     bitrateMbps,
     turnScreenOff,
-    stayAwake,
     autoReconnect,
     audioForwarding,
   ];

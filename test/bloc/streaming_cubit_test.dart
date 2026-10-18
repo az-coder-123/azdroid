@@ -4,6 +4,7 @@ import 'package:desk_droid/features/streaming/domain/entities/stream_session_ent
 import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/pending_stream_change.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_health_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
@@ -11,17 +12,24 @@ import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_mirroring_preferences_repository.dart';
+
 class MockStreamingRepository extends Mock implements StreamingRepository {}
 
 void main() {
   late MockStreamingRepository mockRepository;
+  late FakeMirroringPreferencesRepository preferences;
   late StreamingCubit streamingCubit;
 
   setUp(() {
     mockRepository = MockStreamingRepository();
+    preferences = FakeMirroringPreferencesRepository();
     when(() => mockRepository.watchTelemetry())
         .thenAnswer((_) => const Stream.empty());
-    streamingCubit = StreamingCubit(repository: mockRepository);
+    streamingCubit = StreamingCubit(
+      repository: mockRepository,
+      preferences: preferences,
+    );
   });
 
   tearDown(() {
@@ -54,7 +62,7 @@ void main() {
     blocTest<StreamingCubit, StreamingState>(
       'emits [StreamingStarting, StreamingActive] when startSession succeeds',
       build: () {
-        when(() => mockRepository.startSession(testDevice))
+        when(() => mockRepository.startSession(testDevice, stayAwake: true))
             .thenAnswer((_) async => testSession);
         return streamingCubit;
       },
@@ -64,14 +72,15 @@ void main() {
         const StreamingActive(session: testSession),
       ],
       verify: (_) {
-        verify(() => mockRepository.startSession(testDevice)).called(1);
+        verify(() => mockRepository.startSession(testDevice, stayAwake: true))
+            .called(1);
       },
     );
 
     blocTest<StreamingCubit, StreamingState>(
       'adds measured telemetry to the active state',
       build: () {
-        when(() => mockRepository.startSession(testDevice))
+        when(() => mockRepository.startSession(testDevice, stayAwake: true))
             .thenAnswer((_) async => testSession);
         when(() => mockRepository.watchTelemetry()).thenAnswer(
           (_) => Stream.value(
@@ -131,7 +140,10 @@ void main() {
       seed: () => const StreamingActive(session: testSession),
       act: (cubit) => cubit.updateBitrate(16),
       expect: () => [
-        const StreamingActive(session: testSession, pendingBitrateMbps: 16),
+        const StreamingActive(
+          session: testSession,
+          pendingChange: BitrateChange(16),
+        ),
         StreamingActive(
           session: testSession.copyWith(bitrateMbps: 16, textureId: 7),
         ),
@@ -161,7 +173,10 @@ void main() {
       seed: () => const StreamingActive(session: testSession),
       act: (cubit) => cubit.updateBitrate(16),
       expect: () => [
-        const StreamingActive(session: testSession, pendingBitrateMbps: 16),
+        const StreamingActive(
+          session: testSession,
+          pendingChange: BitrateChange(16),
+        ),
         StreamingError(
           message: StreamStartFailure.serverStartFailed.messageFor(
             testSession.deviceName,
@@ -177,7 +192,7 @@ void main() {
     blocTest<StreamingCubit, StreamingState>(
       'stops the session and explains when the video stream ends',
       build: () {
-        when(() => mockRepository.startSession(testDevice))
+        when(() => mockRepository.startSession(testDevice, stayAwake: true))
             .thenAnswer((_) async => testSession);
         when(() => mockRepository.stopSession(testSession.sessionId))
             .thenAnswer((_) async {});
@@ -204,7 +219,7 @@ void main() {
     blocTest<StreamingCubit, StreamingState>(
       'emits [StreamingStarting, StreamingError] when startSession fails',
       build: () {
-        when(() => mockRepository.startSession(testDevice))
+        when(() => mockRepository.startSession(testDevice, stayAwake: true))
             .thenThrow(Exception('Socket connection failed'));
         return streamingCubit;
       },
@@ -220,12 +235,13 @@ void main() {
     blocTest<StreamingCubit, StreamingState>(
       'emits actionable guidance when the device is unauthorized',
       build: () {
-        when(() => mockRepository.startSession(testDevice)).thenThrow(
-          StreamStartException(
-            StreamStartFailure.deviceUnauthorized,
-            deviceSerial: testDevice.id,
-          ),
-        );
+        when(() => mockRepository.startSession(testDevice, stayAwake: true))
+            .thenThrow(
+              StreamStartException(
+                StreamStartFailure.deviceUnauthorized,
+                deviceSerial: testDevice.id,
+              ),
+            );
         return streamingCubit;
       },
       act: (cubit) => cubit.startSession(testDevice),
@@ -242,7 +258,7 @@ void main() {
     blocTest<StreamingCubit, StreamingState>(
       'stopSession terminates session and emits StreamingInitial',
       build: () {
-        when(() => mockRepository.startSession(testDevice))
+        when(() => mockRepository.startSession(testDevice, stayAwake: true))
             .thenAnswer((_) async => testSession);
         when(() => mockRepository.stopSession('session_123'))
             .thenAnswer((_) async {});

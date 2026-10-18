@@ -1,13 +1,20 @@
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
+import 'package:desk_droid/features/streaming/presentation/cubit/pending_stream_change.dart';
 import 'package:flutter/material.dart';
 
-/// Shown over the viewport while the video pipeline restarts with a new
-/// bitrate, so the brief black frame does not look like a failure.
+/// Shown over the viewport while the video pipeline restarts to apply
+/// [change], so the brief black frame does not look like a failure.
 class StreamReconfiguringBadge extends StatelessWidget {
-  const StreamReconfiguringBadge({super.key, required this.bitrateMbps});
+  const StreamReconfiguringBadge({super.key, required this.change});
 
-  final int bitrateMbps;
+  final PendingStreamChange change;
+
+  String get _label => switch (change) {
+    BitrateChange(:final bitrateMbps) => 'Applying $bitrateMbps Mbps…',
+    StayAwakeChange(enabled: true) => 'Keeping the phone awake…',
+    StayAwakeChange(enabled: false) => 'Letting the phone sleep…',
+  };
 
   static const double _spinnerSize = 14;
   static const double _spinnerStroke = 2;
@@ -35,7 +42,7 @@ class StreamReconfiguringBadge extends StatelessWidget {
           const SizedBox(width: 10),
           Flexible(
             child: Text(
-              'Applying $bitrateMbps Mbps…',
+              _label,
               style: AppTypography.caption.copyWith(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w600,

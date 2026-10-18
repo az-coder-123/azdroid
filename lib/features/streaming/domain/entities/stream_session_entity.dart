@@ -14,6 +14,7 @@ class StreamSessionEntity extends Equatable {
     this.isAudioEnabled = false,
     this.isConnected = true,
     this.isScreenOff = false,
+    this.stayAwake = false,
   });
 
   /// Placeholder size until the native decoder reports the real one
@@ -54,6 +55,9 @@ class StreamSessionEntity extends Equatable {
   /// Whether the physical phone screen is powered off during streaming.
   final bool isScreenOff;
 
+  /// Whether the server keeps the phone awake during this session.
+  final bool stayAwake;
+
   /// Aspect ratio calculated from width and height.
   double get aspectRatio => height > 0 ? width / height : 9 / 19.5;
 
@@ -69,6 +73,7 @@ class StreamSessionEntity extends Equatable {
     bool? isAudioEnabled,
     bool? isConnected,
     bool? isScreenOff,
+    bool? stayAwake,
   }) {
     return StreamSessionEntity(
       sessionId: sessionId ?? this.sessionId,
@@ -82,6 +87,7 @@ class StreamSessionEntity extends Equatable {
       isAudioEnabled: isAudioEnabled ?? this.isAudioEnabled,
       isConnected: isConnected ?? this.isConnected,
       isScreenOff: isScreenOff ?? this.isScreenOff,
+      stayAwake: stayAwake ?? this.stayAwake,
     );
   }
 
@@ -98,5 +104,6 @@ class StreamSessionEntity extends Equatable {
     isAudioEnabled,
     isConnected,
     isScreenOff,
+    stayAwake,
   ];
 }

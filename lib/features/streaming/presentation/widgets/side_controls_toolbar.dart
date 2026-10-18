@@ -3,16 +3,18 @@ import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/clipboard_sync_menu_button.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/screen_record_button.dart';
 import 'package:desk_droid/features/streaming/domain/entities/stream_session_entity.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/stream_settings_controls.dart';
 import 'package:flutter/material.dart';
 
 /// Vertical actions toolbar placed beside the real-time phone display
-/// providing fast access to quality bitrate settings, screenshots, screen recording,
+/// providing fast access to bitrate and keep-awake settings, screenshots, screen recording,
 /// text injection, file transfer, APK installation, and intent dispatching.
 class SideControlsToolbar extends StatelessWidget {
   const SideControlsToolbar({
     super.key,
     required this.session,
     required this.onSelectBitrate,
+    this.onToggleStayAwake,
     this.onScreenshot,
     this.onCropScreenshot,
     this.onTextInject,
@@ -28,6 +30,9 @@ class SideControlsToolbar extends StatelessWidget {
 
   /// Picks a new bitrate; `null` disables the menu (change in progress).
   final ValueChanged<int>? onSelectBitrate;
+
+  /// Flips "keep the phone awake"; `null` disables it (change in progress).
+  final VoidCallback? onToggleStayAwake;
   final VoidCallback? onScreenshot;
   final VoidCallback? onCropScreenshot;
   final VoidCallback? onTextInject;
@@ -59,30 +64,11 @@ class SideControlsToolbar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Stream Quality & Bitrate Settings
-            PopupMenuButton<int>(
-              tooltip: 'Streaming Bitrate & Quality',
-              enabled: onSelectBitrate != null,
-              icon: const Icon(
-                Icons.tune_rounded,
-                size: 20,
-                color: AppColors.textPrimary,
-              ),
-              color: AppColors.surfaceElevated,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(color: AppColors.border),
-              ),
-              initialValue: session.bitrateMbps,
-              onSelected: onSelectBitrate,
-              itemBuilder: (context) =>
-                  const [
-                        (4, '4 Mbps (Eco / Weak Wi-Fi)'),
-                        (8, '8 Mbps (Standard 1080p)'),
-                        (16, '16 Mbps (Ultra / 60+ FPS)'),
-                      ]
-                      .map((b) => PopupMenuItem(value: b.$1, child: Text(b.$2)))
-                      .toList(),
+            // Stream launch options: bitrate and keep-awake
+            StreamSettingsControls(
+              session: session,
+              onSelectBitrate: onSelectBitrate,
+              onToggleStayAwake: onToggleStayAwake,
             ),
 
             if (onScreenshot != null ||

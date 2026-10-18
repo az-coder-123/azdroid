@@ -6,6 +6,9 @@ import 'package:desk_droid/features/streaming/domain/entities/stream_telemetry.d
 abstract class StreamingRepository {
   /// Initiates a low-latency video mirroring session with the specified [device].
   ///
+  /// With [stayAwake], the phone does not sleep during the session and gets
+  /// its own settings back when the session stops.
+  ///
   /// Throws `StreamStartException` when the device is not ready (missing,
   /// offline, or unauthorized) or the scrcpy server cannot be launched.
   Future<StreamSessionEntity> startSession(
@@ -13,6 +16,7 @@ abstract class StreamingRepository {
     int? maxFps,
     int? bitrateMbps,
     bool? turnScreenOff,
+    bool stayAwake = false,
   });
 
   /// Emits measured stream telemetry about once per second while listened to.
@@ -33,6 +37,12 @@ abstract class StreamingRepository {
   /// and returns the session with its new texture. Throws
   /// `StreamStartException` when the restarted server cannot start.
   Future<StreamSessionEntity> updateBitrate(String sessionId, int bitrateMbps);
+
+  /// Turns "keep the phone awake" on or off for the active session.
+  ///
+  /// The server applies it only at launch, so this restarts the video
+  /// pipeline like [updateBitrate], with the same errors.
+  Future<StreamSessionEntity> updateStayAwake(String sessionId, bool stayAwake);
 
   /// Injects Android navigation keycode actions (Back, Home, AppSwitch).
   Future<void> sendNavigationKey(String sessionId, int keyCode);

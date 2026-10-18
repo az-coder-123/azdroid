@@ -9,6 +9,7 @@ import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_cleanup_waiter.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_command.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_locator.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
@@ -25,13 +26,18 @@ class ScrcpyServerManager implements AdbPortForwarder {
     AdbService? adbService,
     ProcessExecutor? processExecutor,
     ScrcpyServerJarLocator? jarLocator,
+    ScrcpyCleanupWaiter? cleanupWaiter,
   }) : _adbService = adbService ?? AdbService(),
        _executor = processExecutor ?? const DefaultProcessExecutor(),
-       _jarLocator = jarLocator ?? ScrcpyServerJarLocator();
+       _jarLocator = jarLocator ?? ScrcpyServerJarLocator(),
+       _cleanupWaiter =
+           cleanupWaiter ??
+           ScrcpyCleanupWaiter(processExecutor: processExecutor);
 
   final AdbService _adbService;
   final ScrcpyServerJarLocator _jarLocator;
   final ProcessExecutor _executor;
+  final ScrcpyCleanupWaiter _cleanupWaiter;
   Process? _daemonProcess;
 
   /// Remote path of the server jar on the device.
@@ -102,15 +108,22 @@ class ScrcpyServerManager implements AdbPortForwarder {
   }
 
   /// Launches the scrcpy-server persistent daemon on the target Android device.
+  ///
+  /// With [stayAwake], the server keeps the phone awake until it exits, then
+  /// restores the phone's own settings (see [ScrcpyServerCommand]).
   Future<bool> startServerDaemon({
     required String deviceSerial,
     int port = SocketConfig.defaultVideoStreamPort,
     int maxFps = 60,
     int bitrateMbps = 8,
-    bool stayAwake = true,
+    bool stayAwake = false,
   }) async {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) return false;
+
+    // A previous server's restore process must finish first, or this server
+    // would record its changed settings as the originals.
+    await _cleanupWaiter.waitForIdle(adbPath: adb, deviceSerial: deviceSerial);
 
     // Ensure remote scrcpy-server.jar is pushed and available
     final localJarPath = await _jarLocator.locate();
@@ -144,6 +157,7 @@ class ScrcpyServerManager implements AdbPortForwarder {
         scid: scid,
         videoBitRateBps: bitrateMbps * _bitsPerMegabit,
         maxFps: maxFps,
+        stayAwake: stayAwake,
       );
 
       // Completes with true when ready, false on a version mismatch.
