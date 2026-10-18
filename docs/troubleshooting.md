@@ -52,7 +52,23 @@
 
 ---
 
-## 📱 3. Xiaomi / MIUI / HyperOS Specifics
+## 🎞️ 3. Mirroring & Video
+
+### ❌ No Video on Android 15 or 16 (Black Screen, Mirroring Never Starts)
+- **Root Cause:** DeskDroid builds before scrcpy-server v3.3.4 used an Android API that Google removed in Android 14 QPR3 (`SurfaceControl.createDisplay`). The app log shows `[scrcpy] [server] ERROR: … NoSuchMethodException`.
+- **Solution:** Update DeskDroid. The bundled server (v3.3.4) captures the screen through the new `DisplayManager` API.
+
+### ❌ Mirroring Waits While the Phone Screen Is Off
+- **Root Cause:** Android produces no frames for a screen that is off, so there is nothing to stream.
+- **Solution:** Wake and unlock the phone. The stream starts as soon as the screen is on.
+
+### ❌ "scrcpy-server on the device is not vX" in the App Log
+- **Root Cause:** The jar on the phone is an older version (for example when `adb push` failed for lack of storage). The server exits on a version mismatch.
+- **Solution:** Free some storage on the phone and start mirroring again; DeskDroid pushes its jar on every start. The log shows `scrcpy-server.jar push failed: …` when the push itself fails.
+
+---
+
+## 📱 4. Xiaomi / MIUI / HyperOS Specifics
 
 ### ❌ Mouse Clicks & Typing Are Ignored
 - **Root Cause:** Xiaomi disables remote input injection by default.
@@ -65,7 +81,7 @@
 
 ---
 
-## 🪟 4. Windows Specifics (Preview)
+## 🪟 5. Windows Specifics (Preview)
 
 ### ❌ "Windows protected your PC" When Starting DeskDroid
 
