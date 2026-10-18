@@ -3,7 +3,13 @@ import 'package:equatable/equatable.dart';
 /// Lifecycle state reported by the native `getStats` method.
 enum NativeStreamState {
   idle,
+
+  /// Waiting for the server to accept the video socket.
   connecting,
+
+  /// The server accepted the video socket and waits for the control socket
+  /// before it sends the stream header. The client must connect control now.
+  connected,
   streaming,
   failed,
   ended,

@@ -34,6 +34,7 @@ SCRCPY_TEST(StreamStatsAccumulatesCounters) {
 SCRCPY_TEST(StreamStateNamesMatchChannelContract) {
   EXPECT_EQ(std::string(StreamStateName(StreamState::kIdle)), "idle");
   EXPECT_EQ(std::string(StreamStateName(StreamState::kConnecting)), "connecting");
+  EXPECT_EQ(std::string(StreamStateName(StreamState::kConnected)), "connected");
   EXPECT_EQ(std::string(StreamStateName(StreamState::kStreaming)), "streaming");
   EXPECT_EQ(std::string(StreamStateName(StreamState::kFailed)), "failed");
   EXPECT_EQ(std::string(StreamStateName(StreamState::kEnded)), "ended");

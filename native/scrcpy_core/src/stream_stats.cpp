@@ -8,6 +8,8 @@ const char* StreamStateName(StreamState state) {
       return "idle";
     case StreamState::kConnecting:
       return "connecting";
+    case StreamState::kConnected:
+      return "connected";
     case StreamState::kStreaming:
       return "streaming";
     case StreamState::kFailed:

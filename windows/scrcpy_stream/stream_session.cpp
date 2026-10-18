@@ -90,9 +90,22 @@ std::optional<scrcpy_core::StreamHeader> StreamSession::ConnectAndReadHeader() {
       SleepWhileRunning(kConnectRetryDelay);
       continue;
     }
-    if (connection_.ReadExact(bytes.data(), bytes.size(), running_) != ReadResult::kOk) {
+    // The dummy byte proves the server accepted this video socket. The rest of
+    // the header arrives only after the client connects the control socket,
+    // so report "connected" for the Dart side to open it.
+    if (connection_.ReadExact(bytes.data(), 1, running_) != ReadResult::kOk) {
       StreamLog("Attempt " + std::to_string(attempt) +
-                ": connected but header not ready, retrying");
+                ": connected but server not ready, retrying");
+      connection_.Close();
+      SleepWhileRunning(kHeaderRetryDelay);
+      continue;
+    }
+    stats_.SetState(StreamState::kConnected);
+    if (connection_.ReadExact(bytes.data() + 1, bytes.size() - 1, running_) !=
+        ReadResult::kOk) {
+      StreamLog("Attempt " + std::to_string(attempt) +
+                ": stream header not received, retrying");
+      stats_.SetState(StreamState::kConnecting);
       connection_.Close();
       SleepWhileRunning(kHeaderRetryDelay);
       continue;

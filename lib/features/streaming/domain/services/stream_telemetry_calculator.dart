@@ -49,6 +49,7 @@ class StreamTelemetryCalculator {
     NativeStreamState.ended => StreamHealth.ended,
     NativeStreamState.idle ||
     NativeStreamState.connecting ||
+    NativeStreamState.connected ||
     NativeStreamState.unknown => StreamHealth.connecting,
   };
 }

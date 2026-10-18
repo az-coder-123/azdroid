@@ -108,6 +108,7 @@ void main() {
       for (final waiting in [
         NativeStreamState.idle,
         NativeStreamState.connecting,
+        NativeStreamState.connected,
         NativeStreamState.unknown,
       ]) {
         expect(

@@ -14,7 +14,10 @@ namespace scrcpy_core {
 
 enum class StreamState : uint8_t {
   kIdle,        // No stream, or stopped by the caller.
-  kConnecting,  // Waiting for the socket and the stream header.
+  kConnecting,  // Waiting for the server to accept the video socket.
+  kConnected,   // Video socket accepted (dummy byte read); waiting for the
+                // stream header, which the server sends only after the
+                // control socket connects. The client opens it now.
   kStreaming,   // Header received; packets are flowing.
   kFailed,      // Gave up before streaming (no server, bad header, decoder).
   kEnded,       // The stream closed by itself after it had started.

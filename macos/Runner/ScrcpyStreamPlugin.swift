@@ -28,8 +28,24 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
   private var decodedFrameCount = 0
   private let stats = ScrcpyStreamStats()
 
-  public var videoWidth: Int = 0
-  public var videoHeight: Int = 0
+  /// Current video size; equals the server's encoder size, which control
+  /// messages must repeat exactly (the server ignores other sizes).
+  private var videoWidth: Int = 0
+  private var videoHeight: Int = 0
+  private let videoSizeLock = NSLock()
+
+  private func setVideoSize(width: Int, height: Int) {
+    videoSizeLock.lock()
+    defer { videoSizeLock.unlock() }
+    videoWidth = width
+    videoHeight = height
+  }
+
+  private func videoSize() -> (width: Int, height: Int) {
+    videoSizeLock.lock()
+    defer { videoSizeLock.unlock() }
+    return (videoWidth, videoHeight)
+  }
 
   static func streamLog(_ message: String) {
     NSLog("[ScrcpyStream] %@", message)
@@ -92,7 +108,8 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       result(true)
 
     case "getDimensions":
-      result(["width": videoWidth, "height": videoHeight])
+      let size = videoSize()
+      result(["width": size.width, "height": size.height])
 
     case "getStats":
       result(stats.snapshot())
@@ -143,6 +160,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
   private func stopStream() {
     isStreaming = false
     stats.reset(to: .idle)
+    setVideoSize(width: 0, height: 0)
 
     if streamSocket >= 0 {
       Darwin.shutdown(streamSocket, SHUT_RDWR)
@@ -208,14 +226,27 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       setsockopt(
         sock, SOL_SOCKET, SO_RCVTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
 
-      // 1. Read scrcpy header: 1 dummy byte (0x00), 64 bytes device name, 4 bytes codec, 4 bytes width, 4 bytes height
-      guard let dummy = readExact(socket: sock, count: 1),
-        let devNameData = readExact(socket: sock, count: 64),
+      // 1. The dummy byte proves the server accepted this video socket. The
+      //    rest of the header (64-byte name, codec, width, height) arrives only
+      //    after the client connects the control socket, so report "connected".
+      guard let dummy = readExact(socket: sock, count: 1) else {
+        ScrcpyStreamPlugin.streamLog("Attempt \(attempt): Connected but server not ready yet, retrying...")
+        Darwin.close(sock)
+        self.streamSocket = -1
+        sock = -1
+        usleep(400_000)
+        continue
+      }
+      stats.setState(.connected)
+      ScrcpyStreamPlugin.streamLog("Attempt \(attempt): Video socket accepted; waiting for stream header")
+
+      guard let devNameData = readExact(socket: sock, count: 64),
         let codecData = readExact(socket: sock, count: 4),
         let widthData = readExact(socket: sock, count: 4),
         let heightData = readExact(socket: sock, count: 4)
       else {
-        ScrcpyStreamPlugin.streamLog("Attempt \(attempt): Connected but header not ready yet, retrying...")
+        ScrcpyStreamPlugin.streamLog("Attempt \(attempt): Stream header not received, retrying...")
+        stats.setState(.connecting)
         Darwin.close(sock)
         self.streamSocket = -1
         sock = -1
@@ -227,11 +258,10 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
       let codecStr = String(data: codecData, encoding: .ascii) ?? "unknown"
       let w = widthData.withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
       let h = heightData.withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-      self.videoWidth = Int(w)
-      self.videoHeight = Int(h)
+      setVideoSize(width: Int(w), height: Int(h))
 
       ScrcpyStreamPlugin.streamLog(
-        "Attempt \(attempt): Header OK! dev=\(devName), codec=\(codecStr), resolution=\(videoWidth)x\(videoHeight), dummy=\(dummy[0])"
+        "Attempt \(attempt): Header OK! dev=\(devName), codec=\(codecStr), resolution=\(w)x\(h), dummy=\(dummy[0])"
       )
       headerReceived = true
       break
@@ -364,6 +394,17 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
         }
 
         self.formatDescription = format
+
+        // A new SPS follows every rotation; keep the reported size in sync.
+        // Clean-aperture dimensions apply the SPS cropping (1088 -> 1080).
+        let presented = CMVideoFormatDescriptionGetPresentationDimensions(
+          format, usePixelAspectRatio: false, useCleanAperture: true)
+        let newWidth = Int(presented.width.rounded())
+        let newHeight = Int(presented.height.rounded())
+        if newWidth > 0 && newHeight > 0 && (newWidth, newHeight) != self.videoSize() {
+          ScrcpyStreamPlugin.streamLog("Video size changed to \(newWidth)x\(newHeight)")
+          self.setVideoSize(width: newWidth, height: newHeight)
+        }
 
         if let oldSession = self.decompressionSession {
           VTDecompressionSessionInvalidate(oldSession)

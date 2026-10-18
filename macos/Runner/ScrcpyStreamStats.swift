@@ -8,7 +8,7 @@ import Foundation
 final class ScrcpyStreamStats {
   /// Wire names shared with the Windows plugin and the Dart client.
   enum State: String {
-    case idle, connecting, streaming, failed, ended
+    case idle, connecting, connected, streaming, failed, ended
   }
 
   private let lock = NSLock()
