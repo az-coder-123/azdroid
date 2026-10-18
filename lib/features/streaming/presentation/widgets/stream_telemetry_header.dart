@@ -12,8 +12,6 @@ class StreamTelemetryHeader extends StatelessWidget {
     required this.session,
     this.telemetry,
     required this.onClose,
-    this.onToggleZenMode,
-    this.isZenMode = false,
   });
 
   final StreamSessionEntity session;
@@ -21,8 +19,6 @@ class StreamTelemetryHeader extends StatelessWidget {
   /// Measured values; `null` until the first sample arrives.
   final StreamTelemetry? telemetry;
   final VoidCallback onClose;
-  final VoidCallback? onToggleZenMode;
-  final bool isZenMode;
 
   @override
   Widget build(BuildContext context) {
@@ -114,24 +110,6 @@ class StreamTelemetryHeader extends StatelessWidget {
 
             _buildDivider(),
             const SizedBox(width: 12),
-
-            // Zen View Mode Toggle Action
-            if (onToggleZenMode != null) ...[
-              IconButton(
-                icon: Icon(
-                  isZenMode
-                      ? Icons.fullscreen_exit_rounded
-                      : Icons.fullscreen_rounded,
-                  size: 20,
-                  color: AppColors.textPrimary,
-                ),
-                tooltip: isZenMode ? 'Exit Zen Mode' : 'Zen View (Hide Bars)',
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: onToggleZenMode,
-              ),
-              const SizedBox(width: 12),
-            ],
 
             // Close / Disconnect Action
             IconButton(

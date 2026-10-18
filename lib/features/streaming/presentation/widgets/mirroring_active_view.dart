@@ -78,8 +78,6 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                     child: StreamTelemetryHeader(
                       session: widget.state.session,
                       telemetry: widget.state.telemetry,
-                      isZenMode: _isZenMode,
-                      onToggleZenMode: () => setState(() => _isZenMode = true),
                       onClose: context.read<StreamingCubit>().stopSession,
                     ),
                   ),
