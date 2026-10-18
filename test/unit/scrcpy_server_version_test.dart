@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
-import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
-import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_locator.dart';
+import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// scrcpy-server refuses to start when the version argument sent by the
@@ -12,7 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// and the README badge on the same version.
 void main() {
   // `flutter test` always runs with the package root as working directory.
-  final jarFile = File(ScrcpyServerJarLocator.assetKey);
+  final jarFile = File(ScrcpyServerConstants.assetKey);
   final mismatchMessage = RegExp(
     r'The server version \(([0-9.]+)\) does not match',
   );
@@ -27,14 +26,11 @@ void main() {
   }
 
   test('client version matches the bundled scrcpy-server.jar', () {
-    expect(ScrcpyServerManager.serverVersion, bundledServerVersion());
+    expect(ScrcpyServerConstants.version, bundledServerVersion());
   });
 
   test('README badge shows the bundled scrcpy version', () {
     final readme = File('README.md').readAsStringSync();
-    expect(
-      readme,
-      contains('badge/scrcpy-v${ScrcpyServerManager.serverVersion}-'),
-    );
+    expect(readme, contains('badge/scrcpy-v${ScrcpyServerConstants.version}-'));
   });
 }

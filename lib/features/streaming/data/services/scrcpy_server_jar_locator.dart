@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,7 @@ class ScrcpyServerJarLocator {
        _bundle = bundle ?? rootBundle;
 
   /// Flutter asset key of the bundled scrcpy server.
-  static const String assetKey = 'assets/scrcpy-server.jar';
+  static const String assetKey = ScrcpyServerConstants.assetKey;
 
   /// File name used when the jar is extracted to the temp folder.
   static const String extractedFileName = 'scrcpy-server.jar';

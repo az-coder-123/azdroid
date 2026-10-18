@@ -2,12 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:desk_droid/core/constants/adb_timeouts.dart';
+import 'package:desk_droid/core/constants/android_key_codes.dart';
+import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
 import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_server_command.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_locator.dart';
+import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
 
 /// Manages scrcpy-server deployment, persistent daemon execution, and socket tunnels.
 class ScrcpyServerManager implements AdbPortForwarder {
@@ -30,20 +34,16 @@ class ScrcpyServerManager implements AdbPortForwarder {
   final ProcessExecutor _executor;
   Process? _daemonProcess;
 
-  /// Default remote directory path for the server jar.
-  static const String remoteServerPath = '/data/local/tmp/scrcpy-server.jar';
+  /// Remote path of the server jar on the device.
+  static const String remoteServerPath = ScrcpyServerConstants.remoteJarPath;
 
-  /// Standard scrcpy version descriptor.
-  static const String serverVersion = '2.1';
+  static const int _bitsPerMegabit = 1000000;
 
-  /// Distinct scrcpy session ID for abstract socket identification.
-  static const String scid = '00000000';
+  /// Version of the bundled scrcpy-server.
+  static const String serverVersion = ScrcpyServerConstants.version;
 
-  /// Android Keycode constants for navigation actions.
-  static const int keycodeHome = 3;
-  static const int keycodeBack = 4;
-  static const int keycodePower = 26;
-  static const int keycodeAppSwitch = 187;
+  /// Session id of the device socket (`scrcpy_<scid>`).
+  static const String scid = ScrcpyServerConstants.scid;
 
   /// Configures TCP port forwarding via ADB to scrcpy abstract UNIX socket.
   @override
@@ -116,15 +116,20 @@ class ScrcpyServerManager implements AdbPortForwarder {
     final localJarPath = await _jarLocator.locate();
     if (localJarPath != null) {
       try {
-        await _executor.run(adb, [
+        final push = await _executor.run(adb, [
           '-s',
           deviceSerial,
           'push',
           localJarPath,
           remoteServerPath,
         ], timeout: AdbTimeouts.connect);
-      } catch (e) {
-        AppLogger.debug('scrcpy-server.jar push skipped: $e');
+        if (push.exitCode != 0) {
+          // A stale jar may remain on the device; a version mismatch is then
+          // reported by the server output check below.
+          AppLogger.warning('scrcpy-server.jar push failed: ${push.stderr}');
+        }
+      } on Exception catch (e) {
+        AppLogger.warning('scrcpy-server.jar push failed: $e');
       }
     }
 
@@ -132,45 +137,28 @@ class ScrcpyServerManager implements AdbPortForwarder {
       _daemonProcess?.kill();
       _daemonProcess = null;
 
-      final bitrateBps = bitrateMbps * 1000000;
-      final serverArgs = [
-        '-s',
-        deviceSerial,
-        'shell',
-        'CLASSPATH=$remoteServerPath',
-        'app_process',
-        '/',
-        'com.genymobile.scrcpy.Server',
-        serverVersion,
-        'scid=$scid',
-        'tunnel_forward=true',
-        'video_bit_rate=$bitrateBps',
-        'max_fps=$maxFps',
-        'audio=false',
-        'control=false',
-        'cleanup=false',
-      ];
+      final serverArgs = ScrcpyServerCommand.adbArguments(
+        deviceSerial: deviceSerial,
+        remoteJarPath: remoteServerPath,
+        serverVersion: serverVersion,
+        scid: scid,
+        videoBitRateBps: bitrateMbps * _bitsPerMegabit,
+        maxFps: maxFps,
+      );
 
-      final readyCompleter = Completer<void>();
+      // Completes with true when ready, false on a version mismatch.
+      final readyCompleter = Completer<bool>();
+      final process = await Process.start(adb, serverArgs);
+      _daemonProcess = process;
+      process.stdout.listen((data) => _onServerOutput(data, readyCompleter));
+      process.stderr.listen((data) => _onServerOutput(data, readyCompleter));
 
-      _daemonProcess = await Process.start(adb, serverArgs);
-      _daemonProcess?.stdout.listen((data) {
-        final text = String.fromCharCodes(data).trim();
-        AppLogger.debug('[scrcpy] $text');
-        if (text.contains('[server] INFO: Device') &&
-            !readyCompleter.isCompleted) {
-          readyCompleter.complete();
-        }
-      });
-      _daemonProcess?.stderr.listen((data) {
-        AppLogger.debug('[scrcpy err] ${String.fromCharCodes(data).trim()}');
-      });
-
-      // Await daemon readiness or 2.5s fallback
-      await Future.any([
+      // Await daemon readiness or the fallback delay.
+      final ready = await Future.any([
         readyCompleter.future,
-        Future<void>.delayed(_serverReadyFallback),
+        Future<bool>.delayed(_serverReadyFallback, () => true),
       ]);
+      if (!ready) return false;
 
       // Brief 200ms stabilization window for LocalServerSocket
       await Future<void>.delayed(_socketSettleDelay);
@@ -185,6 +173,26 @@ class ScrcpyServerManager implements AdbPortForwarder {
         stackTrace: stack,
       );
       return false;
+    }
+  }
+
+  void _onServerOutput(List<int> data, Completer<bool> readyCompleter) {
+    final chunk = String.fromCharCodes(data);
+    for (final (event, line) in ScrcpyServerOutput.parseChunk(chunk)) {
+      switch (event) {
+        case ScrcpyServerEvent.ready:
+          AppLogger.debug('[scrcpy] $line');
+          if (!readyCompleter.isCompleted) readyCompleter.complete(true);
+        case ScrcpyServerEvent.versionMismatch:
+          AppLogger.error(
+            'scrcpy-server on the device is not v$serverVersion: $line',
+          );
+          if (!readyCompleter.isCompleted) readyCompleter.complete(false);
+        case ScrcpyServerEvent.error:
+          AppLogger.warning('[scrcpy] $line');
+        case ScrcpyServerEvent.other:
+          AppLogger.debug('[scrcpy] $line');
+      }
     }
   }
 
@@ -235,6 +243,9 @@ class ScrcpyServerManager implements AdbPortForwarder {
     required String deviceSerial,
     required bool powerOff,
   }) async {
-    return sendKeyevent(deviceSerial: deviceSerial, keyCode: keycodePower);
+    return sendKeyevent(
+      deviceSerial: deviceSerial,
+      keyCode: AndroidKeyCodes.keycodePower,
+    );
   }
 }

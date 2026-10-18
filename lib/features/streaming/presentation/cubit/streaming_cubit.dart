@@ -1,6 +1,6 @@
+import 'package:desk_droid/core/constants/android_key_codes.dart';
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
-import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/domain/errors/stream_start_exception.dart';
 import 'package:desk_droid/features/streaming/domain/repositories/streaming_repository.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/stream_start_failure_message.dart';
@@ -119,7 +119,7 @@ class StreamingCubit extends Cubit<StreamingState>
     if (currentState is StreamingActive) {
       await repository.sendNavigationKey(
         currentState.session.sessionId,
-        ScrcpyServerManager.keycodeBack,
+        AndroidKeyCodes.keycodeBack,
       );
     }
   }
@@ -130,7 +130,7 @@ class StreamingCubit extends Cubit<StreamingState>
     if (currentState is StreamingActive) {
       await repository.sendNavigationKey(
         currentState.session.sessionId,
-        ScrcpyServerManager.keycodeHome,
+        AndroidKeyCodes.keycodeHome,
       );
     }
   }
@@ -141,7 +141,7 @@ class StreamingCubit extends Cubit<StreamingState>
     if (currentState is StreamingActive) {
       await repository.sendNavigationKey(
         currentState.session.sessionId,
-        ScrcpyServerManager.keycodeAppSwitch,
+        AndroidKeyCodes.keycodeAppSwitch,
       );
     }
   }
