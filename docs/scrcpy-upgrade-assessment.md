@@ -1,6 +1,6 @@
 # scrcpy Server Upgrade Assessment (2026-10-18)
 
-> Decision record: whether and how to upgrade the bundled scrcpy-server from **v2.1** (June 2023). Status: **step 1 done (v3.3.4, 2026-10-18)**; step 2 (v5.0.1) assessed in [section 7](#7-step-2-assessment-v501), recommended, not started.
+> Decision record: whether and how to upgrade the bundled scrcpy-server from **v2.1** (June 2023). Status: **step 1 done (v3.3.4)**; **step 2 done (v5.0.1, 2026-10-18)**, assessed in [section 7](#7-step-2-assessment-v501), results in [section 8](#8-step-2-results-v501).
 
 ---
 
@@ -8,14 +8,14 @@
 
 | Aspect | Current use |
 |:---|:---|
-| Server | `assets/scrcpy-server.jar` **v3.3.4** (was v2.1), started by `ScrcpyServerManager` |
-| Arguments | `scid`, `tunnel_forward=true`, `video_bit_rate`, `max_fps`, `audio=true` + `audio_codec=raw` (when the platform has a player), `control=true`, `clipboard_autosync=false`, `cleanup=true`, and with Keep Phone Awake `stay_awake=true` + `screen_off_timeout` |
-| Video | H.264 parsed by `macos/Runner/ScrcpyStreamPlugin.swift` and `native/scrcpy_core` (Windows) |
+| Server | `assets/scrcpy-server.jar` **v5.0.1** (was v2.1, then v3.3.4), started by `ScrcpyServerManager` |
+| Arguments | `scid`, `tunnel_forward=true`, `video_bit_rate`, `max_fps`, `audio=true` + `audio_codec=raw` (when the platform has a player), `control=true`, `clipboard_autosync=false`, `cleanup=true`, and with Keep Phone Awake `keep_active=true` |
+| Video | H.264 parsed by `macos/Runner/ScrcpyVideoSession.swift` and `native/scrcpy_core` (Windows) |
 | Input | scrcpy control socket for touch and keys; text and the fallback path use `adb shell input` ([remote-input-control.md](features/remote-input-control.md)) |
 | Audio | Raw PCM through the audio socket, played natively ([native-audio-contract.md](native-audio-contract.md)) |
 | Readiness | Waits for the `[server] INFO: Device:` log line |
 
-Only the video socket is used, so protocol changes to the video stream are what matter.
+DeskDroid uses the video, audio and control sockets, so protocol changes to any of them matter.
 
 ---
 
@@ -84,7 +84,7 @@ Related work, independent of the version (all versions support it):
 1. Download `scrcpy-server-vX` and `SHA256SUMS.txt` + `.asc` from the GitHub release. Check the SHA-256 against both the sums file and GitHub's asset digest, and verify the signature with Romain Vimont's key from `https://github.com/rom1v.gpg` (primary fingerprint `4569 58E8 5A18 5DD5 C2D1 E4E8 0C82 2B29 8461 FA03`) in a temporary `GNUPGHOME`.
 2. Diff the wire format in the server **source** (`Streamer.java`, `DesktopConnection.java`), not only `doc/develop.md`.
 3. Replace `assets/scrcpy-server.jar`, update `ScrcpyServerConstants.version` and the README badge. Run `flutter test` (version and option-key guards).
-4. Run `dart run tool/verify_scrcpy_server.dart --serial=<serial>` on an old device **and** on the newest Android (emulator is fine). It uses the app's exact arguments and retries like the native plugins. It checks that the stay-awake settings change while the server runs and come back after it stops, turns the screen off first and checks that `power_on` turns it back on (`--keep-screen` skips this), checks SPS/PPS and an IDR frame, sends HOME and BACK through the control socket (skipped while the phone is locked, or with `--skip-keys`), checks that the server ignores a touch with the wrong frame size, and checks that `SET_DISPLAY_POWER` turns the panel off while video keeps flowing and that it is on again after the server exits. On a PIN-locked phone, run it twice: once as is (checks `power_on`; keys are skipped because the phone locks), and once unlocked with `--keep-screen` (checks HOME and BACK).
+4. Run `dart run tool/verify_scrcpy_server.dart --serial=<serial>` on an old device **and** on the newest Android (emulator is fine). It uses the app's exact arguments and retries like the native plugins. It checks that `keep_active` reports user activity while the server runs and that the device's sleep settings stay untouched, turns the screen off first and checks that `power_on` turns it back on (`--keep-screen` skips this), checks a leading session packet with the size, SPS/PPS and an IDR frame, sends HOME and BACK through the control socket (skipped while the phone is locked, or with `--skip-keys`), checks that the server ignores a touch with the wrong frame size, and checks that `SET_DISPLAY_POWER` turns the panel off while video keeps flowing and that it is on again after the server exits. On a PIN-locked phone, run it twice: once as is (checks `power_on`; keys are skipped because the phone locks), and once unlocked with `--keep-screen` (checks HOME and BACK).
 
 ---
 
@@ -140,3 +140,19 @@ Not relevant: hardware decoding (DeskDroid already decodes natively), VP8/VP9, c
 3. `ScrcpyServerCommand`: `keep_active=true` instead of `stay_awake` + `screen_off_timeout` (keep `cleanup=true` for display power); drop `ScrcpyCleanupWaiter`.
 4. Jar, version constant, guards, contract docs; verify with `verify_scrcpy_server.dart` and `check_macos_native.sh` on Android 10 (Redmi 9) and Android 16 (emulator).
 
+---
+
+## 8. Step 2 Results (v5.0.1)
+
+**Provenance:** SHA-256 `764eb6f7…2bc536` matches `SHA256SUMS.txt`; `SHA256SUMS.txt.asc` has a good signature from the maintainer key above. The jar is 733,930 bytes (it now includes the Kotlin standard library).
+
+| Check | Xiaomi Redmi 9, Android 10 | Emulator, Android 16 |
+|:---|:---|:---|
+| `verify_scrcpy_server.dart --keep-screen` | ✅ `RESULT: OK`: 69-byte header, session packet first (`1080x2340`, a second one after a rotation event), SPS/PPS, IDR, HOME/BACK, size check, keep active, screen off | ⏳ not run (emulator being recreated) |
+| `check_macos_native.sh video` (app's Swift classes) | ✅ `Session: 1080x2340`, hardware decoder, 69 frames, none after stop | ⏳ not run |
+| Audio | Disabled by the server (Android 10) | ⏳ not run |
+
+Notes:
+- The size is now `1080x2340` on the Redmi (v3.3.4: `1080x2336`): v4.0's encoder alignment rules round differently. Touch mapping reads the size from the stream, so nothing else changed.
+- Deviation from the plan: `ScrcpyCleanupWaiter` stays. With `keep_active` no setting needs restoring, but the restore process still turns the screen back on after Screen Off. On a pipeline restart, an old restore process that ran after DeskDroid turned the screen off on the new server would turn it on again, so the next start still waits for it.
+- The Windows plugin (`stream_session.cpp`, `audio_session.cpp`) was updated but not compiled or run (no Windows machine); its parsing lives in `scrcpy_core`, which is tested on macOS in three build variants.

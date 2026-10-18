@@ -37,7 +37,7 @@ Server options: `audio=true`, `audio_codec=raw` (built by `ScrcpyServerCommand`)
 | Step | Bytes |
 |:---|:---|
 | Header (once) | 4: codec id, big-endian. `0x00726177` ("\0raw") = raw; `0` = disabled; `1` = configuration error; anything else = unsupported. |
-| Packet (repeated) | 12-byte header as for video (8 PTS/flags, 4 size), then the payload: PCM 16-bit little-endian, stereo interleaved, 48 kHz. |
+| Packet (repeated) | 12-byte header as for video media packets (8 PTS/flags with bit 62 = config, 4 size; never a session packet), then the payload: PCM 16-bit little-endian, stereo interleaved, 48 kHz. |
 
 Parsing lives in `native/scrcpy_core` (`audio_header`, `packet_header`). With `0` the server closes the audio socket and mirroring continues.
 

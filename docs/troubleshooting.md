@@ -56,7 +56,7 @@
 
 ### ❌ No Video on Android 15 or 16 (Black Screen, Mirroring Never Starts)
 - **Root Cause:** DeskDroid builds before scrcpy-server v3.3.4 used an Android API that Google removed in Android 14 QPR3 (`SurfaceControl.createDisplay`). The app log shows `[scrcpy] [server] ERROR: … NoSuchMethodException`.
-- **Solution:** Update DeskDroid. The bundled server (v3.3.4) captures the screen through the new `DisplayManager` API.
+- **Solution:** Update DeskDroid. The bundled server (v3.3.4 and later) captures the screen through the new `DisplayManager` API.
 
 ### ❌ Mirroring Waits While the Phone Screen Is Off
 - **Root Cause:** Android produces no frames for a screen that is off. DeskDroid asks the server to turn the screen on when mirroring starts, but a PIN or pattern lock still blocks input.
@@ -78,9 +78,9 @@
 - **Root Cause:** Screen Off keeps the phone awake, but its own screen timeout still runs. With **Keep Phone Awake** off, the phone goes to sleep when the timeout ends. Pressing the phone's power button while the screen is off also puts it to sleep.
 - **Solution:** Keep **Keep Phone Awake** on (sun icon) while using Screen Off. To recover, wake the phone with its power button, unlock it, and press <kbd>Cmd</kbd> + <kbd>O</kbd> again.
 
-### ❌ The Phone's Screen Timeout Is 24 Hours After Mirroring
-- **Root Cause:** With **Keep Phone Awake** on, DeskDroid sets the phone's screen timeout to 24 hours and "Stay awake while charging" on during mirroring. A restore process on the phone puts the old values back when mirroring stops. If the phone restarts or its battery runs out during mirroring, that process never runs.
-- **Solution:** Set the screen timeout in the phone's display settings (and **Developer options → Stay awake**) back to what you want. To avoid it, turn off Keep Phone Awake (sun icon in the side dock) before long unattended sessions.
+### ❌ The Phone's Screen Timeout Is 24 Hours After an Older DeskDroid Build
+- **Root Cause:** Builds before the scrcpy v5.0.1 upgrade kept the phone awake by setting its screen timeout to 24 hours and "Stay awake while charging" on, and relied on a restore process to put the old values back. If the phone restarted or its battery ran out during mirroring, the values stayed. Current builds change no phone setting (they report user activity instead).
+- **Solution:** Set the screen timeout in the phone's display settings (and **Developer options → Stay awake**) back to what you want. It does not happen again.
 
 ### ❌ "scrcpy-server on the device is not vX" in the App Log
 - **Root Cause:** The jar on the phone is an older version (for example when `adb push` failed for lack of storage). The server exits on a version mismatch.

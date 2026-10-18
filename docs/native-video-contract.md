@@ -12,7 +12,7 @@ Dart client: `lib/core/services/video_stream_native_service.dart`.
 |:---|:---|:---|:---|
 | `startStream` | `{host: String = "127.0.0.1", port: int = 27183}` | `int` texture id | Stops any previous stream, registers a new texture, connects in the background, returns immediately. Error `NO_REGISTRY` if textures are unavailable. |
 | `stopStream` | none | `true` | Stops the connection and decoder, then unregisters the texture. Idempotent. |
-| `getDimensions` | none | `{width: int, height: int}` | Latest known video size: the stream header first, then each decoded frame. `0x0` before connecting. |
+| `getDimensions` | none | `{width: int, height: int}` | Latest known video size: each session packet, then each decoded frame. `0x0` before connecting. |
 | `getStats` | none | `{state: String, framesDecoded: int, bytesReceived: int, processingTimeUs: int}` | Stream state and cumulative counters (see below). `idle` with zeros when no stream exists. |
 
 **`getStats` states**
@@ -32,27 +32,37 @@ Counters only grow during one stream, so the Dart client (`StreamTelemetrySample
 
 ## 2. Wire Format (scrcpy-server video socket)
 
-Server: bundled `assets/scrcpy-server.jar`, **v3.3.4** (version in `lib/core/constants/scrcpy_server_constants.dart`). The client passes it as the first argument, and the server refuses to start on a mismatch, which the app detects and logs (`ScrcpyServerOutput`). `test/unit/scrcpy_server_version_test.dart` reads the version from the jar's `classes.dex`, and `scrcpy_server_command_test.dart` checks that every option key exists in the jar. To upgrade, follow [scrcpy-upgrade-assessment.md](scrcpy-upgrade-assessment.md#5-upgrade-procedure); this wire format is valid up to v3.3.x.
+Server: bundled `assets/scrcpy-server.jar`, **v5.0.1** (version in `lib/core/constants/scrcpy_server_constants.dart`). The client passes it as the first argument, and the server refuses to start on a mismatch, which the app detects and logs (`ScrcpyServerOutput`). `test/unit/scrcpy_server_version_test.dart` reads the version from the jar's `classes.dex`, and `scrcpy_server_command_test.dart` checks that every option key exists in the jar. To upgrade, follow [scrcpy-upgrade-assessment.md](scrcpy-upgrade-assessment.md#5-upgrade-procedure); this wire format is valid from v4.0 (session packets) through v5.0.x.
 
 All integers are big-endian.
 
-**Stream header** (once, 77 bytes)
+**Stream header** (once, 69 bytes)
 
 | Offset | Size | Field |
 |:---|:---|:---|
 | 0 | 1 | Dummy byte `0x00` (forward-tunnel handshake) |
 | 1 | 64 | Device name, UTF-8, NUL padded |
 | 65 | 4 | Codec id, ASCII (`h264`) |
-| 69 | 4 | Width |
-| 73 | 4 | Height |
 
-**Packet** (repeated)
+The header no longer carries the video size; the first packet does.
+
+**Session packet** (12 bytes, no payload): first after the header, and again on each capture change (rotation, fold)
 
 | Size | Field |
 |:---|:---|
-| 8 | PTS. Bit 63 = config (SPS/PPS), bit 62 = key frame, bits 0–61 = time in µs |
+| 4 | Flags. Bit 31 = session packet (bit 63 of the 8-byte field below), bit 0 = resized by the client |
+| 4 | Width (> 0) |
+| 4 | Height (> 0) |
+
+**Media packet** (repeated)
+
+| Size | Field |
+|:---|:---|
+| 8 | PTS and flags. Bit 63 = 0 (not a session packet), bit 62 = config (SPS/PPS), bit 61 = key frame, bits 0–60 = time in µs |
 | 4 | Payload size (> 0, ≤ 32 MiB) |
 | n | Payload: H.264 Annex B NAL units (`00 00 00 01` start codes) |
+
+The first packet must be a session packet; native closes the stream otherwise, like the official client. `scrcpy_core::ParsePacketHeader` decodes both kinds.
 
 Config packets must be applied before the next media packet. Decoders that take Annex B input receive them **prepended** to that packet (`scrcpy_core::ConfigPacketMerger`), exactly like the official scrcpy client.
 
@@ -62,7 +72,7 @@ The server runs with control enabled (and audio where the platform has a player)
 
 1. Native connects the video socket and reads the dummy byte, then sets `getStats` to `connected`.
 2. Dart (`ScrcpyControlConnector`) sees `connected`, opens the audio socket when audio is on (`startAudio`), then the control socket on the same port (`ScrcpyControlChannel`).
-3. Only then does the server send the device name and codec meta. Native reads the rest of the header.
+3. Only then does the server send the device name and codec id. Native reads the rest of the header, then the first session packet.
 
 Reading the full header before control connects would deadlock. Native must also keep reading video for the whole session: all `adb forward` sockets share one adb transport, so an unread video socket stalls control messages too. Control message bytes are in `lib/core/services/scrcpy_control_message.dart`, checked against scrcpy's own serializer tests.
 

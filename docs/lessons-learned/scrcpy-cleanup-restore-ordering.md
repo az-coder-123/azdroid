@@ -41,3 +41,10 @@ Three facts are easy to miss:
 - [ ] Prefer a finite value over "infinite" for a setting that may fail to be restored.
 - [ ] Record a device's original settings before an experiment, and verify they are restored after it.
 - [ ] With `pgrep -f`/`pkill -f` over `adb shell`, bracket one character of the pattern so it does not match its own shell.
+
+## Update: scrcpy v5.0.1 and `keep_active` (2026-10-18)
+
+- Keep Phone Awake now uses `keep_active=true` (scrcpy 4.0+): the server reports user activity every 4 s and changes no device setting. `stay_awake`, `screen_off_timeout` and the 24-hour constant are gone. The verification tool checks that the settings stay untouched and that the last user-activity time advances on its own.
+- The upgrade plan said to drop `ScrcpyCleanupWaiter` with it. While implementing, the restore process turned out to have a second job: it turns the screen back on after Screen Off. On a restart, an old restore process that runs late would undo the "off" sent to the new server, so the waiter stays, with its reason updated.
+- [ ] Before removing a guard, list **every** state the guarded process touches, not only the one that motivated the guard.
+
