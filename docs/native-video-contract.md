@@ -20,7 +20,8 @@ Dart client: `lib/core/services/video_stream_native_service.dart`.
 | `state` | Meaning |
 |:---|:---|
 | `idle` | No stream, or stopped by the caller. |
-| `connecting` | Waiting for the socket and the stream header. |
+| `connecting` | Waiting for the server to accept the video socket. |
+| `connected` | Dummy byte read: the server accepted the video socket and now waits for the control socket. Dart opens control in this state (see below). |
 | `streaming` | Header received; packets are flowing. |
 | `failed` | Gave up before streaming: no server after all retries, bad header, unsupported codec, or decoder setup failure. |
 | `ended` | The stream had started, then the device closed the socket. |
@@ -55,6 +56,16 @@ All integers are big-endian.
 
 Config packets must be applied before the next media packet. Decoders that take Annex B input receive them **prepended** to that packet (`scrcpy_core::ConfigPacketMerger`), exactly like the official scrcpy client.
 
+**Socket order with control (`control=true`)**
+
+The server runs with control enabled, so it accepts two sockets on the same forwarded port, in a fixed order:
+
+1. Native connects the video socket and reads the dummy byte, then sets `getStats` to `connected`.
+2. Dart (`ScrcpyControlConnector`) sees `connected` and opens the control socket on the same port (`ScrcpyControlChannel`).
+3. Only then does the server send the device name and codec meta. Native reads the rest of the header.
+
+Reading the full header before control connects would deadlock. Native must also keep reading video for the whole session: all `adb forward` sockets share one adb transport, so an unread video socket stalls control messages too. Control message bytes are in `lib/features/control/data/scrcpy/scrcpy_control_message.dart`, checked against scrcpy's own serializer tests.
+
 ---
 
 ## 3. Behavioral Requirements
@@ -62,6 +73,8 @@ Config packets must be applied before the next media packet. Decoders that take 
 | Requirement | macOS | Windows |
 |:---|:---|:---|
 | Connect retries: 30 × 300 ms; header retry delay 400 ms | ✅ | ✅ `stream_config.h` |
+| `connected` after the dummy byte, before the rest of the header | ✅ | ✅ `ConnectAndReadHeader` |
+| `getDimensions` equals the size the server checks touch events against | ✅ SPS presentation size (clean aperture) | ✅ header, then MFT output |
 | Socket read wakes every 1 s to honor `stopStream` | ✅ `SO_RCVTIMEO` | ✅ `SO_RCVTIMEO` |
 | Decode on a background thread, never on the platform thread | ✅ | ✅ `StreamSession` |
 | Resolution / rotation change mid-stream | ✅ new SPS → new session | ✅ `MF_E_TRANSFORM_STREAM_CHANGE` |
@@ -86,6 +99,7 @@ Config packets must be applied before the next media packet. Decoders that take 
 | Color conversion | VideoToolbox output (BGRA) | `native/scrcpy_core/nv12_converter` |
 | Frame hand-off | `CVPixelBuffer` + lock | `native/scrcpy_core/latest_frame_buffer` (triple buffer) |
 | Stats (`getStats`) | `ScrcpyStreamStats.swift` | `native/scrcpy_core/stream_stats` |
+| Control socket (shared, Dart) | `lib/core/services/scrcpy_control_channel.dart`, `scrcpy_control_connector.dart` | same |
 
 `native/scrcpy_core` is plain C++17 with no OS headers. It is the place for any new protocol logic, so both current and future platforms share one tested implementation. Moving the Swift parsing onto it (through a C ABI) is a planned follow-up.
 

@@ -41,6 +41,7 @@ Put a type in `core` when two or more features need it.
 |:---|:---|:---|
 | `DeviceEntity`, `DeviceConnectionType` | `core/models/device_entity.dart` | discovery, streaming |
 | `AdbPortForwarder` (contract) | `core/services/adb_port_forwarder.dart` | audio (implemented by streaming's `ScrcpyServerManager`) |
+| `ScrcpyControlChannel` (one socket per session) | `core/services/scrcpy_control_channel.dart` | streaming (opens and closes it), control (sends input) |
 | `AdbBinaryLocator` (pure Dart) | `core/services/adb_binary_locator.dart` | app `AdbPathResolver`, MCP server |
 | `HostPaths`, `HostToolchain`, `HostFilePicker`, `HostFileLauncher`, `ImageClipboard`, `ShortcutScheme` | `core/platform/` (see [platform-abstraction.md](platform-abstraction.md)) | all features |
 | `LocalFileSystemGateway`, `splitLines()` | `core/services/`, `core/extensions/` | productivity, MCP, parsers |

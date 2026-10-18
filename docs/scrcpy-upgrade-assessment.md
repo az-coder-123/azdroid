@@ -9,9 +9,9 @@
 | Aspect | Current use |
 |:---|:---|
 | Server | `assets/scrcpy-server.jar` **v3.3.4** (was v2.1), started by `ScrcpyServerManager` |
-| Arguments | `scid`, `tunnel_forward=true`, `video_bit_rate`, `max_fps`, `audio=false`, `control=false`, `cleanup=false` |
+| Arguments | `scid`, `tunnel_forward=true`, `video_bit_rate`, `max_fps`, `audio=false`, `control=true`, `clipboard_autosync=false`, `cleanup=false` |
 | Video | H.264 parsed by `macos/Runner/ScrcpyStreamPlugin.swift` and `native/scrcpy_core` (Windows) |
-| Input | **Not** scrcpy: every tap/swipe/key runs `adb shell input …` |
+| Input | scrcpy control socket for touch and keys; text and the fallback path use `adb shell input` ([remote-input-control.md](features/remote-input-control.md)) |
 | Audio | **Not functional**: the server runs with `audio=false`, and no Opus/AAC decoder or player exists; the UI toggle only changes state |
 | Readiness | Waits for the `[server] INFO: Device:` log line |
 
@@ -74,7 +74,7 @@ scrcpy does not backport fixes: future Android releases will only be supported o
 2. **Next — v5.0.1**, after the first Windows hardware run. Teach `scrcpy_core` and the Swift plugin to read session packets and the shifted flags, update [native-video-contract.md](native-video-contract.md), and verify on both platforms.
 
 Related work, independent of the version (all versions support it):
-- **Control socket** (`control=true`) instead of `adb shell input`: much lower input latency, real multi-touch.
+- **Control socket** (`control=true`) instead of `adb shell input`: much lower input latency; multi-touch becomes possible later. ✅ Done: see [remote-input-control.md](features/remote-input-control.md).
 - **Audio**: either implement it (scrcpy audio, Android 11+, plus an Opus decoder and player on both platforms) or hide the toggle until it works.
 
 ---
@@ -84,7 +84,7 @@ Related work, independent of the version (all versions support it):
 1. Download `scrcpy-server-vX` and `SHA256SUMS.txt` + `.asc` from the GitHub release. Check the SHA-256 against both the sums file and GitHub's asset digest, and verify the signature with Romain Vimont's key from `https://github.com/rom1v.gpg` (primary fingerprint `4569 58E8 5A18 5DD5 C2D1 E4E8 0C82 2B29 8461 FA03`) in a temporary `GNUPGHOME`.
 2. Diff the wire format in the server **source** (`Streamer.java`, `DesktopConnection.java`), not only `doc/develop.md`.
 3. Replace `assets/scrcpy-server.jar`, update `ScrcpyServerConstants.version` and the README badge. Run `flutter test` (version and option-key guards).
-4. Run `dart run tool/verify_scrcpy_server.dart --serial=<serial>` on an old device **and** on the newest Android (emulator is fine). It uses the app's exact arguments, wakes the screen, retries like the native plugins, and checks for SPS/PPS and an IDR frame.
+4. Run `dart run tool/verify_scrcpy_server.dart --serial=<serial>` on an old device **and** on the newest Android (emulator is fine). It uses the app's exact arguments and retries like the native plugins. It turns the screen off first and checks that `power_on` turns it back on (`--keep-screen` skips this), checks SPS/PPS and an IDR frame, sends HOME and BACK through the control socket (skipped while the phone is locked, or with `--skip-keys`), and checks that the server ignores a touch with the wrong frame size.
 
 ---
 
@@ -100,6 +100,6 @@ Related work, independent of the version (all versions support it):
 The native Swift and C++ parsers did not change: the v3.3.4 header and packet format are identical to v2.1 (verified in source and on the wire). The full app UI was not exercised in this check.
 
 Findings recorded for later:
-- With `control=false`, the server cannot power the screen on; a phone with its screen off produces no frames (the stream waits). Enabling the control socket also enables `power_on`.
+- With `control=false`, the server cannot power the screen on; a phone with its screen off produces no frames (the stream waits). ✅ Resolved: control is now enabled, which also enables `power_on`.
 - The `stayAwake` setting is passed to `startServer` but never reaches the server. Wiring it to `stay_awake` changes a global device setting, and `cleanup=false` would leave it changed, so it needs its own decision.
 

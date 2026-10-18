@@ -59,8 +59,12 @@
 - **Solution:** Update DeskDroid. The bundled server (v3.3.4) captures the screen through the new `DisplayManager` API.
 
 ### ❌ Mirroring Waits While the Phone Screen Is Off
-- **Root Cause:** Android produces no frames for a screen that is off, so there is nothing to stream.
-- **Solution:** Wake and unlock the phone. The stream starts as soon as the screen is on.
+- **Root Cause:** Android produces no frames for a screen that is off. DeskDroid asks the server to turn the screen on when mirroring starts, but a PIN or pattern lock still blocks input.
+- **Solution:** Unlock the phone. The stream starts as soon as the screen is on.
+
+### ❌ "The input channel did not open"
+- **Root Cause:** The video connected, but the scrcpy control socket did not. DeskDroid stops the session instead of showing a mirror that ignores clicks.
+- **Solution:** Unlock the phone and tap **Retry Connection**. If it keeps failing, disconnect and reconnect the device.
 
 ### ❌ "scrcpy-server on the device is not vX" in the App Log
 - **Root Cause:** The jar on the phone is an older version (for example when `adb push` failed for lack of storage). The server exits on a version mismatch.

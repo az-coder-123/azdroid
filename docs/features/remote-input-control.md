@@ -9,15 +9,31 @@
 
 ## 📌 Overview
 
-DeskDroid transforms your Mac trackpad, mouse, and keyboard into native Android input controllers. Mouse pointer actions and trackpad gestures are normalized and injected with millisecond responsiveness over binary socket channels.
+DeskDroid turns your computer's trackpad, mouse, and keyboard into Android input. Pointer positions are normalized to the video frame and sent to the phone through the scrcpy **control socket**, with `adb shell input` as the fallback.
 
 ```mermaid
 flowchart LR
-    MacInput["Mac Mouse / Trackpad / Keyboard\n(Listener & Raw Events)"] --> Viewport["InputGestureViewportOverlay\n(Coordinate Normalization 0.0 - 1.0)"]
-    Viewport --> Bloc["ControlBloc\n(Event Throttling & Debouncing)"]
-    Bloc --> Socket["Control Socket\n(Binary Touch / Key Packets)"]
-    Socket --> Android["scrcpy-server Daemon\n(Android InputManager Injection)"]
+    HostInput["Mouse / Trackpad / Keyboard"] --> Viewport["InputGestureViewportOverlay\n(normalized 0.0 - 1.0)"]
+    Viewport --> Bloc["ControlBloc"]
+    Bloc --> Repo["ControlRepositoryImpl\n(maps to video frame pixels)"]
+    Repo --> Fallback["FallbackControlDatasource"]
+    Fallback -->|"primary"| Scrcpy["ScrcpyControlDatasource\n(binary touch / key messages)"]
+    Fallback -->|"socket closed"| Adb["ControlDatasourceImpl\n(adb shell input)"]
+    Scrcpy --> Server["scrcpy-server\n(Android input injection)"]
 ```
+
+### Input Paths
+
+| Input | Path | Notes |
+|:---|:---|:---|
+| Tap, drag, swipe, scroll | Control socket | Touch DOWN, interpolated MOVE every 16 ms, UP. |
+| Key events (BACK, HOME, shortcuts) | Control socket | DOWN then UP. |
+| Quick Text (<kbd>Cmd</kbd> + <kbd>K</kbd>) | `adb` | The scrcpy key map cannot type non-ASCII text such as Vietnamese. |
+| Anything while the socket is down | `adb shell input` | Automatic fallback, per event. |
+
+**Frame size.** The server ignores a touch whose screen size differs from the current video size. The repository therefore maps positions with the size reported by the native player (`getDimensions`, through `VideoFrameSizeSource`), not with the device display size. For example, a 1080×2340 display may stream at 1080×2336. When the size is unknown, input uses the adb path.
+
+**Session.** The streaming repository opens the control socket during stream start (see [native-video-contract.md](../native-video-contract.md#2-wire-format-scrcpy-server-video-socket)) and closes it before the stream stops. If it cannot open, the start fails with a clear message instead of a mirror that ignores input.
 
 ---
 
@@ -32,8 +48,8 @@ flowchart LR
 - **Visual Feedback:** `TouchIndicatorOverlay` renders an Apple-styled animated ripple at the pointer contact point.
 
 ### 2. Smooth Inertial Trackpad & Wheel Scrolling
-- **Gesture Conversion:** Converts macOS two-finger trackpad flicks and mouse wheel rotations into natural Android scroll events (`AMOTION_EVENT_AXIS_VSCROLL` and `HSCROLL`).
-- **Directional Fidelity:** Supports horizontal and vertical scrolling with adjustable sensitivity to mimic native mobile inertia.
+- **Gesture Conversion:** Converts two-finger trackpad flicks and mouse wheel rotations into short touch swipes (`ControlConstants.scrollFactor`), so lists scroll with native inertia.
+- **Directional Fidelity:** Supports horizontal and vertical scrolling.
 
 ### 3. Hardware Keyboard Forwarding & Android Shortcuts
 - **Direct Keystroke Translation:** Maps macOS physical keys directly to Linux and Android standard keycodes via `AndroidKeyCodes`.
