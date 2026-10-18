@@ -13,6 +13,7 @@ class MirroringCentralViewport extends StatelessWidget {
     required this.aspectRatio,
     required this.display,
     required this.sideToolbar,
+    this.leftToolbar,
   });
 
   /// Gap between the phone display and the side toolbar.
@@ -22,19 +23,28 @@ class MirroringCentralViewport extends StatelessWidget {
   final double aspectRatio;
   final Widget display;
   final Widget sideToolbar;
+  final Widget? leftToolbar;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, window) => Row(
         children: [
+          if (leftToolbar != null) ...[
+            leftToolbar!,
+            const SizedBox(width: toolbarGap),
+          ],
           Expanded(
             child: LayoutBuilder(
               builder: (context, area) {
+                final leftOffset = leftToolbar != null
+                    ? (window.maxWidth - area.maxWidth) / 2
+                    : 0.0;
                 final rect = placePhoneDisplay(
                   area: area.biggest,
                   windowWidth: window.maxWidth,
                   aspectRatio: aspectRatio,
+                  leftOffset: leftOffset,
                 );
                 return Stack(
                   children: [Positioned.fromRect(rect: rect, child: display)],

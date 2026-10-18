@@ -33,7 +33,7 @@ const List<AppFeatureItem> showcaseDisplayControlFeatures = [
       'Saves up to 70% device battery and prevents device overheating.',
       'Privacy protection prevents shoulder-surfing in public workspaces.',
     ],
-    proTip: 'Press Cmd+O or click the screen toggle button in the bottom dock.',
+    proTip: 'Press Cmd+O or click the screen toggle button in the left dock.',
     docFileName: 'screen-off-streaming.md',
   ),
   AppFeatureItem(
@@ -66,7 +66,7 @@ const List<AppFeatureItem> showcaseDisplayControlFeatures = [
       'Perfect for testing landscape games, spreadsheets, and video playback.',
       'Automatically recalculates aspect ratio and touch coordinate mappings.',
     ],
-    proTip: 'Press Cmd+R or click the rotate icon in the side toolbar.',
+    proTip: 'Press Cmd+R or click the rotate icon in the left toolbar.',
     docFileName: 'wireless-display-streaming.md',
   ),
   AppFeatureItem(
@@ -98,7 +98,7 @@ const List<AppFeatureItem> showcaseDisplayControlFeatures = [
       'CoreAudio native rendering on macOS for pristine synchronization with video.',
       'Interactive volume slider and 1-click mute toggle in the mirroring dock.',
     ],
-    proTip: 'Click the speaker icon in the bottom controls to adjust or mute forwarded audio.',
+    proTip: 'Click the speaker icon in the left controls dock to adjust or mute forwarded audio.',
     docFileName: 'audio-forwarding.md',
   ),
 ];

@@ -6,6 +6,7 @@ import 'package:desk_droid/features/control/domain/entities/input_event_entity.d
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
+import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/device_log_dialog.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
@@ -13,10 +14,11 @@ import 'package:desk_droid/features/productivity/presentation/cubit/screenshot_c
 import 'package:desk_droid/features/productivity/presentation/widgets/device_file_manager_dialog.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/file_drop_target_overlay.dart';
 import 'package:desk_droid/features/productivity/presentation/widgets/transfer_status_banner.dart';
+import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
-import 'package:desk_droid/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/interactive_display_viewport.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/left_controls_toolbar.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_central_viewport.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_feedback_stack.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/side_controls_toolbar.dart';
@@ -53,6 +55,8 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       bindings: {
         keys.activator(LogicalKeyboardKey.keyO): cubit.toggleScreenOff,
         keys.activator(LogicalKeyboardKey.keyR): cubit.rotateScreen,
+        keys.activator(LogicalKeyboardKey.keyP): () =>
+            _navigate(context, NavigationAction.power),
       },
       child: _buildLayout(context),
     );
@@ -80,32 +84,11 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
                     ),
                   ),
 
-                  // Dedicated Central Display Viewport with Side Controls Toolbar
+                  // Dedicated Central Display Viewport with Dual Side Controls Toolbars
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 4.0,
-                      ),
+                      padding: const EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
                       child: _buildCentralViewport(context),
-                    ),
-                  ),
-
-                  // Bottom Non-overlapping Controls Toolbar
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                    child: FloatingControlsToolbar(
-                      session: widget.state.session,
-                      // Same path as the shortcuts and mouse buttons: the
-                      // control socket, with adb as the fallback.
-                      onBack: () => _navigate(context, NavigationAction.back),
-                      onHome: () => _navigate(context, NavigationAction.home),
-                      onAppSwitch: () =>
-                          _navigate(context, NavigationAction.appSwitch),
-                      onRotate: context.read<StreamingCubit>().rotateScreen,
-                      onToggleScreenOff: context
-                          .read<StreamingCubit>()
-                          .toggleScreenOff,
                     ),
                   ),
                 ],
@@ -194,7 +177,23 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
         deviceSerial: widget.device.serial,
         rotationDegrees: widget.state.rotationDegrees,
       ),
+      leftToolbar: _buildLeftControls(context),
       sideToolbar: _buildSideControls(context),
+    );
+  }
+
+  Widget _buildLeftControls(BuildContext context) {
+    return LeftControlsToolbar(
+      session: widget.state.session,
+      onBack: () => _navigate(context, NavigationAction.back),
+      onHome: () => _navigate(context, NavigationAction.home),
+      onAppSwitch: () => _navigate(context, NavigationAction.appSwitch),
+      onPower: () => _navigate(context, NavigationAction.power),
+      onRotate: context.read<StreamingCubit>().rotateScreen,
+      onToggleScreenOff: context.read<StreamingCubit>().toggleScreenOff,
+      onToggleZenMode: () => setState(() => _isZenMode = true),
+      onOpenShowcase: () => FeatureShowcaseDialog.show(context),
+      onOpenGuide: () => UserGuideDialog.show(context),
     );
   }
 

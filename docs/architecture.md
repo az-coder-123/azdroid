@@ -108,10 +108,10 @@ lib/
 │   │   │   └── repositories/streaming_repository_impl.dart
 │   │   └── presentation/
 │   │       ├── cubit/streaming_cubit.dart
-│   │       ├── cubit/streaming_state.dart
-│   │       ├── widgets/floating_controls_toolbar.dart
+│   │       ├── widgets/left_controls_toolbar.dart
+│   │       ├── widgets/side_controls_toolbar.dart
 │   │       ├── widgets/stream_telemetry_header.dart
-│   │       ├── widgets/video_display_viewport.dart
+│   │       ├── widgets/interactive_display_viewport.dart
 │   │       └── pages/mirroring_page.dart
 │   ├── control/                            # Input normalization & pointer injection
 │   │   ├── domain/

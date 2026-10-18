@@ -60,4 +60,44 @@ void main() {
       }
     }
   }
+
+  group('dual toolbars layout', () {
+    const leftKey = Key('leftToolbar');
+    const rightKey = Key('rightToolbar');
+
+    testWidgets(
+      'lays out leftToolbar, display, and rightToolbar without overflow',
+      (tester) async {
+        tester.view.physicalSize = const Size(1200, 800);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: MirroringCentralViewport(
+              aspectRatio: 1080 / 2400,
+              display: ColoredBox(key: _displayKey, color: Colors.black),
+              leftToolbar: SizedBox(key: leftKey, width: 48, height: 400),
+              sideToolbar: SizedBox(key: rightKey, width: 48, height: 400),
+            ),
+          ),
+        );
+        expect(tester.takeException(), isNull);
+
+        final leftRect = tester.getRect(find.byKey(leftKey));
+        final displayRect = tester.getRect(find.byKey(_displayKey));
+        final rightRect = tester.getRect(find.byKey(rightKey));
+
+        expect(
+          leftRect.right + MirroringCentralViewport.toolbarGap,
+          lessThanOrEqualTo(displayRect.left + 1e-6),
+        );
+        expect(
+          displayRect.right + MirroringCentralViewport.toolbarGap,
+          lessThanOrEqualTo(rightRect.left + 1e-6),
+        );
+        expect(rightRect.right, lessThanOrEqualTo(1200 + 1e-6));
+      },
+    );
+  });
 }

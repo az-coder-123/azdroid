@@ -12,6 +12,7 @@ Rect placePhoneDisplay({
   required Size area,
   required double windowWidth,
   required double aspectRatio,
+  double leftOffset = 0.0,
 }) {
   if (area.isEmpty || aspectRatio <= 0 || !aspectRatio.isFinite) {
     return Rect.zero;
@@ -20,7 +21,7 @@ Rect placePhoneDisplay({
   final width = fitsHeight ? area.height * aspectRatio : area.width;
   final height = fitsHeight ? area.height : area.width / aspectRatio;
 
-  final windowCenteredLeft = (windowWidth - width) / 2;
+  final windowCenteredLeft = (windowWidth - width) / 2 - leftOffset;
   final left = math.min(
     math.max(0.0, windowCenteredLeft),
     math.max(0.0, area.width - width),

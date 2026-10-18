@@ -2,7 +2,7 @@
 
 > **Subsystem:** `lib/features/streaming/`  
 > **Key Interfaces:** `StreamingRepository.toggleScreenOff`, `ScrcpyControlConnector.setDisplayPower`  
-> **Presentation:** `StreamingCubit`, `FloatingControlsToolbar`, `MirroringActiveView` (shortcut)  
+> **Presentation:** `StreamingCubit`, `LeftControlsToolbar`, `MirroringActiveView` (shortcut)  
 > **Shortcut:** <kbd>Cmd</kbd> + <kbd>O</kbd> (<kbd>Ctrl</kbd> + <kbd>O</kbd> on Windows)  
 > **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 

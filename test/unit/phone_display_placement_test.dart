@@ -51,5 +51,16 @@ void main() {
         Rect.zero,
       );
     });
+
+    test('centers correctly in window with leftOffset', () {
+      final rect = placePhoneDisplay(
+        area: const Size(1600, 900),
+        windowWidth: 1760,
+        aspectRatio: 1080 / 2400,
+        leftOffset: 80,
+      );
+      expect(rect.height, 900);
+      expect(rect.center.dx + 80, closeTo(1760 / 2, 1e-9));
+    });
   });
 }
