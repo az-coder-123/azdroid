@@ -237,8 +237,9 @@ macos/Runner/
 windows/scrcpy_stream/                      # Media Foundation decoder plugin (same channel contract)
 native/scrcpy_core/                         # Platform-neutral C++17: scrcpy parsing, NV12 conversion, stats
 scripts/
-├── build_release.sh                        # macOS release ZIP
-└── build_release.ps1                       # Windows release ZIP
+├── build_release.sh                        # macOS release ZIP and GitHub Release
+├── build_release.ps1                       # Windows release ZIP
+└── release/write_release_readme.sh         # RELEASE/README.md for every packaged platform
 ```
 
 Both plugins implement [native-video-contract.md](native-video-contract.md). Dart-side platform differences are covered in [platform-abstraction.md](platform-abstraction.md); feature status per platform in [platform-support.md](platform-support.md).

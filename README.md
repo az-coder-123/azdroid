@@ -14,13 +14,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.0.1-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.0.1_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download DeskDroid for macOS"></a>
+  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.1.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.1.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download DeskDroid for macOS"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.0.1-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.0.1_(x64_Preview)-0078D4?style=for-the-badge" alt="Download DeskDroid for Windows (Preview)"></a>
+  <a href="https://github.com/az-coder-123/desk-droid/releases/download/v1.0.1/DeskDroid-v1.0.1-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.0.1_(x64_Preview)-0078D4?style=for-the-badge" alt="Download DeskDroid for Windows (Preview)"></a>
   &nbsp;
   <a href="https://github.com/az-coder-123/desk-droid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
   <br>
-  <sub>macOS: Universal Binary (18 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
+  <sub>macOS: Universal Binary (30 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
   <br>
   <sub>Windows (Preview): portable ZIP (13 MB) • Windows 10/11 x64 • <a href="docs/platform-support.md">what works on each platform</a></sub>
 </p>
@@ -195,8 +195,8 @@ flowchart LR
 
 ### Install a release
 
-- **macOS:** unzip `DeskDroid-v1.0.1-macOS.zip`, move **DeskDroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/DeskDroid.app` once if Gatekeeper blocks it.
-- **Windows:** unzip `DeskDroid-v1.0.1-Windows-x64.zip` and run `DeskDroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
+- **macOS:** unzip `DeskDroid-v1.1.0-macOS.zip`, move **DeskDroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/DeskDroid.app` once if Gatekeeper blocks it.
+- **Windows:** unzip `DeskDroid-v1.0.1-Windows-x64.zip` (the latest Windows package; it needs an installed ADB) and run `DeskDroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
 
 ### Run from source
 
@@ -218,7 +218,7 @@ flutter run -d windows   # Windows (needs Visual Studio 2022 with "Desktop devel
 powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1     # Windows → RELEASE\DeskDroid-v<version>-Windows-x64.zip
 ```
 
-Full setup, ADB drivers, and packaging options: [Installation & Building](docs/installation.md).
+Full setup, ADB drivers, and packaging options: [Installation & Building](docs/installation.md). Publishing a release: [Release Guide](docs/release-guide.md).
 
 ---
 
@@ -227,6 +227,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 | Guide | Scope |
 | :--- | :--- |
 | [💿 Installation & Building](docs/installation.md) | Install on macOS or Windows, set up ADB, run from source, and package a release |
+| [🚀 Release Guide](docs/release-guide.md) | Step-by-step release procedure: version, notes, build, package, upload, README links |
 | [🖥️ Platform Support](docs/platform-support.md) | What works on macOS and Windows, and where the platforms differ |
 | [📖 User Guide](docs/user-guide.md) | Getting started, first-time setup, and device permissions |
 | [📶 Pairing Guide](docs/pairing-guide.md) | Wireless pairing instructions for Android 11+ and USB fallback |

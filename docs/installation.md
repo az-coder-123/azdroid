@@ -68,6 +68,8 @@ flutter run -d windows   # on a Windows PC
 
 ## 5. Package a Release
 
+To publish a release (version, notes, upload, README links), follow [release-guide.md](release-guide.md).
+
 Both scripts read the version from `pubspec.yaml`, run `flutter analyze` and `flutter test`, build the release, and write a ZIP plus SHA-256 checksums to `RELEASE/`.
 
 | | macOS | Windows |
@@ -75,7 +77,7 @@ Both scripts read the version from `pubspec.yaml`, run `flutter analyze` and `fl
 | Command | `./scripts/build_release.sh` | `powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1` |
 | Output | `RELEASE/DeskDroid-v<version>-macOS.zip`, `SHA256SUMS.txt`, `RELEASE/README.md` | `RELEASE\DeskDroid-v<version>-Windows-x64.zip`, `SHA256SUMS-windows.txt` |
 | Skip checks | `--skip-tests` | `-SkipTests` |
-| Publish | Commits, pushes, and creates a GitHub Release **by default** (`--no-push`, `--no-gh-release` to skip) | Never commits or pushes; `-Publish` uploads the ZIP to the GitHub Release `v<version>` with `gh` |
+| Publish | Commits `RELEASE/`, fast-forwards `origin/main`, and creates a GitHub Release with `docs/releases/v<version>.md` **by default** (`--no-push`, `--no-gh-release` to skip) | Never commits or pushes; `-Publish` uploads the ZIP to the GitHub Release `v<version>` with `gh` |
 
 The Windows script also copies the Visual C++ runtime DLLs into the package when Visual Studio has the redistributable files installed (`VC\Redist\MSVC\<version>\x64\Microsoft.VC143.CRT`). Without them it prints a warning, and users may need the redistributable from section 2.
 
@@ -86,5 +88,5 @@ shasum -a 256 -c SHA256SUMS.txt                       # macOS
 ```
 
 ```powershell
-Get-FileHash -Algorithm SHA256 DeskDroid-v1.0.1-Windows-x64.zip   # Windows; compare with SHA256SUMS-windows.txt
+Get-FileHash -Algorithm SHA256 DeskDroid-v<version>-Windows-x64.zip   # Windows; compare with SHA256SUMS-windows.txt
 ```
