@@ -20,7 +20,6 @@ class LeftControlsToolbar extends StatelessWidget {
     required this.onToggleScreenOff,
     required this.onToggleZenMode,
     required this.onOpenShowcase,
-    required this.onOpenGuide,
   });
 
   final StreamSessionEntity session;
@@ -33,7 +32,6 @@ class LeftControlsToolbar extends StatelessWidget {
   final VoidCallback onToggleScreenOff;
   final VoidCallback onToggleZenMode;
   final VoidCallback onOpenShowcase;
-  final VoidCallback onOpenGuide;
 
   @override
   Widget build(BuildContext context) {
@@ -138,19 +136,12 @@ class LeftControlsToolbar extends StatelessWidget {
             _buildDivider(),
             const SizedBox(height: 6),
 
-            // Group 4: Showcase & User Guide / Shortcuts
+            // Group 4: Features Showcase (All 21 Features & Shortcuts)
             _buildToolButton(
               icon: Icons.auto_awesome_rounded,
               tooltip: 'Features Showcase (All 21 Features)',
               color: AppColors.accent,
               onPressed: onOpenShowcase,
-            ),
-            const SizedBox(height: 4),
-            _buildToolButton(
-              icon: Icons.menu_book_rounded,
-              tooltip: 'User Guide & Keyboard Shortcuts',
-              color: AppColors.accentLight,
-              onPressed: onOpenGuide,
             ),
           ],
         ),

@@ -6,7 +6,6 @@ import 'package:desk_droid/features/control/domain/entities/input_event_entity.d
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
-import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:desk_droid/features/intent_dispatcher/presentation/widgets/intent_dispatcher_dialog.dart';
 import 'package:desk_droid/features/logging/presentation/widgets/device_log_dialog.dart';
 import 'package:desk_droid/features/productivity/presentation/cubit/file_transfer_cubit.dart';
@@ -194,7 +193,6 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       onToggleScreenOff: context.read<StreamingCubit>().toggleScreenOff,
       onToggleZenMode: () => setState(() => _isZenMode = true),
       onOpenShowcase: () => FeatureShowcaseDialog.show(context),
-      onOpenGuide: () => UserGuideDialog.show(context),
     );
   }
 

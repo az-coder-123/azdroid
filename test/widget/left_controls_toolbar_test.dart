@@ -47,7 +47,6 @@ void main() {
     var screenOffTapped = false;
     var zenModeTapped = false;
     var showcaseTapped = false;
-    var guideTapped = false;
 
     tester.view.physicalSize = const Size(1200, 900);
     tester.view.devicePixelRatio = 1;
@@ -72,7 +71,6 @@ void main() {
                   onToggleScreenOff: () => screenOffTapped = true,
                   onToggleZenMode: () => zenModeTapped = true,
                   onOpenShowcase: () => showcaseTapped = true,
-                  onOpenGuide: () => guideTapped = true,
                 ),
               ),
             ),
@@ -101,7 +99,6 @@ void main() {
       find.byTooltip('Features Showcase (All 21 Features)'),
       findsOneWidget,
     );
-    expect(find.byTooltip('User Guide & Keyboard Shortcuts'), findsOneWidget);
 
     // Verify Power button is at the very top (above Back button) with red error color
     final powerTop = tester.getTopLeft(
@@ -149,8 +146,5 @@ void main() {
 
     await tester.tap(find.byTooltip('Features Showcase (All 21 Features)'));
     expect(showcaseTapped, isTrue);
-
-    await tester.tap(find.byTooltip('User Guide & Keyboard Shortcuts'));
-    expect(guideTapped, isTrue);
   });
 }
