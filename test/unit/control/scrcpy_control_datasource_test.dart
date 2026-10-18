@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
 import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
 import 'package:desk_droid/features/control/data/datasources/fallback_control_datasource.dart';
@@ -9,38 +8,7 @@ import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-/// Records every message instead of writing to a socket.
-class FakeControlChannel implements ScrcpyControlChannel {
-  FakeControlChannel({this.connectedSerial});
-
-  String? connectedSerial;
-  final List<Uint8List> sent = [];
-
-  @override
-  String? get deviceSerial => connectedSerial;
-
-  @override
-  bool get isConnected => connectedSerial != null;
-
-  @override
-  Future<bool> connect({
-    required String deviceSerial,
-    required int port,
-  }) async {
-    connectedSerial = deviceSerial;
-    return true;
-  }
-
-  @override
-  bool send(Uint8List message) {
-    if (!isConnected) return false;
-    sent.add(message);
-    return true;
-  }
-
-  @override
-  Future<void> close() async => connectedSerial = null;
-}
+import '../../helpers/fake_control_channel.dart';
 
 class MockControlDatasource extends Mock implements ControlDatasource {}
 

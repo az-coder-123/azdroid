@@ -2,7 +2,12 @@ import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
+import 'package:desk_droid/features/control/data/datasources/adb_touch_stream_adapter.dart';
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
+import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
+
+/// A finger position in video-frame pixels.
+typedef PixelPoint = ({int x, int y});
 
 /// Abstract datasource contract for injecting native input events into an Android device.
 abstract class ControlDatasource {
@@ -27,6 +32,16 @@ abstract class ControlDatasource {
 
   /// Injects raw text or international characters into the active input focus.
   Future<bool> injectText(String deviceSerial, String text);
+
+  /// Streams live fingers: [TouchStreamPhase.start] puts [points] down,
+  /// `move` moves them, `end` lifts them (empty [points] = last positions).
+  /// Up to two fingers; the count stays the same for the whole stream.
+  Future<bool> injectTouchStream(
+    String deviceSerial,
+    TouchStreamPhase phase,
+    List<PixelPoint> points, {
+    FrameSize? frame,
+  });
 }
 
 /// [ControlDatasource] over `adb shell input`. Used when the scrcpy control
@@ -40,6 +55,15 @@ class ControlDatasourceImpl implements ControlDatasource {
 
   final AdbService _adbService;
   final ProcessExecutor _executor;
+  late final AdbTouchStreamAdapter _touchStream = AdbTouchStreamAdapter(this);
+
+  @override
+  Future<bool> injectTouchStream(
+    String deviceSerial,
+    TouchStreamPhase phase,
+    List<PixelPoint> points, {
+    FrameSize? frame,
+  }) => _touchStream.handle(deviceSerial, phase, points, frame: frame);
 
   @override
   Future<bool> injectTap(

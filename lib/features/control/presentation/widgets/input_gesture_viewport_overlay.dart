@@ -2,12 +2,14 @@ import 'package:desk_droid/core/constants/control_constants.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_bloc.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
+import 'package:desk_droid/features/control/presentation/utils/touch_gesture_tracker.dart';
 import 'package:desk_droid/features/control/presentation/utils/viewport_key_event_handler.dart';
 import 'package:desk_droid/features/control/presentation/widgets/control_shortcut_help_badge.dart';
 import 'package:desk_droid/features/control/presentation/widgets/quick_text_input_dialog.dart';
 import 'package:desk_droid/features/control/presentation/widgets/touch_indicator_overlay.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Interactive viewport overlay translating macOS mouse gestures, trackpad scrolling,
@@ -40,6 +42,15 @@ class _InputGestureViewportOverlayState
 
   Offset? _pointerDownPosition;
   int _pointerDownButtons = 0;
+  late final TouchGestureTracker _gestures = TouchGestureTracker(
+    (phase, points) => context.read<ControlBloc>().add(
+      ControlTouchStreamed(
+        deviceSerial: widget.deviceSerial,
+        phase: phase,
+        points: points,
+      ),
+    ),
+  );
 
   @override
   void initState() {
@@ -55,7 +66,13 @@ class _InputGestureViewportOverlayState
     super.dispose();
   }
 
-  void _onPointerDown(PointerDownEvent event) {
+  void _onPointerDown(PointerDownEvent event, Size viewport) {
+    // Alt + left drag: two-finger pinch/rotate around the screen center.
+    if (event.buttons == kPrimaryButton &&
+        HardwareKeyboard.instance.isAltPressed) {
+      _gestures.mirroredStart(event.localPosition, viewport);
+      return;
+    }
     _pointerDownPosition = event.localPosition;
     _pointerDownButtons = event.buttons;
 
@@ -83,6 +100,10 @@ class _InputGestureViewportOverlayState
   }
 
   void _onPointerUp(PointerUpEvent event, double width, double height) {
+    if (_gestures.isMirroring) {
+      _gestures.mirroredEnd();
+      return;
+    }
     final startPos = _pointerDownPosition;
     final buttons = _pointerDownButtons;
     _pointerDownPosition = null;
@@ -171,9 +192,25 @@ class _InputGestureViewportOverlayState
 
           return Listener(
             behavior: HitTestBehavior.opaque,
-            onPointerDown: _onPointerDown,
+            onPointerDown: (e) => _onPointerDown(e, Size(width, height)),
+            onPointerMove: (e) {
+              if (_gestures.isMirroring) {
+                _gestures.mirroredMove(e.localPosition);
+              }
+            },
             onPointerUp: (e) => _onPointerUp(e, width, height),
+            onPointerCancel: (_) => _gestures.mirroredEnd(),
             onPointerSignal: (s) => _onPointerSignal(s, width, height),
+            // Trackpad: pan is a live one-finger drag (scroll), pinch and
+            // rotate are two fingers. Mouse wheels still use onPointerSignal.
+            onPointerPanZoomStart: (e) =>
+                _gestures.panZoomStart(e.localPosition, Size(width, height)),
+            onPointerPanZoomUpdate: (e) => _gestures.panZoomUpdate(
+              pan: e.pan,
+              scale: e.scale,
+              rotation: e.rotation,
+            ),
+            onPointerPanZoomEnd: (_) => _gestures.panZoomEnd(),
             child: Stack(
               children: [
                 TouchIndicatorOverlay(

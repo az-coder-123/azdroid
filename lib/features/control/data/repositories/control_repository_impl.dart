@@ -3,6 +3,7 @@ import 'package:desk_droid/core/constants/control_constants.dart';
 import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
 import 'package:desk_droid/features/control/domain/repositories/video_frame_size_source.dart';
 
@@ -19,10 +20,42 @@ class ControlRepositoryImpl implements ControlRepository {
   final ControlDatasource _datasource;
   final VideoFrameSizeSource? _frameSizeSource;
 
+  /// Frame of the current touch stream, read once at its start: every
+  /// event of a gesture maps onto the same size, without a native call.
+  FrameSize? _streamFrame;
+
   /// Frame used for mapping: explicit size, else the live video size.
   Future<FrameSize?> _frameFor(int? width, int? height) async {
     if (width != null && height != null) return FrameSize(width, height);
     return _frameSizeSource?.current();
+  }
+
+  @override
+  Future<bool> sendTouchStream(
+    String deviceSerial,
+    TouchStreamPhase phase,
+    List<NormalizedPoint> points,
+  ) async {
+    if (phase == TouchStreamPhase.start) {
+      _streamFrame = await _frameFor(null, null);
+    }
+    final frame = _streamFrame;
+    final width = frame?.width ?? ControlConstants.defaultDisplayWidth;
+    final height = frame?.height ?? ControlConstants.defaultDisplayHeight;
+    final pixels = [
+      for (final point in points)
+        (
+          x: (point.clamped().x * width).round(),
+          y: (point.clamped().y * height).round(),
+        ),
+    ];
+    if (phase == TouchStreamPhase.end) _streamFrame = null;
+    return _datasource.injectTouchStream(
+      deviceSerial,
+      phase,
+      pixels,
+      frame: frame,
+    );
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:equatable/equatable.dart';
 
 /// Base class for all remote control input injection events.
@@ -117,6 +118,22 @@ class ControlNavigationActionDispatched extends ControlEvent {
 
   @override
   List<Object?> get props => [deviceSerial, action];
+}
+
+/// One step of a live touch stream (trackpad drag, pinch, Alt+drag).
+class ControlTouchStreamed extends ControlEvent {
+  const ControlTouchStreamed({
+    required this.deviceSerial,
+    required this.phase,
+    required this.points,
+  });
+
+  final String deviceSerial;
+  final TouchStreamPhase phase;
+  final List<NormalizedPoint> points;
+
+  @override
+  List<Object?> get props => [deviceSerial, phase, points];
 }
 
 /// Toggles keyboard focus capture state.

@@ -1,4 +1,5 @@
 import 'package:desk_droid/core/constants/control_constants.dart';
+import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_event.dart';
 import 'package:desk_droid/features/control/presentation/bloc/control_state.dart';
@@ -14,6 +15,43 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
     on<ControlTextDispatched>(_onTextDispatched);
     on<ControlNavigationActionDispatched>(_onNavigationActionDispatched);
     on<ControlKeyboardCaptureToggled>(_onKeyboardCaptureToggled);
+    // A stream's DOWN, MOVEs, and UP must reach the device in order.
+    on<ControlTouchStreamed>(_onTouchStreamed, transformer: _sequential());
+  }
+
+  /// Handles one event at a time, in arrival order.
+  static EventTransformer<E> _sequential<E>() =>
+      (events, mapper) => events.asyncExpand(mapper);
+
+  /// Moves arrive at the trackpad rate (60–120 Hz), so only the start
+  /// failure and the end are reported in the state.
+  Future<void> _onTouchStreamed(
+    ControlTouchStreamed event,
+    Emitter<ControlState> emit,
+  ) async {
+    final success = await repository.sendTouchStream(
+      event.deviceSerial,
+      event.phase,
+      event.points,
+    );
+    if (!success && event.phase == TouchStreamPhase.start) {
+      emit(
+        ControlError(
+          errorMessage: 'Failed to inject touch',
+          isKeyboardCaptured: state.isKeyboardCaptured,
+          injectedCount: state.injectedCount,
+        ),
+      );
+    } else if (success && event.phase == TouchStreamPhase.end) {
+      final fingers = event.points.length;
+      emit(
+        ControlReady(
+          isKeyboardCaptured: state.isKeyboardCaptured,
+          injectedCount: state.injectedCount + 1,
+          lastActionDescription: fingers > 1 ? 'Pinch' : 'Drag',
+        ),
+      );
+    }
   }
 
   final ControlRepository repository;

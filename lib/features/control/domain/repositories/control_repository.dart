@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/control/domain/entities/input_event_entity.dart';
+import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 
 /// Abstract contract governing remote mouse, touch, gesture, and keyboard input injection.
 abstract class ControlRepository {
@@ -39,6 +40,15 @@ abstract class ControlRepository {
 
   /// Injects raw text or international Unicode characters into the focused Android input field.
   Future<bool> sendText(String deviceSerial, String text);
+
+  /// Streams live fingers at normalized positions (one finger for drags,
+  /// two for pinch and rotate). Call `start`, any number of `move`, then
+  /// `end`; [points] may be empty for `end` (lift where the fingers are).
+  Future<bool> sendTouchStream(
+    String deviceSerial,
+    TouchStreamPhase phase,
+    List<NormalizedPoint> points,
+  );
 
   /// Triggers standard Android navigation shortcuts (Back, Home, AppSwitch, etc.).
   Future<bool> sendNavigationAction(

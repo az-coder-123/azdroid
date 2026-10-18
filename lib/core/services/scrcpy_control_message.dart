@@ -27,6 +27,10 @@ class ScrcpyControlMessage {
   /// Pointer id of a single finger that is not a real device touch.
   static const int pointerIdGenericFinger = -2;
 
+  /// Pointer id of the second, simulated finger of a pinch (scrcpy's own
+  /// client uses it the same way).
+  static const int pointerIdVirtualFinger = -3;
+
   /// Longest text payload the server accepts in one message, in UTF-8 bytes.
   static const int maxTextBytes = 300;
 
