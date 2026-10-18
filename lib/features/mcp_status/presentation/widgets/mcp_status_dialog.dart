@@ -3,6 +3,7 @@ import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_binary_status.dart';
 import 'package:desk_droid/features/mcp_status/presentation/cubit/mcp_status_cubit.dart';
 import 'package:desk_droid/features/mcp_status/presentation/cubit/mcp_status_state.dart';
+import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_activity_section.dart';
 import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_clients_section.dart';
 import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_server_section.dart';
 import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_setup_section.dart';
@@ -129,6 +130,8 @@ class _Body extends StatelessWidget {
           ),
           const SizedBox(height: McpStatusDialog._sectionGap),
           McpServerSection(status: status),
+          const SizedBox(height: McpStatusDialog._sectionGap),
+          McpActivitySection(activity: status.activity),
           const SizedBox(height: McpStatusDialog._sectionGap),
           McpClientsSection(clients: status.clients),
           if (status.binary.availability != McpBinaryAvailability.missing) ...[

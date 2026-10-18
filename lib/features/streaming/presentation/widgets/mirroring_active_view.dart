@@ -34,10 +34,20 @@ class MirroringActiveView extends StatefulWidget {
     super.key,
     required this.device,
     required this.state,
+    this.deviceStatusBanner,
   });
 
   final DeviceEntity device;
   final StreamingActive state;
+
+  /// Status badge from another feature, shown at the top center without
+  /// taking input (see MirroringPage).
+  final Widget? deviceStatusBanner;
+
+  /// Distance of [deviceStatusBanner] from the top: below the telemetry
+  /// header, or near the edge in Zen mode.
+  static const double statusBannerTop = 64;
+  static const double statusBannerTopZen = 16;
 
   @override
   State<MirroringActiveView> createState() => _MirroringActiveViewState();
@@ -125,6 +135,16 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
               ),
             ),
           ],
+
+          if (widget.deviceStatusBanner case final banner?)
+            Positioned(
+              top: _isZenMode
+                  ? MirroringActiveView.statusBannerTopZen
+                  : MirroringActiveView.statusBannerTop,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(child: Center(child: banner)),
+            ),
 
           // Top-Right Transfer Notification Banner
           Positioned(

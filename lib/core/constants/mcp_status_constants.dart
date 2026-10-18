@@ -33,6 +33,31 @@ class McpStatusConstants {
   /// How often the running-session count refreshes while the app is open.
   static const Duration sessionPollInterval = Duration(seconds: 10);
 
+  /// Folder (under the per-user app data folder) holding one activity file
+  /// per running server: `<pid>.jsonl`.
+  static const String activityFolderName = 'mcp-activity';
+
+  /// Extension of an activity file.
+  static const String activityFileExtension = '.jsonl';
+
+  /// When an activity file reaches this many lines, the server rewrites it
+  /// with the session start and the newest [activityKeptLines] lines.
+  static const int activityMaxLines = 500;
+  static const int activityKeptLines = 100;
+
+  /// How often the app reads the activity files while it is open.
+  static const Duration activityPollInterval = Duration(seconds: 1);
+
+  /// A device counts as "AI-controlled" this long after the last tool call
+  /// on it.
+  static const Duration activeWindow = Duration(seconds: 10);
+
+  /// Files of servers that no longer run are deleted once this old.
+  static const Duration staleActivityAge = Duration(minutes: 10);
+
+  /// Recent tool calls listed in the status panel, across sessions.
+  static const int recentActivityLimit = 12;
+
   /// Architecture name of Apple Silicon in `lipo -archs` output.
   static const String appleSiliconArchitecture = 'arm64';
 }

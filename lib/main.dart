@@ -7,6 +7,7 @@ import 'package:desk_droid/features/discovery/presentation/cubit/discovery_cubit
 import 'package:desk_droid/features/discovery/presentation/cubit/host_context_cubit.dart';
 import 'package:desk_droid/features/discovery/presentation/pages/discovery_page.dart';
 import 'package:desk_droid/features/mcp_status/presentation/cubit/mcp_status_cubit.dart';
+import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_device_activity_banner.dart';
 import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_status_indicator.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
@@ -29,7 +30,14 @@ class DeskDroidApp extends StatelessWidget {
   const DeskDroidApp({super.key});
 
   static Route<void> _mirroringRoute(DeviceEntity device) =>
-      MaterialPageRoute<void>(builder: (_) => MirroringPage(device: device));
+      MaterialPageRoute<void>(
+        builder: (_) => MirroringPage(
+          device: device,
+          deviceStatusBanner: McpDeviceActivityBanner(
+            deviceSerial: device.serial,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {

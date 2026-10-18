@@ -14,9 +14,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// Full-window macOS mirroring page hosting the low-latency display viewport,
 /// remote input translation, Finder drag-and-drop, audio forwarding, and clipboard sync.
 class MirroringPage extends StatelessWidget {
-  const MirroringPage({super.key, required this.device});
+  const MirroringPage({
+    super.key,
+    required this.device,
+    this.deviceStatusBanner,
+  });
 
   final DeviceEntity device;
+
+  /// Optional status badge from another feature (the MCP "AI is controlling
+  /// this device" banner), wired in main.dart so streaming does not import
+  /// it. Shown at the top center, without taking input.
+  final Widget? deviceStatusBanner;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +47,10 @@ class MirroringPage extends StatelessWidget {
           create: (_) => sl<ScreenRecordingCubit>(),
         ),
       ],
-      child: MirroringView(device: device),
+      child: MirroringView(
+        device: device,
+        deviceStatusBanner: deviceStatusBanner,
+      ),
     );
   }
 }

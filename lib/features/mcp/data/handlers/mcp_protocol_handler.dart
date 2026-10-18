@@ -2,17 +2,23 @@ import 'dart:convert';
 
 import 'package:desk_droid/core/constants/app_constants.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_json_rpc.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_registry.dart';
 
 /// Handles parsing, routing, and response formatting for the MCP JSON-RPC 2.0 protocol.
 class McpProtocolHandler {
-  McpProtocolHandler({McpToolRegistry? registry, McpToolExecutor? executor})
-    : _registry = registry ?? const McpToolRegistry(),
-      _executor = executor ?? McpToolExecutor();
+  McpProtocolHandler({
+    McpToolRegistry? registry,
+    McpToolExecutor? executor,
+    McpActivitySink? activity,
+  }) : _registry = registry ?? const McpToolRegistry(),
+       _activity = activity ?? const NoopMcpActivitySink(),
+       _executor = executor ?? McpToolExecutor(activity: activity);
 
   final McpToolRegistry _registry;
   final McpToolExecutor _executor;
+  final McpActivitySink _activity;
 
   static const String protocolVersion = '2024-11-05';
   static const String serverName = 'deskdroid-mcp';
@@ -53,6 +59,17 @@ class McpProtocolHandler {
     return response != null ? jsonEncode(response.toJson()) : null;
   }
 
+  /// Ends the session record (call when the client disconnects).
+  Future<void> close() => _activity.close();
+
+  /// `params.clientInfo.name` of `initialize` (`claude-ai`, `cursor`, …).
+  static String? _clientName(Map<String, dynamic>? params) {
+    final info = params?['clientInfo'];
+    return info is Map && info['name'] is String
+        ? info['name'] as String
+        : null;
+  }
+
   /// Evaluates an McpRequest and produces an McpResponse (or null for notifications).
   Future<McpResponse?> handleRequest(McpRequest request) async {
     // Notifications have no id and expect no response
@@ -62,6 +79,7 @@ class McpProtocolHandler {
 
     switch (request.method) {
       case 'initialize':
+        _activity.sessionStarted(_clientName(request.params));
         return McpResponse(
           id: request.id,
           result: {

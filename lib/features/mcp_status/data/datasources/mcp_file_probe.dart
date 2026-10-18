@@ -9,6 +9,15 @@ abstract class McpFileProbe {
 
   /// File contents; throws [FileSystemException] when unreadable.
   Future<String> readText(String path);
+
+  /// Regular files directly inside [directory]; empty when it is missing.
+  List<String> listFiles(String directory);
+
+  /// Last modification time; throws [FileSystemException] when missing.
+  DateTime modifiedAt(String path);
+
+  /// Deletes a file; throws [FileSystemException] on failure.
+  Future<void> delete(String path);
 }
 
 /// `dart:io` implementation of [McpFileProbe].
@@ -23,4 +32,17 @@ class IoMcpFileProbe implements McpFileProbe {
 
   @override
   Future<String> readText(String path) => File(path).readAsString();
+
+  @override
+  List<String> listFiles(String directory) {
+    final folder = Directory(directory);
+    if (!folder.existsSync()) return const [];
+    return folder.listSync().whereType<File>().map((f) => f.path).toList();
+  }
+
+  @override
+  DateTime modifiedAt(String path) => File(path).lastModifiedSync();
+
+  @override
+  Future<void> delete(String path) => File(path).delete();
 }

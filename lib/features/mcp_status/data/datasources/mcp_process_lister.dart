@@ -3,9 +3,9 @@ import 'package:desk_droid/core/platform/host_process_tools.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 
-/// Counts running DeskDroid MCP server processes: one per AI client session.
-class McpProcessCounter {
-  McpProcessCounter({
+/// Lists running DeskDroid MCP server processes: one per AI client session.
+class McpProcessLister {
+  McpProcessLister({
     required ProcessExecutor processExecutor,
     required HostProcessTools tools,
     required this.executableName,
@@ -21,8 +21,9 @@ class McpProcessCounter {
   /// `pgrep` exit code when no process matches.
   static const int _noMatchExitCode = 1;
 
-  /// Running server processes, or `null` when the list cannot be read.
-  Future<int?> count() async {
+  /// Ids of running server processes, or `null` when the list cannot be
+  /// read.
+  Future<Set<int>?> listPids() async {
     final command = _hostTools.processList(
       executableName: executableName,
       scriptName: McpStatusConstants.sourceEntryPoint,
@@ -34,7 +35,7 @@ class McpProcessCounter {
     );
     final noMatch =
         !_hostTools.os.isWindows && result.exitCode == _noMatchExitCode;
-    if (noMatch) return 0;
+    if (noMatch) return const {};
     if (result.exitCode != 0) {
       AppLogger.debug(
         'Could not list MCP server processes: exit ${result.exitCode} '
@@ -42,7 +43,7 @@ class McpProcessCounter {
       );
       return null;
     }
-    return _hostTools.countMatches(
+    return _hostTools.parsePids(
       '${result.stdout}',
       executableName: executableName,
     );

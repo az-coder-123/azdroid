@@ -2,6 +2,7 @@ import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_binary_status.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_client_status.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_server_status.dart';
+import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_activity_labels.dart';
 import 'package:flutter/material.dart';
 
 /// Visual weight of an MCP status line.
@@ -27,6 +28,15 @@ class McpStatusLabels {
 
   /// One-line summary for the toolbar tooltip and the panel header.
   static McpLabel overall(McpServerStatus status) {
+    final active = status.activity.activeByDevice.entries.firstOrNull;
+    if (active != null) {
+      return (
+        text:
+            '${McpActivityLabels.client(active.value.clientName)} is using '
+            '${active.value.event.tool ?? 'a tool'} on ${active.key}',
+        tone: McpTone.success,
+      );
+    }
     final sessions = status.runningSessions ?? 0;
     if (status.binary.isReady && sessions > 0) return sessionsLabel(sessions);
     return switch (status.binary.availability) {

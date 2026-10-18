@@ -58,7 +58,7 @@ void main() {
   });
 
   testWidgets('connected sessions show as a count badge', (tester) async {
-    await pump(tester, McpStatusLoaded(status: mcpStatus(sessions: 2)));
+    await pump(tester, McpStatusLoaded(status: mcpStatus(livePids: {7, 8})));
     expect(find.text('2'), findsOneWidget);
     expect(tooltip(tester), 'MCP server: 2 AI sessions connected');
   });
@@ -71,7 +71,7 @@ void main() {
   testWidgets('the panel re-checks and lists server, clients, and setup', (
     tester,
   ) async {
-    await pump(tester, McpStatusLoaded(status: mcpStatus(sessions: 1)));
+    await pump(tester, McpStatusLoaded(status: mcpStatus(livePids: {7})));
     await tester.tap(find.byType(IconButton));
     await tester.pumpAndSettle();
 

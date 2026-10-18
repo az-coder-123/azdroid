@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/platform/host_os.dart';
 
 /// A command line: executable plus its leading arguments.
@@ -39,7 +40,7 @@ class HostProcessTools {
 
   /// Lists processes whose executable is [executableName] (with `.exe` on
   /// Windows) or whose command line runs [scriptName], one per output line
-  /// that [countMatches] counts.
+  /// that [parsePids] reads.
   HostCommand processList({
     required String executableName,
     required String scriptName,
@@ -59,19 +60,28 @@ class HostProcessTools {
           arguments: ['-f', '$executableName|$scriptName'],
         );
 
-  /// Number of processes in the output of [processList].
+  /// Process ids in the output of [processList].
   ///
   /// `pgrep` prints one PID per line. `tasklist` prints one CSV row per
-  /// process, or an informational line without a quote when none match.
-  int countMatches(String output, {required String executableName}) {
+  /// process (image name, then PID), or an informational line without a
+  /// quote when none match.
+  Set<int> parsePids(String output, {required String executableName}) {
     final lines = output
-        .split('\n')
+        .splitLines()
         .map((l) => l.trim())
         .where((l) => l.isNotEmpty);
-    if (os.isWindows) {
-      final row = '"${executableName.toLowerCase()}"';
-      return lines.where((l) => l.toLowerCase().startsWith(row)).length;
-    }
-    return lines.where((l) => int.tryParse(l) != null).length;
+    if (!os.isWindows) return {...lines.map(int.tryParse).nonNulls};
+    final row = '"${executableName.toLowerCase()}"';
+    return {
+      for (final line in lines)
+        if (line.toLowerCase().startsWith(row))
+          ?int.tryParse(_csvField(line, _tasklistPidColumn)),
+    };
   }
+
+  /// `tasklist /FO CSV` columns: image name, PID, session, number, memory.
+  static const int _tasklistPidColumn = 1;
+
+  static String _csvField(String row, int index) =>
+      row.split(',').elementAtOrNull(index)?.replaceAll('"', '') ?? '';
 }

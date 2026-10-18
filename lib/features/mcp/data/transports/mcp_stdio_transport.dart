@@ -30,5 +30,7 @@ class McpStdioTransport {
         sink(responseJson);
       }
     }
+    // stdin closed: the AI client disconnected.
+    await _handler.close();
   }
 }

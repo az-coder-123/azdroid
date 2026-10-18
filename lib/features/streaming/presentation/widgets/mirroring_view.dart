@@ -9,9 +9,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Interactive mirroring view managing stream lifecycle and delegating active UI to [MirroringActiveView].
 class MirroringView extends StatelessWidget {
-  const MirroringView({super.key, required this.device});
+  const MirroringView({
+    super.key,
+    required this.device,
+    this.deviceStatusBanner,
+  });
 
   final DeviceEntity device;
+
+  /// Status badge shown over the active view (see MirroringPage).
+  final Widget? deviceStatusBanner;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,11 @@ class MirroringView extends StatelessWidget {
           }
 
           if (state is StreamingActive) {
-            return MirroringActiveView(device: device, state: state);
+            return MirroringActiveView(
+              device: device,
+              state: state,
+              deviceStatusBanner: deviceStatusBanner,
+            );
           }
 
           return const SizedBox.shrink();

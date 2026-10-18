@@ -20,12 +20,12 @@ void main() {
       expect(command.arguments, ['-f', 'deskdroid-mcp|deskdroid_mcp.dart']);
     });
 
-    test('counts one PID per line', () {
-      expect(
-        tools.countMatches('123\n456\n\n', executableName: 'deskdroid-mcp'),
-        2,
-      );
-      expect(tools.countMatches('', executableName: 'deskdroid-mcp'), 0);
+    test('reads one PID per line', () {
+      expect(tools.parsePids('123\n456\n\n', executableName: 'deskdroid-mcp'), {
+        123,
+        456,
+      });
+      expect(tools.parsePids('', executableName: 'deskdroid-mcp'), isEmpty);
     });
   });
 
@@ -46,17 +46,20 @@ void main() {
       expect(command.arguments, contains('IMAGENAME eq deskdroid-mcp.exe'));
     });
 
-    test('counts CSV rows and ignores the "no tasks" message', () {
+    test('reads the PID column and ignores the "no tasks" message', () {
       const rows =
           '"deskdroid-mcp.exe","4120","Console","1","12,340 K"\r\n'
           '"DeskDroid-MCP.exe","4188","Console","1","12,100 K"\r\n';
-      expect(tools.countMatches(rows, executableName: 'deskdroid-mcp.exe'), 2);
+      expect(tools.parsePids(rows, executableName: 'deskdroid-mcp.exe'), {
+        4120,
+        4188,
+      });
       expect(
-        tools.countMatches(
+        tools.parsePids(
           'INFO: No tasks are running which match the specified criteria.',
           executableName: 'deskdroid-mcp.exe',
         ),
-        0,
+        isEmpty,
       );
     });
   });

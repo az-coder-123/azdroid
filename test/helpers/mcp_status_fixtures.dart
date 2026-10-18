@@ -1,3 +1,4 @@
+import 'package:desk_droid/features/mcp_status/domain/entities/mcp_activity.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_binary_status.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_client_status.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_server_status.dart';
@@ -10,7 +11,8 @@ const String fixtureMcpExecutable =
 McpServerStatus mcpStatus({
   McpBinaryAvailability availability = McpBinaryAvailability.ready,
   McpClientSetup claude = McpClientSetup.configured,
-  int? sessions = 0,
+  Set<int>? livePids = const {},
+  McpActivitySnapshot activity = const McpActivitySnapshot(),
   List<String> architectures = const ['x86_64'],
 }) => McpServerStatus(
   binary: McpBinaryStatus(
@@ -36,5 +38,6 @@ McpServerStatus mcpStatus({
       configuredCommand: 'dart run /src/bin/deskdroid_mcp.dart',
     ),
   ],
-  runningSessions: sessions,
+  livePids: livePids,
+  activity: activity,
 );
