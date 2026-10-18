@@ -19,6 +19,10 @@ enum StreamStartFailure {
   /// The server accepted the video socket, but the audio socket could not
   /// be opened. The server accepts control only after audio.
   audioConnectFailed,
+
+  /// This computer has no video decoder (Windows N/KN edition without
+  /// Media Foundation).
+  decoderUnavailable,
 }
 
 /// Thrown by `StreamingRepository.startSession` when streaming cannot start.

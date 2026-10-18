@@ -6,6 +6,7 @@
 #include <variant>
 
 #include "channel_args.h"
+#include "mf_util.h"
 #include "stream_config.h"
 #include "stream_log.h"
 
@@ -21,6 +22,7 @@ constexpr char kStopStream[] = "stopStream";
 constexpr char kGetDimensions[] = "getDimensions";
 constexpr char kGetStats[] = "getStats";
 constexpr char kNoRegistryCode[] = "NO_REGISTRY";
+constexpr char kDecoderUnavailableCode[] = "DECODER_UNAVAILABLE";
 
 }  // namespace
 
@@ -50,6 +52,11 @@ void ScrcpyStreamPlugin::HandleMethodCall(
     std::unique_ptr<MethodResult> result) {
   const std::string& method = call.method_name();
   if (method == kStartStream) {
+    if (!IsMediaFoundationInstalled()) {
+      result->Error(kDecoderUnavailableCode,
+                    "Media Foundation is not installed (Windows N/KN edition)");
+      return;
+    }
     const auto* args = std::get_if<EncodableMap>(call.arguments());
     const int64_t id = StartStream(ReadHost(args), ReadPort(args));
     if (id < 0) {

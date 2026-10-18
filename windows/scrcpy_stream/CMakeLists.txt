@@ -42,4 +42,9 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE
   mfplat mfuuid wmcodecdspuuid  # Media Foundation + H.264 decoder CLSID
   ole32 oleaut32                # COM, VARIANT (also WASAPI audio)
   ws2_32                        # Winsock
+  delayimp                      # Delay-load helper for mfplat.dll below
 )
+# Windows N/KN editions ship without Media Foundation. Delay-loading
+# mfplat.dll lets the app start there; StartStream checks for it first
+# (IsMediaFoundationInstalled) and reports DECODER_UNAVAILABLE instead.
+target_link_options(${PLUGIN_NAME} PRIVATE "/DELAYLOAD:mfplat.dll")

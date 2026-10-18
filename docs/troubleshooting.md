@@ -123,6 +123,11 @@
 - **Root Cause:** Windows has no ADB driver for the phone.
 - **Solution:** Install the [Google USB Driver](https://developer.android.com/studio/run/win-usb) (Pixel and many others) or the driver from your phone maker, then reconnect the cable. `adb devices` must list the phone. Wi-Fi connections need no driver.
 
+### ❌ "This computer cannot decode video" (Windows N / KN)
+
+- **Root Cause:** Windows N and KN editions ship without Media Foundation, which DeskDroid uses to decode the phone's video. The app starts, but mirroring cannot.
+- **Solution:** Open **Settings > Apps > Optional features > Add a feature**, install **Media Feature Pack**, restart Windows, then tap **Retry Connection**.
+
 ### 🔍 Where Are the Logs?
 
 - `%TEMP%\deskdroid_dart.log`: app log (connections, ADB commands, stream state).

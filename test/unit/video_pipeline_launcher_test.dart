@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/services/video_decoder_unavailable_exception.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
@@ -103,6 +104,28 @@ void main() {
 
     expect(serverStartedWithAudio(), isFalse);
     expect(calls, ['videoAccepted', 'openControl']);
+  });
+
+  test('a missing video decoder stops the server and explains it', () async {
+    when(
+      () => native.startStream(
+        host: any(named: 'host'),
+        port: any(named: 'port'),
+      ),
+    ).thenThrow(const VideoDecoderUnavailableException('no mfplat.dll'));
+
+    await expectLater(
+      launcher.launch(serial, options),
+      throwsA(
+        isA<StreamStartException>().having(
+          (e) => e.failure,
+          'failure',
+          StreamStartFailure.decoderUnavailable,
+        ),
+      ),
+    );
+    expect(calls, contains('stopServer'));
+    verifyNever(() => control.waitForVideoSocket());
   });
 
   test('a failed audio socket stops everything and explains it', () async {

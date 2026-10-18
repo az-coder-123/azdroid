@@ -6,8 +6,14 @@
 
 namespace scrcpy_stream {
 
+// Whether mfplat.dll exists in System32. It is missing on Windows N/KN
+// editions without the Media Feature Pack. mfplat.dll is delay-loaded, so
+// calling any Media Foundation function when this is false crashes.
+bool IsMediaFoundationInstalled();
+
 // Initializes COM (multithreaded) and Media Foundation for the current thread
-// and shuts both down on destruction.
+// and shuts both down on destruction. ok() is false when Media Foundation is
+// not installed.
 class MediaFoundationScope {
  public:
   MediaFoundationScope();

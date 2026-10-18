@@ -1,5 +1,6 @@
 import 'package:desk_droid/core/constants/socket_config.dart';
 import 'package:desk_droid/core/services/audio_stream_native_service.dart';
+import 'package:desk_droid/core/services/video_decoder_unavailable_exception.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_control_connector.dart';
@@ -48,10 +49,15 @@ class VideoPipelineLauncher {
         deviceSerial: deviceSerial,
       );
     }
-    final textureId = await _native.startStream(
-      host: SocketConfig.loopbackHost,
-      port: SocketConfig.defaultVideoStreamPort,
-    );
+    final int? textureId;
+    try {
+      textureId = await _native.startStream(
+        host: SocketConfig.loopbackHost,
+        port: SocketConfig.defaultVideoStreamPort,
+      );
+    } on VideoDecoderUnavailableException {
+      await _abort(deviceSerial, StreamStartFailure.decoderUnavailable);
+    }
     if (!await _control.waitForVideoSocket()) {
       await _abort(deviceSerial, StreamStartFailure.controlConnectFailed);
     }

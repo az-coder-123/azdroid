@@ -1,10 +1,14 @@
 import 'package:desk_droid/core/models/native_stream_stats.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/video_decoder_unavailable_exception.dart';
 import 'package:flutter/services.dart';
 
 /// Abstract contract for native video streaming and texture lifecycle governance.
 abstract class IVideoStreamNativeService {
   /// Initiates hardware decoding on the native platform and returns the allocated Flutter texture ID.
+  ///
+  /// Throws [VideoDecoderUnavailableException] when the host has no video
+  /// decoder; other failures return `null`.
   Future<int?> startStream({String host = '127.0.0.1', int port = 27183});
 
   /// Terminates the native hardware decompression session and closes the TCP stream.
@@ -40,6 +44,17 @@ class VideoStreamNativeService implements IVideoStreamNativeService {
       });
       AppLogger.info('Native video stream started with textureId: $result');
       return result;
+    } on PlatformException catch (e, stack) {
+      if (e.code == VideoDecoderUnavailableException.errorCode) {
+        AppLogger.warning('No video decoder on this computer: ${e.message}');
+        throw VideoDecoderUnavailableException(e.message ?? e.code);
+      }
+      AppLogger.warning(
+        'Failed to start native video stream',
+        error: e,
+        stackTrace: stack,
+      );
+      return null;
     } catch (e, stack) {
       AppLogger.warning(
         'Failed to start native video stream',

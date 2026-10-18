@@ -25,5 +25,10 @@ extension StreamStartFailureMessage on StreamStartFailure {
     StreamStartFailure.audioConnectFailed =>
       'Connected to $deviceName, but the audio channel did not open.\n'
           'Retry. If it keeps failing, reconnect the device.',
+    StreamStartFailure.decoderUnavailable =>
+      'This computer cannot decode video: Windows N and KN editions ship '
+          'without Media Foundation.\n'
+          'Install the Media Feature Pack (Settings > Apps > Optional '
+          'features), restart the computer, then retry.',
   };
 }

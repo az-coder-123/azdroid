@@ -10,7 +10,7 @@ Dart client: `lib/core/services/video_stream_native_service.dart`.
 
 | Method | Arguments | Result | Behavior |
 |:---|:---|:---|:---|
-| `startStream` | `{host: String = "127.0.0.1", port: int = 27183}` | `int` texture id | Stops any previous stream, registers a new texture, connects in the background, returns immediately. Error `NO_REGISTRY` if textures are unavailable. |
+| `startStream` | `{host: String = "127.0.0.1", port: int = 27183}` | `int` texture id | Stops any previous stream, registers a new texture, connects in the background, returns immediately. Error `NO_REGISTRY` if textures are unavailable. Error `DECODER_UNAVAILABLE` (Windows) if Media Foundation is not installed (Windows N/KN editions); Dart maps it to `StreamStartFailure.decoderUnavailable`. |
 | `stopStream` | none | `true` | Stops the connection and decoder, then unregisters the texture. Idempotent. |
 | `getDimensions` | none | `{width: int, height: int}` | Latest known video size: each session packet, then each decoded frame. `0x0` before connecting. |
 | `getStats` | none | `{state: String, framesDecoded: int, bytesReceived: int, processingTimeUs: int}` | Stream state and cumulative counters (see below). `idle` with zeros when no stream exists. |
