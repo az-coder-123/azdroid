@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="DeskDroid - Android screen mirroring workspace on macOS with low latency 60 FPS display and trackpad controls" width="580">
+  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="DeskDroid mirroring workspace on macOS: the phone screen between two vertical control docks, with the latency, FPS, and bitrate header" width="580">
 </p>
 
 ---
@@ -48,9 +48,9 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_device_discovery.png" alt="DeskDroid Multi-Device Subnet Discovery and Wireless Connection" width="100%">
+      <img src="docs/images/deskdroid_device_discovery.png" alt="DeskDroid device list with two connected phones, a Wi-Fi/USB switch for a dual-mode device, and the MCP status icon" width="100%">
       <br><b>Multi-Device Discovery</b>
-      <br><sub>Subnet auto-scan, connection badges & 1-click wireless mirroring.</sub>
+      <br><sub>Subnet auto-scan, connection badges, Wi-Fi/USB switch for dual-mode devices & 1-click mirroring.</sub>
     </td>
     <td width="50%" align="center" valign="top">
       <img src="docs/images/deskdroid_features_showcase.png" alt="DeskDroid Built-in Feature Showcase and Interactive Catalog" width="100%">
