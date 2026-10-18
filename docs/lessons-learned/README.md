@@ -73,6 +73,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Windows SDK Macro Identifier Clash** | Native Windows Build | `rpcndr.h` defines `small` as `char`; never use SDK macro names (`small`, `near`, `far`, `interface`) as identifiers. | [windows-sdk-macro-identifier-clash.md](windows-sdk-macro-identifier-clash.md) |
 | **Unauthorized Device Silent Black Screen** | Streaming & ADB Authorization | Check `adb devices` state before starting scrcpy and show actionable `StreamStartFailure` guidance instead of a black viewport. | [unauthorized-device-silent-black-screen.md](unauthorized-device-silent-black-screen.md) |
 | **Release Script Cross-Platform Artifacts** | Release & Packaging | Delete only your own outputs, push `HEAD:main`, pin download links to a tag when `latest` lacks the asset, guard version copies. | [release-script-cross-platform-artifacts.md](release-script-cross-platform-artifacts.md) |
+| **dumpsys Focus Format by Android Version** | Android Compatibility & MCP Tools | Focus may belong to a system window; Android 10 wraps `mFocusedApp` in `AppWindowToken`; test parsers with old and new Android fixtures in locked and open states. | [dumpsys-focus-format-by-android-version.md](dumpsys-focus-format-by-android-version.md) |
 
 ---
 

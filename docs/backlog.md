@@ -16,7 +16,7 @@
 | **BL-06** | `architecture` (Clean Code) | Modularize Large Widget & Cubit Files (`device_log_cubit`, `apk_installer_dialog`, `log_filter_bar`) | Medium | Technical Debt | ⏳ In Progress |
 | **BL-07** | `distribution` (DevOps) | macOS DMG Bundler, Apple Code-Signing & Sparkle Auto-Update Pipeline | High | Release Ready | ⏳ Backlog |
 | **BL-08** | `mcp` (DeskDroid) | AI Agent Tool Enhancements (IME input, double-tap, smart clicks) | High | v1.3 | ⏳ Proposed ([Details](mcp-tool-enhancement-proposals.md)) |
-| **BL-09** | `mcp` (DeskDroid) | `android_get_current_app` returns "Unable to detect active foreground application" on a Redmi 9 (MIUI, Android 10); found during the live-activity check on 2026-10-18, not investigated | Medium | v1.2 | ⏳ Backlog |
+| **BL-09** | `mcp` (DeskDroid) | `android_get_current_app` returns "Unable to detect active foreground application" on a Redmi 9 (MIUI, Android 10) while locked | Medium | v1.2 | ✅ Fixed ([lesson](lessons-learned/dumpsys-focus-format-by-android-version.md)) |
 
 ---
 

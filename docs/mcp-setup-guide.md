@@ -186,7 +186,7 @@ Smoke test in PowerShell, from the repository folder:
 ### 3. Application Lifecycle & Package Governance
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_get_current_app`** | `deviceSerial` | Identifies currently focused foreground package and active Activity. |
+| **`android_get_current_app`** | `deviceSerial` | Identifies the foreground package and Activity. If the lock screen or notification shade is in front, it still names the app and adds a note naming that window. |
 | **`android_launch_app`** | `package`, `deviceSerial` | Launches an installed application via default launcher category. |
 | **`android_stop_app`** | `package`, `deviceSerial` | Force terminates a running application by package name. |
 | **`android_clear_app_data`** | `package`, `deviceSerial` | Clears app cache and user data (resets app to fresh install state). |
