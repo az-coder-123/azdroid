@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/core/theme/app_typography.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_card.dart';
@@ -11,36 +12,41 @@ class ProductivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final keys = context.shortcuts;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GuideSectionHeader(
           title: 'Productivity: Files, Clipboard & Audio',
-          description: 'Mac-first conveniences designed for seamless cross-device workflows.',
+          description: keys.usesMetaKey
+              ? 'Mac-first conveniences designed for seamless cross-device workflows.'
+              : 'Desktop conveniences designed for seamless cross-device workflows.',
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         GuideCard(
-          badgeText: 'FINDER INTEGRATION',
+          badgeText: keys.usesMetaKey
+              ? 'FINDER INTEGRATION'
+              : 'EXPLORER INTEGRATION',
           badgeColor: AppColors.accent,
           title: 'Drag & Drop Transfers & APK Sideloading',
           children: [
             Text(
-              'Drag files directly from macOS Finder and drop them anywhere onto the DeskDroid screen:',
+              'Drag files directly from ${keys.usesMetaKey ? "macOS Finder" : "Windows Explorer"} and drop them anywhere onto the DeskDroid screen:',
               style: AppTypography.body,
             ),
-            SizedBox(height: 10),
-            GuideFeatureBullet(
+            const SizedBox(height: 10),
+            const GuideFeatureBullet(
               icon: Icons.file_download_rounded,
               text: 'Standard Files (Photos, Videos, PDFs): Automatically saved to /sdcard/Download/ on your phone.',
             ),
-            GuideFeatureBullet(
+            const GuideFeatureBullet(
               icon: Icons.android_rounded,
               text: 'APK Packages (.apk): Automatically sideloaded and installed onto your phone with live progress.',
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         GuideCard(
           badgeText: 'AUTOMATIC SYNC',
@@ -48,12 +54,14 @@ class ProductivitySection extends StatelessWidget {
           title: 'Bidirectional Clipboard Sharing',
           children: [
             Text(
-              'Copy text on your Mac (Cmd + C) and immediately paste it on Android, or copy text on Android and paste on Mac. Sync runs automatically in the background.',
+              keys.usesMetaKey
+                  ? 'Copy text on your Mac (Cmd + C) and immediately paste it on Android, or copy text on Android and paste on Mac. Sync runs automatically in the background.'
+                  : 'Copy text on your computer (Ctrl + C) and immediately paste it on Android, or copy text on Android and paste on computer. Sync runs automatically in the background.',
               style: AppTypography.body,
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         GuideCard(
           badgeText: 'AUDIO PIPELINE',
@@ -61,7 +69,9 @@ class ProductivitySection extends StatelessWidget {
           title: 'Low-Latency Audio Forwarding',
           children: [
             Text(
-              'Game, video, and notification audio is forwarded directly to your Mac speakers over high-fidelity Opus/PCM 48kHz stereo. Adjust volume or mute on the floating HUD toolbar.',
+              keys.usesMetaKey
+                  ? 'Game, video, and notification audio is forwarded directly to your Mac speakers over high-fidelity Opus/PCM 48kHz stereo. Adjust volume or mute on the floating HUD toolbar.'
+                  : 'Game, video, and notification audio is forwarded directly to your PC speakers over high-fidelity Opus/PCM 48kHz stereo. Adjust volume or mute on the floating HUD toolbar.',
               style: AppTypography.body,
             ),
           ],

@@ -1,7 +1,7 @@
 import 'package:desk_droid/core/extensions/optional_read_extension.dart';
 import 'package:desk_droid/core/platform/host_os.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 /// Primary-modifier convention of the host OS, as data.
 ///
@@ -69,6 +69,38 @@ class ShortcutScheme {
     if (shift) shiftLabel,
     key,
   ];
+
+  /// Recommended icon representing keyboard shortcuts for this OS.
+  IconData get shortcutIcon =>
+      usesMetaKey ? Icons.keyboard_command_key_rounded : Icons.keyboard_rounded;
+
+  /// Formats a textual shortcut descriptor or feature description to match
+  /// this OS scheme.
+  ///
+  /// On macOS ([usesMetaKey] is true), Command (`⌘` / `Cmd`) conventions
+  /// are preserved.
+  /// On Windows and Linux ([usesMetaKey] is false), `⌘`, `Cmd`, and Mac-specific
+  /// terms are converted into their `Ctrl`, `Ctrl+Shift+`, and PC counterparts.
+  String adapt(String text) {
+    if (usesMetaKey) return text;
+    return text
+        .replaceAll('⌘⇧', 'Ctrl+Shift+')
+        .replaceAll('⌘⌫', 'Ctrl+Backspace')
+        .replaceAll('⌘ Keys', 'Ctrl Keys')
+        .replaceAll(RegExp(r'⌘\s+'), 'Ctrl ')
+        .replaceAllMapped(RegExp(r'⌘([A-Za-z0-9])'), (m) => 'Ctrl+${m[1]}')
+        .replaceAll('⌘', 'Ctrl+')
+        .replaceAll('Cmd+Shift+', 'Ctrl+Shift+')
+        .replaceAll('Cmd+', 'Ctrl+')
+        .replaceAll(RegExp(r'\bCmd\b'), 'Ctrl')
+        .replaceAll('Mac Keyboard', 'Windows Keyboard')
+        .replaceAll('Mac keyboard', 'Windows keyboard')
+        .replaceAll(RegExp(r'\bto Mac\b'), 'to PC')
+        .replaceAll(RegExp(r'\bon Mac\b'), 'on PC')
+        .replaceAll(RegExp(r'\bfor Mac\b'), 'for PC')
+        .replaceAll('Mac ~/Downloads', 'Downloads')
+        .replaceAll('macOS pasteboard', 'Windows clipboard');
+  }
 }
 
 /// Reads the app's [ShortcutScheme].

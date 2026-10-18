@@ -52,9 +52,13 @@ class ControlsSection extends StatelessWidget {
         const SizedBox(height: 16),
 
         GuideCard(
-          badgeText: 'APPLE KEYBOARD SHORTCUTS',
+          badgeText: keys.usesMetaKey
+              ? 'APPLE KEYBOARD SHORTCUTS'
+              : 'WINDOWS KEYBOARD SHORTCUTS',
           badgeColor: AppColors.statusSuccess,
-          title: 'macOS Keyboard Navigation',
+          title: keys.usesMetaKey
+              ? 'macOS Keyboard Navigation'
+              : 'Windows Keyboard Navigation',
           children: [
             GuideShortcutItem(
               keys: keys.keyCaps('H'),
@@ -66,7 +70,9 @@ class ControlsSection extends StatelessWidget {
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('Tab'),
-              description: 'Open App Switcher (Windows; on macOS this is the system app switcher, so use the toolbar button)',
+              description: keys.usesMetaKey
+                  ? 'Open App Switcher (Windows; on macOS this is the system app switcher, so use the toolbar button)'
+                  : 'Open App Switcher',
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('K'),

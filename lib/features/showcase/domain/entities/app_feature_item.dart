@@ -15,6 +15,10 @@ enum FeatureCategory {
   connectivity(
     label: 'Connectivity & System',
     icon: Icons.wifi_tethering_rounded,
+  ),
+  shortcuts(
+    label: 'Shortcuts & Gestures',
+    icon: Icons.keyboard_command_key_rounded,
   );
 
   const FeatureCategory({required this.label, required this.icon});

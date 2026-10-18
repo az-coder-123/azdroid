@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:desk_droid/features/showcase/data/app_features_catalog.dart';
@@ -29,20 +30,32 @@ class _FeatureShowcaseDialogState extends State<FeatureShowcaseDialog> {
   String _searchQuery = '';
 
   List<AppFeatureItem> get _filteredFeatures {
+    final shortcuts = context.shortcuts;
     return AppFeaturesCatalog.allFeatures.where((f) {
       if (_selectedCategory != FeatureCategory.all &&
           f.category != _selectedCategory) {
         return false;
       }
       if (_searchQuery.trim().isNotEmpty) {
-        final q = _searchQuery.toLowerCase().trim();
-        final matchTitle = f.title.toLowerCase().contains(q);
-        final matchSub = f.subtitle.toLowerCase().contains(q);
-        final matchHighlights = f.highlights.any(
-          (h) => h.toLowerCase().contains(q),
+        final rawQ = _searchQuery.toLowerCase().trim();
+        final crossQ = rawQ.contains('ctrl')
+            ? rawQ.replaceAll('ctrl', 'cmd')
+            : rawQ.replaceAll('cmd', 'ctrl');
+
+        final title = shortcuts.adapt(f.title).toLowerCase();
+        final sub = shortcuts.adapt(f.subtitle).toLowerCase();
+        final badge = shortcuts.adapt(f.badgeText).toLowerCase();
+        final highlights = f.highlights.map(
+          (h) => shortcuts.adapt(h).toLowerCase(),
         );
-        final matchBadge = f.badgeText.toLowerCase().contains(q);
-        return matchTitle || matchSub || matchHighlights || matchBadge;
+
+        bool matches(String text) =>
+            text.contains(rawQ) || text.contains(crossQ);
+
+        return matches(title) ||
+            matches(sub) ||
+            matches(badge) ||
+            highlights.any(matches);
       }
       return true;
     }).toList();

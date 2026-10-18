@@ -1,9 +1,11 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:desk_droid/features/showcase/data/app_features_catalog.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_card.dart';
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -106,6 +108,89 @@ void main() {
 
         expect(find.text('DeskDroid Features Showcase'), findsOneWidget);
         expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets('Category chips display item counts in count badges', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: FeatureShowcaseDialog())),
+      );
+      await tester.pumpAndSettle();
+
+      final total = AppFeaturesCatalog.allFeatures.length;
+      expect(find.text('$total'), findsWidgets);
+
+      // Verify each category count is rendered in the category bar
+      for (final cat in FeatureCategory.values) {
+        final count = cat == FeatureCategory.all
+            ? total
+            : AppFeaturesCatalog.allFeatures
+                  .where((f) => f.category == cat)
+                  .length;
+        expect(find.text('$count'), findsWidgets);
+      }
+    });
+
+    testWidgets(
+      'Selecting Shortcuts category and searching Cmd+K finds Quick Text Injector',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(home: Scaffold(body: FeatureShowcaseDialog())),
+        );
+        await tester.pumpAndSettle();
+
+        // Scroll to and tap Shortcuts & Gestures category
+        await tester.ensureVisible(find.text('Shortcuts & Gestures'));
+        await tester.tap(find.text('Shortcuts & Gestures'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Keyboard Shortcuts & Hotkeys Master'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Trackpad & Mouse Gestures Reference'),
+          findsOneWidget,
+        );
+
+        // Scroll back to All Features and search for Cmd+K
+        await tester.ensureVisible(find.text('All Features'));
+        await tester.tap(find.text('All Features'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), 'Cmd+K');
+        await tester.pumpAndSettle();
+
+        expect(find.text('Quick Text Injector (Cmd+K)'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Under PC scheme, searching Ctrl+K finds Quick Text Injector and shows adapted title',
+      (tester) async {
+        await tester.pumpWidget(
+          RepositoryProvider<ShortcutScheme>.value(
+            value: ShortcutScheme.pc,
+            child: const MaterialApp(
+              home: Scaffold(body: FeatureShowcaseDialog()),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Under PC scheme, card title is adapted to Quick Text Injector (Ctrl+K)
+        await tester.enterText(find.byType(TextField), 'Ctrl+K');
+        await tester.pumpAndSettle();
+
+        expect(find.text('Quick Text Injector (Ctrl+K)'), findsOneWidget);
+
+        // Searching Cmd+K under PC scheme also cross-matches and finds it
+        await tester.enterText(find.byType(TextField), 'Cmd+K');
+        await tester.pumpAndSettle();
+
+        expect(find.text('Quick Text Injector (Ctrl+K)'), findsOneWidget);
       },
     );
   });

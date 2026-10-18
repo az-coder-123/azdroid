@@ -1,3 +1,4 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_colors.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,16 @@ class FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shortcuts = context.shortcuts;
+    final title = shortcuts.adapt(feature.title);
+    final subtitle = shortcuts.adapt(feature.subtitle);
+    final badgeText = shortcuts.adapt(feature.badgeText);
+    final highlights = feature.highlights.map(shortcuts.adapt).toList();
+    final proTip = shortcuts.adapt(feature.proTip);
+    final cardIcon =
+        (feature.id == 'shortcuts_master' && !shortcuts.usesMetaKey)
+        ? Icons.keyboard_rounded
+        : feature.icon;
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -41,7 +52,7 @@ class FeatureCard extends StatelessWidget {
                     color: feature.badgeColor.withValues(alpha: 0.35),
                   ),
                 ),
-                child: Icon(feature.icon, size: 20, color: feature.badgeColor),
+                child: Icon(cardIcon, size: 20, color: feature.badgeColor),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -52,7 +63,7 @@ class FeatureCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            feature.title,
+                            title,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -79,7 +90,7 @@ class FeatureCard extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              feature.badgeText,
+                              badgeText,
                               maxLines: 1,
                               softWrap: false,
                               overflow: TextOverflow.ellipsis,
@@ -95,7 +106,7 @@ class FeatureCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      feature.subtitle,
+                      subtitle,
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -113,7 +124,7 @@ class FeatureCard extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Bullet points
-          ...feature.highlights.map(
+          ...highlights.map(
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: Row(
@@ -165,7 +176,7 @@ class FeatureCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    feature.proTip,
+                    proTip,
                     style: const TextStyle(
                       fontSize: 11,
                       color: AppColors.textSecondary,

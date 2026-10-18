@@ -1,8 +1,10 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/showcase/data/app_features_catalog.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -52,5 +54,75 @@ void main() {
       await pumpCard(tester, item, 300);
       expect(tester.takeException(), isNull, reason: item.id);
     }
+  });
+
+  testWidgets('adapts shortcuts and symbols according to host OS scheme', (
+    tester,
+  ) async {
+    final textInjectFeature = AppFeaturesCatalog.allFeatures.firstWhere(
+      (f) => f.id == 'text_injector',
+    );
+
+    // On macOS
+    await tester.pumpWidget(
+      RepositoryProvider<ShortcutScheme>.value(
+        value: ShortcutScheme.mac,
+        child: MaterialApp(
+          home: Scaffold(body: FeatureCard(feature: textInjectFeature)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Quick Text Injector (Cmd+K)'), findsOneWidget);
+    expect(find.text('⌘K • Text Injector'), findsOneWidget);
+
+    // On Windows / PC
+    await tester.pumpWidget(
+      RepositoryProvider<ShortcutScheme>.value(
+        value: ShortcutScheme.pc,
+        child: MaterialApp(
+          home: Scaffold(body: FeatureCard(feature: textInjectFeature)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Quick Text Injector (Ctrl+K)'), findsOneWidget);
+    expect(find.text('Ctrl+K • Text Injector'), findsOneWidget);
+  });
+
+  testWidgets('renders adapted hotkeys master on macOS vs Windows', (
+    tester,
+  ) async {
+    final shortcutsFeature = AppFeaturesCatalog.allFeatures.firstWhere(
+      (f) => f.id == 'shortcuts_master',
+    );
+
+    // On macOS
+    await tester.pumpWidget(
+      RepositoryProvider<ShortcutScheme>.value(
+        value: ShortcutScheme.mac,
+        child: MaterialApp(
+          home: Scaffold(body: FeatureCard(feature: shortcutsFeature)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('⌘ Keys • Hotkeys'), findsOneWidget);
+
+    // On Windows
+    await tester.pumpWidget(
+      RepositoryProvider<ShortcutScheme>.value(
+        value: ShortcutScheme.pc,
+        child: MaterialApp(
+          home: Scaffold(body: FeatureCard(feature: shortcutsFeature)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ctrl Keys • Hotkeys'), findsOneWidget);
   });
 }

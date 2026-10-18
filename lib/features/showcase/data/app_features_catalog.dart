@@ -1,222 +1,26 @@
-import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/showcase/data/showcase_connectivity_features.dart';
+import 'package:desk_droid/features/showcase/data/showcase_devtools_features.dart';
+import 'package:desk_droid/features/showcase/data/showcase_display_control_features.dart';
+import 'package:desk_droid/features/showcase/data/showcase_productivity_features.dart';
+import 'package:desk_droid/features/showcase/data/showcase_shortcuts_features.dart';
 import 'package:desk_droid/features/showcase/domain/entities/app_feature_item.dart';
-import 'package:flutter/material.dart';
 
-/// Curated registry of all built-in DeskDroid features with user-friendly English descriptions.
+export 'package:desk_droid/features/showcase/data/showcase_connectivity_features.dart';
+export 'package:desk_droid/features/showcase/data/showcase_devtools_features.dart';
+export 'package:desk_droid/features/showcase/data/showcase_display_control_features.dart';
+export 'package:desk_droid/features/showcase/data/showcase_productivity_features.dart';
+export 'package:desk_droid/features/showcase/data/showcase_shortcuts_features.dart';
+
+/// Curated registry of all built-in DeskDroid features with user-friendly descriptions.
 class AppFeaturesCatalog {
   const AppFeaturesCatalog._();
 
+  /// Combined master catalog of all DeskDroid features across all categories.
   static const List<AppFeatureItem> allFeatures = [
-    AppFeatureItem(
-      id: 'mirroring',
-      title: 'Wireless Screen Mirroring',
-      subtitle: 'Low-latency hardware-decoded streaming at up to 60 FPS over Wi-Fi or USB',
-      category: FeatureCategory.displayAndControl,
-      icon: Icons.cast_connected_rounded,
-      badgeText: 'Up to 60 FPS • H.264',
-      badgeColor: AppColors.accent,
-      highlights: [
-        'Hardware decoding: VideoToolbox on macOS, Media Foundation on Windows.',
-        'Streams at the phone\'s native resolution, sharp on high-DPI displays.',
-        'Automatic portrait/landscape orientation sync with the mobile device.',
-      ],
-      proTip: 'Pick 4, 8, or 16 Mbps in the side dock: 4 Mbps for weak Wi-Fi.',
-      docFileName: 'wireless-display-streaming.md',
-    ),
-    AppFeatureItem(
-      id: 'screen_off',
-      title: 'Screen-Off Mirroring',
-      subtitle: 'Stream and control while the physical Android screen is powered down',
-      category: FeatureCategory.displayAndControl,
-      icon: Icons.screen_lock_portrait_rounded,
-      badgeText: 'Screen Dark • Still Mirroring',
-      badgeColor: AppColors.statusSuccess,
-      highlights: [
-        'Phone display stays completely black while remaining fully interactive on Mac.',
-        'The display panel draws no power while it is off.',
-        'Privacy protection prevents shoulder-surfing in public workspaces.',
-      ],
-      proTip: 'Press Cmd+O (Ctrl+O on Windows) or the screen button in the bottom toolbar.',
-      docFileName: 'screen-off-streaming.md',
-    ),
-    AppFeatureItem(
-      id: 'remote_control',
-      title: 'Mouse & Mac Keyboard Control',
-      subtitle: 'Natural desktop ergonomics for seamless Android navigation',
-      category: FeatureCategory.displayAndControl,
-      icon: Icons.mouse_rounded,
-      badgeText: 'Mouse & Mac Keys',
-      badgeColor: AppColors.accentLight,
-      highlights: [
-        'Trackpad scroll and pinch; Alt+drag pinches with a mouse.',
-        'Shortcuts: Cmd+H for Home, Cmd+Backspace for Back; right click is Back too.',
-        'Typing from the computer keyboard; Cmd+K sends text in any language.',
-      ],
-      proTip: 'Cmd+K pastes Vietnamese, CJK, and emoji intact through the phone clipboard.',
-      docFileName: 'remote-input-control.md',
-    ),
-    AppFeatureItem(
-      id: 'logcat_console',
-      title: 'Professional Logcat Console',
-      subtitle:
-          'IDE-grade Android log inspection with a live, filterable stream',
-      category: FeatureCategory.devTools,
-      icon: Icons.terminal_rounded,
-      badgeText: 'IDE-Grade • 5k Buffer',
-      badgeColor: AppColors.statusWarning,
-      highlights: [
-        'Live stream batched every 100 ms into a 5,000-line ring buffer.',
-        'Multi-tier filtering by Tag, PID, and Log Level (Verbose to Fatal).',
-        'Stack trace detail drawer, star bookmarks, and non-blocking file recording.',
-      ],
-      proTip: 'Toggle "Soft Wrap" to read long JSON or intent lines without horizontal scrolling.',
-      docFileName: 'device-logcat-console.md',
-    ),
-    AppFeatureItem(
-      id: 'file_manager',
-      title: 'Device File Manager & Explorer',
-      subtitle: 'Browse Android storage and transfer files in both directions',
-      category: FeatureCategory.productivity,
-      icon: Icons.folder_shared_rounded,
-      badgeText: 'Two-Way Finder',
-      badgeColor: AppColors.accent,
-      highlights: [
-        'Inspect both Internal Storage and external MicroSD storage paths.',
-        'Multi-file batch download straight to your Mac Downloads folder.',
-        'Fast push and upload from macOS to Android over the local Wi-Fi network.',
-      ],
-      proTip: 'Use the live search bar to quickly locate APKs, photos, and large files.',
-      docFileName: 'file-transfer-explorer.md',
-    ),
-    AppFeatureItem(
-      id: 'viewport_drag_drop',
-      title: 'Direct Viewport Drag & Drop',
-      subtitle: 'Drop files, folders, or APKs directly onto the screen for instant transfer',
-      category: FeatureCategory.productivity,
-      icon: Icons.file_download_outlined,
-      badgeText: 'Zero-Click Drop',
-      badgeColor: AppColors.accentLight,
-      highlights: [
-        'Drop photos, videos, and folders to push directly to /sdcard/Download/.',
-        'Drop .apk packages for zero-click background installation without modal interruption.',
-        'Real-time frosted-glass hover highlight with self-dismissing transfer HUD.',
-      ],
-      proTip: 'Drag-and-drop covers 100% of the window in both Standard and Zen modes.',
-      docFileName: 'file-transfer-explorer.md',
-    ),
-    AppFeatureItem(
-      id: 'clipboard_sync',
-      title: 'Two-Way Clipboard Synchronization',
-      subtitle: 'Background clipboard sync between the computer and Android every 2 s',
-      category: FeatureCategory.productivity,
-      icon: Icons.content_paste_go_rounded,
-      badgeText: 'Live 2-Way Sync',
-      badgeColor: AppColors.statusSuccess,
-      highlights: [
-        'Automatic background sync daemon detects copied text on both Mac and Android.',
-        'Bidirectional echo-loop prevention ensures zero repetitive ping-pong copying.',
-        'Desktop shortcuts: Cmd+Shift+C (Push to Phone) and Cmd+Shift+V (Pull to Mac).',
-      ],
-      proTip: 'Toggle or pause auto-sync from the clipboard icon on the right dock at any time.',
-      docFileName: 'clipboard-sync.md',
-    ),
-    AppFeatureItem(
-      id: 'apk_installer',
-      title: '1-Click APK Sideload & Manager',
-      subtitle: 'Install Android application packages instantly without terminal commands',
-      category: FeatureCategory.devTools,
-      icon: Icons.install_mobile_rounded,
-      badgeText: '1-Click Sideload',
-      badgeColor: AppColors.statusSuccess,
-      highlights: [
-        'Select or drag APK files for automated inspection and installation.',
-        'Preview package name, version, app label, icon, and SDK levels.',
-        'Launch the application directly on device upon successful installation.',
-      ],
-      proTip: 'Provides automated compatibility diagnosis and error explanations if install fails.',
-      docFileName: 'apk-sideload-manager.md',
-    ),
-    AppFeatureItem(
-      id: 'screen_recording',
-      title: 'Hardware Screen Recording',
-      subtitle: 'H.264 MP4 recording encoded on the phone, not the computer',
-      category: FeatureCategory.productivity,
-      icon: Icons.videocam_rounded,
-      badgeText: 'MP4 • Up to 3 min',
-      badgeColor: AppColors.statusError,
-      highlights: [
-        'Encoded by the phone\'s hardware encoder; the computer only pulls the file.',
-        'Records at 8 Mbps for up to 3 minutes (Android\'s screenrecord limit).',
-        'Includes 3-second countdown timer and automatic finalization to Downloads.',
-      ],
-      proTip: 'Recorded MP4 files are immediately compatible with QuickTime and Final Cut.',
-      docFileName: 'hardware-screen-recording.md',
-    ),
-    AppFeatureItem(
-      id: 'screenshot_crop',
-      title: 'Screenshot & Interactive Area Crop',
-      subtitle:
-          'Capture high-resolution screenshots with direct Mac clipboard copy',
-      category: FeatureCategory.productivity,
-      icon: Icons.crop_rounded,
-      badgeText: 'Interactive Crop',
-      badgeColor: AppColors.accentLight,
-      highlights: [
-        'Instant lossless PNG capture at the source Android native resolution.',
-        'Interactive draggable and resizable crop selection rectangle.',
-        'Automatically copies to macOS pasteboard for instant pasting into Slack or Figma.',
-      ],
-      proTip: 'Press the camera icon to save the full screen, or drag handles to crop.',
-      docFileName: 'screenshots-area-crop.md',
-    ),
-    AppFeatureItem(
-      id: 'pairing',
-      title: 'Wireless Discovery & Pairing',
-      subtitle: 'Automated network discovery and seamless 1-click USB-to-Wi-Fi switch',
-      category: FeatureCategory.connectivity,
-      icon: Icons.wifi_tethering_rounded,
-      badgeText: 'mDNS Auto-Discovery',
-      badgeColor: AppColors.accent,
-      highlights: [
-        'Finds devices on the local subnet via ARP, a TCP port sweep, and mDNS.',
-        '1-click switch from wired USB connection to permanent wireless Wi-Fi mode.',
-        'Supports pairing via 6-digit Wi-Fi PIN code or direct IP socket entry.',
-      ],
-      proTip: 'Connect via USB once to authorize ADB, then unplug and stay wireless!',
-      docFileName: 'device-discovery-pairing.md',
-    ),
-    AppFeatureItem(
-      id: 'menu_bar',
-      title: 'macOS Menu Bar Companion',
-      subtitle:
-          'Planned: status telemetry and quick toggles in the macOS menu bar',
-      category: FeatureCategory.connectivity,
-      icon: Icons.desktop_mac_rounded,
-      badgeText: 'Planned',
-      badgeColor: AppColors.textSecondary,
-      highlights: [
-        'Lightweight background companion displaying the active connected device.',
-        'Real-time FPS and network latency (ms) telemetry monitor.',
-        '1-click toggle to show or hide the main mirroring window instantly.',
-      ],
-      proTip: 'Not available yet: the popover is designed but not wired into the app.',
-      docFileName: 'menu-bar-companion.md',
-    ),
-    AppFeatureItem(
-      id: 'intent_dispatcher',
-      title: 'Deep Link & Intent Dispatcher',
-      subtitle: 'Fire custom Android intents, schemes, and deep links with typed extras',
-      category: FeatureCategory.devTools,
-      icon: Icons.alt_route_rounded,
-      badgeText: 'URL Schemes & Extras',
-      badgeColor: AppColors.accent,
-      highlights: [
-        'Quick preset templates for Web URLs, Google Play Market, Geo Maps, and Tel dialer.',
-        'Supports custom app URL schemes, package targeting, and specific activity components.',
-        'Interactive key-value Intent Extras editor supporting String, Integer, and Boolean types.',
-      ],
-      proTip: 'Press Cmd+Shift+D while mirroring to open the Intent Dispatcher instantly.',
-      docFileName: 'deep-link-intent-dispatcher.md',
-    ),
+    ...showcaseDisplayControlFeatures,
+    ...showcaseProductivityFeatures,
+    ...showcaseDevToolsFeatures,
+    ...showcaseConnectivityFeatures,
+    ...showcaseShortcutsFeatures,
   ];
 }
