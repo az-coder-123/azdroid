@@ -8,7 +8,7 @@ class ScrcpyServerConstants {
 
   /// Version of `assets/scrcpy-server.jar`. Sent as the first server
   /// argument; the server exits when it differs from its own version.
-  static const String version = '2.1';
+  static const String version = '3.3.4';
 
   /// Flutter asset key (and project-relative path) of the bundled jar.
   static const String assetKey = 'assets/scrcpy-server.jar';
