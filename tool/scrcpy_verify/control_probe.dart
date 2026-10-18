@@ -15,6 +15,10 @@ class ControlProbe {
   static const Duration _settle = Duration(milliseconds: 1200);
   static const Duration _pollInterval = Duration(milliseconds: 250);
 
+  /// A just-resumed activity may still drop a key (seen on the Android 16
+  /// emulator), so BACK waits this long after Settings resumed.
+  static const Duration _activitySettle = Duration(milliseconds: 800);
+
   // Android KeyEvent codes (AndroidKeyCodes pulls in Flutter, so not usable
   // from a plain Dart tool).
   static const int _keycodeHome = 3;
@@ -40,6 +44,7 @@ class ControlProbe {
 
     await _shell(['am', 'start', '-a', 'android.settings.SETTINGS']);
     final settings = await _waitForResumed((a) => a.contains('settings'));
+    await Future<void>.delayed(_activitySettle);
     await _key(_keycodeBack);
     final afterBack = await _waitForResumed((a) => !a.contains('settings'));
     final closed =

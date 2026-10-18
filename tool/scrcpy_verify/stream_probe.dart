@@ -20,62 +20,93 @@ class StreamProbe {
   static const Duration _retryDelay = Duration(milliseconds: 300);
   static const Duration _readTimeout = Duration(seconds: 15);
 
+  /// A static screen yields only a few packets (Redmi 9: 12) and then
+  /// none, so once the stream is healthy, a pause this long ends the check.
+  static const Duration _idleAfterHealthy = Duration(seconds: 2);
+  static const Duration _pollInterval = Duration(milliseconds: 50);
+
   _SocketReader? _activeReader;
 
   /// Reads the stream like DeskDroid does: the dummy byte first, then
   /// [onVideoAccepted] (which must open the control socket, because the
   /// server sends the rest of the header only after that), then the header
-  /// and [packets] packets.
+  /// and packets until the stream is healthy and either [packets] arrived
+  /// or packets pause.
   ///
-  /// Afterwards the video keeps being drained in the background until
-  /// [close]: all `adb forward` sockets share one adb connection, so an
-  /// unread video socket would stall control messages too.
+  /// Packets keep being read in the background until [close]: all
+  /// `adb forward` sockets share one adb connection, so an unread video
+  /// socket would stall control messages too.
   Future<StreamReport> run({
     required int packets,
     required Future<void> Function() onVideoAccepted,
   }) async {
     for (var attempt = 1; attempt <= _connectAttempts; attempt++) {
       final reader = await _SocketReader.connect(port);
-      var keepOpen = false;
       try {
         // Same retry policy as the native plugins: the forward accepts the
         // connection even before the device socket listens.
-        final dummy = await reader.read(1);
+        final dummy = await reader.read(1, timeout: _readTimeout);
         await onVideoAccepted();
         final header = Uint8List.fromList([
           ...dummy,
-          ...await reader.read(_headerSize - 1),
+          ...await reader.read(_headerSize - 1, timeout: _readTimeout),
         ]);
         final report = StreamReport(attempt: attempt, header: header);
-        for (var i = 0; i < packets; i++) {
-          final meta = ByteData.sublistView(
-            await reader.read(_packetHeaderSize),
-          );
-          final flags = meta.getUint64(0);
-          final payload = await reader.read(meta.getUint32(8));
-          report.addPacket(
-            isConfig: (flags >> 63) & 1 == 1,
-            isKeyFrame: (flags >> 62) & 1 == 1,
-            payload: payload,
-          );
-        }
-        keepOpen = true;
         _activeReader = reader;
-        unawaited(reader.drain());
+        unawaited(_readPackets(reader, report));
+        await _waitUntilChecked(report, packets);
         return report;
+      } on TimeoutException {
+        await reader.close();
+        rethrow;
       } on StateError {
-        await Future<void>.delayed(_retryDelay);
-      } finally {
-        if (!keepOpen) await reader.close();
+        if (!identical(_activeReader, reader)) {
+          await reader.close();
+          await Future<void>.delayed(_retryDelay);
+          continue;
+        }
+        rethrow;
       }
     }
     throw StateError('No stream header after $_connectAttempts attempts');
   }
 
-  /// Bytes read by the background drain so far.
-  int get drainedBytes => _activeReader?.drainedBytes ?? 0;
+  Future<void> _waitUntilChecked(StreamReport report, int packets) async {
+    final stopwatch = Stopwatch()..start();
+    while (report.totalPackets < packets) {
+      final idle = report.sinceLastPacket;
+      if (report.isHealthy && idle != null && idle > _idleAfterHealthy) {
+        return;
+      }
+      if (stopwatch.elapsed > _readTimeout) {
+        throw TimeoutException('Stream not healthy', _readTimeout);
+      }
+      await Future<void>.delayed(_pollInterval);
+    }
+  }
 
-  /// Stops draining and closes the video socket.
+  /// Parses packets until the socket closes or [close] is called.
+  Future<void> _readPackets(_SocketReader reader, StreamReport report) async {
+    try {
+      while (true) {
+        final meta = ByteData.sublistView(await reader.read(_packetHeaderSize));
+        final flags = meta.getUint64(0);
+        final payload = await reader.read(meta.getUint32(8));
+        report.addPacket(
+          isConfig: (flags >> 63) & 1 == 1,
+          isKeyFrame: (flags >> 62) & 1 == 1,
+          payload: payload,
+        );
+      }
+    } on Object {
+      // Closed by close() or by the device; nothing left to read.
+    }
+  }
+
+  /// Video bytes received so far.
+  int get drainedBytes => _activeReader?.bytesRead ?? 0;
+
+  /// Stops reading and closes the video socket.
   Future<void> close() async => _activeReader?.close();
 }
 
@@ -96,6 +127,7 @@ class StreamReport {
   int configPackets = 0;
   int keyFrames = 0;
   int totalPackets = 0;
+  DateTime? _lastPacketAt;
   bool sawSpsAndPps = false;
   bool sawIdr = false;
 
@@ -106,6 +138,7 @@ class StreamReport {
   }) {
     final nals = _nalTypes(payload);
     totalPackets++;
+    _lastPacketAt = DateTime.now();
     if (isConfig) configPackets++;
     if (isKeyFrame) keyFrames++;
     if (isConfig && nals.contains(7) && nals.contains(8)) sawSpsAndPps = true;
@@ -116,6 +149,12 @@ class StreamReport {
       );
     }
   }
+
+  /// Time since the last packet, or `null` before the first one.
+  Duration? get sinceLastPacket => switch (_lastPacketAt) {
+    final at? => DateTime.now().difference(at),
+    null => null,
+  };
 
   /// A usable stream: H.264 header with a size, SPS/PPS config, an IDR frame.
   bool get isHealthy =>
@@ -164,33 +203,24 @@ class _SocketReader {
   final Socket _socket;
   final StreamIterator<Uint8List> _chunks;
   final BytesBuilder _pending = BytesBuilder(copy: false);
-  int drainedBytes = 0;
 
-  Future<Uint8List> read(int count) async {
+  int bytesRead = 0;
+
+  /// Reads exactly [count] bytes, waiting at most [timeout] per chunk when
+  /// given. Packet reads pass none: a static screen may send nothing for a
+  /// long time, which is not an error.
+  Future<Uint8List> read(int count, {Duration? timeout}) async {
     while (_pending.length < count) {
-      final hasMore = await _chunks.moveNext().timeout(
-        StreamProbe._readTimeout,
-      );
-      if (!hasMore) {
+      final next = _chunks.moveNext();
+      if (!await (timeout == null ? next : next.timeout(timeout))) {
         throw StateError('Socket closed after ${_pending.length}/$count bytes');
       }
+      bytesRead += _chunks.current.length;
       _pending.add(_chunks.current);
     }
     final all = _pending.takeBytes();
     _pending.add(all.sublist(count));
     return Uint8List.sublistView(all, 0, count);
-  }
-
-  /// Discards incoming data until the socket closes or [close] is called.
-  Future<void> drain() async {
-    _pending.clear();
-    try {
-      while (await _chunks.moveNext()) {
-        drainedBytes += _chunks.current.length;
-      }
-    } on Object {
-      // Closed by close(); nothing left to drain.
-    }
   }
 
   Future<void> close() async {

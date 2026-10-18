@@ -58,11 +58,13 @@ class DisplayPowerProbe {
       'video bytes while off=$videoBytesWhileOff, '
       'panel on after server exit=$restoredOnExit';
 
-  /// Power mode of the first (built-in) display from SurfaceFlinger.
+  /// Whether any display SurfaceFlinger lists is powered off. The built-in
+  /// panel is not always listed first (Redmi 9: second of two entries).
   Future<bool> isPanelOff() async {
     final out = await _shell('dumpsys SurfaceFlinger');
-    final match = RegExp(r'powerMode=(\w+)').firstMatch(out);
-    return match != null && _offModes.contains(match.group(1));
+    return RegExp(r'powerMode=(\w+)')
+        .allMatches(out)
+        .any((m) => _offModes.contains(m.group(1)));
   }
 
   Future<bool> _isAwake() async =>
