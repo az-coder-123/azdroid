@@ -83,6 +83,8 @@ The Windows script fetches the bundled adb first (`dart run tool/fetch_platform_
 
 The Windows script also copies the Visual C++ runtime DLLs into the package when Visual Studio has the redistributable files installed (`VC\Redist\MSVC\<version>\x64\Microsoft.VC143.CRT`). Without them it prints a warning, and users may need the redistributable from section 2.
 
+Test the Windows ZIP on a clean Windows with `scripts\test_in_windows_sandbox.ps1` (Windows Sandbox); see [release-guide.md](release-guide.md#7-windows-package-optional).
+
 Verify a download:
 
 ```bash

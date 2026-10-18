@@ -136,8 +136,14 @@ void main() {
     testWidgets(
       'Selecting Shortcuts category and searching Cmd+K finds Quick Text Injector',
       (tester) async {
+        // Pin the macOS scheme: without a provider the host OS decides.
         await tester.pumpWidget(
-          const MaterialApp(home: Scaffold(body: FeatureShowcaseDialog())),
+          RepositoryProvider<ShortcutScheme>.value(
+            value: ShortcutScheme.mac,
+            child: const MaterialApp(
+              home: Scaffold(body: FeatureShowcaseDialog()),
+            ),
+          ),
         );
         await tester.pumpAndSettle();
 

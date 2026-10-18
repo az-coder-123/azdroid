@@ -16,6 +16,8 @@ Status date: **2026-10-18** (DeskDroid v1.2.0 on macOS and Windows).
 | Build script | `scripts/build_release.sh` | `scripts/build_release.ps1` |
 | Video decoder | Apple VideoToolbox (hardware) | Media Foundation H.264 decoder + CPU NV12→RGBA copy |
 | Maturity | Stable | **Preview**: core mirroring verified, most tools not yet tested |
+| Clean-install check | | Release ZIP verified in Windows Sandbox (no VC++ runtime, adb, or Dart): app, bundled adb, MCP server, and mirroring over Wi-Fi |
+| OS components needed | none beyond macOS | Media Foundation, missing on Windows N/KN editions until the Media Feature Pack is installed (the app starts and explains it) |
 
 Both release packages bundle **ADB** (an installed ADB takes precedence, see [bundled-platform-tools.md](bundled-platform-tools.md)). The phone needs Android 5.0+ with USB debugging enabled. See [installation.md](installation.md).
 

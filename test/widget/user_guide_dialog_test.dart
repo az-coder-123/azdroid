@@ -1,14 +1,21 @@
+import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/components/guide_command_snippet.dart';
 import 'package:desk_droid/features/guide/presentation/widgets/user_guide_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  // Pin the macOS scheme: without a provider the host OS decides the
+  // shortcut labels, and these expectations use the macOS ones.
   Widget createSubject() {
-    return MaterialApp(
-      theme: AppTheme.darkTheme,
-      home: const Scaffold(body: UserGuideDialog()),
+    return RepositoryProvider<ShortcutScheme>.value(
+      value: ShortcutScheme.mac,
+      child: MaterialApp(
+        theme: AppTheme.darkTheme,
+        home: const Scaffold(body: UserGuideDialog()),
+      ),
     );
   }
 

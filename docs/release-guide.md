@@ -130,6 +130,14 @@ powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1 -Publish
 
 Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\DeskDroid-v<version>-Windows-x64.zip` (with `adb.exe` and `deskdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
 
+Before uploading, test the ZIP on a clean Windows with Windows Sandbox (Windows 10/11 Pro or Enterprise; enable once with `Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All` and restart):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\test_in_windows_sandbox.ps1
+```
+
+It opens the newest ZIP in the sandbox, which has no Visual C++ runtime, adb, or Dart. `build\sandbox-results\smoke.txt` must show the MCP server's tool count, `App running ... True`, the runtime DLLs loaded from the app folder, and the bundled adb server. Then connect the phone over Wi-Fi (Direct IP) in the sandbox and mirror; the copied `deskdroid_dart.log` and `scrcpy_stream.log` in the same folder show the result.
+
 ---
 
 ## 8. Check the Published Release
