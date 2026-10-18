@@ -13,7 +13,7 @@
 
 **Non-goals (first release)**
 - Windows on ARM64, Linux, Microsoft Store distribution.
-- Audio forwarding (scrcpy currently starts with `audio=false` on macOS too).
+- Audio forwarding was out of scope for the first release; it now exists on both platforms (WASAPI on Windows, not yet compiled). See [native-audio-contract.md](native-audio-contract.md).
 
 ---
 

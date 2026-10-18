@@ -55,7 +55,7 @@ lib/
 │   ├── constants/                          # Zero-hardcoding constants (incl. AdbTimeouts, FeedbackDurations)
 │   │   ├── android_key_codes.dart          # Android KeyEvent codes & Flutter key mapper
 │   │   ├── app_constants.dart              # App metadata, dimensions
-│   │   ├── audio_constants.dart            # Audio sample rate, channels, codec defaults
+│   │   ├── audio_constants.dart            # Playback volume bounds and poll interval
 │   │   ├── control_constants.dart          # Pointer, swipe, and scroll parameters
 │   │   ├── productivity_constants.dart     # Clipboard sync & file transfer parameters
 │   │   └── socket_config.dart              # Network ports, timeouts
@@ -64,8 +64,11 @@ lib/
 │   │   └── injection.dart                  # Modular service locator entrypoint (GetIt)
 │   ├── services/                           # System process & native bridge services
 │   │   ├── adb_service.dart                # ADB CLI & mDNS daemon controller
+│   │   ├── audio_stream_native_service.dart # Native audio player bridge (AVAudioEngine / WASAPI)
 │   │   ├── network_info_service.dart       # Host machine Wi-Fi IPv4 address resolution
 │   │   ├── process_executor.dart           # Testable process runner abstraction
+│   │   ├── scrcpy_control_channel.dart     # scrcpy control socket of the session
+│   │   ├── scrcpy_control_message.dart     # scrcpy control message wire format
 │   │   └── video_stream_native_service.dart # Native video plugin bridge (VideoToolbox / Media Foundation)
 │   └── theme/                              # Apple-native design system tokens
 │       ├── app_colors.dart                 # Dark Mode color palette
@@ -143,17 +146,18 @@ lib/
 │   │       ├── widgets/clipboard_sync_menu_button.dart
 │   │       ├── widgets/file_drop_target_overlay.dart
 │   │       └── widgets/transfer_status_banner.dart
-│   ├── audio/                              # Low-latency raw Opus/PCM audio forwarding
+│   ├── audio/                              # Playback state, volume, and mute (player: core service)
 │   │   ├── domain/
-│   │   │   ├── entities/audio_stream_entity.dart
+│   │   │   ├── entities/audio_playback.dart
 │   │   │   └── repositories/audio_repository.dart
 │   │   ├── data/
-│   │   │   ├── datasources/audio_socket_datasource.dart
+│   │   │   ├── services/audio_playback_status_mapper.dart
 │   │   │   └── repositories/audio_repository_impl.dart
 │   │   └── presentation/
 │   │       ├── cubit/audio_cubit.dart
 │   │       ├── cubit/audio_state.dart
-│   │       └── widgets/audio_controls_widget.dart
+│   │       ├── widgets/audio_controls_widget.dart
+│   │       └── widgets/audio_status_label.dart
 │   ├── menubar/                            # Menu Bar companion state (popover not wired yet)
 │   │   ├── domain/
 │   │   │   └── entities/menu_bar_status_entity.dart

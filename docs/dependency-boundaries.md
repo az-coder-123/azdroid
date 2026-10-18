@@ -40,7 +40,7 @@ Put a type in `core` when two or more features need it.
 | Type | Location | Used by |
 |:---|:---|:---|
 | `DeviceEntity`, `DeviceConnectionType` | `core/models/device_entity.dart` | discovery, streaming |
-| `AdbPortForwarder` (contract) | `core/services/adb_port_forwarder.dart` | audio (implemented by streaming's `ScrcpyServerManager`) |
+| `IAudioStreamNativeService` (native audio player) | `core/services/audio_stream_native_service.dart` | streaming (opens and closes it), audio (volume, mute, state) |
 | `ScrcpyControlChannel` (one socket per session), `ScrcpyControlMessage` (wire format) | `core/services/scrcpy_control_channel.dart`, `core/services/scrcpy_control_message.dart` | streaming (opens and closes it, display power), control (sends input) |
 | `AdbBinaryLocator` (pure Dart) | `core/services/adb_binary_locator.dart` | app `AdbPathResolver`, MCP server |
 | `HostPaths`, `HostToolchain`, `HostFilePicker`, `HostFileLauncher`, `ImageClipboard`, `ShortcutScheme` | `core/platform/` (see [platform-abstraction.md](platform-abstraction.md)) | all features |

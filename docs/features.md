@@ -2,7 +2,7 @@
 
 > Comprehensive specification and architectural breakdown of the **DeskDroid** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS and Windows (preview) over local Wi-Fi.
 >
-> 🖥️ **Platform status:** Not every feature below is available or verified on both platforms (audio forwarding and the menu bar companion are not functional yet). See [platform-support.md](platform-support.md).
+> 🖥️ **Platform status:** Not every feature below is available or verified on both platforms (audio forwarding is new and not yet verified in the app; the menu bar companion is not functional yet). See [platform-support.md](platform-support.md).
 >
 > 💡 **Dedicated Specifications:** Each feature is thoroughly documented in its own dedicated file adhering to the Single Responsibility Principle. Browse the [Features Directory](features/README.md) for individual specifications.
 
@@ -91,7 +91,7 @@
 - **System Tray Integration:** Runs discretely in the macOS Menu Bar. Users can quickly toggle device windows, check Wi-Fi connection quality, and monitor device battery levels with a single click.
 
 ### 4.5 Audio Forwarding
-- **Synchronized Audio Stream:** Low-latency PCM/AAC audio streaming directly to macOS audio output devices (via Android 10+ internal audio capture API).
+- **Device Audio on the Computer:** Raw PCM from Android 11+ plays on the computer's default output with a 50 ms jitter buffer; the phone goes quiet while mirroring ([details](features/audio-forwarding.md)).
 
 ### 4.6 Lossless Device Screenshot & Regional Area Crop
 - **Full & Custom Area Capture:** Supports both full-screen lossless capture and interactive region selection.

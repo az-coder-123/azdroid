@@ -58,10 +58,10 @@ Config packets must be applied before the next media packet. Decoders that take 
 
 **Socket order with control (`control=true`)**
 
-The server runs with control enabled, so it accepts two sockets on the same forwarded port, in a fixed order:
+The server runs with control enabled (and audio where the platform has a player), so it accepts the sockets on the same forwarded port in a fixed order: video, audio, control. Audio is described in [native-audio-contract.md](native-audio-contract.md); with or without it, the video steps are:
 
 1. Native connects the video socket and reads the dummy byte, then sets `getStats` to `connected`.
-2. Dart (`ScrcpyControlConnector`) sees `connected` and opens the control socket on the same port (`ScrcpyControlChannel`).
+2. Dart (`ScrcpyControlConnector`) sees `connected`, opens the audio socket when audio is on (`startAudio`), then the control socket on the same port (`ScrcpyControlChannel`).
 3. Only then does the server send the device name and codec meta. Native reads the rest of the header.
 
 Reading the full header before control connects would deadlock. Native must also keep reading video for the whole session: all `adb forward` sockets share one adb transport, so an unread video socket stalls control messages too. Control message bytes are in `lib/core/services/scrcpy_control_message.dart`, checked against scrcpy's own serializer tests.

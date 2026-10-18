@@ -132,7 +132,7 @@ DeskDroid includes **13 built-in modules** engineered for speed, reliability, an
 | **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 58 tools for Claude Desktop, Cursor & Antigravity | Stdio CLI | [Guide](docs/mcp-setup-guide.md) |
 | **+** | **Menu Bar Companion** *(not yet available)* | Status bar popover for quick window toggle and live telemetry (FPS & latency); designed, not yet wired into the app | Menu Bar | [Guide](docs/features/menu-bar-companion.md) |
 
-> Shortcuts are shown with <kbd>Cmd</kbd> (macOS); use <kbd>Ctrl</kbd> on Windows. Most features are verified on macOS; the Windows preview has verified mirroring, logcat, bitrate presets, and the MCP server. Audio forwarding is not functional yet on either platform. Full matrix: [Platform Support](docs/platform-support.md).
+> Shortcuts are shown with <kbd>Cmd</kbd> (macOS); use <kbd>Ctrl</kbd> on Windows. Most features are verified on macOS; the Windows preview has verified mirroring, logcat, bitrate presets, and the MCP server. Audio forwarding (Android 11+) is new and not yet verified in the app on either platform. Full matrix: [Platform Support](docs/platform-support.md).
 
 ---
 

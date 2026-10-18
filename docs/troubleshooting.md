@@ -62,6 +62,14 @@
 - **Root Cause:** Android produces no frames for a screen that is off. DeskDroid asks the server to turn the screen on when mirroring starts, but a PIN or pattern lock still blocks input.
 - **Solution:** Unlock the phone. The stream starts as soon as the screen is on.
 
+### ❌ No Sound From the Phone
+- **Root Cause:** Audio needs Android 11 or newer. On Android 11, the phone must also be unlocked when mirroring starts. Hover the speaker button in the bottom toolbar: its tooltip tells which case applies.
+- **Solution:** On Android 11, unlock the phone and start mirroring again. Android 10 and older cannot share audio. Also check the computer's own volume and output device.
+
+### ❌ The Phone Is Silent While Mirroring
+- **Root Cause:** Expected: the phone's sound plays on the computer instead, like with headphones. It comes back when mirroring stops.
+- **Solution:** Stop mirroring to hear the phone again, or mute in the speaker button to hear nothing.
+
 ### ❌ "The input channel did not open"
 - **Root Cause:** The video connected, but the scrcpy control socket did not. DeskDroid stops the session instead of showing a mirror that ignores clicks.
 - **Solution:** Unlock the phone and tap **Retry Connection**. If it keeps failing, disconnect and reconnect the device.

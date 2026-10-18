@@ -1,39 +1,55 @@
-# Feature: Low-Latency Audio Forwarding
+# Feature: Audio Forwarding
 
-> **Subsystem:** `lib/features/audio/`  
-> **Key Interfaces:** `AudioRepository`, `AudioSocketDatasource`  
+> **Subsystem:** `lib/features/audio/` (controls and state), `lib/core/services/audio_stream_native_service.dart` (native player)  
+> **Key Interfaces:** `AudioRepository`, `IAudioStreamNativeService`  
 > **Presentation:** `AudioCubit`, `AudioControlsWidget`  
-> **Platforms:** ❌ Not functional yet on macOS or Windows: the scrcpy server is started with `audio=false` ([status](../platform-support.md))
+> **Platforms:** macOS 🧪 player verified on an Android 16 emulator, not yet in the app with an Android 11+ phone · Windows 🧪 written, not yet built ([status](../platform-support.md))
 
 ---
 
 ## 📌 Overview
 
-DeskDroid routes system audio from Android directly to macOS speakers or connected headphones with low latency. Audio is captured natively on the device and forwarded alongside the video stream over an independent high-throughput socket.
+While you mirror a phone, its sound plays on your computer. The phone itself goes quiet, like when headphones are connected, and its normal output comes back when mirroring stops.
 
 ```mermaid
 flowchart LR
-    AndroidApps["Android Media & Apps\n(Internal Audio Stream)"] --> AudioRecord["scrcpy Audio Capture\n(Android 10+ AudioPlaybackCapture)"]
-    AudioRecord --> Socket["Audio TCP Socket\n(Raw Opus / PCM Stream)"]
-    Socket --> HostAudio["macOS CoreAudio Engine\n(Synchronized Output)"]
+    Phone["Android 11+\n(whole device output)"] --> Server["scrcpy-server\naudio_codec=raw"]
+    Server --> Socket["Audio socket\n(between video and control)"]
+    Socket --> Buffer["scrcpy_core jitter buffer\n50 ms target"]
+    Buffer --> Out["macOS: AVAudioEngine\nWindows: WASAPI"]
 ```
 
 ---
 
-## ⚡️ Key Capabilities
+## ⚡️ How It Works
 
-### 1. Internal Audio Capture (Android 10+)
-- **System-Level Capture:** Employs Android 10+'s `AudioPlaybackCaptureConfiguration` API to capture clean, digital audio streams directly from applications and media players.
-- **Microphone Independence:** Captures audio internally without relying on the physical phone microphone, avoiding ambient room noise and acoustic echo.
+| Topic | Behavior |
+|:---|:---|
+| Requirements | Android 11 or newer. On Android 11, unlock the phone before mirroring starts. Android 10 and older cannot share audio: mirroring works without sound, and the audio button explains why. |
+| Format | Uncompressed PCM, 48 kHz stereo, about 1.5 Mbps on top of the video. No decoder is needed on the computer. |
+| Latency | A 50 ms jitter buffer smooths network timing. If the buffer keeps more than 70 ms for a whole second, the extra is dropped, so latency stays close to 50 ms. Above 200 ms, it is cut back at once. |
+| Gaps | When audio arrives late, a short gap of silence plays while 50 ms is collected again. |
+| Volume and mute | The speaker button in the bottom toolbar (volume slider and mute). They change only what the computer plays, not the phone's own volume, and are kept for the rest of the app session. |
+| Output device | The computer's default output. On macOS, switching the output (for example to AirPods) restarts playback on the new device. |
 
-### 2. High-Fidelity Audio Compression & Sockets
-- **Opus & Raw PCM Codecs:** Utilizes low-latency Opus audio compression (48 kHz sample rate, stereo channels) to minimize Wi-Fi packet bandwidth while preserving acoustic fidelity.
-- **Dedicated Socket Stream:** Audio travels across a dedicated TCP socket independent of video packets, preventing audio stuttering during sudden video bitrate spikes.
+The audio socket is part of the mirroring session: it opens after the video socket and before the control socket, and closes with the session. Details: [native-audio-contract.md](../native-audio-contract.md).
 
-### 3. A/V Synchronization & Buffer Governance
-- **Lip-Sync Alignment:** Dynamically balances audio packet jitter buffers against video frame PTS timestamps to maintain synchronization during video playback and gaming.
-- **Low-Latency Mode:** Configured for minimum buffering (~40ms) to ensure interactive sounds (clicks, typing, UI effects) feel responsive.
+---
 
-### 4. Desktop Audio Controls
-- **Volume Slider & Mute Toggle:** Integrated volume control in the audio control toolbar allowing users to adjust Android playback volume independently of macOS master volume.
-- **Audio Output Selection:** Automatically conforms to current macOS default audio output devices (built-in speakers, AirPods, USB DACs).
+## 🔈 Audio Button States
+
+| Icon | Tooltip | Meaning |
+|:---|:---|:---|
+| 🔊 (volume level) | Audio Volume (n%) | Playing; click for volume and mute. |
+| 🔇 grey | Audio Starting… | Waiting for the first audio data. |
+| 🔇 grey | No Audio: the phone needs Android 11 or newer | The phone cannot share audio. |
+| 🔇 grey | No Audio: not supported on this computer yet | This build has no native player. |
+| ⚠️ | Audio Failed (see the app log) | Configuration error, unsupported stream, or no output device. |
+| 🔇 grey | Audio Stopped by the Phone | The phone closed the audio stream; video continues. |
+
+---
+
+## ✅ Verification
+
+- `scripts/check_macos_audio.sh <serial>` compiles the app's own Swift audio classes with `scrcpy_core` and plays the phone's audio on the Mac. Android 16 emulator: `playing`, played frames keep up with real time, latency 0–95 ms after start-up. Redmi 9 (Android 10): `disabled`.
+- `dart run tool/verify_scrcpy_server.dart --serial=<serial>` checks the raw audio header and data with the app's exact server arguments.

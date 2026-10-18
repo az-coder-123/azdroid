@@ -9,10 +9,10 @@
 | Aspect | Current use |
 |:---|:---|
 | Server | `assets/scrcpy-server.jar` **v3.3.4** (was v2.1), started by `ScrcpyServerManager` |
-| Arguments | `scid`, `tunnel_forward=true`, `video_bit_rate`, `max_fps`, `audio=false`, `control=true`, `clipboard_autosync=false`, `cleanup=true`, and with Keep Phone Awake `stay_awake=true` + `screen_off_timeout` |
+| Arguments | `scid`, `tunnel_forward=true`, `video_bit_rate`, `max_fps`, `audio=true` + `audio_codec=raw` (when the platform has a player), `control=true`, `clipboard_autosync=false`, `cleanup=true`, and with Keep Phone Awake `stay_awake=true` + `screen_off_timeout` |
 | Video | H.264 parsed by `macos/Runner/ScrcpyStreamPlugin.swift` and `native/scrcpy_core` (Windows) |
 | Input | scrcpy control socket for touch and keys; text and the fallback path use `adb shell input` ([remote-input-control.md](features/remote-input-control.md)) |
-| Audio | **Not functional**: the server runs with `audio=false`, and no Opus/AAC decoder or player exists; the UI toggle only changes state |
+| Audio | Raw PCM through the audio socket, played natively ([native-audio-contract.md](native-audio-contract.md)) |
 | Readiness | Waits for the `[server] INFO: Device:` log line |
 
 Only the video socket is used, so protocol changes to the video stream are what matter.
@@ -75,7 +75,7 @@ scrcpy does not backport fixes: future Android releases will only be supported o
 
 Related work, independent of the version (all versions support it):
 - **Control socket** (`control=true`) instead of `adb shell input`: much lower input latency; multi-touch becomes possible later. ✅ Done: see [remote-input-control.md](features/remote-input-control.md).
-- **Audio**: either implement it (scrcpy audio, Android 11+, plus an Opus decoder and player on both platforms) or hide the toggle until it works.
+- **Audio**: either implement it (scrcpy audio, Android 11+, plus an Opus decoder and player on both platforms) or hide the toggle until it works. ✅ Done with raw PCM (no decoder): [audio-forwarding.md](features/audio-forwarding.md).
 
 ---
 
