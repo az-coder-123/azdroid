@@ -35,3 +35,10 @@ The regex keyed on the **value** (`seconds: 3`), not on the **meaning** (an ADB 
 - [ ] One-off timings get a private, descriptive constant next to their only use.
 - [ ] Review bulk diffs file by file; do not rely only on green analysis and tests.
 - [ ] Scope `dart fix` to the files you changed, or check `git diff --stat` right after it and revert unrelated files.
+
+## Recurrence: Field Rename by `sed` Broke Import Paths (2026-10-18)
+
+- **Symptom:** after renaming private fields with `sed 's/_tools\./_hostTools./g'` (and `_repository.`, `_files.`), `flutter analyze` reported `uri_does_not_exist` for `host_process_hostTools.dart` and `mcp_status_statusRepository.dart`.
+- **Cause:** the pattern also matched inside import URIs (`host_process_tools.dart` contains `_tools.`). Text patterns do not know Dart scopes.
+- **Fix:** imports restored by hand; analyze and tests clean.
+- [ ] Rename identifiers with an IDE or analyzer rename, not `sed`; if `sed` is unavoidable, anchor the pattern to code (`\b_tools\.[a-z]`) and exclude `import` lines.

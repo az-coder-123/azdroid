@@ -60,7 +60,7 @@ Feature-to-feature navigation is wired in `lib/main.dart`, not inside features.
 home: const DiscoveryPage(mirroringRouteBuilder: _mirroringRoute),
 ```
 
-`DiscoveryPage` only knows the `MirroringRouteBuilder` typedef, so discovery does not import streaming.
+`DiscoveryPage` only knows the `MirroringRouteBuilder` typedef, so discovery does not import streaming. Toolbar status buttons from other features come the same way: `main.dart` passes `McpStatusIndicator` in `DiscoveryPage.statusActions`.
 
 App-wide cubits (`DiscoveryCubit`, `HostContextCubit`, `MenuBarCubit`) and the `ShortcutScheme` are provided above `MaterialApp`, so dialogs pushed on the root navigator can read them.
 
