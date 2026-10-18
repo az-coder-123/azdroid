@@ -62,7 +62,6 @@ void main() {
                     session: testSession,
                     deviceSerial: '192.168.1.100:5555',
                     onSelectBitrate: (_) {},
-                    onToggleStayAwake: () {},
                     onScreenshot: () => screenshotTaken = true,
                     onCropScreenshot: () {},
                     onTextInject: () => textInjected = true,

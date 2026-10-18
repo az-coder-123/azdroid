@@ -16,54 +16,49 @@ void main() {
 
   Future<void> pump(
     WidgetTester tester, {
-    required bool stayAwake,
-    VoidCallback? onToggle,
+    ValueChanged<int>? onSelectBitrate,
   }) => tester.pumpWidget(
     MaterialApp(
       theme: AppTheme.darkTheme,
       home: Scaffold(
         body: StreamSettingsControls(
-          session: session.copyWith(stayAwake: stayAwake),
-          onSelectBitrate: (_) {},
-          onToggleStayAwake: onToggle,
+          session: session,
+          onSelectBitrate: onSelectBitrate,
         ),
       ),
     ),
   );
 
-  testWidgets('shows the filled icon while stay awake is on', (tester) async {
-    await pump(tester, stayAwake: true, onToggle: () {});
+  testWidgets('renders bitrate popup button with tune icon', (tester) async {
+    await pump(tester, onSelectBitrate: (_) {});
 
-    expect(find.byIcon(Icons.light_mode_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.light_mode_outlined), findsNothing);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
+    expect(find.byTooltip('Streaming Bitrate & Quality'), findsOneWidget);
   });
 
-  testWidgets('shows the outlined icon while stay awake is off', (
-    tester,
-  ) async {
-    await pump(tester, stayAwake: false, onToggle: () {});
+  testWidgets('tapping bitrate button opens menu with options', (tester) async {
+    int? selectedBitrate;
+    await pump(tester, onSelectBitrate: (b) => selectedBitrate = b);
 
-    expect(find.byIcon(Icons.light_mode_outlined), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.tune_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.text('4 Mbps (Eco / Weak Wi-Fi)'), findsOneWidget);
+    expect(find.text('8 Mbps (Standard 1080p)'), findsOneWidget);
+    expect(find.text('16 Mbps (Ultra / 60+ FPS)'), findsOneWidget);
+
+    await tester.tap(find.text('16 Mbps (Ultra / 60+ FPS)'));
+    await tester.pumpAndSettle();
+
+    expect(selectedBitrate, 16);
   });
 
-  testWidgets('tapping the toggle calls back', (tester) async {
-    var toggles = 0;
-    await pump(tester, stayAwake: true, onToggle: () => toggles++);
+  testWidgets('the button is disabled while change applies', (tester) async {
+    await pump(tester, onSelectBitrate: null);
 
-    await tester.tap(find.byIcon(Icons.light_mode_rounded));
-
-    expect(toggles, 1);
-  });
-
-  testWidgets('the toggle is disabled while a change applies', (tester) async {
-    await pump(tester, stayAwake: true);
-
-    final button = tester.widget<IconButton>(
-      find.ancestor(
-        of: find.byIcon(Icons.light_mode_rounded),
-        matching: find.byType(IconButton),
-      ),
+    final button = tester.widget<PopupMenuButton<int>>(
+      find.byType(PopupMenuButton<int>),
     );
-    expect(button.onPressed, isNull);
+    expect(button.enabled, isFalse);
   });
 }

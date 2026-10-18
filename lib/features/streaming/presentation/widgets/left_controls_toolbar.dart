@@ -16,6 +16,7 @@ class LeftControlsToolbar extends StatelessWidget {
     required this.onAppSwitch,
     required this.onPower,
     required this.onRotate,
+    this.onToggleStayAwake,
     required this.onToggleScreenOff,
     required this.onToggleZenMode,
     required this.onOpenShowcase,
@@ -28,6 +29,7 @@ class LeftControlsToolbar extends StatelessWidget {
   final VoidCallback onAppSwitch;
   final VoidCallback onPower;
   final VoidCallback onRotate;
+  final VoidCallback? onToggleStayAwake;
   final VoidCallback onToggleScreenOff;
   final VoidCallback onToggleZenMode;
   final VoidCallback onOpenShowcase;
@@ -90,11 +92,22 @@ class LeftControlsToolbar extends StatelessWidget {
             _buildDivider(),
             const SizedBox(height: 6),
 
-            // Group 2: Display & Hardware Controls
+            // Group 3: Display & Hardware Controls
             _buildToolButton(
               icon: Icons.rotate_right_rounded,
               tooltip: 'Rotate Display (${keys.label('R')})',
               onPressed: onRotate,
+            ),
+            const SizedBox(height: 4),
+            _buildToolButton(
+              icon: session.stayAwake
+                  ? Icons.light_mode_rounded
+                  : Icons.light_mode_outlined,
+              tooltip: session.stayAwake
+                  ? 'Keep Phone Awake: On (phone settings restored when you stop)'
+                  : 'Keep Phone Awake: Off (phone sleeps on its own timer)',
+              color: session.stayAwake ? AppColors.accent : null,
+              onPressed: onToggleStayAwake,
             ),
             const SizedBox(height: 4),
             _buildToolButton(
@@ -148,12 +161,18 @@ class LeftControlsToolbar extends StatelessWidget {
   Widget _buildToolButton({
     required IconData icon,
     required String tooltip,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     Color? color,
     Color? backgroundColor,
   }) {
     final button = IconButton(
-      icon: Icon(icon, size: 20, color: color ?? AppColors.textPrimary),
+      icon: Icon(
+        icon,
+        size: 20,
+        color: onPressed == null
+            ? AppColors.textTertiary
+            : (color ?? AppColors.textPrimary),
+      ),
       tooltip: tooltip,
       splashRadius: 18,
       onPressed: onPressed,

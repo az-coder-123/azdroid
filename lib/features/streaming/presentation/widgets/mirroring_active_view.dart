@@ -188,6 +188,9 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       onAppSwitch: () => _navigate(context, NavigationAction.appSwitch),
       onPower: () => _navigate(context, NavigationAction.power),
       onRotate: context.read<StreamingCubit>().rotateScreen,
+      onToggleStayAwake: widget.state.isReconfiguring
+          ? null
+          : context.read<StreamingCubit>().toggleStayAwake,
       onToggleScreenOff: context.read<StreamingCubit>().toggleScreenOff,
       onToggleZenMode: () => setState(() => _isZenMode = true),
       onOpenShowcase: () => FeatureShowcaseDialog.show(context),
@@ -203,9 +206,6 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
       onSelectBitrate: widget.state.isReconfiguring
           ? null
           : (b) => context.read<StreamingCubit>().updateBitrate(b),
-      onToggleStayAwake: widget.state.isReconfiguring
-          ? null
-          : context.read<StreamingCubit>().toggleStayAwake,
       onScreenshot: () => context.read<ScreenshotCubit>().captureScreenshot(s),
       onCropScreenshot: () =>
           context.read<ScreenshotCubit>().startAreaSelection(s),

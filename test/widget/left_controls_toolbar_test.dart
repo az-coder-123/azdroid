@@ -43,10 +43,15 @@ void main() {
     var appSwitchTapped = false;
     var powerTapped = false;
     var rotateTapped = false;
+    var stayAwakeTapped = false;
     var screenOffTapped = false;
     var zenModeTapped = false;
     var showcaseTapped = false;
     var guideTapped = false;
+
+    tester.view.physicalSize = const Size(1200, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
       RepositoryProvider<ShortcutScheme>.value(
@@ -63,6 +68,7 @@ void main() {
                   onAppSwitch: () => appSwitchTapped = true,
                   onPower: () => powerTapped = true,
                   onRotate: () => rotateTapped = true,
+                  onToggleStayAwake: () => stayAwakeTapped = true,
                   onToggleScreenOff: () => screenOffTapped = true,
                   onToggleZenMode: () => zenModeTapped = true,
                   onOpenShowcase: () => showcaseTapped = true,
@@ -82,6 +88,10 @@ void main() {
     expect(find.byTooltip('App Switcher (⌘Tab)'), findsOneWidget);
     expect(find.byTooltip('Lock Phone / Power (⌘P)'), findsOneWidget);
     expect(find.byTooltip('Rotate Display (⌘R)'), findsOneWidget);
+    expect(
+      find.byTooltip('Keep Phone Awake: Off (phone sleeps on its own timer)'),
+      findsOneWidget,
+    );
     expect(
       find.byTooltip('Turn Phone Screen Off, Keep Mirroring (⌘O)'),
       findsOneWidget,
@@ -123,6 +133,11 @@ void main() {
 
     await tester.tap(find.byTooltip('Rotate Display (⌘R)'));
     expect(rotateTapped, isTrue);
+
+    await tester.tap(
+      find.byTooltip('Keep Phone Awake: Off (phone sleeps on its own timer)'),
+    );
+    expect(stayAwakeTapped, isTrue);
 
     await tester.tap(
       find.byTooltip('Turn Phone Screen Off, Keep Mirroring (⌘O)'),

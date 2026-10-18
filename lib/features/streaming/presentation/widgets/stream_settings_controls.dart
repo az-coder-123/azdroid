@@ -10,12 +10,10 @@ class StreamSettingsControls extends StatelessWidget {
     super.key,
     required this.session,
     required this.onSelectBitrate,
-    required this.onToggleStayAwake,
   });
 
   final StreamSessionEntity session;
   final ValueChanged<int>? onSelectBitrate;
-  final VoidCallback? onToggleStayAwake;
 
   static const double _iconSize = 20;
   static const List<(int, String)> _bitrates = [
@@ -26,59 +24,25 @@ class StreamSettingsControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        PopupMenuButton<int>(
-          tooltip: 'Streaming Bitrate & Quality',
-          enabled: onSelectBitrate != null,
-          icon: const Icon(
-            Icons.tune_rounded,
-            size: _iconSize,
-            color: AppColors.textPrimary,
-          ),
-          color: AppColors.surfaceElevated,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            side: const BorderSide(color: AppColors.border),
-          ),
-          initialValue: session.bitrateMbps,
-          onSelected: onSelectBitrate,
-          itemBuilder: (context) => [
-            for (final (mbps, label) in _bitrates)
-              PopupMenuItem(value: mbps, child: Text(label)),
-          ],
-        ),
-        _StayAwakeToggle(isOn: session.stayAwake, onPressed: onToggleStayAwake),
-      ],
-    );
-  }
-}
-
-class _StayAwakeToggle extends StatelessWidget {
-  const _StayAwakeToggle({required this.isOn, required this.onPressed});
-
-  final bool isOn;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: isOn
-          ? 'Keep Phone Awake: On (phone settings restored when you stop)'
-          : 'Keep Phone Awake: Off (phone sleeps on its own timer)',
-      isSelected: isOn,
-      onPressed: onPressed,
+    return PopupMenuButton<int>(
+      tooltip: 'Streaming Bitrate & Quality',
+      enabled: onSelectBitrate != null,
       icon: const Icon(
-        Icons.light_mode_outlined,
-        size: StreamSettingsControls._iconSize,
+        Icons.tune_rounded,
+        size: _iconSize,
         color: AppColors.textPrimary,
       ),
-      selectedIcon: const Icon(
-        Icons.light_mode_rounded,
-        size: StreamSettingsControls._iconSize,
-        color: AppColors.accent,
+      color: AppColors.surfaceElevated,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        side: const BorderSide(color: AppColors.border),
       ),
+      initialValue: session.bitrateMbps,
+      onSelected: onSelectBitrate,
+      itemBuilder: (context) => [
+        for (final (mbps, label) in _bitrates)
+          PopupMenuItem(value: mbps, child: Text(label)),
+      ],
     );
   }
 }

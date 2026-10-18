@@ -14,7 +14,6 @@ class SideControlsToolbar extends StatelessWidget {
     super.key,
     required this.session,
     required this.onSelectBitrate,
-    this.onToggleStayAwake,
     this.onScreenshot,
     this.onCropScreenshot,
     this.onTextInject,
@@ -30,9 +29,6 @@ class SideControlsToolbar extends StatelessWidget {
 
   /// Picks a new bitrate; `null` disables the menu (change in progress).
   final ValueChanged<int>? onSelectBitrate;
-
-  /// Flips "keep the phone awake"; `null` disables it (change in progress).
-  final VoidCallback? onToggleStayAwake;
   final VoidCallback? onScreenshot;
   final VoidCallback? onCropScreenshot;
   final VoidCallback? onTextInject;
@@ -131,11 +127,10 @@ class SideControlsToolbar extends StatelessWidget {
             _buildDivider(),
             const SizedBox(height: 6),
 
-            // Group 4: Stream Quality & Stay Awake Settings
+            // Group 4: Stream Quality Settings (Bitrate)
             StreamSettingsControls(
               session: session,
               onSelectBitrate: onSelectBitrate,
-              onToggleStayAwake: onToggleStayAwake,
             ),
 
             if (onInstallApk != null ||
