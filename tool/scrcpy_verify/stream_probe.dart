@@ -20,13 +20,32 @@ class StreamProbe {
   static const Duration _retryDelay = Duration(milliseconds: 300);
   static const Duration _readTimeout = Duration(seconds: 15);
 
-  Future<StreamReport> run({required int packets}) async {
+  _SocketReader? _activeReader;
+
+  /// Reads the stream like DeskDroid does: the dummy byte first, then
+  /// [onVideoAccepted] (which must open the control socket, because the
+  /// server sends the rest of the header only after that), then the header
+  /// and [packets] packets.
+  ///
+  /// Afterwards the video keeps being drained in the background until
+  /// [close]: all `adb forward` sockets share one adb connection, so an
+  /// unread video socket would stall control messages too.
+  Future<StreamReport> run({
+    required int packets,
+    required Future<void> Function() onVideoAccepted,
+  }) async {
     for (var attempt = 1; attempt <= _connectAttempts; attempt++) {
       final reader = await _SocketReader.connect(port);
+      var keepOpen = false;
       try {
         // Same retry policy as the native plugins: the forward accepts the
         // connection even before the device socket listens.
-        final header = await reader.read(_headerSize);
+        final dummy = await reader.read(1);
+        await onVideoAccepted();
+        final header = Uint8List.fromList([
+          ...dummy,
+          ...await reader.read(_headerSize - 1),
+        ]);
         final report = StreamReport(attempt: attempt, header: header);
         for (var i = 0; i < packets; i++) {
           final meta = ByteData.sublistView(
@@ -40,15 +59,21 @@ class StreamProbe {
             payload: payload,
           );
         }
+        keepOpen = true;
+        _activeReader = reader;
+        unawaited(reader.drain());
         return report;
       } on StateError {
         await Future<void>.delayed(_retryDelay);
       } finally {
-        await reader.close();
+        if (!keepOpen) await reader.close();
       }
     }
     throw StateError('No stream header after $_connectAttempts attempts');
   }
+
+  /// Stops draining and closes the video socket.
+  Future<void> close() async => _activeReader?.close();
 }
 
 /// Result of a [StreamProbe] run.
@@ -150,6 +175,16 @@ class _SocketReader {
     final all = _pending.takeBytes();
     _pending.add(all.sublist(count));
     return Uint8List.sublistView(all, 0, count);
+  }
+
+  /// Discards incoming data until the socket closes or [close] is called.
+  Future<void> drain() async {
+    _pending.clear();
+    try {
+      while (await _chunks.moveNext()) {}
+    } on Object {
+      // Closed by close(); nothing left to drain.
+    }
   }
 
   Future<void> close() async {

@@ -14,12 +14,15 @@ import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_command.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
 
+import 'scrcpy_verify/control_probe.dart';
 import 'scrcpy_verify/stream_probe.dart';
 
 const String _scid = '7a5e0001';
 const int _localPort = 27199;
 const int _packetsToRead = 30;
 const Duration _readyTimeout = Duration(seconds: 15);
+const Duration _powerOnCheckDelay = Duration(milliseconds: 1500);
+const Duration _logWaitLimit = Duration(seconds: 5);
 
 Future<void> main(List<String> args) async {
   final serial = _option(args, 'serial');
@@ -36,9 +39,16 @@ Future<void> main(List<String> args) async {
   Process? server;
   final serverLog = <String>[];
   try {
-    // Displays only produce frames while the screen is on.
-    stdout.writeln('Waking the device screen (no frames while it is off).');
-    await _adb(adb, serial, ['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP']);
+    // By default start with the screen off: with control enabled, the server
+    // must turn it on by itself (power_on). --keep-screen skips that check.
+    final keepScreen = args.contains('--keep-screen');
+    await _adb(adb, serial, [
+      'shell',
+      'input',
+      'keyevent',
+      keepScreen ? 'KEYCODE_WAKEUP' : 'KEYCODE_SLEEP',
+    ]);
+    final screenOffBefore = !await isScreenOn(adb, serial);
     await _adb(adb, serial, [
       'push',
       ScrcpyServerConstants.assetKey,
@@ -53,6 +63,8 @@ Future<void> main(List<String> args) async {
         videoBitRateBps: 8000000,
         maxFps: 60,
       ),
+      // Verification only: makes the server log ignored positional events.
+      'log_level=verbose',
     ]);
     final ready = Completer<ScrcpyServerEvent>();
     void onOutput(List<int> data) {
@@ -80,13 +92,70 @@ Future<void> main(List<String> args) async {
       'localabstract:scrcpy_$_scid',
     ]);
 
-    final report = await StreamProbe(port: _localPort)
-        .run(packets: _packetsToRead);
+    final control = ControlProbe(port: _localPort, adb: adb, serial: serial);
+    // power_on acts when the controller starts (then sleeps 500 ms); check
+    // soon after, because a locked screen turns itself off within seconds.
+    late Future<bool> screenOnAfterControl;
+    final probe = StreamProbe(port: _localPort);
+    final report = await probe.run(
+      packets: _packetsToRead,
+      onVideoAccepted: () async {
+        await control.connect();
+        screenOnAfterControl = Future<bool>.delayed(
+          _powerOnCheckDelay,
+          () => isScreenOn(adb, serial),
+        );
+      },
+    );
+    final screenOnAfter = await screenOnAfterControl;
+    // Dismisses an insecure (swipe) lock screen; a PIN lock stays.
+    await _adb(adb, serial, ['shell', 'wm', 'dismiss-keyguard'], check: false);
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    final locked = await isKeyguardShowing(adb, serial);
+    final skipKeys = args.contains('--skip-keys');
+    final keyResults = locked || skipKeys
+        ? [
+            'keys: skipped '
+                '(${skipKeys ? '--skip-keys' : 'device is locked; unlock it to verify HOME/BACK'})',
+          ]
+        : await control.checkKeys();
+    control.sendTapPair(width: report.width, height: report.height);
+    // Server logs arrive asynchronously through `adb shell`; wait for them.
+    List<String> ignoredEvents() =>
+        serverLog.where((l) => l.contains('Ignore positional event')).toList();
+    final logWait = Stopwatch()..start();
+    while (ignoredEvents().length < 2 && logWait.elapsed < _logWaitLimit) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+    // Give a stray third event (it would mean the right-size tap was
+    // rejected too) a moment to show up before counting.
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    await control.close();
+    await probe.close();
+    final ignored = ignoredEvents();
+
+    final powerOnOk = !screenOffBefore || screenOnAfter;
+    final keysOk =
+        locked ||
+        skipKeys ||
+        (keyResults.any((r) => r.contains('launcher')) &&
+            keyResults.any((r) => r.startsWith('BACK closed Settings: true')));
+    // The wrong-size tap is a DOWN and an UP: two ignored events.
+    final tapOk = ignored.length == 2;
     stdout
       ..writeln('scrcpy-server $version on $serial')
       ..writeln(report.describe())
-      ..writeln(report.isHealthy ? 'RESULT: OK' : 'RESULT: FAILED');
-    if (!report.isHealthy) exitCode = 1;
+      ..writeln(
+        'power_on: screen off before=$screenOffBefore, on after=$screenOnAfter',
+      )
+      ..writeAll(keyResults.map((r) => '$r\n'))
+      ..writeln(
+        'positional events ignored by the size check: ${ignored.length} '
+        '(expected 2: DOWN and UP of the wrong-size tap)',
+      );
+    final ok = report.isHealthy && powerOnOk && keysOk && tapOk;
+    stdout.writeln(ok ? 'RESULT: OK' : 'RESULT: FAILED');
+    if (!ok) exitCode = 1;
   } on TimeoutException {
     stdout.writeln(
       'RESULT: FAILED (no video data in time: is the screen on and unlocked?)',
@@ -97,7 +166,7 @@ Future<void> main(List<String> args) async {
     exitCode = 1;
   } finally {
     stdout.writeln('--- server log ---');
-    serverLog.take(40).forEach(stdout.writeln);
+    serverLog.take(60).forEach(stdout.writeln);
     server?.kill();
     await _adb(adb, serial, [
       'forward',
