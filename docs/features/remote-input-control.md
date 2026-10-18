@@ -58,7 +58,7 @@ flowchart LR
   - <kbd>Cmd</kbd> + <kbd>Backspace</kbd>: Back button.
   - <kbd>Cmd</kbd> + <kbd>Tab</kbd>: App Switcher / Recent Apps (`KEYCODE_APP_SWITCH`).
   - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate display orientation 90 degrees.
-  - <kbd>Cmd</kbd> + <kbd>O</kbd>: Power phone screen off/on.
+  - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on while mirroring continues ([Screen Off](screen-off-streaming.md)).
 
 ### 4. International Unicode & IME Text Injection (<kbd>Cmd</kbd> + <kbd>K</kbd>)
 - **Direct Character Stream:** While standard hardware keyboard forwarding can encounter difficulties with complex multi-byte input, the **Quick Text Injector** modal (<kbd>Cmd</kbd> + <kbd>K</kbd>) directly injects UTF-8 text strings into the focused Android text field.

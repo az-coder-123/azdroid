@@ -66,6 +66,10 @@
 - **Root Cause:** The video connected, but the scrcpy control socket did not. DeskDroid stops the session instead of showing a mirror that ignores clicks.
 - **Solution:** Unlock the phone and tap **Retry Connection**. If it keeps failing, disconnect and reconnect the device.
 
+### ❌ The Mirror Stops Updating After Turning the Phone Screen Off
+- **Root Cause:** Screen Off keeps the phone awake, but its own screen timeout still runs. With **Keep Phone Awake** off, the phone goes to sleep when the timeout ends. Pressing the phone's power button while the screen is off also puts it to sleep.
+- **Solution:** Keep **Keep Phone Awake** on (sun icon) while using Screen Off. To recover, wake the phone with its power button, unlock it, and press <kbd>Cmd</kbd> + <kbd>O</kbd> again.
+
 ### ❌ The Phone's Screen Timeout Is 24 Hours After Mirroring
 - **Root Cause:** With **Keep Phone Awake** on, DeskDroid sets the phone's screen timeout to 24 hours and "Stay awake while charging" on during mirroring. A restore process on the phone puts the old values back when mirroring stops. If the phone restarts or its battery runs out during mirroring, that process never runs.
 - **Solution:** Set the screen timeout in the phone's display settings (and **Developer options → Stay awake**) back to what you want. To avoid it, turn off Keep Phone Awake (sun icon in the side dock) before long unattended sessions.

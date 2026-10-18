@@ -1,41 +1,50 @@
-# Feature: Screen-Off Streaming & Power Preservation
+# Feature: Screen-Off Streaming
 
 > **Subsystem:** `lib/features/streaming/`  
-> **Key Interfaces:** `StreamingRepository`, `ScrcpyServerManager`  
-> **Presentation:** `StreamingCubit`, `FloatingControlsToolbar`  
-> **Shortcut:** <kbd>Cmd</kbd> + <kbd>O</kbd>  
+> **Key Interfaces:** `StreamingRepository.toggleScreenOff`, `ScrcpyControlConnector.setDisplayPower`  
+> **Presentation:** `StreamingCubit`, `FloatingControlsToolbar`, `MirroringActiveView` (shortcut)  
+> **Shortcut:** <kbd>Cmd</kbd> + <kbd>O</kbd> (<kbd>Ctrl</kbd> + <kbd>O</kbd> on Windows)  
 > **Platforms:** macOS ✅ · Windows 🧪 not yet verified ([status](../platform-support.md))
 
 ---
 
 ## 📌 Overview
 
-**Screen-Off Streaming** allows you to interact with and mirror your Android device while keeping the physical phone screen completely turned off. This feature significantly reduces device battery consumption, prevents heat buildup, and safeguards user privacy in public workspaces.
+**Screen Off** turns off the phone's display panel while you keep mirroring and controlling it. The phone stays awake: apps keep running, the video keeps streaming, and your clicks and keys still work. Only the physical screen goes dark, which saves battery and keeps the screen private on your desk.
 
 ```mermaid
 flowchart LR
-    MacUser["macOS Mirroring Window\n(Full Touch & Keyboard Control)"] --> Socket["Control Channel\n(Turn Screen Off Flag)"]
-    Socket --> AndroidHardware["Android Display Controller\n(Physical Screen Powered Down)"]
-    AndroidHardware --> SurfaceCapture["SurfaceControl Framebuffer\n(Still Active & Streaming)"]
-    SurfaceCapture --> VideoFeed["macOS Video Display\n(Butter-smooth 60 FPS)"]
+    Toggle["Toolbar button / Cmd+O"] --> Cubit["StreamingCubit.toggleScreenOff"]
+    Cubit --> Repo["StreamingRepository"]
+    Repo --> Control["Control socket\nSET_DISPLAY_POWER (off / on)"]
+    Control --> Server["scrcpy-server\n(panel power mode)"]
+    Server --> Video["Video keeps streaming"]
 ```
 
 ---
 
-## ⚡️ Key Capabilities
+## ⚡️ How It Works
 
-### 1. Zero-Power Physical Display
-- **Hardware Blanking:** Powers down the physical OLED / LCD backlight panel on the phone using Android's internal display power mode controls (`--turn-screen-off`).
-- **Framebuffer Preservation:** The Android window manager continues rendering frames into `SurfaceControl`, allowing video capture and remote touch input to function normally without interruption.
+| Step | What happens |
+|:---|:---|
+| Turn off | DeskDroid sends scrcpy's `SET_DISPLAY_POWER` (off) message over the control socket. The server sets the panel's power mode to off. The device does **not** go to sleep. |
+| Turn on | The same message with "on". |
+| Bitrate or keep-awake change | The pipeline restarts; the old server turns the panel on when it exits, so DeskDroid sends "off" again to the new one. |
+| Stop mirroring | DeskDroid sends "on". If DeskDroid quits or the connection drops instead, the server's restore process (`cleanup=true`) turns the panel on when the server exits. |
 
-### 2. Thermal & Battery Preservation
-- **Heat Dissipation Reduction:** Display backlights account for up to 60–70% of phone power consumption. Turning off the display keeps device temperatures cool and eliminates battery drain during extended work sessions.
-- **OLED Burn-In Protection:** Prevents static UI elements (such as status bars and navigation docks) from causing irreversible burn-in on OLED and AMOLED panels during long debugging sessions.
+The header shows a **Screen Off** badge while it is active. If the control socket is not connected, nothing changes and the app log notes it.
 
-### 3. Workplace & Public Privacy
-- **Covert Operation:** When working in cafes, offices, or shared spaces, your phone lying on the desk remains completely black. Nobody nearby can see notifications, incoming messages, or authentication prompts appearing on the screen.
+---
 
-### 4. Effortless Wakeup & Safety
-- **1-Click Toggle:** Press <kbd>Cmd</kbd> + <kbd>O</kbd> or click the screen toggle icon on the vertical action dock to instantly power the phone screen on or off.
-- **Physical Button Wakeup:** Pressing the phone's physical power button immediately wakes the physical display.
-- **Auto-Restore on Disconnect:** When the streaming session ends, the phone display automatically turns back on.
+## ⚠️ Good to Know
+
+- **Combine with Keep Phone Awake** (the sun icon, on by default). With the panel off the phone is still "awake" and its own screen timeout keeps running. Without Keep Phone Awake, the phone goes to sleep after that timeout and the mirror stops updating.
+- **Physical power button:** The phone thinks its screen is on, so pressing the power button puts it to sleep. Press it again to wake the phone; the panel then comes back on (checked on the Android 16 emulator: `Awake` → `Dozing` → `Awake` with the panel on). Press <kbd>Cmd</kbd> + <kbd>O</kbd> to turn it off again.
+- **Lock screen:** A phone with a secure lock screen may still lock after its lock timeout. Unlock it on the phone; Xiaomi (MIUI) rejects remote input on the lock screen.
+- Before this feature used the control socket, Screen Off pressed the POWER key, which put the phone to sleep and stopped the mirror. See [lessons-learned/screen-off-power-key-slept-device.md](../lessons-learned/screen-off-power-key-slept-device.md).
+
+---
+
+## ✅ Verification
+
+`dart run tool/verify_scrcpy_server.dart --serial=<serial>` checks that the panel turns off while the device stays awake, that video keeps flowing, and that the panel is on again after the server exits. Verified on an Android 16 emulator (`powerMode=Off` while `mWakefulness=Awake`, video bytes still arriving, `powerMode=On` after exit) and on a Redmi 9 with Android 10 (`powerMode=0` while streaming continued).

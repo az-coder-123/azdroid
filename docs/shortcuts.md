@@ -34,6 +34,6 @@
 | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> | Device Files | Opens Android File Manager dialog with quick folders & download to the computer |
 | <kbd>Cmd</kbd> + <kbd>K</kbd> | Text Injector | Opens modal to send Unicode / Vietnamese text |
 | <kbd>Cmd</kbd> + <kbd>R</kbd> | Rotate Screen | Rotates video viewport by 90° clockwise |
-| <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen Toggle | Toggles physical device screen off to save power |
+| <kbd>Cmd</kbd> + <kbd>O</kbd> | Screen Toggle | Turns the phone's screen off or on while mirroring continues ([details](features/screen-off-streaming.md)) |
 | <kbd>Escape</kbd> | Back | Closes dialogs or navigates back |
 

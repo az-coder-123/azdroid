@@ -84,7 +84,7 @@
 - **APK Sideloading:** Drag `.apk` packages onto the window to trigger automatic background installation.
 
 ### 4.3 Screen-Off Mirroring (Energy & Privacy Optimization)
-- **Host Display Power Management:** Automatically blanks the physical Android display during an active mirroring session (`--turn-screen-off` flag).
+- **Host Display Power Management:** Turns the phone's screen off on demand (<kbd>Cmd</kbd> + <kbd>O</kbd>) while mirroring continues, through scrcpy's `SET_DISPLAY_POWER` control message ([details](features/screen-off-streaming.md)).
 - **Thermal & Battery Protection:** Dramatically reduces device heat dissipation and battery consumption while safeguarding user privacy in public settings.
 
 ### 4.4 macOS Menu Bar Companion

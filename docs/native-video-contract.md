@@ -64,7 +64,7 @@ The server runs with control enabled, so it accepts two sockets on the same forw
 2. Dart (`ScrcpyControlConnector`) sees `connected` and opens the control socket on the same port (`ScrcpyControlChannel`).
 3. Only then does the server send the device name and codec meta. Native reads the rest of the header.
 
-Reading the full header before control connects would deadlock. Native must also keep reading video for the whole session: all `adb forward` sockets share one adb transport, so an unread video socket stalls control messages too. Control message bytes are in `lib/features/control/data/scrcpy/scrcpy_control_message.dart`, checked against scrcpy's own serializer tests.
+Reading the full header before control connects would deadlock. Native must also keep reading video for the whole session: all `adb forward` sockets share one adb transport, so an unread video socket stalls control messages too. Control message bytes are in `lib/core/services/scrcpy_control_message.dart`, checked against scrcpy's own serializer tests.
 
 ---
 

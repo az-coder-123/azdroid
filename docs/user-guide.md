@@ -110,7 +110,7 @@ Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for e
 - <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>: Open Real-Time Device Logcat Console.
 - <kbd>Cmd</kbd> + <kbd>K</kbd>: Quick Text Injector (Direct Unicode & Vietnamese accents).
 - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate display 90 degrees.
-- <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn phone screen off/on (`--turn-screen-off`).
+- <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on; mirroring continues.
 
 ---
 
