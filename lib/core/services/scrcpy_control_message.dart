@@ -16,6 +16,7 @@ class ScrcpyControlMessage {
   static const int typeInjectTouchEvent = 2;
   static const int typeInjectScrollEvent = 3;
   static const int typeBackOrScreenOn = 4;
+  static const int typeSetClipboard = 9;
   static const int typeSetDisplayPower = 10;
 
   /// Android `KeyEvent` / `MotionEvent` actions used by DeskDroid.
@@ -28,6 +29,13 @@ class ScrcpyControlMessage {
 
   /// Longest text payload the server accepts in one message, in UTF-8 bytes.
   static const int maxTextBytes = 300;
+
+  /// Longest clipboard text the server accepts, in UTF-8 bytes: its
+  /// 256 KiB message limit minus the 14-byte header.
+  static const int maxClipboardBytes = (1 << 18) - 14;
+
+  /// Sequence number that asks the server for no acknowledgement.
+  static const int sequenceNoAck = 0;
 
   /// Key down/up event (14 bytes).
   static Uint8List keycode({
@@ -51,6 +59,26 @@ class ScrcpyControlMessage {
     final bytes = _truncateUtf8(utf8.encode(text), maxTextBytes);
     final builder = BytesBuilder(copy: false)
       ..addByte(typeInjectText)
+      ..add(_uint32(bytes.length))
+      ..add(bytes);
+    return builder.takeBytes();
+  }
+
+  /// Sets the device clipboard to [text] (14 + n bytes); with [paste] the
+  /// server then presses PASTE into the focused field (Android 7+). Text
+  /// longer than [maxClipboardBytes] is cut at a UTF-8 character boundary.
+  static Uint8List setClipboard({
+    required String text,
+    bool paste = false,
+    int sequence = sequenceNoAck,
+  }) {
+    final bytes = _truncateUtf8(utf8.encode(text), maxClipboardBytes);
+    final header = ByteData(10)
+      ..setUint8(0, typeSetClipboard)
+      ..setUint64(1, sequence)
+      ..setUint8(9, paste ? 1 : 0);
+    final builder = BytesBuilder(copy: false)
+      ..add(header.buffer.asUint8List())
       ..add(_uint32(bytes.length))
       ..add(bytes);
     return builder.takeBytes();

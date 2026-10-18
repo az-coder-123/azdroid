@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -96,6 +97,41 @@ void main() {
       0x04,
       0x01,
     ]);
+  });
+
+  test('set_clipboard matches test_serialize_set_clipboard', () {
+    final bytes = ScrcpyControlMessage.setClipboard(
+      text: 'hello, world!',
+      paste: true,
+      sequence: 0x0102030405060708,
+    );
+    expect(bytes, [
+      0x09,
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // sequence
+      0x01, // paste
+      0x00, 0x00, 0x00, 0x0d, // text length
+      ...'hello, world!'.codeUnits,
+    ]);
+    expect(bytes, hasLength(27));
+  });
+
+  test('set_clipboard carries UTF-8 and asks for no ack by default', () {
+    final bytes = ScrcpyControlMessage.setClipboard(text: 'Tiếng Việt');
+    final text = utf8.encode('Tiếng Việt');
+    expect(bytes.sublist(1, 9), List.filled(8, 0));
+    expect(bytes[9], 0); // no paste
+    expect(ByteData.sublistView(bytes, 10, 14).getUint32(0), text.length);
+    expect(utf8.decode(bytes.sublist(14)), 'Tiếng Việt');
+  });
+
+  test('set_clipboard cuts long text at a character boundary', () {
+    // 'ệ' is 3 bytes; the limit falls inside one of them.
+    final long = 'a${'ệ' * (ScrcpyControlMessage.maxClipboardBytes ~/ 3)}';
+    final bytes = ScrcpyControlMessage.setClipboard(text: long);
+    final length = ByteData.sublistView(bytes, 10, 14).getUint32(0);
+    expect(length, lessThanOrEqualTo(ScrcpyControlMessage.maxClipboardBytes));
+    expect(() => utf8.decode(bytes.sublist(14)), returnsNormally);
+    expect(bytes.length, 14 + length);
   });
 
   test('set_display_power matches test_serialize_set_display_power', () {

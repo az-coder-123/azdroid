@@ -122,8 +122,29 @@ void main() {
       },
     );
 
-    test('leaves text to adb (non-ASCII input)', () async {
-      expect(await scrcpy.injectText(serial, 'Xin chào'), isFalse);
+    test('pastes non-ASCII text through the device clipboard', () async {
+      expect(await scrcpy.injectText(serial, 'Xin chào 你好 👋'), isTrue);
+      expect(channel.sent.single, [
+        ...ScrcpyControlMessage.setClipboard(
+          text: 'Xin chào 你好 👋',
+          paste: true,
+        ),
+      ]);
+      expect(
+        typeOf(channel.sent.single),
+        ScrcpyControlMessage.typeSetClipboard,
+      );
+    });
+
+    test('leaves ASCII text to adb, keeping the device clipboard', () async {
+      expect(await scrcpy.injectText(serial, 'hello world 123'), isFalse);
+      expect(channel.sent, isEmpty);
+    });
+
+    test('does not paste for another device or a closed socket', () async {
+      expect(await scrcpy.injectText('other:5555', 'chào'), isFalse);
+      channel.connectedSerial = null;
+      expect(await scrcpy.injectText(serial, 'chào'), isFalse);
       expect(channel.sent, isEmpty);
     });
   });
@@ -156,9 +177,24 @@ void main() {
       verify(() => adb.injectTap(serial, 10, 20, frame: frame)).called(1);
     });
 
-    test('always types text through adb', () async {
-      await datasource.injectText(serial, 'Xin chào');
-      verify(() => adb.injectText(serial, 'Xin chào')).called(1);
+    test('pastes non-ASCII text without touching adb', () async {
+      expect(await datasource.injectText(serial, 'Xin chào'), isTrue);
+      expect(channel.sent, hasLength(1));
+      verifyNever(() => adb.injectText(any(), any()));
     });
+
+    test('types ASCII text through adb', () async {
+      await datasource.injectText(serial, 'hello');
+      verify(() => adb.injectText(serial, 'hello')).called(1);
+    });
+
+    test(
+      'falls back to adb for non-ASCII text when the socket is closed',
+      () async {
+        channel.connectedSerial = null;
+        await datasource.injectText(serial, 'Xin chào');
+        verify(() => adb.injectText(serial, 'Xin chào')).called(1);
+      },
+    );
   });
 }

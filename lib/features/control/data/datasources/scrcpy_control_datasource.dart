@@ -86,11 +86,25 @@ class ScrcpyControlDatasource implements ControlDatasource {
         );
   }
 
-  /// Text stays on the adb path: the scrcpy server types through the device
-  /// key map, which cannot produce most non-ASCII characters (for example
-  /// Vietnamese). Returning `false` hands it to the fallback.
+  /// Text with characters outside ASCII (Vietnamese accents, CJK, emoji)
+  /// is put on the device clipboard and pasted by the server: key-map
+  /// typing (`input text`, scrcpy INJECT_TEXT) cannot produce them, and an
+  /// IME such as Telex would rewrite them. Pure ASCII returns `false`, so
+  /// the adb path types it without touching the device clipboard.
   @override
-  Future<bool> injectText(String deviceSerial, String text) async => false;
+  Future<bool> injectText(String deviceSerial, String text) async {
+    if (text.isEmpty || _isAscii(text) || !isAvailableFor(deviceSerial)) {
+      return false;
+    }
+    return _channel.send(
+      ScrcpyControlMessage.setClipboard(text: text, paste: true),
+    );
+  }
+
+  static bool _isAscii(String text) =>
+      text.codeUnits.every((unit) => unit < _firstNonAsciiCodeUnit);
+
+  static const int _firstNonAsciiCodeUnit = 0x80;
 
   Uint8List _touch(int action, int x, int y, FrameSize frame) =>
       ScrcpyControlMessage.touch(
