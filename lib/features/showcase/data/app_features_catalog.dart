@@ -10,18 +10,17 @@ class AppFeaturesCatalog {
     AppFeatureItem(
       id: 'mirroring',
       title: 'Wireless Screen Mirroring',
-      subtitle:
-          'Ultra-low latency 60 FPS real-time display streaming over Wi-Fi',
+      subtitle: 'Low-latency hardware-decoded streaming at up to 60 FPS over Wi-Fi or USB',
       category: FeatureCategory.displayAndControl,
       icon: Icons.cast_connected_rounded,
-      badgeText: '60 FPS • < 30ms',
+      badgeText: 'Up to 60 FPS • H.264',
       badgeColor: AppColors.accent,
       highlights: [
-        'Apple VideoToolbox hardware decoding optimizes Mac battery longevity.',
-        'High-DPI Retina resolution support preserves razor-sharp text and UI.',
+        'Hardware decoding: VideoToolbox on macOS, Media Foundation on Windows.',
+        'Streams at the phone\'s native resolution, sharp on high-DPI displays.',
         'Automatic portrait/landscape orientation sync with the mobile device.',
       ],
-      proTip: 'Select H.264 or H.265 in Settings for optimal visual clarity and bitrate.',
+      proTip: 'Pick 4, 8, or 16 Mbps in the side dock: 4 Mbps for weak Wi-Fi.',
       docFileName: 'wireless-display-streaming.md',
     ),
     AppFeatureItem(
@@ -30,14 +29,14 @@ class AppFeaturesCatalog {
       subtitle: 'Stream and control while the physical Android screen is powered down',
       category: FeatureCategory.displayAndControl,
       icon: Icons.screen_lock_portrait_rounded,
-      badgeText: 'Save 70% Battery & Heat',
+      badgeText: 'Screen Dark • Still Mirroring',
       badgeColor: AppColors.statusSuccess,
       highlights: [
         'Phone display stays completely black while remaining fully interactive on Mac.',
-        'Reduces device temperature by up to 70% during long sessions or charging.',
+        'The display panel draws no power while it is off.',
         'Privacy protection prevents shoulder-surfing in public workspaces.',
       ],
-      proTip: 'Click the "Screen Off" toggle on the right-side toolbar at any time.',
+      proTip: 'Press Cmd+O (Ctrl+O on Windows) or the screen button in the bottom toolbar.',
       docFileName: 'screen-off-streaming.md',
     ),
     AppFeatureItem(
@@ -50,23 +49,23 @@ class AppFeaturesCatalog {
       badgeColor: AppColors.accentLight,
       highlights: [
         'Left click to tap/drag; trackpad and mouse wheel for fluid scrolling.',
-        'Mac shortcuts: Cmd+H for Home, Cmd+B for Back, Cmd+Tab for App Switcher.',
-        'Effortless typing and Unicode text injection from physical Mac keyboards.',
+        'Shortcuts: Cmd+H for Home, Cmd+Backspace for Back; right click is Back too.',
+        'Typing from the computer keyboard; Cmd+K sends ASCII text in one go.',
       ],
-      proTip: 'Enable "Keyboard Capture" to type text directly into Android text fields.',
+      proTip: 'For accented or CJK text, copy it on the computer and paste on the phone.',
       docFileName: 'remote-input-control.md',
     ),
     AppFeatureItem(
       id: 'logcat_console',
       title: 'Professional Logcat Console',
       subtitle:
-          'IDE-grade Android log inspection and real-time streaming at 60 FPS',
+          'IDE-grade Android log inspection with a live, filterable stream',
       category: FeatureCategory.devTools,
       icon: Icons.terminal_rounded,
-      badgeText: 'IDE-Grade • 60 FPS',
+      badgeText: 'IDE-Grade • 5k Buffer',
       badgeColor: AppColors.statusWarning,
       highlights: [
-        '60 FPS log streaming with a 5,000-line memory ring buffer and zero UI freeze.',
+        'Live stream batched every 100 ms into a 5,000-line ring buffer.',
         'Multi-tier filtering by Tag, PID, and Log Level (Verbose to Fatal).',
         'Stack trace detail drawer, star bookmarks, and non-blocking file recording.',
       ],
@@ -76,8 +75,7 @@ class AppFeaturesCatalog {
     AppFeatureItem(
       id: 'file_manager',
       title: 'Device File Manager & Explorer',
-      subtitle:
-          'Browse and transfer Android files with a Finder-like dual-pane view',
+      subtitle: 'Browse Android storage and transfer files in both directions',
       category: FeatureCategory.productivity,
       icon: Icons.folder_shared_rounded,
       badgeText: 'Two-Way Finder',
@@ -109,8 +107,7 @@ class AppFeaturesCatalog {
     AppFeatureItem(
       id: 'clipboard_sync',
       title: 'Two-Way Clipboard Synchronization',
-      subtitle:
-          'Real-time background clipboard daemon between macOS and Android',
+      subtitle: 'Background clipboard sync between the computer and Android every 2 s',
       category: FeatureCategory.productivity,
       icon: Icons.content_paste_go_rounded,
       badgeText: 'Live 2-Way Sync',
@@ -133,7 +130,7 @@ class AppFeaturesCatalog {
       badgeColor: AppColors.statusSuccess,
       highlights: [
         'Select or drag APK files for automated inspection and installation.',
-        'Preview Package Name, Version, App Label, and requested Permissions.',
+        'Preview package name, version, app label, icon, and SDK levels.',
         'Launch the application directly on device upon successful installation.',
       ],
       proTip: 'Provides automated compatibility diagnosis and error explanations if install fails.',
@@ -142,14 +139,14 @@ class AppFeaturesCatalog {
     AppFeatureItem(
       id: 'screen_recording',
       title: 'Hardware Screen Recording',
-      subtitle: 'Cinema-quality MP4 video recording with zero CPU load on Mac',
+      subtitle: 'H.264 MP4 recording encoded on the phone, not the computer',
       category: FeatureCategory.productivity,
       icon: Icons.videocam_rounded,
-      badgeText: 'MP4 • Zero Mac CPU',
+      badgeText: 'MP4 • Up to 3 min',
       badgeColor: AppColors.statusError,
       highlights: [
-        'Encodes directly on Android hardware encoder; Mac consumes virtually 0% CPU.',
-        'Configurable bitrates from 4 Mbps to 24 Mbps and resolution presets.',
+        'Encoded by the phone\'s hardware encoder; the computer only pulls the file.',
+        'Records at 8 Mbps for up to 3 minutes (Android\'s screenrecord limit).',
         'Includes 3-second countdown timer and automatic finalization to Downloads.',
       ],
       proTip: 'Recorded MP4 files are immediately compatible with QuickTime and Final Cut.',
@@ -174,14 +171,14 @@ class AppFeaturesCatalog {
     ),
     AppFeatureItem(
       id: 'pairing',
-      title: 'Zero-Click Wireless Pairing',
+      title: 'Wireless Discovery & Pairing',
       subtitle: 'Automated network discovery and seamless 1-click USB-to-Wi-Fi switch',
       category: FeatureCategory.connectivity,
       icon: Icons.wifi_tethering_rounded,
       badgeText: 'mDNS Auto-Discovery',
       badgeColor: AppColors.accent,
       highlights: [
-        'Discovers devices on the local Wi-Fi subnet via mDNS and ZeroConf probing.',
+        'Finds devices on the local subnet via ARP, a TCP port sweep, and mDNS.',
         '1-click switch from wired USB connection to permanent wireless Wi-Fi mode.',
         'Supports pairing via 6-digit Wi-Fi PIN code or direct IP socket entry.',
       ],
@@ -191,17 +188,18 @@ class AppFeaturesCatalog {
     AppFeatureItem(
       id: 'menu_bar',
       title: 'macOS Menu Bar Companion',
-      subtitle: 'Status telemetry and quick toggles accessible from the macOS menu bar',
+      subtitle:
+          'Planned: status telemetry and quick toggles in the macOS menu bar',
       category: FeatureCategory.connectivity,
       icon: Icons.desktop_mac_rounded,
-      badgeText: 'macOS Menu Bar',
+      badgeText: 'Planned',
       badgeColor: AppColors.textSecondary,
       highlights: [
         'Lightweight background companion displaying the active connected device.',
         'Real-time FPS and network latency (ms) telemetry monitor.',
         '1-click toggle to show or hide the main mirroring window instantly.',
       ],
-      proTip: 'Click the status bar item to verify network latency without disrupting your workflow.',
+      proTip: 'Not available yet: the popover is designed but not wired into the app.',
       docFileName: 'menu-bar-companion.md',
     ),
     AppFeatureItem(

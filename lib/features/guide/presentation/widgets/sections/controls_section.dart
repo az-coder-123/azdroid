@@ -66,16 +66,15 @@ class ControlsSection extends StatelessWidget {
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('Tab'),
-              description: 'Open App Switcher (Recent Apps)',
+              description: 'Open App Switcher (Windows; on macOS this is the system app switcher, so use the toolbar button)',
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('K'),
-              description:
-                  'Quick Text Injector (Direct Unicode & Vietnamese accents)',
+              description: 'Quick Text Injector (ASCII text; paste accented text through the clipboard)',
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('R'),
-              description: 'Rotate screen display 90 degrees',
+              description: 'Rotate the mirror view 90 degrees (the phone does not rotate)',
             ),
             GuideShortcutItem(
               keys: keys.keyCaps('O'),
