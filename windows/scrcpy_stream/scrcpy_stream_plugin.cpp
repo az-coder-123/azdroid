@@ -5,6 +5,7 @@
 #include <utility>
 #include <variant>
 
+#include "channel_args.h"
 #include "stream_config.h"
 #include "stream_log.h"
 
@@ -19,34 +20,7 @@ constexpr char kStartStream[] = "startStream";
 constexpr char kStopStream[] = "stopStream";
 constexpr char kGetDimensions[] = "getDimensions";
 constexpr char kGetStats[] = "getStats";
-constexpr char kHostKey[] = "host";
-constexpr char kPortKey[] = "port";
 constexpr char kNoRegistryCode[] = "NO_REGISTRY";
-
-std::string ReadHost(const EncodableMap* args) {
-  if (args != nullptr) {
-    const auto it = args->find(EncodableValue(kHostKey));
-    if (it != args->end()) {
-      if (const auto* host = std::get_if<std::string>(&it->second)) return *host;
-    }
-  }
-  return kDefaultHost;
-}
-
-uint16_t ReadPort(const EncodableMap* args) {
-  int64_t port = kDefaultPort;
-  if (args != nullptr) {
-    const auto it = args->find(EncodableValue(kPortKey));
-    if (it != args->end()) {
-      // Dart ints arrive as int32 when they fit, int64 otherwise.
-      // Avoid the name `small`: the Windows SDK defines it as a macro.
-      if (const auto* port32 = std::get_if<int32_t>(&it->second)) port = *port32;
-      if (const auto* port64 = std::get_if<int64_t>(&it->second)) port = *port64;
-    }
-  }
-  return (port > 0 && port <= UINT16_MAX) ? static_cast<uint16_t>(port)
-                                          : static_cast<uint16_t>(kDefaultPort);
-}
 
 }  // namespace
 
@@ -55,7 +29,8 @@ void ScrcpyStreamPlugin::RegisterWithRegistrar(
   auto channel = std::make_unique<flutter::MethodChannel<EncodableValue>>(
       registrar->messenger(), kChannelName,
       &flutter::StandardMethodCodec::GetInstance());
-  auto plugin = std::make_unique<ScrcpyStreamPlugin>(registrar->texture_registrar());
+  auto plugin = std::make_unique<ScrcpyStreamPlugin>(
+      registrar->texture_registrar(), registrar->messenger());
   channel->SetMethodCallHandler(
       [plugin_pointer = plugin.get()](const auto& call, auto result) {
         plugin_pointer->HandleMethodCall(call, std::move(result));
@@ -64,8 +39,9 @@ void ScrcpyStreamPlugin::RegisterWithRegistrar(
   StreamLog("Registered " + std::string(kChannelName));
 }
 
-ScrcpyStreamPlugin::ScrcpyStreamPlugin(flutter::TextureRegistrar* textures)
-    : textures_(textures) {}
+ScrcpyStreamPlugin::ScrcpyStreamPlugin(flutter::TextureRegistrar* textures,
+                                       flutter::BinaryMessenger* messenger)
+    : textures_(textures), audio_(std::make_unique<AudioChannel>(messenger)) {}
 
 ScrcpyStreamPlugin::~ScrcpyStreamPlugin() { StopStream(); }
 

@@ -1,5 +1,6 @@
-// Windows implementation of the `com.deskdroid/video_stream` MethodChannel.
-// Contract: docs/native-video-contract.md (shared with the macOS Swift plugin).
+// Windows implementation of the `com.deskdroid/video_stream` MethodChannel
+// (docs/native-video-contract.md) and owner of the audio channel
+// (docs/native-audio-contract.md). Shared contracts with the macOS plugins.
 #ifndef SCRCPY_STREAM_SCRCPY_STREAM_PLUGIN_H_
 #define SCRCPY_STREAM_SCRCPY_STREAM_PLUGIN_H_
 
@@ -12,6 +13,7 @@
 #include <memory>
 #include <string>
 
+#include "audio_channel.h"
 #include "frame_texture.h"
 #include "stream_session.h"
 
@@ -21,7 +23,8 @@ class ScrcpyStreamPlugin : public flutter::Plugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrarWindows* registrar);
 
-  explicit ScrcpyStreamPlugin(flutter::TextureRegistrar* textures);
+  ScrcpyStreamPlugin(flutter::TextureRegistrar* textures,
+                     flutter::BinaryMessenger* messenger);
   ~ScrcpyStreamPlugin() override;
   ScrcpyStreamPlugin(const ScrcpyStreamPlugin&) = delete;
   ScrcpyStreamPlugin& operator=(const ScrcpyStreamPlugin&) = delete;
@@ -42,6 +45,8 @@ class ScrcpyStreamPlugin : public flutter::Plugin {
   std::shared_ptr<FrameTexture> texture_;
   int64_t texture_id_ = -1;
   std::unique_ptr<StreamSession> session_;
+  // Second channel of this plugin: docs/native-audio-contract.md.
+  std::unique_ptr<AudioChannel> audio_;
 };
 
 }  // namespace scrcpy_stream

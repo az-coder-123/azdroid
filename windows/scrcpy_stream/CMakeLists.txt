@@ -11,6 +11,9 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../native/scrcpy_core"
 
 add_library(${PLUGIN_NAME} SHARED
   "include/scrcpy_stream/scrcpy_stream_plugin_c_api.h"
+  "audio_channel.cpp"
+  "audio_session.cpp"
+  "channel_args.cpp"
   "frame_texture.cpp"
   "mf_h264_decoder.cpp"
   "mf_util.cpp"
@@ -18,6 +21,7 @@ add_library(${PLUGIN_NAME} SHARED
   "scrcpy_stream_plugin_c_api.cpp"
   "stream_log.cpp"
   "stream_session.cpp"
+  "wasapi_audio_output.cpp"
   "winsock_connection.cpp"
 )
 apply_standard_settings(${PLUGIN_NAME})
@@ -36,6 +40,6 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE
   flutter_wrapper_plugin
   scrcpy_core
   mfplat mfuuid wmcodecdspuuid  # Media Foundation + H.264 decoder CLSID
-  ole32 oleaut32                # COM, VARIANT
+  ole32 oleaut32                # COM, VARIANT (also WASAPI audio)
   ws2_32                        # Winsock
 )
