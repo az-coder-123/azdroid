@@ -13,6 +13,7 @@ import 'package:desk_droid/features/streaming/presentation/cubit/streaming_cubit
 import 'package:desk_droid/features/streaming/presentation/cubit/streaming_state.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/floating_controls_toolbar.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/interactive_display_viewport.dart';
+import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_central_viewport.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/mirroring_feedback_stack.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/side_controls_toolbar.dart';
 import 'package:desk_droid/features/streaming/presentation/widgets/stream_reconfiguring_badge.dart';
@@ -154,62 +155,19 @@ class _MirroringActiveViewState extends State<MirroringActiveView> {
   }
 
   Widget _buildCentralViewport(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final maxW = constraints.maxWidth;
-        final maxH = constraints.maxHeight;
-
-        // Calculate aspect ratio of the stream accounting for active rotation
-        final isRotated = (widget.state.rotationDegrees ~/ 90) % 2 != 0;
-        final rawW = widget.state.session.width.toDouble();
-        final rawH = widget.state.session.height.toDouble();
-        final streamW = isRotated ? rawH : rawW;
-        final streamH = isRotated ? rawW : rawH;
-        final phoneAspect = streamW / streamH;
-
-        // Sidebar dimensions & ergonomic spacing
-        const sidebarWidth = 44.0;
-        const gap = 16.0;
-        const reservedSidebarSpace = sidebarWidth + gap;
-
-        // Available viewport space for the phone screen
-        final availableW = (maxW - reservedSidebarSpace - 8.0).clamp(
-          100.0,
-          maxW,
-        );
-        final availableH = maxH;
-
-        // Compute FittedBox contain dimensions
-        final fitsWidth = (availableW / availableH) > phoneAspect;
-        final phoneDisplayH = fitsWidth ? availableH : availableW / phoneAspect;
-        final phoneDisplayW = fitsWidth ? availableH * phoneAspect : availableW;
-
-        // Left spacer to keep phone centered in the window when horizontal space permits
-        final canCenterSymmetrically =
-            maxW > (phoneDisplayW + (reservedSidebarSpace * 2) + 16.0);
-
-        return Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (canCenterSymmetrically)
-                const SizedBox(width: reservedSidebarSpace),
-              SizedBox(
-                width: phoneDisplayW,
-                height: phoneDisplayH,
-                child: InteractiveDisplayViewport(
-                  session: widget.state.session,
-                  deviceSerial: widget.device.serial,
-                  rotationDegrees: widget.state.rotationDegrees,
-                ),
-              ),
-              const SizedBox(width: gap),
-              _buildSideControls(context),
-            ],
-          ),
-        );
-      },
+    // Stream aspect ratio accounting for the active rotation.
+    final isRotated = (widget.state.rotationDegrees ~/ 90) % 2 != 0;
+    final session = widget.state.session;
+    final width = (isRotated ? session.height : session.width).toDouble();
+    final height = (isRotated ? session.width : session.height).toDouble();
+    return MirroringCentralViewport(
+      aspectRatio: width / height,
+      display: InteractiveDisplayViewport(
+        session: session,
+        deviceSerial: widget.device.serial,
+        rotationDegrees: widget.state.rotationDegrees,
+      ),
+      sideToolbar: _buildSideControls(context),
     );
   }
 
