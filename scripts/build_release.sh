@@ -7,8 +7,11 @@
 #   2. Compiles hardware-optimized macOS release bundle
 #   3. Packages .app bundle into high-compression zip archive using Apple ditto
 #   4. Computes cryptographic SHA-256 verification checksums
-#   5. Generates RELEASE/ documentation and installation guide
-#   6. Commits & pushes release artifacts to GitHub
+#   5. Writes RELEASE/README.md (scripts/release/write_release_readme.sh)
+#   6. Commits RELEASE/ and fast-forwards origin/main to it (never forces)
+#   7. Creates the GitHub Release v<version> with docs/releases/v<version>.md
+#
+# Full procedure (what to do before and after): docs/release-guide.md
 # ==============================================================================
 
 set -euo pipefail
@@ -90,6 +93,18 @@ echo -e "${BLUE}ℹ️  Application Version:${NC} ${BOLD}v${VERSION_NAME} (Build
 echo -e "${BLUE}ℹ️  Target Architecture:${NC} Apple Silicon & Intel Universal (macOS 12.0+)"
 echo ""
 
+# Publishing needs the release notes and a committed tree, so the release
+# commit holds only RELEASE/ and the tag points at reviewed sources.
+NOTES_PATH="${ROOT_DIR}/docs/releases/v${VERSION_NAME}.md"
+if [ "$CREATE_GH_RELEASE" = true ] && [[ ! -f "$NOTES_PATH" ]]; then
+  echo -e "${RED}Error: Release notes missing:${NC} ${NOTES_PATH} (see docs/release-guide.md)"
+  exit 1
+fi
+if [ "$PUSH_GIT" = true ] && [[ -n "$(git -C "$ROOT_DIR" status --porcelain -- . ':!RELEASE')" ]]; then
+  echo -e "${RED}Error: Commit or stash your changes first (only RELEASE/ may change).${NC}"
+  exit 1
+fi
+
 # 2. Pre-flight Quality Verification
 if [ "$SKIP_TESTS" = false ]; then
   echo -e "${YELLOW}🔍 [Step 1/5] Running static analysis (flutter analyze)...${NC}"
@@ -145,8 +160,9 @@ echo -e "${YELLOW}📦 [Step 4/5] Packaging release archive into RELEASE/...${NC
 mkdir -p "$RELEASE_DIR"
 cd "$RELEASE_DIR"
 
-# Clean old zip archives to keep only the latest release archive
-find "${RELEASE_DIR}" -maxdepth 1 -name "DeskDroid-v*.zip" ! -name "$ZIP_NAME" -delete 2>/dev/null || true
+# Remove older macOS archives only; the Windows packages are built on Windows
+# (scripts/build_release.ps1) and must survive a macOS release.
+find "${RELEASE_DIR}" -maxdepth 1 -name "DeskDroid-v*-macOS.zip" ! -name "$ZIP_NAME" -delete
 rm -f "$ZIP_NAME" "$LATEST_ZIP_NAME" SHA256SUMS.txt
 
 # Use Apple ditto to preserve macOS resource forks, symlinks, and code signature
@@ -165,63 +181,22 @@ SHA256_HASH=$(shasum -a 256 "$ZIP_NAME" | awk '{print $1}')
 echo -e "${GREEN}✓ Package created:${NC} ${RELEASE_DIR}/${ZIP_NAME} (${ZIP_SIZE})"
 echo -e "${GREEN}✓ SHA-256 Hash:${NC}   ${SHA256_HASH}"
 
-# 5. Generate RELEASE/README.md Documentation
-cat <<EOF > "${RELEASE_DIR}/README.md"
-# ⚡️ DeskDroid — Official Production Releases
+# 5. Describe every package present in RELEASE/ (macOS and Windows)
+"${SCRIPT_DIR}/release/write_release_readme.sh" "$RELEASE_DIR"
 
-> High-performance Android screen mirroring & developer workstation for macOS over Wi-Fi & USB.
-
----
-
-## 📥 Current Release: v${VERSION_NAME} (Build ${BUILD_NUMBER})
-
-| Asset | Platform | File Size | SHA-256 Checksum |
-| :--- | :--- | :--- | :--- |
-| **[\`${ZIP_NAME}\`](${ZIP_NAME})** | macOS 12.0+ (Apple Silicon & Intel) | \`${ZIP_SIZE}\` | \`${SHA256_HASH}\` |
-| **[\`${LATEST_ZIP_NAME}\`](${LATEST_ZIP_NAME})** | macOS 12.0+ (Latest Snapshot) | \`${ZIP_SIZE}\` | \`${SHA256_HASH}\` |
-
----
-
-## 🚀 Installation Guide (macOS)
-
-1. Download **[\`${ZIP_NAME}\`](${ZIP_NAME})** from this directory or the [GitHub Releases](https://github.com/az-coder-123/desk-droid/releases) page.
-2. Unzip the archive by double-clicking it in macOS Finder or running:
-   \`\`\`bash
-   unzip ${ZIP_NAME}
-   \`\`\`
-3. Drag **DeskDroid.app** into your \`/Applications\` folder.
-4. Ensure **ADB (Android Debug Bridge)** is installed on your Mac:
-   \`\`\`bash
-   brew install android-platform-tools
-   \`\`\`
-
-### 🛡️ macOS Gatekeeper Security Note (Unsigned Builds)
-Because DeskDroid is open-source and not signed with an Apple Developer Program ID, macOS Gatekeeper may prompt: *"DeskDroid cannot be opened because the developer cannot be verified"*.
-
-To allow DeskDroid to run seamlessly, run this one-time command in macOS Terminal:
-\`\`\`bash
-xattr -cr /Applications/DeskDroid.app
-\`\`\`
-Or right-click **DeskDroid.app** in Finder, choose **Open**, and click **Open** on the confirmation dialog.
-
----
-
-## 🔒 Verification
-To verify the integrity of your downloaded release archive:
-\`\`\`bash
-shasum -a 256 -c SHA256SUMS.txt
-\`\`\`
-EOF
-
-echo -e "${GREEN}✓ Release documentation generated:${NC} ${RELEASE_DIR}/README.md"
-
-# 6. Push to GitHub
+# 6. Commit RELEASE/ and fast-forward origin/main (a rejected push stops here)
 if [ "$PUSH_GIT" = true ]; then
   echo -e "${YELLOW}🚀 [Step 5/5] Committing release artifacts and pushing to GitHub...${NC}"
   cd "$ROOT_DIR"
-  git add pubspec.yaml scripts/build_release.sh RELEASE/ docs/
+  git add RELEASE/
   git commit -m "chore(release): package DeskDroid v${VERSION_NAME} macOS release archive" || echo "No changes to commit"
-  git push origin main
+  git fetch origin
+  git push origin "HEAD:main"
+  CURRENT_BRANCH=$(git branch --show-current)
+  if [[ -n "$CURRENT_BRANCH" && "$CURRENT_BRANCH" != "main" ]]; then
+    git push origin "$CURRENT_BRANCH"
+    git branch -f main HEAD
+  fi
   echo -e "${GREEN}✓ Release artifacts successfully pushed to GitHub!${NC}"
 else
   echo -e "${BLUE}ℹ️  Skipping git push (--no-push active)${NC}"
@@ -239,20 +214,9 @@ if [ "$CREATE_GH_RELEASE" = true ] && command -v gh &> /dev/null; then
   else
     echo -e "${BLUE}Creating new GitHub release ${TAG_NAME}...${NC}"
     gh release create "$TAG_NAME" "${RELEASE_DIR}/${ZIP_NAME}" \
+      --target "$(git -C "$ROOT_DIR" rev-parse HEAD)" \
       --title "DeskDroid v${VERSION_NAME}" \
-      --notes "## ⚡️ DeskDroid v${VERSION_NAME} Production Release for macOS
-
-- 🚀 **Performance:** Glass-to-glass latency under 20ms with 60–120 FPS hardware video decoding.
-- 📶 **Dual Connection:** Subnet auto-discovery, mDNS wireless debugging, and plug-and-play USB cable mode.
-- 🛠️ **Developer Workstation:** Built-in Logcat Console, Intent & Deep Link Dispatcher, 1-Click APK Manager, Finder-style File Explorer, Screen Recording, and Area Crop.
-- 🤖 **MCP AI Server:** 58 headless automation & inspection tools for AI agents (Claude Desktop, Cursor, Antigravity).
-
-### 📥 Download & Verification
-- **File:** \`${ZIP_NAME}\` (\`${ZIP_SIZE}\`)
-- **SHA-256:** \`${SHA256_HASH}\`
-
-### 🛡️ macOS Gatekeeper Note
-For community builds, run: \`xattr -cr /Applications/DeskDroid.app\`"
+      --notes-file "$NOTES_PATH"
   fi
   echo -e "${GREEN}✓ GitHub Release published:${NC} https://github.com/az-coder-123/desk-droid/releases/tag/${TAG_NAME}"
 fi
