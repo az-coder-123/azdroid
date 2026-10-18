@@ -15,8 +15,22 @@ class McpAdbResolver {
       stderr.writeln('[DeskDroid MCP] ADB probe "$probe" failed: $error');
 
   /// Locates the adb executable on the local host machine.
-  static Future<String?> resolve(String? cached) async =>
-      cached ?? await _locator.locate();
+  ///
+  /// Logs the choice to stderr once, so MCP client logs show whether the
+  /// installed or the bundled adb is used.
+  static Future<String?> resolve(String? cached) async {
+    if (cached != null) return cached;
+    final path = await _locator.locate();
+    if (path == null) {
+      stderr.writeln('[DeskDroid MCP] No adb found (installed or bundled).');
+    } else {
+      final source = path == _locator.toolchain.bundledAdbPath
+          ? 'bundled'
+          : 'installed';
+      stderr.writeln('[DeskDroid MCP] Using $source adb at $path');
+    }
+    return path;
+  }
 }
 
 /// Generic 2D point representation for normalized screen coordinates.
