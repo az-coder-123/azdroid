@@ -10,6 +10,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
     ScrcpyStreamPlugin.register(with: flutterViewController)
+    ScrcpyAudioPlugin.register(with: flutterViewController)
 
     super.awakeFromNib()
   }

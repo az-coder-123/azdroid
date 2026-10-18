@@ -48,18 +48,7 @@ public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
   }
 
   static func streamLog(_ message: String) {
-    NSLog("[ScrcpyStream] %@", message)
-    let logLine = "[\(Date())] \(message)\n"
-    if let data = logLine.data(using: .utf8) {
-      let path = "/tmp/scrcpy_stream.log"
-      if let fileHandle = FileHandle(forWritingAtPath: path) {
-        fileHandle.seekToEndOfFile()
-        fileHandle.write(data)
-        fileHandle.closeFile()
-      } else {
-        try? data.write(to: URL(fileURLWithPath: path))
-      }
-    }
+    ScrcpyLog.write(message)
   }
 
   public init(textures: FlutterTextureRegistry) {

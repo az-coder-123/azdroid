@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1F099FB2E69FBC943BB4B7F4 /* audio_c_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30C73204F55FC4ACC256757C /* audio_c_api.cpp */; };
+		2494FD6C39CC0B987E0EF46F /* ScrcpyAudioStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DEAE317D6F0F97188001AD4 /* ScrcpyAudioStats.swift */; };
 		331C80D8294CF71000263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C80D7294CF71000263BE5 /* RunnerTests.swift */; };
 		335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */; };
 		33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC10F02044A3C60003C045 /* AppDelegate.swift */; };
@@ -29,8 +31,15 @@
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		33CC11252044BFA00003C045 /* ScrcpyStreamPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11242044BFA00003C045 /* ScrcpyStreamPlugin.swift */; };
 		33CC11272044BFA00003C045 /* ScrcpyStreamStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11262044BFA00003C045 /* ScrcpyStreamStats.swift */; };
+		7EE9C785EBAEB1A58720E7C3 /* ScrcpyAudioPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = C768BCE1DC379443C49261EC /* ScrcpyAudioPlugin.swift */; };
+		80EE5FE2AFF1626DC227F45C /* pcm_jitter_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A08767AFB0BF8E2FD3C2143A /* pcm_jitter_buffer.cpp */; };
+		91CEF3E7916D56CFCD511FD9 /* audio_header.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9453F71A9D1C2575839F2A71 /* audio_header.cpp */; };
 		938D5C52786F6B4CCC718F23 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F226E2FDF96E5EC35591811 /* Pods_RunnerTests.framework */; };
+		CAD3C2607568F6226DE21A75 /* ScrcpyLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D306D3DBEBCC421BAEB9CFD /* ScrcpyLog.swift */; };
+		D4F8B50EC75FE3BA3CD7251D /* ScrcpyAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2D198558BBC2DFB32E0C46 /* ScrcpyAudioSession.swift */; };
 		E2FC0D5ED161E3B1DC3F8767 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68637E4AA5C503CBAC300B95 /* Pods_Runner.framework */; };
+		E5EF7A49829FBA9435C51968 /* ScrcpySocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B04BC292D32DE42ABE2508 /* ScrcpySocket.swift */; };
+		F23B447285D8B77211585951 /* ScrcpyAudioOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25160629643B2090A42EB12 /* ScrcpyAudioOutput.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +73,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		09B04BC292D32DE42ABE2508 /* ScrcpySocket.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpySocket.swift; sourceTree = "<group>"; };
+		1A2D198558BBC2DFB32E0C46 /* ScrcpyAudioSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAudioSession.swift; sourceTree = "<group>"; };
+		30C73204F55FC4ACC256757C /* audio_c_api.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = audio_c_api.cpp; sourceTree = "<group>"; };
 		331C80D5294CF71000263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
@@ -82,16 +94,23 @@
 		33E51913231747F40026EE4D /* DebugProfile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DebugProfile.entitlements; sourceTree = "<group>"; };
 		33E51914231749380026EE4D /* Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
+		3DEAE317D6F0F97188001AD4 /* ScrcpyAudioStats.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAudioStats.swift; sourceTree = "<group>"; };
 		45711D570F8E92CF9E0C050D /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		5405A9BDC19FD615C98E8F30 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		68637E4AA5C503CBAC300B95 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F226E2FDF96E5EC35591811 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7147291474C4588FC122B079 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		7A67EA31FE193CD683E65D39 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		7D306D3DBEBCC421BAEB9CFD /* ScrcpyLog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyLog.swift; sourceTree = "<group>"; };
+		9453F71A9D1C2575839F2A71 /* audio_header.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = audio_header.cpp; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		9D6F5768B623A830B5AE04DD /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
+		A08767AFB0BF8E2FD3C2143A /* pcm_jitter_buffer.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = pcm_jitter_buffer.cpp; sourceTree = "<group>"; };
 		A147C9196B5603B15183D2AE /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		C4D40797129B8378FC875902 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		C768BCE1DC379443C49261EC /* ScrcpyAudioPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAudioPlugin.swift; sourceTree = "<group>"; };
+		D25160629643B2090A42EB12 /* ScrcpyAudioOutput.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScrcpyAudioOutput.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +161,7 @@
 				33CC10EE2044A3C60003C045 /* Products */,
 				D73912EC22F37F3D000D13A0 /* Frameworks */,
 				A11E1BF1642D80B26A49212E /* Pods */,
+				8082A1D0C832AB0CCD110635 /* scrcpy_core */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,8 +207,26 @@
 				33E51914231749380026EE4D /* Release.entitlements */,
 				33CC11242044D66E0003C045 /* Resources */,
 				33BA886A226E78AF003329D5 /* Configs */,
+				09B04BC292D32DE42ABE2508 /* ScrcpySocket.swift */,
+				3DEAE317D6F0F97188001AD4 /* ScrcpyAudioStats.swift */,
+				D25160629643B2090A42EB12 /* ScrcpyAudioOutput.swift */,
+				C768BCE1DC379443C49261EC /* ScrcpyAudioPlugin.swift */,
+				7147291474C4588FC122B079 /* Runner-Bridging-Header.h */,
+				7D306D3DBEBCC421BAEB9CFD /* ScrcpyLog.swift */,
+				1A2D198558BBC2DFB32E0C46 /* ScrcpyAudioSession.swift */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		8082A1D0C832AB0CCD110635 /* scrcpy_core */ = {
+			isa = PBXGroup;
+			children = (
+				30C73204F55FC4ACC256757C /* audio_c_api.cpp */,
+				9453F71A9D1C2575839F2A71 /* audio_header.cpp */,
+				A08767AFB0BF8E2FD3C2143A /* pcm_jitter_buffer.cpp */,
+			);
+			name = scrcpy_core;
+			path = ../native/scrcpy_core/src;
 			sourceTree = "<group>";
 		};
 		A11E1BF1642D80B26A49212E /* Pods */ = {
@@ -408,28 +446,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F6BFD089EE13E5191B368072 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RunnerTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		D3E5ADB0B0B1E7A1C0DEADB0 /* Embed Platform Tools (adb) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -468,6 +484,28 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/scripts/embed_mcp_server.sh\"\n";
 		};
+		F6BFD089EE13E5191B368072 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RunnerTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -488,6 +526,15 @@
 				33CC11272044BFA00003C045 /* ScrcpyStreamStats.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
+				E5EF7A49829FBA9435C51968 /* ScrcpySocket.swift in Sources */,
+				2494FD6C39CC0B987E0EF46F /* ScrcpyAudioStats.swift in Sources */,
+				F23B447285D8B77211585951 /* ScrcpyAudioOutput.swift in Sources */,
+				7EE9C785EBAEB1A58720E7C3 /* ScrcpyAudioPlugin.swift in Sources */,
+				1F099FB2E69FBC943BB4B7F4 /* audio_c_api.cpp in Sources */,
+				91CEF3E7916D56CFCD511FD9 /* audio_header.cpp in Sources */,
+				80EE5FE2AFF1626DC227F45C /* pcm_jitter_buffer.cpp in Sources */,
+				CAD3C2607568F6226DE21A75 /* ScrcpyLog.swift in Sources */,
+				D4F8B50EC75FE3BA3CD7251D /* ScrcpyAudioSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,16 +665,22 @@
 			baseConfigurationReference = 33E5194F232828860026EE4D /* AppInfo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../native/scrcpy_core/include",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Profile;
@@ -750,16 +803,22 @@
 			baseConfigurationReference = 33E5194F232828860026EE4D /* AppInfo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../native/scrcpy_core/include",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -770,16 +829,22 @@
 			baseConfigurationReference = 33E5194F232828860026EE4D /* AppInfo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Release.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../native/scrcpy_core/include",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
