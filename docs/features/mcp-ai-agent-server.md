@@ -13,7 +13,7 @@
 The **DeskDroid Model Context Protocol (MCP) Server** turns DeskDroid into an autonomous AI agent powerhouse. It exposes **58 comprehensive tools** enabling frontier AI models (Claude 3.5 Sonnet, Claude 3.7 Sonnet, GPT-4o) and agentic IDEs (**Claude Desktop**, **Cursor**, **Antigravity**, **Windsurf**, **Cline**) to directly observe, inspect, test, profile, and control physical or virtual Android devices over Wi-Fi and USB with zero UI overhead.
 
 > [!TIP]
-> **Headless Execution (No GUI App Required):** The MCP server runs independently as a lightweight Dart CLI process via `stdio`. You **do not need to open `DeskDroid.app`** for the AI to work. However, you can optionally run `DeskDroid.app` concurrently to visually observe the agent interacting with your device in real time.
+> **Headless Execution (No GUI App Required):** The MCP server runs independently as a lightweight Dart CLI process via `stdio`. You **do not need to open `DeskDroid.app`** for the AI to work. However, you can optionally run `DeskDroid.app` concurrently to visually observe the agent interacting with your device in real time. Each server process records which tools it runs on which device (never the arguments) in an activity file that the app shows ([mcp-activity-log.md](mcp-activity-log.md)).
 
 ```mermaid
 flowchart TD

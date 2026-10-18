@@ -45,6 +45,7 @@ Legend: ✅ works · 🧪 implemented, not yet verified on this platform · ❌ 
 | Screen recording (MP4) | ✅ | 🧪 | Stopped with a remote `kill -2`, so the MP4 is finalized on both. |
 | MCP AI agent server | ✅ | ✅ | Release builds ship a precompiled `deskdroid-mcp` (no Dart SDK needed); macOS verified end to end (58 tools, real device). Windows verified with `dart run bin/deskdroid_mcp.dart`; the precompiled `.exe` is not yet built on Windows. |
 | MCP status panel | ✅ | 🧪 | macOS checked against a release build (executable answers, client files read, sessions counted). Windows uses `tasklist` and `%APPDATA%`; not run yet. [Details](features/mcp-status-panel.md). |
+| MCP live activity | ✅ | 🧪 | macOS verified with a release server session on a real device (file written, read, removed). [Details](features/mcp-activity-log.md). |
 | Audio forwarding | 🧪 | 🧪 | Raw PCM, Android 11+ ([details](features/audio-forwarding.md)). macOS: the app's player classes verified with `scripts/check_macos_native.sh` on an Android 16 emulator; not yet in the app with a real Android 11+ phone. Windows: WASAPI player written, not yet compiled. |
 | Menu bar companion / system tray | ❌ | ❌ | The popover widget exists but is not wired into the app; a Windows tray is planned (Phase 3). |
 
