@@ -21,5 +21,8 @@ extension StreamStartFailureMessage on StreamStartFailure {
       'Connected to $deviceName, but the input channel did not open.\n'
           'Unlock the phone and retry. If it keeps failing, reconnect the '
           'device.',
+    StreamStartFailure.audioConnectFailed =>
+      'Connected to $deviceName, but the audio channel did not open.\n'
+          'Retry. If it keeps failing, reconnect the device.',
   };
 }

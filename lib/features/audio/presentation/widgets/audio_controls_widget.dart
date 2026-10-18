@@ -1,10 +1,13 @@
 import 'package:desk_droid/core/theme/app_colors.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
+import 'package:desk_droid/features/audio/presentation/widgets/audio_status_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Interactive audio control button providing mute toggle and slider volume adjustment.
+/// Audio button: volume slider and mute while playing, otherwise a disabled
+/// icon whose tooltip says why there is no sound.
 class AudioControlsWidget extends StatelessWidget {
   const AudioControlsWidget({super.key});
 
@@ -12,21 +15,29 @@ class AudioControlsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AudioCubit, AudioState>(
       builder: (context, state) {
-        if (state is! AudioActive) {
-          return const IconButton(
-            tooltip: 'Audio Stream Inactive',
+        final playback = state is AudioActive ? state.playback : null;
+        if (playback == null ||
+            playback.status != AudioPlaybackStatus.playing) {
+          final status = playback?.status ?? AudioPlaybackStatus.starting;
+          final isProblem = status == AudioPlaybackStatus.failed;
+          return IconButton(
+            tooltip: status.label,
             icon: Icon(
-              Icons.volume_mute_rounded,
+              isProblem
+                  ? Icons.error_outline_rounded
+                  : Icons.volume_mute_rounded,
               size: 20,
-              color: AppColors.textTertiary,
+              color: isProblem
+                  ? AppColors.statusWarning
+                  : AppColors.textTertiary,
             ),
             splashRadius: 18,
             onPressed: null,
           );
         }
 
-        final isMuted = state.audioStream.isMuted;
-        final volume = state.audioStream.volume;
+        final isMuted = playback.isMuted;
+        final volume = playback.volume;
 
         final IconData icon = isMuted || volume == 0.0
             ? Icons.volume_off_rounded

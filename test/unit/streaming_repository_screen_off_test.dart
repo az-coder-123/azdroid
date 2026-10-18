@@ -7,6 +7,8 @@ import 'package:desk_droid/features/streaming/data/services/stream_device_prefli
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_audio_stream_native_service.dart';
+
 class _MockServerManager extends Mock implements ScrcpyServerManager {}
 
 class _MockNativeService extends Mock implements IVideoStreamNativeService {}
@@ -60,8 +62,9 @@ void main() {
     when(() => nativeService.stopStream()).thenAnswer((_) async {});
     when(() => nativeService.getDimensions())
         .thenAnswer((_) async => {'width': 1080, 'height': 2336});
+    when(() => control.waitForVideoSocket()).thenAnswer((_) async => true);
     when(
-      () => control.connect(
+      () => control.openControl(
         deviceSerial: any(named: 'deviceSerial'),
         port: any(named: 'port'),
       ),
@@ -79,6 +82,7 @@ void main() {
       videoStreamNativeService: nativeService,
       devicePreflight: preflight,
       controlConnector: control,
+      audioService: FakeAudioStreamNativeService(),
     );
   });
 

@@ -1,107 +1,94 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
-import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAudioRepository extends Mock implements AudioRepository {}
+class _MockAudioRepository extends Mock implements AudioRepository {}
 
 void main() {
-  late MockAudioRepository mockRepository;
-  const testSerial = '192.168.1.100:5555';
-
-  const testStream = AudioStreamEntity(
-    deviceId: testSerial,
-    isEnabled: true,
-    volume: 1.0,
-    isMuted: false,
-    latencyMs: 12,
-  );
+  const playing = AudioPlayback(status: AudioPlaybackStatus.playing);
+  late _MockAudioRepository repository;
+  var volume = 1.0;
+  var muted = false;
 
   setUp(() {
-    mockRepository = MockAudioRepository();
-    when(() => mockRepository.stopAudioStream(any())).thenAnswer((_) async {});
+    repository = _MockAudioRepository();
+    volume = 1.0;
+    muted = false;
+    when(() => repository.volume).thenAnswer((_) => volume);
+    when(() => repository.isMuted).thenAnswer((_) => muted);
+    when(() => repository.setVolume(any())).thenAnswer((invocation) async {
+      volume = invocation.positionalArguments.first as double;
+    });
+    when(() => repository.setMuted(any())).thenAnswer((invocation) async {
+      muted = invocation.positionalArguments.first as bool;
+    });
   });
 
-  group('AudioCubit', () {
-    test('initial state is AudioInitial', () {
-      final cubit = AudioCubit(repository: mockRepository);
-      expect(cubit.state, isA<AudioInitial>());
-      cubit.close();
-    });
+  test('starts in AudioInitial', () {
+    expect(AudioCubit(repository: repository).state, const AudioInitial());
+  });
 
-    blocTest<AudioCubit, AudioState>(
-      'startAudio emits [AudioStarting, AudioActive] on success',
-      build: () {
-        when(() => mockRepository.startAudioStream(testSerial))
-            .thenAnswer((_) async => testStream);
-        return AudioCubit(repository: mockRepository);
-      },
-      act: (cubit) => cubit.startAudio(testSerial),
-      expect: () => [
-        const AudioStarting(),
-        const AudioActive(audioStream: testStream),
-      ],
-    );
-
-    blocTest<AudioCubit, AudioState>(
-      'startAudio emits [AudioStarting, AudioError] on failure',
-      build: () {
-        when(() => mockRepository.startAudioStream(testSerial))
-            .thenThrow(Exception('Socket connection timeout'));
-        return AudioCubit(repository: mockRepository);
-      },
-      act: (cubit) => cubit.startAudio(testSerial),
-      expect: () => [const AudioStarting(), isA<AudioError>()],
-    );
-
-    blocTest<AudioCubit, AudioState>(
-      'stopAudio emits AudioInitial',
-      build: () {
-        when(() => mockRepository.stopAudioStream(testSerial))
-            .thenAnswer((_) async {});
-        return AudioCubit(repository: mockRepository);
-      },
-      act: (cubit) => cubit.stopAudio(testSerial),
-      expect: () => [const AudioInitial()],
-    );
-
-    blocTest<AudioCubit, AudioState>(
-      'toggleMute updates audio stream entity state',
-      build: () {
-        when(() => mockRepository.toggleMute()).thenAnswer((_) async => true);
-        final cubit = AudioCubit(repository: mockRepository);
-        cubit.emit(const AudioActive(audioStream: testStream));
-        return cubit;
-      },
-      act: (cubit) => cubit.toggleMute(),
-      expect: () => [
-        isA<AudioActive>().having(
-          (s) => s.audioStream.isMuted,
-          'isMuted',
-          isTrue,
+  blocTest<AudioCubit, AudioState>(
+    'watchPlayback emits each playback sample',
+    setUp: () => when(() => repository.watch()).thenAnswer(
+      (_) => Stream.fromIterable(const [
+        AudioPlayback(),
+        playing,
+        AudioPlayback(status: AudioPlaybackStatus.unavailableOnDevice),
+      ]),
+    ),
+    build: () => AudioCubit(repository: repository),
+    act: (cubit) => cubit.watchPlayback(),
+    expect: () => const [
+      AudioActive(playback: AudioPlayback()),
+      AudioActive(playback: playing),
+      AudioActive(
+        playback: AudioPlayback(
+          status: AudioPlaybackStatus.unavailableOnDevice,
         ),
-      ],
-    );
+      ),
+    ],
+  );
 
-    blocTest<AudioCubit, AudioState>(
-      'setVolume updates volume on active stream',
-      build: () {
-        when(() => mockRepository.setVolume(0.5)).thenAnswer((_) async {});
-        final cubit = AudioCubit(repository: mockRepository);
-        cubit.emit(const AudioActive(audioStream: testStream));
-        return cubit;
-      },
-      act: (cubit) => cubit.setVolume(0.5),
-      expect: () => [
-        isA<AudioActive>().having(
-          (s) => s.audioStream.volume,
-          'volume',
-          equals(0.5),
-        ),
-      ],
-    );
+  blocTest<AudioCubit, AudioState>(
+    'setVolume applies it and shows it at once',
+    build: () => AudioCubit(repository: repository),
+    seed: () => const AudioActive(playback: playing),
+    act: (cubit) => cubit.setVolume(0.4),
+    expect: () => [AudioActive(playback: playing.copyWith(volume: 0.4))],
+    verify: (_) => verify(() => repository.setVolume(0.4)).called(1),
+  );
+
+  blocTest<AudioCubit, AudioState>(
+    'toggleMute flips the repository choice',
+    build: () => AudioCubit(repository: repository),
+    seed: () => const AudioActive(playback: playing),
+    act: (cubit) async {
+      await cubit.toggleMute();
+      await cubit.toggleMute();
+    },
+    expect: () => [
+      AudioActive(playback: playing.copyWith(isMuted: true)),
+      const AudioActive(playback: playing),
+    ],
+  );
+
+  test('close stops watching', () async {
+    final controller = StreamController<AudioPlayback>();
+    when(() => repository.watch()).thenAnswer((_) => controller.stream);
+    final cubit = AudioCubit(repository: repository)..watchPlayback();
+    await Future<void>.delayed(Duration.zero);
+    expect(controller.hasListener, isTrue);
+
+    await cubit.close();
+
+    expect(controller.hasListener, isFalse);
+    await controller.close();
   });
 }

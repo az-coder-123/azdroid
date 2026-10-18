@@ -14,6 +14,7 @@ import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_command.dart';
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
 
+import 'scrcpy_verify/audio_probe.dart';
 import 'scrcpy_verify/control_probe.dart';
 import 'scrcpy_verify/display_power_probe.dart';
 import 'scrcpy_verify/stay_awake_probe.dart';
@@ -67,6 +68,7 @@ Future<void> main(List<String> args) async {
         videoBitRateBps: 8000000,
         maxFps: 60,
         stayAwake: true,
+        audio: true,
       ),
       // Verification only: makes the server log ignored positional events.
       'log_level=verbose',
@@ -97,6 +99,7 @@ Future<void> main(List<String> args) async {
       'localabstract:scrcpy_$_scid',
     ]);
 
+    final audio = AudioProbe(port: _localPort, adb: adb, serial: serial);
     final control = ControlProbe(port: _localPort, adb: adb, serial: serial);
     // power_on acts when the controller starts (then sleeps 500 ms); check
     // soon after, because a locked screen turns itself off within seconds.
@@ -104,7 +107,9 @@ Future<void> main(List<String> args) async {
     final probe = StreamProbe(port: _localPort);
     final report = await probe.run(
       packets: _packetsToRead,
+      // Socket order with audio: video, audio, control.
       onVideoAccepted: () async {
+        await audio.connect();
         await control.connect();
         screenOnAfterControl = Future<bool>.delayed(
           _powerOnCheckDelay,
@@ -136,18 +141,22 @@ Future<void> main(List<String> args) async {
     // Give a stray third event (it would mean the right-size tap was
     // rejected too) a moment to show up before counting.
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    final display = DisplayPowerProbe(adb: adb, serial: serial);
-    await display.checkOff(
-      sendOff: () => control.setDisplayPower(on: false),
-      videoBytes: () => probe.drainedBytes,
-    );
+    final display = DisplayPowerProbe(adb: adb, serial: serial)
+      ..skipped = locked;
+    if (!locked) {
+      await display.checkOff(
+        sendOff: () => control.setDisplayPower(on: false),
+        videoBytes: () => probe.drainedBytes,
+      );
+    }
     await control.close();
+    await audio.close();
     await probe.close();
     final ignored = ignoredEvents();
     // Stopping the server (as the app does) must restore the settings.
     server.kill();
     await awake.recordAfter();
-    await display.checkRestoredOnExit();
+    if (!locked) await display.checkRestoredOnExit();
 
     final powerOnOk = !screenOffBefore || screenOnAfter;
     final keysOk =
@@ -169,14 +178,16 @@ Future<void> main(List<String> args) async {
         '(expected 2: DOWN and UP of the wrong-size tap)',
       )
       ..writeln(awake.describe())
-      ..writeln(display.describe());
+      ..writeln(display.describe())
+      ..writeln(await audio.describe());
     final ok =
         report.isHealthy &&
         powerOnOk &&
         keysOk &&
         tapOk &&
         awake.isOk &&
-        display.isOk;
+        display.isOk &&
+        await audio.isOk();
     stdout.writeln(ok ? 'RESULT: OK' : 'RESULT: FAILED');
     if (!ok) exitCode = 1;
   } on TimeoutException {

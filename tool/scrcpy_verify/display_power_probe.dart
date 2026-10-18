@@ -17,6 +17,9 @@ class DisplayPowerProbe {
   /// older Android (Android 10: `powerMode=0`), named on newer (`Off`).
   static const Set<String> _offModes = {'0', 'Off'};
 
+  /// Set when the phone is locked: its lock screen puts it to sleep within
+  /// seconds, which would look like a failed check.
+  bool skipped = false;
   bool? offWhileAwake;
   int? videoBytesWhileOff;
   bool? restoredOnExit;
@@ -49,14 +52,16 @@ class DisplayPowerProbe {
   }
 
   bool get isOk =>
+      skipped ||
       offWhileAwake == true &&
-      (videoBytesWhileOff ?? 0) > 0 &&
-      restoredOnExit == true;
+          (videoBytesWhileOff ?? 0) > 0 &&
+          restoredOnExit == true;
 
-  String describe() =>
-      'screen off: panel off while awake=$offWhileAwake, '
-      'video bytes while off=$videoBytesWhileOff, '
-      'panel on after server exit=$restoredOnExit';
+  String describe() => skipped
+      ? 'screen off: skipped (device is locked; unlock it to verify)'
+      : 'screen off: panel off while awake=$offWhileAwake, '
+            'video bytes while off=$videoBytesWhileOff, '
+            'panel on after server exit=$restoredOnExit';
 
   /// Whether any display SurfaceFlinger lists is powered off. The built-in
   /// panel is not always listed first (Redmi 9: second of two entries).

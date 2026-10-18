@@ -1,21 +1,20 @@
-import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 
-/// Abstract contract managing audio stream lifecycle, volume, and playback state.
+/// Playback controls and state of the mirrored device's audio.
+///
+/// The audio socket itself is opened and closed by the streaming session,
+/// because it must connect between the video and control sockets.
 abstract class AudioRepository {
-  /// Initiates audio capture daemon tunneling and socket connection.
-  Future<AudioStreamEntity> startAudioStream(
-    String deviceSerial, {
-    int? sampleRate,
-    int? channels,
-    String? codec,
-  });
+  /// Last volume set, 0.0 – 1.0. Kept for the app's lifetime.
+  double get volume;
 
-  /// Terminates audio capture and disposes local audio socket handles.
-  Future<void> stopAudioStream(String deviceSerial);
+  /// Last mute choice. Kept for the app's lifetime.
+  bool get isMuted;
 
-  /// Sets audio playback volume output (0.0 to 1.0).
+  /// Emits the playback state about once per second while listened to.
+  Stream<AudioPlayback> watch();
+
   Future<void> setVolume(double volume);
 
-  /// Toggles host mute state.
-  Future<bool> toggleMute();
+  Future<void> setMuted(bool muted);
 }

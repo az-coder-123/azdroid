@@ -8,6 +8,8 @@ import 'package:desk_droid/features/streaming/domain/errors/stream_start_excepti
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_audio_stream_native_service.dart';
+
 class MockScrcpyServerManager extends Mock implements ScrcpyServerManager {}
 
 class MockVideoStreamNativeService extends Mock
@@ -31,8 +33,9 @@ void main() {
     mockPreflight = MockStreamDevicePreflight();
     mockControl = MockScrcpyControlConnector();
     when(() => mockPreflight.ensureReady(any())).thenAnswer((_) async {});
+    when(() => mockControl.waitForVideoSocket()).thenAnswer((_) async => true);
     when(
-      () => mockControl.connect(
+      () => mockControl.openControl(
         deviceSerial: any(named: 'deviceSerial'),
         port: any(named: 'port'),
       ),
@@ -43,6 +46,7 @@ void main() {
       videoStreamNativeService: mockNativeService,
       devicePreflight: mockPreflight,
       controlConnector: mockControl,
+      audioService: FakeAudioStreamNativeService(),
     );
   });
 
@@ -357,8 +361,10 @@ void main() {
             deviceSerial: any(named: 'deviceSerial'),
           ),
         ).thenAnswer((_) async {});
+        when(() => mockControl.waitForVideoSocket())
+            .thenAnswer((_) async => true);
         when(
-          () => mockControl.connect(
+          () => mockControl.openControl(
             deviceSerial: any(named: 'deviceSerial'),
             port: any(named: 'port'),
           ),

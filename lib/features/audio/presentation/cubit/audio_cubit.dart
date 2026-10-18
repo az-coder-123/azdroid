@@ -1,77 +1,65 @@
+import 'dart:async';
+
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Cubit managing audio forwarding lifecycle, volume attenuation, and mute states.
+/// Shows the mirrored device's audio state and applies volume and mute.
+///
+/// Audio starts and stops with the mirroring session; this cubit only
+/// watches it.
 class AudioCubit extends Cubit<AudioState> {
   AudioCubit({required this.repository}) : super(const AudioInitial());
 
   final AudioRepository repository;
+  StreamSubscription<AudioPlayback>? _subscription;
 
-  /// Starts audio capture and streaming from target device.
-  Future<void> startAudio(String deviceSerial) async {
-    emit(const AudioStarting());
-
-    try {
-      final stream = await repository.startAudioStream(deviceSerial);
-      if (!isClosed) {
-        emit(AudioActive(audioStream: stream));
-      }
-    } catch (e) {
-      if (!isClosed) {
-        emit(AudioError(errorMessage: 'Failed to initialize audio: $e'));
-      }
-    }
-  }
-
-  /// Terminates audio forwarding.
-  Future<void> stopAudio(String deviceSerial) async {
-    try {
-      await repository.stopAudioStream(deviceSerial);
-    } catch (e, stack) {
-      AppLogger.warning(
-        'Failed to stop audio stream for $deviceSerial',
-        error: e,
+  /// Starts following the playback state.
+  void watchPlayback() {
+    unawaited(_subscription?.cancel());
+    _subscription = repository.watch().listen(
+      (playback) {
+        if (!isClosed) emit(AudioActive(playback: playback));
+      },
+      onError: (Object error, StackTrace stack) => AppLogger.warning(
+        'Audio playback state failed',
+        error: error,
         stackTrace: stack,
-      );
-    }
-
-    if (!isClosed) {
-      emit(const AudioInitial());
-    }
+      ),
+    );
   }
 
-  /// Sets audio playback volume (0.0 to 1.0).
+  /// Sets the playback volume (0.0 – 1.0).
   Future<void> setVolume(double volume) async {
-    final current = state;
-    if (current is AudioActive) {
-      await repository.setVolume(volume);
-      final updated = current.audioStream.copyWith(volume: volume);
-      if (!isClosed) {
-        emit(AudioActive(audioStream: updated));
-      }
-    }
+    await repository.setVolume(volume);
+    _emitChoice();
   }
 
-  /// Toggles mute status on or off.
+  /// Toggles mute.
   Future<void> toggleMute() async {
+    await repository.setMuted(!repository.isMuted);
+    _emitChoice();
+  }
+
+  /// Shows the user's choice at once, without waiting for the next sample.
+  void _emitChoice() {
     final current = state;
-    if (current is AudioActive) {
-      final isMuted = await repository.toggleMute();
-      final updated = current.audioStream.copyWith(isMuted: isMuted);
-      if (!isClosed) {
-        emit(AudioActive(audioStream: updated));
-      }
-    }
+    if (isClosed || current is! AudioActive) return;
+    emit(
+      AudioActive(
+        playback: current.playback.copyWith(
+          volume: repository.volume,
+          isMuted: repository.isMuted,
+        ),
+      ),
+    );
   }
 
   @override
-  Future<void> close() {
-    final current = state;
-    if (current is AudioActive) {
-      repository.stopAudioStream(current.audioStream.deviceId);
-    }
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }

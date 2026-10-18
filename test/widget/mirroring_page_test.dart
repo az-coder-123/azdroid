@@ -4,7 +4,7 @@ import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/platform/host_os.dart';
 import 'package:desk_droid/core/platform/shortcuts/shortcut_scheme.dart';
 import 'package:desk_droid/core/theme/app_theme.dart';
-import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:desk_droid/features/audio/domain/repositories/audio_repository.dart';
 import 'package:desk_droid/features/audio/presentation/cubit/audio_cubit.dart';
 import 'package:desk_droid/features/control/domain/repositories/control_repository.dart';
@@ -83,11 +83,7 @@ void main() {
     latencyMs: 12.4,
   );
 
-  const testAudioStream = AudioStreamEntity(
-    deviceId: '192.168.1.100:5555',
-    volume: 0.8,
-    isMuted: false,
-  );
+  const testPlayback = AudioPlayback(status: AudioPlaybackStatus.playing);
 
   setUp(() async {
     await sl.reset();
@@ -109,12 +105,12 @@ void main() {
         .thenAnswer((_) async {});
     when(() => mockRepository.toggleScreenOff(any(), any()))
         .thenAnswer((_) async => true);
-    when(() => mockAudioRepository.startAudioStream(any()))
-        .thenAnswer((_) async => testAudioStream);
-    when(() => mockAudioRepository.stopAudioStream(any()))
-        .thenAnswer((_) async {});
+    when(() => mockAudioRepository.watch())
+        .thenAnswer((_) => Stream.value(testPlayback));
+    when(() => mockAudioRepository.volume).thenReturn(1);
+    when(() => mockAudioRepository.isMuted).thenReturn(false);
     when(() => mockAudioRepository.setVolume(any())).thenAnswer((_) async {});
-    when(() => mockAudioRepository.toggleMute()).thenAnswer((_) async => true);
+    when(() => mockAudioRepository.setMuted(any())).thenAnswer((_) async {});
 
     sl.registerLazySingleton<StreamingRepository>(() => mockRepository);
     sl.registerFactory<StreamingCubit>(

@@ -11,7 +11,8 @@ import 'package:desk_droid/core/services/video_stream_native_service.dart';
 /// control socket second, and it sends the stream header only after both
 /// exist. Connecting control too early would make it the video socket;
 /// waiting for the header would deadlock. So this waits until the native
-/// plugin reports `connected` (dummy byte read), then connects.
+/// plugin reports `connected` (dummy byte read), then connects. With audio,
+/// the audio socket connects between the two steps (video, audio, control).
 /// See docs/native-video-contract.md.
 class ScrcpyControlConnector {
   ScrcpyControlConnector({
@@ -35,13 +36,20 @@ class ScrcpyControlConnector {
   Future<bool> connect({
     required String deviceSerial,
     required int port,
-  }) async {
+  }) async =>
+      await waitForVideoSocket() &&
+      await openControl(deviceSerial: deviceSerial, port: port);
+
+  /// Waits until the native plugin reports `connected` (the server accepted
+  /// the video socket). Any audio socket must connect after this and before
+  /// [openControl].
+  Future<bool> waitForVideoSocket() async {
     final stopwatch = Stopwatch()..start();
     while (stopwatch.elapsed < timeout) {
       final state = (await _native.getStats())?.state;
       switch (state) {
         case NativeStreamState.connected:
-          return _channel.connect(deviceSerial: deviceSerial, port: port);
+          return true;
         case NativeStreamState.failed || NativeStreamState.ended:
           AppLogger.warning(
             'Video stream ${state!.name} before control opened',
@@ -56,6 +64,10 @@ class ScrcpyControlConnector {
     );
     return false;
   }
+
+  /// Opens the control socket on the forwarded [port].
+  Future<bool> openControl({required String deviceSerial, required int port}) =>
+      _channel.connect(deviceSerial: deviceSerial, port: port);
 
   /// Turns the device's display panel off (`on: false`) or back on while
   /// mirroring continues. Returns `false` when control is not connected.

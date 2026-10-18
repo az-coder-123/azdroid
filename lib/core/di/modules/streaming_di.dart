@@ -1,6 +1,6 @@
 import 'package:desk_droid/core/platform/host_paths.dart';
-import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
+import 'package:desk_droid/core/services/audio_stream_native_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
@@ -25,8 +25,6 @@ void registerStreamingDependencies(GetIt sl) {
       jarLocator: ScrcpyServerJarLocator(hostPaths: sl<HostPaths>()),
     ),
   );
-  // Shared tunnel manager exposed to other features through a core contract.
-  sl.registerLazySingleton<AdbPortForwarder>(() => sl<ScrcpyServerManager>());
 
   sl.registerLazySingleton<IVideoStreamNativeService>(
     () => VideoStreamNativeService(),
@@ -44,6 +42,7 @@ void registerStreamingDependencies(GetIt sl) {
         nativeService: sl<IVideoStreamNativeService>(),
         channel: sl<ScrcpyControlChannel>(),
       ),
+      audioService: sl<IAudioStreamNativeService>(),
     ),
   );
 

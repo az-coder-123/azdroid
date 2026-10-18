@@ -2,6 +2,7 @@ import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/platform/host_toolchain.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/adb_tcpip_service.dart';
+import 'package:desk_droid/core/services/audio_stream_native_service.dart';
 import 'package:desk_droid/core/services/device_history_service.dart';
 import 'package:desk_droid/core/services/network_info_service.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -42,5 +43,9 @@ void registerCoreDependencies(GetIt sl) {
   sl.registerLazySingleton<ScrcpyControlChannel>(
     SocketScrcpyControlChannel.new,
     dispose: (channel) => channel.close(),
+  );
+  // Native audio player: opened by streaming, controlled by audio.
+  sl.registerLazySingleton<IAudioStreamNativeService>(
+    AudioStreamNativeService.new,
   );
 }

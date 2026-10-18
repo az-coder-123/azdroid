@@ -1,97 +1,101 @@
-import 'package:desk_droid/core/constants/audio_constants.dart';
-import 'package:desk_droid/core/constants/socket_config.dart';
-import 'package:desk_droid/core/services/adb_port_forwarder.dart';
-import 'package:desk_droid/features/audio/data/datasources/audio_socket_datasource.dart';
+import 'package:desk_droid/core/models/native_audio_stats.dart';
+import 'package:desk_droid/core/services/audio_stream_native_service.dart';
 import 'package:desk_droid/features/audio/data/repositories/audio_repository_impl.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAdbPortForwarder extends Mock implements AdbPortForwarder {}
-
-class MockAudioSocketDatasource extends Mock implements AudioSocketDatasource {}
+class _MockNative extends Mock implements IAudioStreamNativeService {}
 
 void main() {
-  late MockAdbPortForwarder mockPortForwarder;
-  late MockAudioSocketDatasource mockSocketDatasource;
+  late _MockNative native;
   late AudioRepositoryImpl repository;
 
-  const testSerial = '192.168.1.100:5555';
-
   setUp(() {
-    mockPortForwarder = MockAdbPortForwarder();
-    mockSocketDatasource = MockAudioSocketDatasource();
+    native = _MockNative();
+    when(() => native.isAvailable()).thenAnswer((_) async => true);
+    when(() => native.setVolume(any())).thenAnswer((_) async {});
+    when(() => native.setMuted(any())).thenAnswer((_) async {});
     repository = AudioRepositoryImpl(
-      portForwarder: mockPortForwarder,
-      socketDatasource: mockSocketDatasource,
+      native: native,
+      pollInterval: Duration.zero,
     );
   });
 
-  group('AudioRepositoryImpl', () {
-    test('startAudioStream sets up port forward, connects socket, and returns active entity', () async {
-      when(
-        () => mockPortForwarder.setupPortForward(
-          deviceSerial: testSerial,
-          localPort: SocketConfig.defaultAudioStreamPort,
-        ),
-      ).thenAnswer((_) async => true);
+  Future<AudioPlayback> firstFor(NativeAudioStats? stats) async {
+    when(() => native.getStats()).thenAnswer((_) async => stats);
+    return repository.watch().first;
+  }
 
-      when(
-        () => mockSocketDatasource.connect(
-          port: SocketConfig.defaultAudioStreamPort,
-        ),
-      ).thenAnswer((_) async => true);
+  test('maps every native state to what the user is told', () async {
+    final cases = {
+      NativeAudioState.connecting: AudioPlaybackStatus.starting,
+      NativeAudioState.idle: AudioPlaybackStatus.starting,
+      NativeAudioState.playing: AudioPlaybackStatus.playing,
+      NativeAudioState.disabled: AudioPlaybackStatus.unavailableOnDevice,
+      NativeAudioState.failed: AudioPlaybackStatus.failed,
+      NativeAudioState.ended: AudioPlaybackStatus.ended,
+      NativeAudioState.unknown: AudioPlaybackStatus.starting,
+    };
+    for (final entry in cases.entries) {
+      final playback = await firstFor(NativeAudioStats(state: entry.key));
+      expect(playback.status, entry.value, reason: '${entry.key}');
+    }
+  });
 
-      final session = await repository.startAudioStream(testSerial);
-
-      expect(session.deviceId, equals(testSerial));
-      expect(session.isEnabled, isTrue);
-      expect(session.sampleRate, equals(AudioConstants.defaultSampleRate));
-      expect(session.channels, equals(AudioConstants.defaultChannels));
-
-      verify(
-        () => mockPortForwarder.setupPortForward(
-          deviceSerial: testSerial,
-          localPort: SocketConfig.defaultAudioStreamPort,
-        ),
-      ).called(1);
-      verify(
-        () => mockSocketDatasource.connect(
-          port: SocketConfig.defaultAudioStreamPort,
-        ),
-      ).called(1);
-    });
-
-    test(
-      'stopAudioStream disconnects socket and removes port forward',
-      () async {
-        when(() => mockSocketDatasource.disconnect()).thenAnswer((_) async {});
-        when(
-          () => mockPortForwarder.removePortForward(
-            deviceSerial: testSerial,
-            localPort: SocketConfig.defaultAudioStreamPort,
-          ),
-        ).thenAnswer((_) async => true);
-
-        await repository.stopAudioStream(testSerial);
-
-        verify(() => mockSocketDatasource.disconnect()).called(1);
-        verify(
-          () => mockPortForwarder.removePortForward(
-            deviceSerial: testSerial,
-            localPort: SocketConfig.defaultAudioStreamPort,
-          ),
-        ).called(1);
-      },
+  test('reports buffering and underruns from the native counters', () async {
+    final playback = await firstFor(
+      const NativeAudioStats(
+        state: NativeAudioState.playing,
+        bufferedFrames: 2400,
+        underruns: 3,
+      ),
     );
 
-    test('toggleMute and setVolume update state correctly', () async {
-      final isMuted = await repository.toggleMute();
-      expect(isMuted, isTrue);
+    expect(playback.bufferedMs, 50);
+    expect(playback.underruns, 3);
+  });
 
-      final unmuted = await repository.toggleMute();
-      expect(unmuted, isFalse);
+  test('says the host has no player when the platform lacks one', () async {
+    when(() => native.isAvailable()).thenAnswer((_) async => false);
 
-      await repository.setVolume(0.75);
-    });
+    final all = await repository.watch().toList();
+
+    expect(all.single.status, AudioPlaybackStatus.unavailableOnHost);
+    verifyNever(() => native.getStats());
+  });
+
+  test('keeps polling while listened to', () async {
+    when(() => native.getStats()).thenAnswer(
+      (_) async => const NativeAudioStats(state: NativeAudioState.playing),
+    );
+
+    final samples = await repository.watch().take(3).toList();
+
+    expect(samples, hasLength(3));
+    verify(() => native.getStats()).called(3);
+  });
+
+  test('volume is clamped, applied natively, and reported', () async {
+    await repository.setVolume(1.7);
+    expect(repository.volume, 1.0);
+    verify(() => native.setVolume(1.0)).called(1);
+
+    await repository.setVolume(0.25);
+    final playback = await firstFor(
+      const NativeAudioStats(state: NativeAudioState.playing),
+    );
+    expect(playback.volume, 0.25);
+  });
+
+  test('mute is applied natively and reported', () async {
+    await repository.setMuted(true);
+
+    verify(() => native.setMuted(true)).called(1);
+    expect(repository.isMuted, isTrue);
+    final playback = await firstFor(
+      const NativeAudioStats(state: NativeAudioState.playing),
+    );
+    expect(playback.isMuted, isTrue);
   });
 }

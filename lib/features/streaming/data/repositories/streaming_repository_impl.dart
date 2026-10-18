@@ -1,5 +1,6 @@
 import 'package:desk_droid/core/models/device_entity.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
+import 'package:desk_droid/core/services/audio_stream_native_service.dart';
 import 'package:desk_droid/core/services/scrcpy_control_channel.dart';
 import 'package:desk_droid/core/services/video_stream_native_service.dart';
 import 'package:desk_droid/features/streaming/data/datasources/scrcpy_server_manager.dart';
@@ -19,6 +20,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
     StreamDevicePreflight? devicePreflight,
     StreamTelemetrySampler? telemetrySampler,
     ScrcpyControlConnector? controlConnector,
+    IAudioStreamNativeService? audioService,
   }) {
     final native = videoStreamNativeService ?? VideoStreamNativeService();
     return StreamingRepositoryImpl._(
@@ -33,6 +35,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
             nativeService: native,
             channel: SocketScrcpyControlChannel(),
           ),
+      audioService: audioService ?? AudioStreamNativeService(),
     );
   }
 
@@ -42,6 +45,7 @@ class StreamingRepositoryImpl implements StreamingRepository {
     required this._devicePreflight,
     required this._telemetrySampler,
     required this._controlConnector,
+    required this._audioService,
   });
 
   final ScrcpyServerManager _serverManager;
@@ -49,10 +53,12 @@ class StreamingRepositoryImpl implements StreamingRepository {
   final StreamDevicePreflight _devicePreflight;
   final StreamTelemetrySampler _telemetrySampler;
   final ScrcpyControlConnector _controlConnector;
+  final IAudioStreamNativeService _audioService;
   late final VideoPipelineLauncher _pipeline = VideoPipelineLauncher(
     serverManager: _serverManager,
     native: _nativeService,
     control: _controlConnector,
+    audio: _audioService,
   );
 
   StreamSessionEntity? _currentSession;

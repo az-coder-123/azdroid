@@ -15,6 +15,10 @@ enum StreamStartFailure {
   /// The server accepted the video socket, but the control socket could not
   /// be opened. The server only starts streaming once control is connected.
   controlConnectFailed,
+
+  /// The server accepted the video socket, but the audio socket could not
+  /// be opened. The server accepts control only after audio.
+  audioConnectFailed,
 }
 
 /// Thrown by `StreamingRepository.startSession` when streaming cannot start.

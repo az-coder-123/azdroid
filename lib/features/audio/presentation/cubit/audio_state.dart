@@ -1,7 +1,7 @@
-import 'package:desk_droid/features/audio/domain/entities/audio_stream_entity.dart';
+import 'package:desk_droid/features/audio/domain/entities/audio_playback.dart';
 import 'package:equatable/equatable.dart';
 
-/// Base state for audio forwarding.
+/// Base state for audio playback.
 sealed class AudioState extends Equatable {
   const AudioState();
 
@@ -9,32 +9,18 @@ sealed class AudioState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Initial uninitialized state.
-class AudioInitial extends AudioState {
+/// Before the first playback sample.
+final class AudioInitial extends AudioState {
   const AudioInitial();
 }
 
-/// State emitted while audio tunnel is establishing.
-class AudioStarting extends AudioState {
-  const AudioStarting();
-}
+/// Latest playback sample; its status covers starting, playing,
+/// unavailable, failed, and ended.
+final class AudioActive extends AudioState {
+  const AudioActive({required this.playback});
 
-/// State emitted when audio forwarding is active.
-class AudioActive extends AudioState {
-  const AudioActive({required this.audioStream});
-
-  final AudioStreamEntity audioStream;
+  final AudioPlayback playback;
 
   @override
-  List<Object?> get props => [audioStream];
-}
-
-/// State emitted upon audio forwarding error.
-class AudioError extends AudioState {
-  const AudioError({required this.errorMessage});
-
-  final String errorMessage;
-
-  @override
-  List<Object?> get props => [errorMessage];
+  List<Object?> get props => [playback];
 }

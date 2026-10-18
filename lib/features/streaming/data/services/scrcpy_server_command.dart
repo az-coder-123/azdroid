@@ -19,6 +19,7 @@ class ScrcpyServerCommand {
     required int videoBitRateBps,
     required int maxFps,
     required bool stayAwake,
+    required bool audio,
   }) => [
     '-s',
     deviceSerial,
@@ -33,8 +34,10 @@ class ScrcpyServerCommand {
     'tunnel_forward=true',
     'video_bit_rate=$videoBitRateBps',
     'max_fps=$maxFps',
-    // Audio playback is not built yet.
-    'audio=false',
+    // Raw PCM needs no decoder on the computer (docs/native-audio-contract.md).
+    // The default source, `output`, moves the phone's sound to the computer.
+    'audio=$audio',
+    if (audio) 'audio_codec=raw',
     // Input travels over the control socket (also lets the server turn the
     // screen on at start: power_on defaults to true).
     'control=true',

@@ -31,7 +31,7 @@ class MirroringPage extends StatelessWidget {
         ),
         BlocProvider<FileTransferCubit>(create: (_) => sl<FileTransferCubit>()),
         BlocProvider<AudioCubit>(
-          create: (_) => sl<AudioCubit>()..startAudio(device.serial),
+          create: (_) => sl<AudioCubit>()..watchPlayback(),
         ),
         BlocProvider<ScreenshotCubit>(create: (_) => sl<ScreenshotCubit>()),
         BlocProvider<ScreenRecordingCubit>(

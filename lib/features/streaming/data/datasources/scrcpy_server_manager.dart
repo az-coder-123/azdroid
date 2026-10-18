@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:desk_droid/core/constants/adb_timeouts.dart';
 import 'package:desk_droid/core/constants/scrcpy_server_constants.dart';
 import 'package:desk_droid/core/constants/socket_config.dart';
-import 'package:desk_droid/core/services/adb_port_forwarder.dart';
 import 'package:desk_droid/core/services/adb_service.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
@@ -14,7 +13,7 @@ import 'package:desk_droid/features/streaming/data/services/scrcpy_server_jar_lo
 import 'package:desk_droid/features/streaming/data/services/scrcpy_server_output.dart';
 
 /// Manages scrcpy-server deployment, persistent daemon execution, and socket tunnels.
-class ScrcpyServerManager implements AdbPortForwarder {
+class ScrcpyServerManager {
   /// Max wait for the scrcpy server ready signal before continuing.
   static const Duration _serverReadyFallback = Duration(milliseconds: 2500);
 
@@ -51,7 +50,6 @@ class ScrcpyServerManager implements AdbPortForwarder {
   static const String scid = ScrcpyServerConstants.scid;
 
   /// Configures TCP port forwarding via ADB to scrcpy abstract UNIX socket.
-  @override
   Future<bool> setupPortForward({
     required String deviceSerial,
     int localPort = SocketConfig.defaultVideoStreamPort,
@@ -79,7 +77,6 @@ class ScrcpyServerManager implements AdbPortForwarder {
   }
 
   /// Removes an existing TCP port forward.
-  @override
   Future<bool> removePortForward({
     required String deviceSerial,
     int localPort = SocketConfig.defaultVideoStreamPort,
@@ -109,13 +106,16 @@ class ScrcpyServerManager implements AdbPortForwarder {
   /// Launches the scrcpy-server persistent daemon on the target Android device.
   ///
   /// With [stayAwake], the server keeps the phone awake until it exits, then
-  /// restores the phone's own settings (see [ScrcpyServerCommand]).
+  /// restores the phone's own settings (see [ScrcpyServerCommand]). With
+  /// [audio], the client must connect an audio socket between video and
+  /// control, or the server never accepts control.
   Future<bool> startServerDaemon({
     required String deviceSerial,
     int port = SocketConfig.defaultVideoStreamPort,
     int maxFps = 60,
     int bitrateMbps = 8,
     bool stayAwake = false,
+    bool audio = false,
   }) async {
     final adb = await _adbService.resolveAdbPath();
     if (adb == null) return false;
@@ -157,6 +157,7 @@ class ScrcpyServerManager implements AdbPortForwarder {
         videoBitRateBps: bitrateMbps * _bitsPerMegabit,
         maxFps: maxFps,
         stayAwake: stayAwake,
+        audio: audio,
       );
 
       // Completes with true when ready, false on a version mismatch.

@@ -15,6 +15,7 @@ void main() {
     videoBitRateBps: 8000000,
     maxFps: 60,
     stayAwake: true,
+    audio: true,
   );
 
   test('runs the server class with the client version first', () {
@@ -48,10 +49,30 @@ void main() {
       videoBitRateBps: 8000000,
       maxFps: 60,
       stayAwake: false,
+      audio: false,
     );
     expect(plain.where((a) => a.startsWith('stay_awake')), isEmpty);
     expect(plain.where((a) => a.startsWith('screen_off_timeout')), isEmpty);
     expect(plain, contains('cleanup=true'));
+  });
+
+  test('audio requests raw PCM, which needs no decoder', () {
+    expect(args, containsAll(['audio=true', 'audio_codec=raw']));
+  });
+
+  test('without audio, no audio codec is sent', () {
+    final plain = ScrcpyServerCommand.adbArguments(
+      deviceSerial: '192.168.1.3:5555',
+      remoteJarPath: ScrcpyServerConstants.remoteJarPath,
+      serverVersion: ScrcpyServerConstants.version,
+      scid: ScrcpyServerConstants.scid,
+      videoBitRateBps: 8000000,
+      maxFps: 60,
+      stayAwake: false,
+      audio: false,
+    );
+    expect(plain, contains('audio=false'));
+    expect(plain.where((a) => a.startsWith('audio_codec')), isEmpty);
   });
 
   // The server rejects unknown keys, so every key must exist in the bundled
