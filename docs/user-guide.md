@@ -7,11 +7,11 @@
 ## 🛠️ 1. Required Tools & Prerequisites
 
 ### 1.1 Computer Preparation
-DeskDroid is engineered to require minimal host dependencies. The **only external requirement** is the Android Debug Bridge (`adb`).
+DeskDroid needs the Android Debug Bridge (`adb`). **Release builds bundle it**, so nothing has to be installed. If `adb` is already installed (Android Studio, Homebrew, winget), DeskDroid uses that copy instead, so only one adb version runs on your computer. Details: [bundled-platform-tools.md](bundled-platform-tools.md).
 
 #### macOS
 
-- **Installing ADB via Homebrew (Recommended):**
+- **Optional — installing ADB via Homebrew** (useful if you also run `adb` in Terminal):
   ```bash
   brew install android-platform-tools
   ```
@@ -21,14 +21,15 @@ DeskDroid is engineered to require minimal host dependencies. The **only externa
   - Apple Silicon Homebrew: `/opt/homebrew/bin/adb`
   - Intel Mac Homebrew: `/usr/local/bin/adb`
   - Current shell `$PATH` via `which adb`
+  - Bundled copy inside the app (`DeskDroid.app/Contents/MacOS/adb`), used last
 
 #### Windows (Preview)
 
-- **Installing ADB via winget (Recommended):**
+- **Optional — installing ADB via winget** (useful if you also run `adb` in a terminal):
   ```powershell
   winget install Google.PlatformTools
   ```
-  Restart DeskDroid afterwards so it sees the updated `PATH`.
+  Restart DeskDroid afterwards so it sees the updated `PATH`. Without it, DeskDroid uses the `adb.exe` bundled next to `desk_droid.exe`.
 - **If Android Studio is already installed:** DeskDroid detects ADB inside your Android SDK (`%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe`, or the folder in `ANDROID_HOME`).
 - **USB connections** may need the [Google USB Driver](https://developer.android.com/studio/run/win-usb) or your phone maker's driver. Wi-Fi connections need no driver.
 

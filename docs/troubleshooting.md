@@ -45,6 +45,11 @@
   5. If it still does not appear, restart ADB: `adb kill-server` then `adb start-server`.
   6. Tap **Retry Connection** on the mirroring page.
 
+### ❌ "adb server version doesn't match this client; killing..."
+- **Symptom:** Devices disconnect and reconnect repeatedly, often while Android Studio or another tool is open.
+- **Root Cause:** Two different adb versions are used on one computer, for example DeskDroid's bundled adb and Android Studio's. Each one restarts the shared adb server with its own version.
+- **Solution:** DeskDroid already prefers an installed adb over its bundled copy. If you installed adb *after* starting DeskDroid, restart DeskDroid so it picks the installed one. Check which adb DeskDroid uses in the app log (`ADB` lines). See [bundled-platform-tools.md](bundled-platform-tools.md#3-which-adb-is-used).
+
 ---
 
 ## 📱 3. Xiaomi / MIUI / HyperOS Specifics
@@ -74,7 +79,7 @@
 
 ### ❌ "ADB executable not found" After Installing Platform Tools
 
-- **Root Cause:** `winget` adds ADB to `PATH`, but programs that were already open keep the old `PATH`.
+- **Root Cause:** Release builds bundle `adb.exe`, so this only appears in builds without it (for example a local build made before `dart run tool/fetch_platform_tools.dart`). Otherwise `winget` adds ADB to `PATH`, but programs that were already open keep the old `PATH`.
 - **Solution:** Close and reopen DeskDroid (and the terminal, if you started it from one). Check with `where adb`. Alternatively set `ANDROID_HOME` to your SDK folder.
 
 ### ❌ Phone Connected by USB Does Not Appear

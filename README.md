@@ -188,7 +188,7 @@ flowchart LR
 | | macOS | Windows (Preview) |
 | :--- | :--- | :--- |
 | Host | macOS 12.0+ (Apple Silicon or Intel) | Windows 10/11 x64 |
-| ADB | `brew install android-platform-tools` | `winget install Google.PlatformTools` |
+| ADB | **Bundled** in release builds (optional: `brew install android-platform-tools`) | **Bundled** in release builds (optional: `winget install Google.PlatformTools`) |
 | Android | 5.0+ with **USB Debugging** enabled | Same |
 
 ### Install a release
@@ -234,6 +234,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 | [🧭 Dependency Boundaries](docs/dependency-boundaries.md) | Allowed imports between features, shared kernel, and composition root |
 | [🧩 Platform Abstraction](docs/platform-abstraction.md) | Where macOS/Windows differences live, and how to add a new one |
 | [🎞️ Native Video Contract](docs/native-video-contract.md) | MethodChannel, scrcpy wire format, and rules shared by the Swift and C++ plugins |
+| [📦 Bundled Platform-Tools](docs/bundled-platform-tools.md) | How adb ships inside the app, how it is found, and how to upgrade it |
 | [🪟 Windows Port Plan](docs/windows-port-plan.md) | Phases, status, and risks of the Windows port |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |

@@ -113,6 +113,8 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 
 ### Phase 4 — Build, CI & Distribution (≈ 1 week)
 
+- ~~Bundle adb~~: done ([bundled-platform-tools.md](bundled-platform-tools.md)); `windows/CMakeLists.txt` installs it next to the exe. A Windows release script must run `dart run tool/fetch_platform_tools.dart --os=windows` before `flutter build windows`.
+
 - GitHub Actions matrix: `macos-latest` and `windows-latest` run `flutter analyze`, `flutter test`, and `flutter build`.
 - `scripts/build_release.ps1` produces a signed MSIX (`msix` package) and a portable ZIP.
 
