@@ -1,6 +1,6 @@
 # Platform-neutral scrcpy protocol and frame utilities (C++17, no OS headers).
 #
-# Consumed by windows/scrcpy_stream. Tests build with any compiler:
+# Consumed by windows/scrcpy_stream (C++) and macos/Runner (audio, C API). Tests build with any compiler:
 #   macOS / Linux: scripts/test_native_core.sh
 #   Windows:       cmake -S native/scrcpy_core -B build/core -DSCRCPY_CORE_BUILD_TESTS=ON
 #                  cmake --build build/core && ctest --test-dir build/core
@@ -10,10 +10,13 @@ project(scrcpy_core LANGUAGES CXX)
 option(SCRCPY_CORE_BUILD_TESTS "Build scrcpy_core unit tests" OFF)
 
 add_library(scrcpy_core STATIC
+  src/audio_c_api.cpp
+  src/audio_header.cpp
   src/config_packet_merger.cpp
   src/latest_frame_buffer.cpp
   src/nv12_converter.cpp
   src/packet_header.cpp
+  src/pcm_jitter_buffer.cpp
   src/stream_header.cpp
   src/stream_stats.cpp
 )
@@ -32,6 +35,7 @@ if(SCRCPY_CORE_BUILD_TESTS)
   enable_testing()
   find_package(Threads REQUIRED)
   add_executable(scrcpy_core_tests
+    test/audio_test.cpp
     test/frame_test.cpp
     test/protocol_test.cpp
     test/stats_test.cpp
