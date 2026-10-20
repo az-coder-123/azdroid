@@ -6,11 +6,11 @@
     "properties": {
       "x": {
         "type": "number",
-        "description": "Normalized horizontal coordinate (0.0 to 1.0)."
+        "description": "Horizontal coordinate (pixels or normalized 0.0..1.0)."
       },
       "y": {
         "type": "number",
-        "description": "Normalized vertical coordinate (0.0 to 1.0)."
+        "description": "Vertical coordinate (pixels or normalized 0.0..1.0)."
       },
       "durationMs": {
         "type": "integer",

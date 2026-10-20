@@ -41,9 +41,61 @@ void main() {
       expect(croppedImage!.width, equals(500));
       expect(croppedImage.height, equals(600));
     });
+
+    test(
+      'captures and compresses screenshot as JPEG with correct mimeType',
+      () async {
+        final image = img.Image(width: 400, height: 800);
+        img.fill(image, color: img.ColorRgb8(10, 20, 30));
+        final pngBytes = img.encodePng(image);
+
+        when(() => mockAdb.captureScreenshotBytes('192.168.1.100:5555'))
+            .thenAnswer((_) async => pngBytes);
+
+        final res = await executor.execute('android_take_screenshot', {
+          'deviceSerial': '192.168.1.100:5555',
+          'format': 'jpeg',
+          'quality': 60,
+        });
+
+        expect(res.isError, isFalse);
+        expect(res.content.first.type, equals('image'));
+        expect(res.content.first.mimeType, equals('image/jpeg'));
+        final base64Str = res.content.first.data;
+        final decodedBytes = base64Decode(base64Str!);
+        expect(decodedBytes[0], equals(0xFF));
+        expect(decodedBytes[1], equals(0xD8));
+      },
+    );
   });
 
   group('android_pinch_gesture Tests', () {
+    test(
+      'executes zoom-in pinch gesture via McpAdbClient with scaleFactor alias',
+      () async {
+        when(
+          () => mockAdb.pinchGesture(
+            '192.168.1.100:5555',
+            scale: 1.8,
+            centerX: 0.5,
+            centerY: 0.5,
+            durationMs: 400,
+          ),
+        ).thenAnswer((_) async => true);
+
+        final res = await executor.execute('android_pinch_gesture', {
+          'deviceSerial': '192.168.1.100:5555',
+          'scaleFactor': 1.8,
+        });
+
+        expect(res.isError, isFalse);
+        expect(
+          res.content.first.text,
+          contains('Injected pinch gesture (scale: 1.8'),
+        );
+      },
+    );
+
     test('executes zoom-in pinch gesture via McpAdbClient', () async {
       when(
         () => mockAdb.pinchGesture(

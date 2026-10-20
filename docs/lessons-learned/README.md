@@ -78,6 +78,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Wi-Fi ADB Authorization Prompt Missed** | ADB Authorization & Discovery | The phone prompts only when a connection opens; Retry must reconnect `ip:port` devices so the prompt appears again. | [wifi-adb-authorization-prompt-missed.md](wifi-adb-authorization-prompt-missed.md) |
 | **adb Output UTF-8 on Windows** | Process Execution & MCP | Decode adb output as UTF-8 (it comes from Android); keep the system code page only for host tools. | [adb-output-utf8-on-windows.md](adb-output-utf8-on-windows.md) |
 | **MCP Defensive Parsing & Transient UI** | MCP Server & AI Automation | Eliminate raw type casts with `McpArgumentHelper` and chain input macros into compound shell pipelines to beat 3.5s auto-hide timers. | [mcp-transient-ui-latency-and-surfaceview.md](mcp-transient-ui-latency-and-surfaceview.md) |
+| **MCP Agent Automation Optimizations** | MCP Server & AI Agent Touch | Eliminate token exhaustion via ROI cropping, overcome ADB single-touch with Scrcpy pinch, and handle diverse displays via ratio coordinates. | [mcp-agent-automation-optimizations.md](mcp-agent-automation-optimizations.md) |
 
 ---
 

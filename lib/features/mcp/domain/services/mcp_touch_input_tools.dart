@@ -10,7 +10,12 @@ final List<McpToolDefinition> mcpTouchInputTools = [
       'properties': {
         'scale': {
           'type': 'number',
-          'description': 'Scale factor (> 1.0 to zoom in, e.g. 2.0; < 1.0 to zoom out, e.g. 0.5).',
+          'description': 'Scale factor (> 1.0 to zoom in, e.g. 1.5; < 1.0 to zoom out, e.g. 0.5). Alias: scaleFactor.',
+        },
+        'scaleFactor': {
+          'type': 'number',
+          'description':
+              'Alias for scale (> 1.0 to zoom in, < 1.0 to zoom out).',
         },
         'centerX': {
           'type': 'number',
@@ -66,13 +71,11 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         },
         'x': {
           'type': 'number',
-          'description':
-              'Horizontal coordinate (normalized 0.0-1.0 or exact pixels).',
+          'description': 'X coordinate (normalized 0.0-1.0 or pixels).',
         },
         'y': {
           'type': 'number',
-          'description':
-              'Vertical coordinate (normalized 0.0-1.0 or exact pixels).',
+          'description': 'Y coordinate (normalized 0.0-1.0 or pixels).',
         },
         'intervalMs': {
           'type': 'integer',
@@ -110,8 +113,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         },
         'durationMs': {
           'type': 'integer',
-          'description':
-              'Duration of the swipe in milliseconds (default 300ms).',
+          'description': 'Duration of the swipe in ms (default 300ms).',
         },
       },
       'required': ['startX', 'startY', 'endX', 'endY'],
@@ -129,23 +131,19 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         },
         'startX': {
           'type': 'number',
-          'description':
-              'Start X coordinate (normalized 0.0-1.0 or exact pixels).',
+          'description': 'Start X (normalized 0.0-1.0 or pixels).',
         },
         'startY': {
           'type': 'number',
-          'description':
-              'Start Y coordinate (normalized 0.0-1.0 or exact pixels).',
+          'description': 'Start Y (normalized 0.0-1.0 or pixels).',
         },
         'endX': {
           'type': 'number',
-          'description':
-              'End X coordinate (normalized 0.0-1.0 or exact pixels).',
+          'description': 'End X (normalized 0.0-1.0 or pixels).',
         },
         'endY': {
           'type': 'number',
-          'description':
-              'End Y coordinate (normalized 0.0-1.0 or exact pixels).',
+          'description': 'End Y (normalized 0.0-1.0 or pixels).',
         },
         'durationMs': {
           'type': 'integer',

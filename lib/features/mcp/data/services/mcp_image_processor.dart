@@ -74,6 +74,13 @@ class McpImageProcessor {
     return img.encodePng(result);
   }
 
+  /// Returns true if [format] denotes a JPEG image.
+  static bool isJpeg(dynamic format) {
+    if (format == null) return false;
+    final f = format.toString().toLowerCase().trim();
+    return f == 'jpeg' || f == 'jpg';
+  }
+
   /// Parses crop and compression parameters from tool [arguments] and applies them to [rawBytes].
   static List<int> processFromArguments(
     List<int> rawBytes,
@@ -97,43 +104,92 @@ class McpImageProcessor {
       return double.tryParse(v.toString());
     }
 
-    final cropX = parseInt(crop?['x'] ?? arguments['cropX'] ?? arguments['x']);
-    final cropY = parseInt(crop?['y'] ?? arguments['cropY'] ?? arguments['y']);
-    final cropW = parseInt(
-      crop?['width'] ??
-          crop?['w'] ??
-          arguments['cropWidth'] ??
-          arguments['width'] ??
-          arguments['w'],
-    );
-    final cropH = parseInt(
-      crop?['height'] ??
-          crop?['h'] ??
-          arguments['cropHeight'] ??
-          arguments['height'] ??
-          arguments['h'],
-    );
+    // Detect if crop map specifies normalized coordinates (0.0..1.0)
+    final rawW = parseDouble(crop?['width'] ?? crop?['w']);
+    final rawH = parseDouble(crop?['height'] ?? crop?['h']);
+    final cropHasRatios =
+        (rawW != null && rawW <= 1.0 && rawW > 0.0) ||
+        (rawH != null && rawH <= 1.0 && rawH > 0.0) ||
+        crop?['xRatio'] != null ||
+        crop?['yRatio'] != null ||
+        crop?['widthRatio'] != null ||
+        crop?['heightRatio'] != null;
 
-    final cropXRatio = parseDouble(
+    double? cropXRatio;
+    double? cropYRatio;
+    double? cropWRatio;
+    double? cropHRatio;
+    int? cropX;
+    int? cropY;
+    int? cropW;
+    int? cropH;
+
+    if (cropHasRatios) {
+      cropXRatio = parseDouble(
+        crop?['xRatio'] ??
+            crop?['x'] ??
+            arguments['cropXRatio'] ??
+            arguments['xRatio'],
+      );
+      cropYRatio = parseDouble(
+        crop?['yRatio'] ??
+            crop?['y'] ??
+            arguments['cropYRatio'] ??
+            arguments['yRatio'],
+      );
+      cropWRatio = parseDouble(
+        crop?['widthRatio'] ??
+            crop?['w'] ??
+            crop?['width'] ??
+            arguments['cropWidthRatio'] ??
+            arguments['widthRatio'],
+      );
+      cropHRatio = parseDouble(
+        crop?['heightRatio'] ??
+            crop?['h'] ??
+            crop?['height'] ??
+            arguments['cropHeightRatio'] ??
+            arguments['heightRatio'],
+      );
+    } else {
+      cropX = parseInt(crop?['x'] ?? arguments['cropX'] ?? arguments['x']);
+      cropY = parseInt(crop?['y'] ?? arguments['cropY'] ?? arguments['y']);
+      cropW = parseInt(
+        crop?['width'] ??
+            crop?['w'] ??
+            arguments['cropWidth'] ??
+            arguments['width'] ??
+            arguments['w'],
+      );
+      cropH = parseInt(
+        crop?['height'] ??
+            crop?['h'] ??
+            arguments['cropHeight'] ??
+            arguments['height'] ??
+            arguments['h'],
+      );
+    }
+
+    cropXRatio ??= parseDouble(
       cropRatio?['x'] ??
           arguments['cropXRatio'] ??
           arguments['xRatio'] ??
           arguments['xPercent'],
     );
-    final cropYRatio = parseDouble(
+    cropYRatio ??= parseDouble(
       cropRatio?['y'] ??
           arguments['cropYRatio'] ??
           arguments['yRatio'] ??
           arguments['yPercent'],
     );
-    final cropWRatio = parseDouble(
+    cropWRatio ??= parseDouble(
       cropRatio?['width'] ??
           cropRatio?['w'] ??
           arguments['cropWidthRatio'] ??
           arguments['widthRatio'] ??
           arguments['widthPercent'],
     );
-    final cropHRatio = parseDouble(
+    cropHRatio ??= parseDouble(
       cropRatio?['height'] ??
           cropRatio?['h'] ??
           arguments['cropHeightRatio'] ??

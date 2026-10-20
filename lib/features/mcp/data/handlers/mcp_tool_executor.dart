@@ -3,6 +3,7 @@ import 'package:desk_droid/features/mcp/data/handlers/mcp_automation_tool_execut
 import 'package:desk_droid/features/mcp/data/handlers/mcp_basic_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_device_control_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_performance_media_tool_executor.dart';
+import 'package:desk_droid/features/mcp/data/handlers/mcp_screen_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_semantic_system_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
@@ -15,6 +16,7 @@ class McpToolExecutor {
   McpToolExecutor({McpAdbClient? adbClient, McpActivitySink? activity})
     : _adb = adbClient ?? McpAdbClient(),
       _activity = activity ?? const NoopMcpActivitySink(),
+      _screen = McpScreenToolExecutor(adbClient ?? McpAdbClient()),
       _basic = McpBasicToolExecutor(adbClient ?? McpAdbClient()),
       _appDevice = McpAppDeviceToolExecutor(adbClient ?? McpAdbClient()),
       _semantic = McpSemanticSystemToolExecutor(adbClient ?? McpAdbClient()),
@@ -28,6 +30,7 @@ class McpToolExecutor {
 
   final McpAdbClient _adb;
   final McpActivitySink _activity;
+  final McpScreenToolExecutor _screen;
   final McpBasicToolExecutor _basic;
   final McpAppDeviceToolExecutor _appDevice;
   final McpSemanticSystemToolExecutor _semantic;
@@ -89,6 +92,9 @@ class McpToolExecutor {
     String serial,
     Map<String, dynamic> arguments,
   ) {
+    if (_screen.canHandle(toolName)) {
+      return _screen.execute(toolName, serial, arguments);
+    }
     if (_basic.canHandle(toolName)) {
       return _basic.execute(toolName, serial, arguments);
     }

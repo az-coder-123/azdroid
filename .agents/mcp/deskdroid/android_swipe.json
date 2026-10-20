@@ -26,7 +26,7 @@
       },
       "durationMs": {
         "type": "integer",
-        "description": "Duration of the swipe in milliseconds (default 300ms)."
+        "description": "Duration of the swipe in ms (default 300ms)."
       }
     },
     "required": [

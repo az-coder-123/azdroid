@@ -82,5 +82,26 @@ void main() {
       expect(decoded!.width, equals(200));
       expect(decoded.height, equals(200));
     });
+
+    test('processFromArguments handles normalized ratios specified directly inside crop map', () {
+      final args = {
+        'crop': {'x': 0.0, 'y': 0.5, 'width': 1.0, 'height': 0.5},
+        'format': 'png',
+      };
+      final out = McpImageProcessor.processFromArguments(samplePngBytes, args);
+      final decoded = img.decodeImage(Uint8List.fromList(out));
+      expect(decoded, isNotNull);
+      expect(decoded!.width, equals(200));
+      expect(decoded.height, equals(200));
+    });
+
+    test('isJpeg correctly identifies jpeg format variations', () {
+      expect(McpImageProcessor.isJpeg('jpeg'), isTrue);
+      expect(McpImageProcessor.isJpeg('JPEG'), isTrue);
+      expect(McpImageProcessor.isJpeg('jpg'), isTrue);
+      expect(McpImageProcessor.isJpeg('JPG '), isTrue);
+      expect(McpImageProcessor.isJpeg('png'), isFalse);
+      expect(McpImageProcessor.isJpeg(null), isFalse);
+    });
   });
 }

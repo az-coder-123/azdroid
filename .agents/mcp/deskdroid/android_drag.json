@@ -10,19 +10,19 @@
       },
       "startX": {
         "type": "number",
-        "description": "Start X coordinate (normalized 0.0-1.0 or exact pixels)."
+        "description": "Start X (normalized 0.0-1.0 or pixels)."
       },
       "startY": {
         "type": "number",
-        "description": "Start Y coordinate (normalized 0.0-1.0 or exact pixels)."
+        "description": "Start Y (normalized 0.0-1.0 or pixels)."
       },
       "endX": {
         "type": "number",
-        "description": "End X coordinate (normalized 0.0-1.0 or exact pixels)."
+        "description": "End X (normalized 0.0-1.0 or pixels)."
       },
       "endY": {
         "type": "number",
-        "description": "End Y coordinate (normalized 0.0-1.0 or exact pixels)."
+        "description": "End Y (normalized 0.0-1.0 or pixels)."
       },
       "durationMs": {
         "type": "integer",

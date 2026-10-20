@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
-import 'package:desk_droid/features/mcp/data/services/mcp_image_processor.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
@@ -12,7 +9,6 @@ class McpBasicToolExecutor {
   final McpAdbClient _adb;
 
   bool canHandle(String toolName) => const {
-    'android_take_screenshot',
     'android_tap',
     'android_double_tap',
     'android_swipe',
@@ -36,23 +32,6 @@ class McpBasicToolExecutor {
     Map<String, dynamic> arguments,
   ) async {
     switch (toolName) {
-      case 'android_take_screenshot':
-        final bytes = await _adb.captureScreenshotBytes(serial);
-        if (bytes == null || bytes.isEmpty) {
-          return McpToolResult.error(
-            'Failed to capture screenshot from $serial.',
-          );
-        }
-        final processed = McpImageProcessor.processFromArguments(
-          bytes,
-          arguments,
-        );
-        return McpToolResult.image(
-          base64Data: base64Encode(processed),
-          caption:
-              'Screenshot from device $serial at ${DateTime.now().toIso8601String()}',
-        );
-
       case 'android_tap':
         final (x, y) = arguments.getPointPair();
         final ok = await _adb.tap(serial, x, y);
@@ -93,7 +72,7 @@ class McpBasicToolExecutor {
       case 'android_pinch_gesture':
         final scale = arguments.getRequiredDouble(
           'scale',
-          aliases: ['zoom', 'factor'],
+          aliases: ['zoom', 'factor', 'scaleFactor', 'scale_factor'],
         );
         final cx =
             arguments.getOptionalDouble(
