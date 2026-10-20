@@ -40,6 +40,7 @@ flowchart TD
     Step1 --> Step2["2. Design (Senior App Designer)\nDesign UX ergonomics, layout, responsiveness & feedback"]
     Step2 --> Step3["3. Implement (Senior Flutter Programmer)\nWrite idiomatic Flutter, Cubit/BLoC state & widgets"]
     Step3 --> Step4["4. Verify & Audit (Senior Software Engineer)\nRefactor for Clean Code/SOLID, run tests & flutter analyze"]
+    Step1 -.->|Consult docs/*.md| Step1
     Step4 --> Done["Completed Task with Zero Warnings"]
 ```
 
@@ -189,3 +190,27 @@ Before concluding any task or generating a commit, AI assistants must strictly e
      - `refactor: ...` for code refactoring without behavior change
      - `docs: ...` for documentation updates
      - `test: ...` for adding or updating tests
+
+---
+
+## 📜 9. Mandatory Compliance with Specialized Documentation (`docs/*.md`)
+
+In addition to the overarching standards defined in this file, AI assistants **must strictly consult and adhere to** the specialized architectural and platform rules codified in the `docs/` directory prior to designing or implementing code:
+
+1. **Platform Abstraction & OS Isolation (`docs/platform-abstraction.md`):**
+   - **Strict Zero-Leak Policy:** Never access `Platform.is*`, `Platform.environment`, `Platform.operatingSystem`, or hardcode OS-specific binary paths (`/usr/bin/`, `/opt/homebrew/`, `C:\\`) outside `lib/core/platform/` and `lib/core/di/modules/platform_di.dart`.
+   - Always consume platform capabilities via `HostOs`, `HostPaths`, and `HostToolchain` contracts.
+   - Never use raw `split('\n')`; always use `splitLines()` from `line_split_extension.dart`.
+   - Violations are automatically rejected by `test/architecture/platform_isolation_test.dart`.
+
+2. **Feature & Dependency Boundaries (`docs/dependency-boundaries.md`):**
+   - Features in `lib/features/` must remain completely decoupled and self-contained. Direct cross-feature imports are strictly forbidden.
+   - Inter-feature communication must proceed exclusively through abstractions in `lib/core/`, shared entities, or composition builders in `main.dart`.
+
+3. **Clean Architecture & Data Flow (`docs/architecture.md`):**
+   - Honor the three-tier layer contract within each feature: `presentation/` (purely declarative widgets + Cubit/Bloc), `domain/` (pure business models & repository contracts), and `data/` (data sources, socket clients, DTOs).
+   - Presentation widgets must never initiate direct ADB, process, or socket calls.
+
+4. **Lessons Learned Case Studies Standard (`docs/lessons-learned/README.md`):**
+   - When diagnosing and resolving intricate bugs or platform anomalies, document the finding in `docs/lessons-learned/<slug>.md` following the mandatory 5-part structure (< 250 lines per file) and update `docs/lessons-learned/README.md`.
+
