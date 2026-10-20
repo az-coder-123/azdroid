@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for application lifecycle, package querying, clipboard, and file transfer tools.
@@ -44,21 +45,30 @@ class McpAppDeviceToolExecutor {
         );
 
       case 'android_launch_app':
-        final pkg = arguments['package'] as String;
+        final pkg = arguments.getRequiredString(
+          'package',
+          aliases: ['pkg', 'packageName', 'app'],
+        );
         final success = await _adb.launchApp(serial, pkg);
         return success
             ? McpToolResult.text('Application $pkg launched on $serial.')
             : McpToolResult.error('Failed to launch application $pkg.');
 
       case 'android_stop_app':
-        final pkg = arguments['package'] as String;
+        final pkg = arguments.getRequiredString(
+          'package',
+          aliases: ['pkg', 'packageName', 'app'],
+        );
         final success = await _adb.stopApp(serial, pkg);
         return success
             ? McpToolResult.text('Application $pkg force-stopped on $serial.')
             : McpToolResult.error('Failed to stop application $pkg.');
 
       case 'android_clear_app_data':
-        final pkg = arguments['package'] as String;
+        final pkg = arguments.getRequiredString(
+          'package',
+          aliases: ['pkg', 'packageName', 'app'],
+        );
         final success = await _adb.clearAppData(serial, pkg);
         return success
             ? McpToolResult.text(
@@ -67,8 +77,15 @@ class McpAppDeviceToolExecutor {
             : McpToolResult.error('Failed to clear app data for $pkg.');
 
       case 'android_list_packages':
-        final thirdParty = arguments['thirdPartyOnly'] as bool? ?? true;
-        final query = arguments['query'] as String?;
+        final thirdParty = arguments.getBool(
+          'thirdPartyOnly',
+          aliases: ['thirdParty'],
+          defaultValue: true,
+        );
+        final query = arguments.getString(
+          'query',
+          aliases: ['filter', 'search'],
+        );
         final pkgs = await _adb.listPackages(
           serial,
           thirdPartyOnly: thirdParty,
@@ -83,7 +100,10 @@ class McpAppDeviceToolExecutor {
         return McpToolResult.text('Android Clipboard Content:\n$content');
 
       case 'android_set_clipboard':
-        final text = arguments['text'] as String;
+        final text = arguments.getRequiredString(
+          'text',
+          aliases: ['content', 'value'],
+        );
         final success = await _adb.setClipboard(serial, text);
         return success
             ? McpToolResult.text('Text copied to Android clipboard on $serial.')
@@ -96,16 +116,28 @@ class McpAppDeviceToolExecutor {
         return McpToolResult.text(buffer.toString().trim());
 
       case 'android_push_file':
-        final local = arguments['localPath'] as String;
-        final remote = arguments['remotePath'] as String;
+        final local = arguments.getRequiredString(
+          'localPath',
+          aliases: ['path', 'filePath', 'sourcePath', 'local'],
+        );
+        final remote = arguments.getRequiredString(
+          'remotePath',
+          aliases: ['targetPath', 'destPath', 'destination', 'remote'],
+        );
         final success = await _adb.pushFile(serial, local, remote);
         return success
             ? McpToolResult.text('File uploaded: $local -> $remote on $serial.')
             : McpToolResult.error('Failed to push file $local to $remote.');
 
       case 'android_pull_file':
-        final remote = arguments['remotePath'] as String;
-        final local = arguments['localPath'] as String;
+        final remote = arguments.getRequiredString(
+          'remotePath',
+          aliases: ['targetPath', 'sourcePath', 'remote'],
+        );
+        final local = arguments.getRequiredString(
+          'localPath',
+          aliases: ['path', 'filePath', 'destPath', 'local'],
+        );
         final success = await _adb.pullFile(serial, remote, local);
         return success
             ? McpToolResult.text(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for basic touch, swipe, keyevent, intent, and diagnostics tools.
@@ -9,24 +10,36 @@ class McpBasicToolExecutor {
 
   final McpAdbClient _adb;
 
-  bool canHandle(String toolName) {
-    return const {
-      'android_take_screenshot',
-      'android_tap',
-      'android_double_tap',
-      'android_swipe',
-      'android_type_text',
-      'android_set_text',
-      'android_clear_text',
-      'android_press_key',
-      'android_dispatch_intent',
-      'android_get_logcat',
-      'android_install_apk',
-      'android_drag',
-      'android_check_crash',
-      'android_scan_media_file',
-      'android_shell_command',
-    }.contains(toolName);
+  bool canHandle(String toolName) => const {
+    'android_take_screenshot',
+    'android_tap',
+    'android_double_tap',
+    'android_swipe',
+    'android_type_text',
+    'android_set_text',
+    'android_clear_text',
+    'android_press_key',
+    'android_dispatch_intent',
+    'android_get_logcat',
+    'android_install_apk',
+    'android_drag',
+    'android_check_crash',
+    'android_scan_media_file',
+    'android_shell_command',
+  }.contains(toolName);
+
+  static int _resolveKeyCode(String key) {
+    return switch (key) {
+      'HOME' => 3,
+      'BACK' => 4,
+      'VOLUME_UP' => 24,
+      'VOLUME_DOWN' => 25,
+      'POWER' => 26,
+      'TAB' => 61,
+      'ENTER' => 66,
+      'APP_SWITCH' => 187,
+      _ => int.tryParse(key) ?? 4,
+    };
   }
 
   Future<McpToolResult> execute(
@@ -49,35 +62,27 @@ class McpBasicToolExecutor {
         );
 
       case 'android_tap':
-        final x = (arguments['x'] as num).toDouble();
-        final y = (arguments['y'] as num).toDouble();
-        final success = await _adb.tap(serial, x, y);
-        return success
+        final x = arguments.getRequiredDouble('x');
+        final y = arguments.getRequiredDouble('y');
+        final ok = await _adb.tap(serial, x, y);
+        return ok
             ? McpToolResult.text('Tapped at coordinates ($x, $y) on $serial.')
             : McpToolResult.error('Failed to tap at ($x, $y).');
 
       case 'android_double_tap':
-        final x = (arguments['x'] as num).toDouble();
-        final y = (arguments['y'] as num).toDouble();
-        final interval = arguments['intervalMs'] as int? ?? 120;
-        final success = await _adb.doubleTap(
-          serial,
-          x,
-          y,
-          intervalMs: interval,
-        );
-        return success
+        final x = arguments.getRequiredDouble('x');
+        final y = arguments.getRequiredDouble('y');
+        final interval = arguments.getInt('intervalMs', defaultValue: 120);
+        final ok = await _adb.doubleTap(serial, x, y, intervalMs: interval);
+        return ok
             ? McpToolResult.text(
                 'Double-tapped at coordinates ($x, $y) with ${interval}ms interval on $serial.',
               )
             : McpToolResult.error('Failed to double-tap at ($x, $y).');
 
       case 'android_swipe':
-        final sx = (arguments['startX'] as num).toDouble();
-        final sy = (arguments['startY'] as num).toDouble();
-        final ex = (arguments['endX'] as num).toDouble();
-        final ey = (arguments['endY'] as num).toDouble();
-        final dur = arguments['durationMs'] as int? ?? 300;
+        final (sx, sy, ex, ey) = _parseCoordinates(arguments);
+        final dur = arguments.getInt('durationMs', defaultValue: 300);
         final success = await _adb.swipe(serial, sx, sy, ex, ey, dur);
         return success
             ? McpToolResult.text(
@@ -86,11 +91,8 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to swipe.');
 
       case 'android_drag':
-        final sx = (arguments['startX'] as num).toDouble();
-        final sy = (arguments['startY'] as num).toDouble();
-        final ex = (arguments['endX'] as num).toDouble();
-        final ey = (arguments['endY'] as num).toDouble();
-        final dur = arguments['durationMs'] as int? ?? 1000;
+        final (sx, sy, ex, ey) = _parseCoordinates(arguments);
+        final dur = arguments.getInt('durationMs', defaultValue: 1000);
         final success = await _adb.drag(
           serial,
           sx,
@@ -106,16 +108,22 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to drag.');
 
       case 'android_type_text':
-        final text = arguments['text'] as String;
+        final text = arguments.getRequiredString(
+          'text',
+          aliases: ['input', 'value'],
+        );
         final success = await _adb.typeText(serial, text);
         return success
             ? McpToolResult.text('Injected text "$text" into $serial.')
             : McpToolResult.error('Failed to inject text.');
 
       case 'android_set_text':
-        final text = arguments['text'] as String;
-        final elementId = arguments['elementId'] as int?;
-        final clearFirst = arguments['clearFirst'] as bool? ?? false;
+        final text = arguments.getRequiredString(
+          'text',
+          aliases: ['input', 'value'],
+        );
+        final elementId = arguments.getOptionalInt('elementId');
+        final clearFirst = arguments.getBool('clearFirst', defaultValue: false);
         final success = await _adb.setText(
           serial,
           text,
@@ -129,7 +137,7 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to set text "$text".');
 
       case 'android_clear_text':
-        final elementId = arguments['elementId'] as int?;
+        final elementId = arguments.getOptionalInt('elementId');
         final success = await _adb.clearText(serial, elementId: elementId);
         return success
             ? McpToolResult.text(
@@ -138,31 +146,22 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to clear text.');
 
       case 'android_press_key':
-        final keyMap = <String, int>{
-          'HOME': 3,
-          'BACK': 4,
-          'VOLUME_UP': 24,
-          'VOLUME_DOWN': 25,
-          'POWER': 26,
-          'TAB': 61,
-          'ENTER': 66,
-          'APP_SWITCH': 187,
-        };
-        final keyName = (arguments['key'] as String).toUpperCase();
-        final code = keyMap[keyName] ?? 4;
+        final keyName = arguments
+            .getRequiredString('key', aliases: ['keyCode', 'name', 'code'])
+            .toUpperCase();
+        final code = _resolveKeyCode(keyName);
         final success = await _adb.pressKey(serial, code);
         return success
             ? McpToolResult.text('Pressed key $keyName ($code) on $serial.')
             : McpToolResult.error('Failed to press key $keyName.');
 
       case 'android_dispatch_intent':
-        final action = arguments['action'] as String;
-        final uri = arguments['dataUri'] as String?;
-        final pkg = arguments['package'] as String?;
-        final comp = arguments['component'] as String?;
-        final extras = arguments['extras'] is Map<String, dynamic>
-            ? arguments['extras'] as Map<String, dynamic>
-            : null;
+        final action = arguments.getRequiredString('action');
+        final uri = arguments.getString('dataUri', aliases: ['uri', 'data']);
+        final pkg = arguments.getString('package', aliases: ['pkg']);
+        final comp = arguments.getString('component', aliases: ['comp']);
+        final rawExtras = arguments['extras'];
+        final extras = rawExtras is Map<String, dynamic> ? rawExtras : null;
         final out = await _adb.dispatchIntent(
           serial,
           action,
@@ -174,28 +173,32 @@ class McpBasicToolExecutor {
         return McpToolResult.text('Intent dispatched:\n$out');
 
       case 'android_get_logcat':
-        final limit = arguments['limit'] as int? ?? 50;
-        final tag = arguments['tag'] as String?;
+        final limit = arguments.getInt('limit', defaultValue: 50);
+        final tag = arguments.getString('tag');
         final logs = await _adb.getLogcat(serial, tag: tag, limit: limit);
         return McpToolResult.text('Logcat dump ($limit lines):\n$logs');
 
       case 'android_install_apk':
-        final apk = arguments['apkPath'] as String;
-        final reinstall = arguments['reinstall'] as bool? ?? true;
-        final grant = arguments['grantPermissions'] as bool? ?? true;
+        final apk = arguments.getRequiredString(
+          'apkPath',
+          aliases: ['path', 'filePath', 'apk'],
+        );
         final success = await _adb.installApk(
           serial,
           apk,
-          reinstall: reinstall,
-          grantPermissions: grant,
+          reinstall: arguments.getBool('reinstall', defaultValue: true),
+          grantPermissions: arguments.getBool(
+            'grantPermissions',
+            defaultValue: true,
+          ),
         );
         return success
             ? McpToolResult.text('APK installed successfully: $apk')
             : McpToolResult.error('Failed to install APK: $apk');
 
       case 'android_check_crash':
-        final pkg = arguments['package'] as String?;
-        final limit = arguments['limit'] as int? ?? 50;
+        final pkg = arguments.getString('package', aliases: ['pkg']);
+        final limit = arguments.getInt('limit', defaultValue: 50);
         final crashLogs = await _adb.checkCrash(
           serial,
           package: pkg,
@@ -206,7 +209,10 @@ class McpBasicToolExecutor {
         );
 
       case 'android_scan_media_file':
-        final path = arguments['filePath'] as String;
+        final path = arguments.getRequiredString(
+          'filePath',
+          aliases: ['path', 'file'],
+        );
         final success = await _adb.scanMediaFile(serial, path);
         return success
             ? McpToolResult.text(
@@ -215,12 +221,26 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to trigger MediaScanner for $path.');
 
       case 'android_shell_command':
-        final cmd = arguments['command'] as String;
+        final cmd = arguments.getRequiredString(
+          'command',
+          aliases: ['cmd', 'shell'],
+        );
         final out = await _adb.shell(serial, cmd);
         return McpToolResult.text('Shell output:\n$out');
 
       default:
         return McpToolResult.error('Unhandled basic tool: $toolName');
     }
+  }
+
+  static (double, double, double, double) _parseCoordinates(
+    Map<String, dynamic> arguments,
+  ) {
+    return (
+      arguments.getRequiredDouble('startX', aliases: ['x1', 'fromX']),
+      arguments.getRequiredDouble('startY', aliases: ['y1', 'fromY']),
+      arguments.getRequiredDouble('endX', aliases: ['x2', 'toX']),
+      arguments.getRequiredDouble('endY', aliases: ['y2', 'toY']),
+    );
   }
 }

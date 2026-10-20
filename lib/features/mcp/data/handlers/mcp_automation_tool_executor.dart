@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for smart waiting, macro batching, notifications, mock location,
@@ -28,13 +29,39 @@ class McpAutomationToolExecutor {
     String serial,
     Map<String, dynamic> arguments,
   ) async {
+    try {
+      return await _executeInternal(toolName, serial, arguments);
+    } on McpArgumentException catch (e) {
+      return McpToolResult.error(e.message);
+    }
+  }
+
+  Future<McpToolResult> _executeInternal(
+    String toolName,
+    String serial,
+    Map<String, dynamic> arguments,
+  ) async {
     switch (toolName) {
       case 'android_wait_for_element':
-        final text = arguments['text'] as String?;
-        final resId = arguments['resourceId'] as String?;
-        final desc = arguments['contentDesc'] as String?;
-        final timeout = (arguments['timeoutMs'] as int?) ?? 10000;
-        final poll = (arguments['pollIntervalMs'] as int?) ?? 500;
+        final text = arguments.getString('text');
+        final resId = arguments.getString(
+          'resourceId',
+          aliases: ['resId', 'id'],
+        );
+        final desc = arguments.getString(
+          'contentDesc',
+          aliases: ['desc', 'contentDescription'],
+        );
+        final timeout = arguments.getInt(
+          'timeoutMs',
+          aliases: ['timeout'],
+          defaultValue: 10000,
+        );
+        final poll = arguments.getInt(
+          'pollIntervalMs',
+          aliases: ['pollInterval', 'interval'],
+          defaultValue: 500,
+        );
         final res = await _adb.waitForElement(
           serial,
           text: text,
@@ -51,15 +78,25 @@ class McpAutomationToolExecutor {
         );
 
       case 'android_batch_actions':
-        final list =
-            (arguments['actions'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+        final rawActions = arguments['actions'];
+        final list = <Map<String, dynamic>>[];
+        if (rawActions is List) {
+          for (final item in rawActions) {
+            if (item is Map) {
+              list.add(Map<String, dynamic>.from(item));
+            }
+          }
+        }
         final res = await _adb.batchActions(serial, list);
         return McpToolResult.text(
           'Executed ${res.length} batch actions on $serial:\n$res',
         );
 
       case 'android_get_notifications':
-        final filter = arguments['filter'] as String?;
+        final filter = arguments.getString(
+          'filter',
+          aliases: ['package', 'pkg', 'query'],
+        );
         final notifs = await _adb.getNotifications(serial, filter: filter);
         if (notifs.isEmpty) {
           return McpToolResult.text(
@@ -75,8 +112,15 @@ class McpAutomationToolExecutor {
         return McpToolResult.text(buf.toString().trim());
 
       case 'android_dismiss_notification':
-        final key = arguments['key'] as String?;
-        final clearAll = (arguments['clearAll'] as bool?) ?? false;
+        final key = arguments.getString(
+          'key',
+          aliases: ['id', 'notificationKey'],
+        );
+        final clearAll = arguments.getBool(
+          'clearAll',
+          aliases: ['all'],
+          defaultValue: false,
+        );
         final ok = await _adb.dismissNotification(
           serial,
           key: key,
@@ -91,9 +135,12 @@ class McpAutomationToolExecutor {
             : McpToolResult.error('Failed to dismiss notification.');
 
       case 'android_set_location':
-        final lat = (arguments['latitude'] as num).toDouble();
-        final lng = (arguments['longitude'] as num).toDouble();
-        final alt = (arguments['altitude'] as num?)?.toDouble();
+        final lat = arguments.getRequiredDouble('latitude', aliases: ['lat']);
+        final lng = arguments.getRequiredDouble(
+          'longitude',
+          aliases: ['lng', 'lon'],
+        );
+        final alt = arguments.getOptionalDouble('altitude', aliases: ['alt']);
         final ok = await _adb.setLocation(
           serial,
           latitude: lat,
@@ -105,16 +152,23 @@ class McpAutomationToolExecutor {
             : McpToolResult.error('Failed to set mock location.');
 
       case 'android_set_network_condition':
-        final mode = arguments['mode'] as String;
+        final mode = arguments.getRequiredString(
+          'mode',
+          aliases: ['condition', 'networkMode', 'network'],
+        );
         final ok = await _adb.setNetworkCondition(serial, mode);
         return ok
             ? McpToolResult.text('Network condition set on $serial: $mode')
             : McpToolResult.error('Failed to set network condition.');
 
       case 'android_long_press':
-        final x = (arguments['x'] as num).toDouble();
-        final y = (arguments['y'] as num).toDouble();
-        final duration = (arguments['durationMs'] as int?) ?? 1000;
+        final x = arguments.getRequiredDouble('x');
+        final y = arguments.getRequiredDouble('y');
+        final duration = arguments.getInt(
+          'durationMs',
+          aliases: ['duration', 'timeMs', 'delayMs'],
+          defaultValue: 1000,
+        );
         final ok = await _adb.longPress(serial, x, y, durationMs: duration);
         return ok
             ? McpToolResult.text(
@@ -123,8 +177,16 @@ class McpAutomationToolExecutor {
             : McpToolResult.error('Failed to inject long press.');
 
       case 'android_open_notification_panel':
-        final expand = (arguments['expand'] as bool?) ?? true;
-        final qs = (arguments['quickSettings'] as bool?) ?? false;
+        final expand = arguments.getBool(
+          'expand',
+          aliases: ['open'],
+          defaultValue: true,
+        );
+        final qs = arguments.getBool(
+          'quickSettings',
+          aliases: ['qs'],
+          defaultValue: false,
+        );
         final ok = await _adb.openNotificationPanel(
           serial,
           expand: expand,
@@ -141,8 +203,11 @@ class McpAutomationToolExecutor {
             : McpToolResult.error('Failed to toggle notification panel.');
 
       case 'android_read_shared_prefs':
-        final pkg = arguments['package'] as String;
-        final file = arguments['fileName'] as String?;
+        final pkg = arguments.getRequiredString(
+          'package',
+          aliases: ['pkg', 'packageName', 'app'],
+        );
+        final file = arguments.getString('fileName', aliases: ['file', 'name']);
         final content = await _adb.readSharedPreferences(
           serial,
           package: pkg,
@@ -151,7 +216,10 @@ class McpAutomationToolExecutor {
         return McpToolResult.text('SharedPreferences for $pkg:\n$content');
 
       case 'android_press_button':
-        final btn = arguments['button'] as String;
+        final btn = arguments.getRequiredString(
+          'button',
+          aliases: ['btn', 'key', 'name'],
+        );
         final ok = await _adb.pressButton(serial, btn);
         return ok
             ? McpToolResult.text('Pressed button $btn on $serial.')

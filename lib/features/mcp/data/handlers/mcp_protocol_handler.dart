@@ -103,7 +103,7 @@ class McpProtocolHandler {
 
       case 'tools/call':
         final params = request.params ?? {};
-        final name = params['name'] as String?;
+        final name = params['name']?.toString();
         if (name == null || name.isEmpty) {
           return McpResponse(
             id: request.id,
@@ -113,8 +113,9 @@ class McpProtocolHandler {
             ),
           );
         }
-        final arguments = params['arguments'] is Map<String, dynamic>
-            ? params['arguments'] as Map<String, dynamic>
+        final rawArgs = params['arguments'];
+        final arguments = rawArgs is Map
+            ? Map<String, dynamic>.from(rawArgs)
             : <String, dynamic>{};
 
         final toolResult = await _executor.execute(name, arguments);

@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for performance telemetry, screen recording, processes, and orientation tools.
@@ -27,14 +28,29 @@ class McpPerformanceMediaToolExecutor {
     String serial,
     Map<String, dynamic> arguments,
   ) async {
+    try {
+      return await _executeInternal(toolName, serial, arguments);
+    } on McpArgumentException catch (e) {
+      return McpToolResult.error(e.message);
+    }
+  }
+
+  Future<McpToolResult> _executeInternal(
+    String toolName,
+    String serial,
+    Map<String, dynamic> arguments,
+  ) async {
     switch (toolName) {
       case 'android_get_cpu_usage':
-        final pkg = arguments['package'] as String?;
+        final pkg = arguments.getString('package', aliases: ['pkg', 'app']);
         final cpu = await _adb.getCpuUsage(serial, package: pkg);
         return McpToolResult.text('CPU Consumption for $serial:\n$cpu');
 
       case 'android_get_memory_info':
-        final pkg = arguments['package'] as String;
+        final pkg = arguments.getRequiredString(
+          'package',
+          aliases: ['pkg', 'app'],
+        );
         final mem = await _adb.getMemoryInfo(serial, pkg);
         return McpToolResult.text(
           'Memory (PSS/Dalvik/Native) for $pkg on $serial:\n$mem',
@@ -47,7 +63,10 @@ class McpPerformanceMediaToolExecutor {
         return McpToolResult.text(buffer.toString().trim());
 
       case 'android_get_gfx_info':
-        final pkg = arguments['package'] as String;
+        final pkg = arguments.getRequiredString(
+          'package',
+          aliases: ['pkg', 'app'],
+        );
         final gfx = await _adb.getGfxInfo(serial, pkg);
         return McpToolResult.text(
           'RenderThread Graphics Telemetry for $pkg on $serial:\n$gfx',
@@ -60,8 +79,15 @@ class McpPerformanceMediaToolExecutor {
         return McpToolResult.text(buffer.toString().trim());
 
       case 'android_record_screen':
-        final dur = arguments['durationSec'] as int? ?? 5;
-        final dest = arguments['localDestination'] as String;
+        final dur = arguments.getInt(
+          'durationSec',
+          aliases: ['duration', 'timeSec', 'seconds'],
+          defaultValue: 5,
+        );
+        final dest = arguments.getRequiredString(
+          'localDestination',
+          aliases: ['dest', 'path', 'outputPath', 'destination'],
+        );
         final success = await _adb.recordScreen(
           serial,
           durationSec: dur,
@@ -76,7 +102,10 @@ class McpPerformanceMediaToolExecutor {
               );
 
       case 'android_list_processes':
-        final filter = arguments['filter'] as String?;
+        final filter = arguments.getString(
+          'filter',
+          aliases: ['query', 'name', 'package'],
+        );
         final procs = await _adb.listProcesses(serial, filter: filter);
         final lines = procs
             .map((p) => 'PID ${p['pid']}: ${p['name']}')
@@ -86,15 +115,18 @@ class McpPerformanceMediaToolExecutor {
         );
 
       case 'android_kill_process':
-        final pid = arguments['pid'] as int?;
-        final pkg = arguments['package'] as String?;
+        final pid = arguments.getOptionalInt('pid', aliases: ['processId']);
+        final pkg = arguments.getString('package', aliases: ['pkg', 'app']);
         final success = await _adb.killProcess(serial, pid: pid, package: pkg);
         return success
             ? McpToolResult.text('Terminated process ${pid ?? pkg} on $serial.')
             : McpToolResult.error('Failed to terminate process ${pid ?? pkg}.');
 
       case 'android_set_orientation':
-        final orient = arguments['orientation'] as int;
+        final orient = arguments.getRequiredInt(
+          'orientation',
+          aliases: ['orient', 'rotation', 'angle'],
+        );
         final success = await _adb.setOrientation(serial, orient);
         final orientNames = [
           'Portrait (0°)',
@@ -111,7 +143,11 @@ class McpPerformanceMediaToolExecutor {
               );
 
       case 'android_simulate_biometric':
-        final successParam = arguments['success'] as bool? ?? true;
+        final successParam = arguments.getBool(
+          'success',
+          aliases: ['pass', 'ok', 'authenticated'],
+          defaultValue: true,
+        );
         final success = await _adb.simulateBiometric(
           serial,
           success: successParam,

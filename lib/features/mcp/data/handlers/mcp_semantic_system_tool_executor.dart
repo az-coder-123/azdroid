@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for UI accessibility inspection, element querying, connectivity, and system controls.
@@ -41,7 +42,7 @@ class McpSemanticSystemToolExecutor {
         return McpToolResult.text(digest);
 
       case 'android_click_element_by_id':
-        final id = arguments['id'] as int;
+        final id = arguments.getRequiredInt('id', aliases: ['elementId']);
         final success = await _adb.clickElementById(serial, id);
         return success
             ? McpToolResult.text(
@@ -52,9 +53,9 @@ class McpSemanticSystemToolExecutor {
               );
 
       case 'android_find_element':
-        final text = arguments['text'] as String?;
-        final resId = arguments['resourceId'] as String?;
-        final desc = arguments['contentDesc'] as String?;
+        final text = arguments.getString('text');
+        final resId = arguments.getString('resourceId', aliases: ['id']);
+        final desc = arguments.getString('contentDesc', aliases: ['desc']);
         final element = await _adb.findElement(
           serial,
           text: text,
@@ -70,9 +71,9 @@ class McpSemanticSystemToolExecutor {
               );
 
       case 'android_click_element':
-        final text = arguments['text'] as String?;
-        final resId = arguments['resourceId'] as String?;
-        final desc = arguments['contentDesc'] as String?;
+        final text = arguments.getString('text');
+        final resId = arguments.getString('resourceId', aliases: ['id']);
+        final desc = arguments.getString('contentDesc', aliases: ['desc']);
         final success = await _adb.clickElement(
           serial,
           text: text,
@@ -88,7 +89,11 @@ class McpSemanticSystemToolExecutor {
               );
 
       case 'android_toggle_wifi':
-        final enable = arguments['enable'] as bool;
+        final enable = arguments.getBool(
+          'enable',
+          aliases: ['enabled', 'state'],
+          defaultValue: true,
+        );
         final success = await _adb.toggleWifi(serial, enable);
         return success
             ? McpToolResult.text(
@@ -97,7 +102,11 @@ class McpSemanticSystemToolExecutor {
             : McpToolResult.error('Failed to toggle Wi-Fi on $serial.');
 
       case 'android_toggle_airplane_mode':
-        final enable = arguments['enable'] as bool;
+        final enable = arguments.getBool(
+          'enable',
+          aliases: ['enabled', 'state'],
+          defaultValue: true,
+        );
         final success = await _adb.toggleAirplaneMode(serial, enable);
         return success
             ? McpToolResult.text(
@@ -106,16 +115,22 @@ class McpSemanticSystemToolExecutor {
             : McpToolResult.error('Failed to toggle Airplane mode on $serial.');
 
       case 'android_grant_permission':
-        final pkg = arguments['package'] as String;
-        final perm = arguments['permission'] as String;
+        final pkg = arguments.getRequiredString('package', aliases: ['pkg']);
+        final perm = arguments.getRequiredString(
+          'permission',
+          aliases: ['perm'],
+        );
         final success = await _adb.grantPermission(serial, pkg, perm);
         return success
             ? McpToolResult.text('Permission $perm granted to $pkg on $serial.')
             : McpToolResult.error('Failed to grant permission $perm to $pkg.');
 
       case 'android_revoke_permission':
-        final pkg = arguments['package'] as String;
-        final perm = arguments['permission'] as String;
+        final pkg = arguments.getRequiredString('package', aliases: ['pkg']);
+        final perm = arguments.getRequiredString(
+          'permission',
+          aliases: ['perm'],
+        );
         final success = await _adb.revokePermission(serial, pkg, perm);
         return success
             ? McpToolResult.text(
@@ -126,8 +141,11 @@ class McpSemanticSystemToolExecutor {
               );
 
       case 'android_set_volume':
-        final stream = arguments['stream'] as int? ?? 3;
-        final vol = arguments['volumeIndex'] as int;
+        final stream = arguments.getInt('stream', defaultValue: 3);
+        final vol = arguments.getRequiredInt(
+          'volumeIndex',
+          aliases: ['volume', 'vol', 'level'],
+        );
         final success = await _adb.setVolume(
           serial,
           stream: stream,
@@ -140,7 +158,11 @@ class McpSemanticSystemToolExecutor {
             : McpToolResult.error('Failed to set volume on $serial.');
 
       case 'android_wake_screen':
-        final wake = arguments['wake'] as bool;
+        final wake = arguments.getBool(
+          'wake',
+          aliases: ['state', 'screenOn', 'enable'],
+          defaultValue: true,
+        );
         final success = await _adb.wakeOrSleep(serial, wake);
         return success
             ? McpToolResult.text(
@@ -149,8 +171,8 @@ class McpSemanticSystemToolExecutor {
             : McpToolResult.error('Failed to toggle screen state on $serial.');
 
       case 'android_open_settings':
-        final action = arguments['action'] as String?;
-        final pkg = arguments['package'] as String?;
+        final action = arguments.getString('action');
+        final pkg = arguments.getString('package', aliases: ['pkg']);
         final out = await _adb.openSettings(
           serial,
           action: action,

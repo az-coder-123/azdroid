@@ -5,6 +5,7 @@ import 'package:desk_droid/features/mcp/data/handlers/mcp_performance_media_tool
 import 'package:desk_droid/features/mcp/data/handlers/mcp_semantic_system_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Top-level coordinator that routes and executes MCP tool calls against
@@ -49,7 +50,12 @@ class McpToolExecutor {
       if (toolName == _listDevicesTool) {
         result = await _listDevices();
       } else {
-        serial = await _resolveDevice(arguments['deviceSerial'] as String?);
+        serial = await _resolveDevice(
+          arguments.getString(
+            'deviceSerial',
+            aliases: ['serial', 'device', 'deviceId'],
+          ),
+        );
         result = serial == null
             ? McpToolResult.error('No connected Android device found via ADB.')
             : await _route(toolName, serial, arguments);
