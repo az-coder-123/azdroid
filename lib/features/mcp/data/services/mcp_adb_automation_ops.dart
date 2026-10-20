@@ -42,13 +42,11 @@ class McpAdbAutomationOps {
   ) async {
     if (actions.isEmpty) return const [];
 
-    // Attempt fast compound shell execution
+    final size = await McpAdbInputOps.getDisplaySize(client, serial);
     final commands = <int, String>{};
     for (var i = 0; i < actions.length; i++) {
-      final cmd = _compileShellAction(actions[i]);
-      if (cmd != null) {
-        commands[i] = cmd;
-      }
+      final cmd = _compileShellAction(actions[i], size);
+      if (cmd != null) commands[i] = cmd;
     }
 
     // When all actions are shell commands, execute them in a single compound ADB shell call
@@ -84,30 +82,59 @@ class McpAdbAutomationOps {
       try {
         switch (type) {
           case 'tap':
-            final x = _parseNum(a['x'] ?? a['xCoord'])?.toDouble();
-            final y = _parseNum(a['y'] ?? a['yCoord'])?.toDouble();
+            final (x, y) = _resolvePoint(
+              a,
+              size,
+              'x',
+              'y',
+              altX: 'xCoord',
+              altY: 'yCoord',
+            );
             if (x == null || y == null) {
               results.add({'step': i, 'error': 'Missing coordinates'});
               continue;
             }
-            final success = await client.tap(serial, x, y);
-            results.add({'step': i, 'action': 'tap', 'success': success});
+            final ok = await client.tap(serial, x.toDouble(), y.toDouble());
+            results.add({'step': i, 'action': 'tap', 'success': ok});
           case 'type':
             final text = (a['text'] ?? a['input'] ?? '').toString();
-            final success = await client.typeText(serial, text);
-            results.add({'step': i, 'action': 'type', 'success': success});
+            final ok = await client.typeText(serial, text);
+            results.add({'step': i, 'action': 'type', 'success': ok});
           case 'key':
             final code = _parseInt(a['keyCode'] ?? a['key'] ?? a['code']) ?? 0;
-            final success = await client.pressKey(serial, code);
-            results.add({'step': i, 'action': 'key', 'success': success});
+            final ok = await client.pressKey(serial, code);
+            results.add({'step': i, 'action': 'key', 'success': ok});
           case 'swipe':
-            final x1 = _parseNum(a['startX'] ?? a['x1'])?.toDouble() ?? 0;
-            final y1 = _parseNum(a['startY'] ?? a['y1'])?.toDouble() ?? 0;
-            final x2 = _parseNum(a['endX'] ?? a['x2'])?.toDouble() ?? 0;
-            final y2 = _parseNum(a['endY'] ?? a['y2'])?.toDouble() ?? 0;
+            final (x1, y1) = _resolvePoint(
+              a,
+              size,
+              'startX',
+              'startY',
+              altX: 'x1',
+              altY: 'y1',
+            );
+            final (x2, y2) = _resolvePoint(
+              a,
+              size,
+              'endX',
+              'endY',
+              altX: 'x2',
+              altY: 'y2',
+            );
+            if (x1 == null || y1 == null || x2 == null || y2 == null) {
+              results.add({'step': i, 'error': 'Missing coordinates'});
+              continue;
+            }
             final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 300;
-            final success = await client.swipe(serial, x1, y1, x2, y2, dur);
-            results.add({'step': i, 'action': 'swipe', 'success': success});
+            final ok = await client.swipe(
+              serial,
+              x1.toDouble(),
+              y1.toDouble(),
+              x2.toDouble(),
+              y2.toDouble(),
+              dur,
+            );
+            results.add({'step': i, 'action': 'swipe', 'success': ok});
           case 'sleep':
             final ms =
                 _parseInt(a['durationMs'] ?? a['duration'] ?? a['timeMs']) ??
@@ -124,12 +151,18 @@ class McpAdbAutomationOps {
     return results;
   }
 
-  static String? _compileShellAction(Map<String, dynamic> a) {
+  static String? _compileShellAction(Map<String, dynamic> a, Point<int> size) {
     final type = a['action']?.toString().toLowerCase().trim();
     switch (type) {
       case 'tap':
-        final x = _parseNum(a['x'] ?? a['xCoord'])?.round();
-        final y = _parseNum(a['y'] ?? a['yCoord'])?.round();
+        final (x, y) = _resolvePoint(
+          a,
+          size,
+          'x',
+          'y',
+          altX: 'xCoord',
+          altY: 'yCoord',
+        );
         if (x == null || y == null) return null;
         return 'input tap $x $y';
       case 'type':
@@ -144,21 +177,54 @@ class McpAdbAutomationOps {
         final code = _parseInt(a['keyCode'] ?? a['key'] ?? a['code']) ?? 0;
         return 'input keyevent $code';
       case 'swipe':
-        final x1 = _parseNum(a['startX'] ?? a['x1'])?.round();
-        final y1 = _parseNum(a['startY'] ?? a['y1'])?.round();
-        final x2 = _parseNum(a['endX'] ?? a['x2'])?.round();
-        final y2 = _parseNum(a['endY'] ?? a['y2'])?.round();
+        final (x1, y1) = _resolvePoint(
+          a,
+          size,
+          'startX',
+          'startY',
+          altX: 'x1',
+          altY: 'y1',
+        );
+        final (x2, y2) = _resolvePoint(
+          a,
+          size,
+          'endX',
+          'endY',
+          altX: 'x2',
+          altY: 'y2',
+        );
         if (x1 == null || y1 == null || x2 == null || y2 == null) return null;
         final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 300;
         return 'input swipe $x1 $y1 $x2 $y2 $dur';
       case 'sleep':
         final ms =
             _parseInt(a['durationMs'] ?? a['duration'] ?? a['timeMs']) ?? 500;
-        final sec = (ms / 1000.0).toStringAsFixed(2);
-        return 'sleep $sec';
+        return 'sleep ${(ms / 1000.0).toStringAsFixed(2)}';
       default:
         return null;
     }
+  }
+
+  static (int?, int?) _resolvePoint(
+    Map<String, dynamic> a,
+    Point<int> size,
+    String xKey,
+    String yKey, {
+    String? altX,
+    String? altY,
+  }) {
+    final xr = _parseNum(a['${xKey}Ratio'] ?? a['${xKey}Percent']);
+    final yr = _parseNum(a['${yKey}Ratio'] ?? a['${yKey}Percent']);
+    if (xr != null && yr != null) {
+      return ((xr * size.x).round(), (yr * size.y).round());
+    }
+    final rx = _parseNum(a[xKey] ?? (altX != null ? a[altX] : null));
+    final ry = _parseNum(a[yKey] ?? (altY != null ? a[altY] : null));
+    if (rx == null || ry == null) return (null, null);
+    if (rx > 0.0 && rx < 1.0 && ry > 0.0 && ry < 1.0) {
+      return ((rx * size.x).round(), ((ry * size.y).round()));
+    }
+    return (rx.round(), ry.round());
   }
 
   static num? _parseNum(dynamic v) {
@@ -173,75 +239,4 @@ class McpAdbAutomationOps {
     if (v is num) return v.toInt();
     return int.tryParse(v.toString().trim());
   }
-
-  static Future<bool> setLocation(
-    McpAdbClient client,
-    String serial, {
-    required double latitude,
-    required double longitude,
-    double? altitude,
-  }) async {
-    await client.run([
-      '-s',
-      serial,
-      'shell',
-      'settings',
-      'put',
-      'secure',
-      'location_mode',
-      '3',
-    ]);
-    final res = await client.run([
-      '-s',
-      serial,
-      'shell',
-      'cmd',
-      'location',
-      'set-location',
-      latitude.toString(),
-      longitude.toString(),
-      if (altitude != null) altitude.toString(),
-    ]);
-    if (res.exitCode == 0) return true;
-    final emu = await client.run([
-      '-s',
-      serial,
-      'emu',
-      'geo',
-      'fix',
-      longitude.toString(),
-      latitude.toString(),
-    ]);
-    return emu.exitCode == 0;
-  }
-
-  static Future<bool> setNetworkCondition(
-    McpAdbClient client,
-    String serial,
-    String mode,
-  ) async {
-    switch (mode.toLowerCase()) {
-      case 'offline':
-        await client.run(['-s', serial, 'shell', 'svc', 'wifi', 'disable']);
-        await client.run(['-s', serial, 'shell', 'svc', 'data', 'disable']);
-      case 'wifi_only':
-        await client.run(['-s', serial, 'shell', 'svc', 'wifi', 'enable']);
-        await client.run(['-s', serial, 'shell', 'svc', 'data', 'disable']);
-      case 'data_only':
-        await client.run(['-s', serial, 'shell', 'svc', 'wifi', 'disable']);
-        await client.run(['-s', serial, 'shell', 'svc', 'data', 'enable']);
-      default:
-        await client.run(['-s', serial, 'shell', 'svc', 'wifi', 'enable']);
-        await client.run(['-s', serial, 'shell', 'svc', 'data', 'enable']);
-    }
-    return true;
-  }
-
-  static Future<bool> longPress(
-    McpAdbClient client,
-    String serial,
-    double x,
-    double y, {
-    int durationMs = 1000,
-  }) => client.swipe(serial, x, y, x, y, durationMs);
 }

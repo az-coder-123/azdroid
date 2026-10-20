@@ -25,21 +25,32 @@ class McpAdbInputOps {
     return null;
   }
 
-  /// Queries the display's physical resolution.
+  static final _sizeCache = <String, Point<int>>{};
+
+  /// Queries the display's physical resolution, caching the result per serial.
   static Future<Point<int>> getDisplaySize(
     McpAdbClient client,
-    String serial,
-  ) async {
+    String serial, {
+    bool forceRefresh = false,
+  }) async {
+    if (!forceRefresh && _sizeCache.containsKey(serial)) {
+      return _sizeCache[serial]!;
+    }
     final res = await client.run(['-s', serial, 'shell', 'wm', 'size']);
     final out = res.stdout.toString();
     final match = RegExp(r'Physical size:\s*(\d+)x(\d+)').firstMatch(out);
     if (match != null) {
       final w = int.parse(match.group(1)!);
       final h = int.parse(match.group(2)!);
-      return Point(w, h);
+      final size = Point(w, h);
+      _sizeCache[serial] = size;
+      return size;
     }
-    return const Point(1080, 2400);
+    return _sizeCache[serial] ?? const Point(1080, 2400);
   }
+
+  /// Clears cached screen dimension for [serial] (e.g. after screen rotation).
+  static void invalidateDisplaySize(String serial) => _sizeCache.remove(serial);
 
   /// Injects a touch tap gesture at pixel or normalized coordinates.
   static Future<bool> tap(
@@ -48,8 +59,8 @@ class McpAdbInputOps {
     double x,
     double y,
   ) async {
-    int targetX = x.round();
-    int targetY = y.round();
+    var targetX = x.round();
+    var targetY = y.round();
     if (x >= 0.0 && x <= 1.0 && y >= 0.0 && y <= 1.0) {
       final size = await getDisplaySize(client, serial);
       targetX = (x * size.x).round();

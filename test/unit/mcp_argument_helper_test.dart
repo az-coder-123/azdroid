@@ -21,6 +21,25 @@ void main() {
       );
     });
 
+    test(
+      'supports universal key normalization across camelCase, snake_case, and casing',
+      () {
+        final map = <String, dynamic>{
+          'local_path': '/sdcard/file.txt',
+          'DeviceSerial': '192.168.1.100:5555',
+          'PACKAGE_NAME': 'com.android.settings',
+          'clear-all': true,
+          'pollIntervalMs': 250,
+        };
+
+        expect(map.getString('localPath'), equals('/sdcard/file.txt'));
+        expect(map.getString('device_serial'), equals('192.168.1.100:5555'));
+        expect(map.getString('packageName'), equals('com.android.settings'));
+        expect(map.getBool('clearAll'), isTrue);
+        expect(map.getInt('poll_interval_ms'), equals(250));
+      },
+    );
+
     test('getBool correctly parses boolean, string, and integer flags', () {
       final map = <String, dynamic>{
         'b_true': true,
@@ -111,6 +130,57 @@ void main() {
         () => map.getRequiredInt('missing'),
         throwsA(isA<McpArgumentException>()),
       );
+    });
+
+    test('getPoint resolves pixel, explicit ratio, and normalized coordinates', () {
+      const displayW = 1080;
+      const displayH = 2400;
+
+      // 1. Raw pixel coordinates
+      final pixels = <String, dynamic>{'x': 500, 'y': 1000};
+      final p1 = pixels.getPoint(displayWidth: displayW, displayHeight: displayH);
+      expect(p1.$1, closeTo(500, 0.001));
+      expect(p1.$2, closeTo(1000, 0.001));
+
+      // 2. Explicit ratios: xRatio / yRatio
+      final ratios = <String, dynamic>{'xRatio': 0.5, 'yRatio': 0.25};
+      final p2 = ratios.getPoint(displayWidth: displayW, displayHeight: displayH);
+      expect(p2.$1, closeTo(540, 0.001));
+      expect(p2.$2, closeTo(600, 0.001));
+
+      // 3. Snake_case ratios: x_ratio / y_ratio
+      final snakeRatios = <String, dynamic>{'x_ratio': 0.1, 'y_ratio': 0.5};
+      final p3 = snakeRatios.getPoint(displayWidth: displayW, displayHeight: displayH);
+      expect(p3.$1, closeTo(108, 0.001));
+      expect(p3.$2, closeTo(1200, 0.001));
+
+      // 4. Custom keys with aliases: startX / startY
+      final custom = <String, dynamic>{'startXRatio': 0.8, 'startYRatio': 0.1};
+      final p4 = custom.getPoint(
+        displayWidth: displayW,
+        displayHeight: displayH,
+        xKey: 'startX',
+        yKey: 'startY',
+      );
+      expect(p4.$1, closeTo(864, 0.001));
+      expect(p4.$2, closeTo(240, 0.001));
+    });
+
+    test('getPointPair resolves ratio arguments or raw values without display size', () {
+      final ratioMap = <String, dynamic>{'xRatio': 0.4, 'yRatio': 0.6};
+      final (rx, ry) = ratioMap.getPointPair();
+      expect(rx, closeTo(0.4, 0.001));
+      expect(ry, closeTo(0.6, 0.001));
+
+      final percentMap = <String, dynamic>{'x_percent': 0.75, 'y_percent': 0.25};
+      final (px, py) = percentMap.getPointPair();
+      expect(px, closeTo(0.75, 0.001));
+      expect(py, closeTo(0.25, 0.001));
+
+      final rawMap = <String, dynamic>{'x': 540.0, 'y': 960.0};
+      final (cx, cy) = rawMap.getPointPair();
+      expect(cx, closeTo(540.0, 0.001));
+      expect(cy, closeTo(960.0, 0.001));
     });
   });
 }

@@ -53,7 +53,7 @@ mixin McpAdbAutomationDelegator {
     required double latitude,
     required double longitude,
     double? altitude,
-  }) => McpAdbAutomationOps.setLocation(
+  }) => McpAdbEnvironmentOps.setLocation(
     _adbClient,
     serial,
     latitude: latitude,
@@ -62,14 +62,14 @@ mixin McpAdbAutomationDelegator {
   );
 
   Future<bool> setNetworkCondition(String serial, String mode) =>
-      McpAdbAutomationOps.setNetworkCondition(_adbClient, serial, mode);
+      McpAdbEnvironmentOps.setNetworkCondition(_adbClient, serial, mode);
 
   Future<bool> longPress(
     String serial,
     double x,
     double y, {
     int durationMs = 1000,
-  }) => McpAdbAutomationOps.longPress(
+  }) => McpAdbEnvironmentOps.longPress(
     _adbClient,
     serial,
     x,

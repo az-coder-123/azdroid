@@ -11,16 +11,8 @@ class McpArgumentException implements Exception {
 extension McpArgumentMapExtension on Map<String, dynamic> {
   /// Extracts an optional String value, checking [key] and then fallback [aliases].
   String? getString(String key, {List<String> aliases = const []}) {
-    if (containsKey(key) && this[key] != null) {
-      final val = this[key];
-      return val.toString().trim();
-    }
-    for (final alias in aliases) {
-      if (containsKey(alias) && this[alias] != null) {
-        return this[alias].toString().trim();
-      }
-    }
-    return null;
+    final val = _findRawValue(key, aliases);
+    return val?.toString().trim();
   }
 
   /// Extracts a required String value, throwing [McpArgumentException] if missing or empty.
@@ -63,7 +55,7 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
 
   /// Extracts an optional double value, returning null if missing or unparseable.
   double? getOptionalDouble(String key, {List<String> aliases = const []}) {
-    final raw = this[key] ?? _findAliasValue(aliases);
+    final raw = _findRawValue(key, aliases);
     if (raw == null) return null;
     if (raw is num) return raw.toDouble();
     return double.tryParse(raw.toString().trim());
@@ -89,7 +81,7 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
 
   /// Extracts an optional integer value, returning null if missing or unparseable.
   int? getOptionalInt(String key, {List<String> aliases = const []}) {
-    final raw = this[key] ?? _findAliasValue(aliases);
+    final raw = _findRawValue(key, aliases);
     if (raw == null) return null;
     if (raw is int) return raw;
     if (raw is num) return raw.toInt();
@@ -114,10 +106,133 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     return val;
   }
 
-  dynamic _findAliasValue(List<String> aliases) {
-    for (final a in aliases) {
-      if (containsKey(a) && this[a] != null) return this[a];
+  /// Extracts a 2D coordinate point, resolving explicit ratios ('xRatio', 'xPercent')
+  /// or normalized (0.0..1.0) values against [displayWidth] and [displayHeight].
+  (double, double) getPoint({
+    required int displayWidth,
+    required int displayHeight,
+    String xKey = 'x',
+    String yKey = 'y',
+    List<String> xAliases = const [],
+    List<String> yAliases = const [],
+  }) {
+    final xRatio = getOptionalDouble('${xKey}Ratio', aliases: [
+      '${xKey}Percent',
+      'ratio${xKey.toUpperCase()}',
+    ]);
+    final yRatio = getOptionalDouble('${yKey}Ratio', aliases: [
+      '${yKey}Percent',
+      'ratio${yKey.toUpperCase()}',
+    ]);
+
+    if (xRatio != null && yRatio != null) {
+      return (xRatio * displayWidth, yRatio * displayHeight);
     }
+
+    final rawX = getRequiredDouble(xKey, aliases: xAliases);
+    final rawY = getRequiredDouble(yKey, aliases: yAliases);
+
+    final isNormalized = getBool('normalized', defaultValue: false);
+    if (isNormalized || (xRatio != null || yRatio != null)) {
+      final actualX = xRatio != null
+          ? (xRatio * displayWidth)
+          : (rawX <= 1.0 ? rawX * displayWidth : rawX);
+      final actualY = yRatio != null
+          ? (yRatio * displayHeight)
+          : (rawY <= 1.0 ? rawY * displayHeight : rawY);
+      return (actualX, actualY);
+    }
+
+    if (rawX > 0.0 && rawX < 1.0 && rawY > 0.0 && rawY < 1.0) {
+      return (rawX * displayWidth, rawY * displayHeight);
+    }
+
+    return (rawX, rawY);
+  }
+
+  /// Parses coordinate pair preserving normalized ratio if provided,
+  /// or returning raw coordinate values.
+  (double, double) getPointPair({
+    String xKey = 'x',
+    String yKey = 'y',
+    List<String> xAliases = const [],
+    List<String> yAliases = const [],
+  }) {
+    final xr = getOptionalDouble('${xKey}Ratio', aliases: [
+      '${xKey}_ratio',
+      '${xKey}Percent',
+    ]);
+    final yr = getOptionalDouble('${yKey}Ratio', aliases: [
+      '${yKey}_ratio',
+      '${yKey}Percent',
+    ]);
+    if (xr != null && yr != null) return (xr, yr);
+    final rawX = getRequiredDouble(xKey, aliases: [
+      ...xAliases,
+      '${xKey}Ratio',
+      '${xKey}Coord',
+    ]);
+    final rawY = getRequiredDouble(yKey, aliases: [
+      ...yAliases,
+      '${yKey}Ratio',
+      '${yKey}Coord',
+    ]);
+    return (rawX, rawY);
+  }
+
+  dynamic _findRawValue(String key, List<String> aliases) {
+    if (containsKey(key) && this[key] != null) return this[key];
+    for (final alias in aliases) {
+      if (containsKey(alias) && this[alias] != null) return this[alias];
+    }
+
+    final candidates = <String>{};
+    for (final k in [key, ...aliases]) {
+      final snake = k.replaceAllMapped(
+        RegExp(r'[A-Z]'),
+        (m) => '_${m[0]!.toLowerCase()}',
+      );
+      candidates.add(snake);
+      candidates.add(snake.replaceAll('_', '-'));
+      if (k.contains('_') || k.contains('-')) {
+        candidates.add(_toCamelCase(k));
+      }
+    }
+
+    for (final c in candidates) {
+      if (containsKey(c) && this[c] != null) return this[c];
+    }
+
+    final cleanTarget = _stripKey(key);
+    for (final entry in entries) {
+      if (_stripKey(entry.key) == cleanTarget && entry.value != null) {
+        return entry.value;
+      }
+    }
+
+    for (final alias in aliases) {
+      final cleanAlias = _stripKey(alias);
+      for (final entry in entries) {
+        if (_stripKey(entry.key) == cleanAlias && entry.value != null) {
+          return entry.value;
+        }
+      }
+    }
+
     return null;
   }
+
+  static String _toCamelCase(String s) {
+    final parts = s.split(RegExp(r'[_-]'));
+    if (parts.isEmpty) return s;
+    final first = parts.first.toLowerCase();
+    final rest = parts.skip(1).map(
+      (p) =>
+          p.isEmpty ? '' : '${p[0].toUpperCase()}${p.substring(1).toLowerCase()}',
+    );
+    return '$first${rest.join()}';
+  }
+
+  static String _stripKey(String s) =>
+      s.replaceAll('_', '').replaceAll('-', '').toLowerCase();
 }

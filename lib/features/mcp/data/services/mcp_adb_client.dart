@@ -12,6 +12,7 @@ part 'mcp_adb_automation_delegator.dart';
 part 'mcp_adb_automation_ops.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
+part 'mcp_adb_environment_ops.dart';
 part 'mcp_adb_input_ops.dart';
 part 'mcp_adb_media_proc_ops.dart';
 part 'mcp_adb_notification_button_ops.dart';

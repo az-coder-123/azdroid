@@ -44,6 +44,23 @@ void main() {
       );
     });
 
+    test('android_tap accepts normalized xRatio and yRatio arguments', () async {
+      when(() => mockAdb.tap('192.168.1.100:5555', 0.25, 0.65))
+          .thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_tap', {
+        'deviceSerial': '192.168.1.100:5555',
+        'x_ratio': 0.25,
+        'y_ratio': 0.65,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Tapped at coordinates (0.25, 0.65)'),
+      );
+    });
+
     test('android_double_tap executes double tap via McpAdbClient', () async {
       when(
         () =>
