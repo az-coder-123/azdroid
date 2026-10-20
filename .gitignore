@@ -49,3 +49,6 @@ app.*.map.json
 
 # Downloaded build-time binaries (tool/fetch_platform_tools.dart)
 /vendor/
+
+# Local MCP configuration
+.mcp.json
