@@ -12,7 +12,7 @@ class AppConstants {
   /// Application version; must equal the `version:` name in pubspec.yaml
   /// (checked by test/unit/app_version_test.dart). Release steps:
   /// docs/release-guide.md.
-  static const String appVersion = '1.2.1';
+  static const String appVersion = '1.3.0';
 
   /// Minimum supported window dimensions for macOS desktop.
   static const double minWindowWidth = 800.0;
