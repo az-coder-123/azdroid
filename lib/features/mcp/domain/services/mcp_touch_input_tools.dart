@@ -3,22 +3,35 @@ import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart
 /// Catalog of touch gestures, text entry, and basic hardware input tools for MCP.
 final List<McpToolDefinition> mcpTouchInputTools = [
   const McpToolDefinition(
-    name: 'android_list_devices',
+    name: 'android_pinch_gesture',
     description:
-        'Lists all connected and discovered Android devices via USB and Wi-Fi.',
-    inputSchema: {'type': 'object', 'properties': {}},
-  ),
-  const McpToolDefinition(
-    name: 'android_take_screenshot',
-    description: 'Captures a high-resolution screenshot from the Android device and returns it as a base64 image artifact.',
+        'Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.',
     inputSchema: {
       'type': 'object',
       'properties': {
+        'scale': {
+          'type': 'number',
+          'description':
+              'Scale factor (> 1.0 to zoom in, e.g. 2.0; < 1.0 to zoom out, e.g. 0.5).',
+        },
+        'centerX': {
+          'type': 'number',
+          'description': 'Horizontal center (0.0..1.0 or pixels, default 0.5).',
+        },
+        'centerY': {
+          'type': 'number',
+          'description': 'Vertical center (0.0..1.0 or pixels, default 0.5).',
+        },
+        'durationMs': {
+          'type': 'integer',
+          'description': 'Gesture duration in milliseconds (default 400).',
+        },
         'deviceSerial': {
           'type': 'string',
-          'description': 'Device serial or IP:port (optional if only one device is connected).',
+          'description': 'Target device serial or IP:port.',
         },
       },
+      'required': ['scale'],
     },
   ),
   const McpToolDefinition(

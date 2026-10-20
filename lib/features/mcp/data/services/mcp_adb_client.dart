@@ -3,9 +3,14 @@ import 'dart:io';
 import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/services/adb_binary_locator.dart';
 import 'package:desk_droid/core/services/process_output_encoding.dart';
+import 'package:desk_droid/features/control/data/datasources/control_datasource.dart';
+import 'package:desk_droid/features/control/data/datasources/scrcpy_control_datasource.dart';
+import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
+import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_semantic_element.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_foreground_app_parser.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_tree_parser.dart';
+import 'package:get_it/get_it.dart';
 
 part 'mcp_adb_app_ops.dart';
 part 'mcp_adb_automation_delegator.dart';
@@ -21,6 +26,7 @@ part 'mcp_adb_performance_ops.dart';
 part 'mcp_adb_resolver.dart';
 part 'mcp_adb_system_delegator.dart';
 part 'mcp_adb_system_ops.dart';
+part 'mcp_adb_text_ops.dart';
 part 'mcp_adb_ui_ops.dart';
 
 /// Pure Dart ADB client for DeskDroid MCP Server.
@@ -67,9 +73,9 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     int durationMs,
   ) => McpAdbInputOps.swipe(this, serial, sx, sy, ex, ey, durationMs);
   Future<bool> typeText(String serial, String text) =>
-      McpAdbInputOps.typeText(this, serial, text);
+      McpAdbTextOps.typeText(this, serial, text);
   Future<bool> pressKey(String serial, int keyCode) =>
-      McpAdbInputOps.pressKey(this, serial, keyCode);
+      McpAdbTextOps.pressKey(this, serial, keyCode);
   Future<bool> doubleTap(
     String serial,
     double x,
@@ -81,7 +87,7 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     String text, {
     int? elementId,
     bool clearFirst = false,
-  }) => McpAdbInputOps.setText(
+  }) => McpAdbTextOps.setText(
     this,
     serial,
     text,
@@ -89,7 +95,7 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     clearFirst: clearFirst,
   );
   Future<bool> clearText(String serial, {int? elementId}) =>
-      McpAdbInputOps.clearText(this, serial, elementId: elementId);
+    McpAdbTextOps.clearText(this, serial, elementId: elementId);
   Future<bool> drag(
     String serial,
     double startX,
@@ -104,6 +110,20 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     startY,
     endX,
     endY,
+    durationMs: durationMs,
+  );
+  Future<bool> pinchGesture(
+    String serial, {
+    required double scale,
+    double centerX = 0.5,
+    double centerY = 0.5,
+    int durationMs = 400,
+  }) => McpAdbInputOps.pinchGesture(
+    this,
+    serial,
+    scale: scale,
+    centerX: centerX,
+    centerY: centerY,
     durationMs: durationMs,
   );
 

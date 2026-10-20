@@ -148,94 +148,95 @@ class McpAdbInputOps {
     int durationMs = 1000,
   }) => swipe(client, serial, startX, startY, endX, endY, durationMs);
 
-  /// Types text with space escaping (character-by-character via IME).
-  static Future<bool> typeText(
-    McpAdbClient client,
-    String serial,
-    String text,
-  ) async {
-    final escaped = text.replaceAll(' ', '%s');
-    final res = await client.run([
-      '-s',
-      serial,
-      'shell',
-      'input',
-      'text',
-      escaped,
-    ]);
-    return res.exitCode == 0;
-  }
-
-  /// Injects exact text bypassing IME predictive engines and Telex autocorrect.
-  static Future<bool> setText(
-    McpAdbClient client,
-    String serial,
-    String text, {
-    int? elementId,
-    bool clearFirst = false,
-  }) async {
-    if (elementId != null) {
-      final tapped = await client.clickElementById(serial, elementId);
-      if (!tapped) return false;
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
-
-    if (clearFirst) {
-      await clearText(client, serial);
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-
-    // Set Android system clipboard and paste as atomic block.
-    final copied = await client.setClipboard(serial, text);
-    if (!copied) {
-      return await typeText(client, serial, text);
-    }
-
-    await Future.delayed(const Duration(milliseconds: 100));
-    final res = await client.run([
-      '-s',
-      serial,
-      'shell',
-      'input',
-      'keyevent',
-      '279',
-    ]);
-    return res.exitCode == 0;
-  }
-
-  /// Clears text in the focused field or focuses an element by ID before clearing.
-  static Future<bool> clearText(
+  /// Injects a multi-touch pinch gesture (zoom in or zoom out).
+  /// Uses ScrcpyControlDatasource stream when mirroring is active,
+  /// falling back to Android's universal 1-finger double-tap-and-drag zoom.
+  static Future<bool> pinchGesture(
     McpAdbClient client,
     String serial, {
-    int? elementId,
+    required double scale,
+    double centerX = 0.5,
+    double centerY = 0.5,
+    int durationMs = 400,
   }) async {
-    if (elementId != null) {
-      final tapped = await client.clickElementById(serial, elementId);
-      if (!tapped) return false;
-      await Future.delayed(const Duration(milliseconds: 200));
+    final size = await getDisplaySize(client, serial);
+    final cx = centerX <= 1.0 ? centerX * size.x : centerX;
+    final cy = centerY <= 1.0 ? centerY * size.y : centerY;
+
+    if (GetIt.I.isRegistered<ControlDatasource>()) {
+      final ds = GetIt.I<ControlDatasource>();
+      if (ds is ScrcpyControlDatasource && ds.isAvailableFor(serial)) {
+        return _streamPinch(ds, serial, scale, cx, cy, size, durationMs);
+      }
     }
 
-    // Move to end, Select All (Ctrl+A), and Delete (DEL) in a single shell invocation.
-    const cmd =
-        'input keyevent 123 && input keyevent --meta 4096 29 && input keyevent 67';
+    // Pure ADB fallback: Android universal double-tap-drag zoom gesture
+    final distance = (size.y * 0.25).round();
+    final startY = cy.round();
+    final endY = scale >= 1.0
+        ? (cy + distance).round().clamp(0, size.y)
+        : (cy - distance).round().clamp(0, size.y);
+    final tapX = cx.round();
+
+    final cmd =
+        'input tap $tapX $startY && sleep 0.1 && input swipe $tapX $startY $tapX $endY $durationMs';
     final res = await client.run(['-s', serial, 'shell', cmd]);
     return res.exitCode == 0;
   }
 
-  /// Sends hardware keyevent by keycode.
-  static Future<bool> pressKey(
-    McpAdbClient client,
+  static Future<bool> _streamPinch(
+    ControlDatasource ds,
     String serial,
-    int keyCode,
+    double scale,
+    double cx,
+    double cy,
+    Point<int> size,
+    int durationMs,
   ) async {
-    final res = await client.run([
-      '-s',
+    final frame = FrameSize(size.x, size.y);
+    const span = 150.0;
+    final (startSpan, endSpan) = scale >= 1.0
+        ? (span, span * scale.clamp(1.2, 3.0))
+        : (span / scale.clamp(0.2, 0.8), span);
+
+    PixelPoint p1(double s) => (
+      x: (cx - s / 2).round().clamp(0, size.x),
+      y: (cy - s / 2).round().clamp(0, size.y),
+    );
+    PixelPoint p2(double s) => (
+      x: (cx + s / 2).round().clamp(0, size.x),
+      y: (cy + s / 2).round().clamp(0, size.y),
+    );
+
+    final ok = await ds.injectTouchStream(
       serial,
-      'shell',
-      'input',
-      'keyevent',
-      '$keyCode',
-    ]);
-    return res.exitCode == 0;
+      TouchStreamPhase.start,
+      [p1(startSpan), p2(startSpan)],
+      frame: frame,
+    );
+    if (!ok) return false;
+
+    const steps = 8;
+    final stepDelay = Duration(
+      milliseconds: (durationMs ~/ steps).clamp(10, 100),
+    );
+    for (var i = 1; i <= steps; i++) {
+      await Future<void>.delayed(stepDelay);
+      final t = i / steps;
+      final current = startSpan + (endSpan - startSpan) * t;
+      await ds.injectTouchStream(
+        serial,
+        TouchStreamPhase.move,
+        [p1(current), p2(current)],
+        frame: frame,
+      );
+    }
+
+    return ds.injectTouchStream(
+      serial,
+      TouchStreamPhase.end,
+      [p1(endSpan), p2(endSpan)],
+      frame: frame,
+    );
   }
 }

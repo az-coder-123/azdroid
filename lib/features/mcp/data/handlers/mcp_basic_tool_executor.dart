@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_image_processor.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
-/// Handler for basic touch, swipe, keyevent, intent, and diagnostics tools.
+/// Handler for basic touch, swipe, pinch, keyevent, intent, and diagnostics tools.
 class McpBasicToolExecutor {
   const McpBasicToolExecutor(this._adb);
 
@@ -15,6 +16,8 @@ class McpBasicToolExecutor {
     'android_tap',
     'android_double_tap',
     'android_swipe',
+    'android_drag',
+    'android_pinch_gesture',
     'android_type_text',
     'android_set_text',
     'android_clear_text',
@@ -22,25 +25,10 @@ class McpBasicToolExecutor {
     'android_dispatch_intent',
     'android_get_logcat',
     'android_install_apk',
-    'android_drag',
     'android_check_crash',
     'android_scan_media_file',
     'android_shell_command',
   }.contains(toolName);
-
-  static int _resolveKeyCode(String key) {
-    return switch (key) {
-      'HOME' => 3,
-      'BACK' => 4,
-      'VOLUME_UP' => 24,
-      'VOLUME_DOWN' => 25,
-      'POWER' => 26,
-      'TAB' => 61,
-      'ENTER' => 66,
-      'APP_SWITCH' => 187,
-      _ => int.tryParse(key) ?? 4,
-    };
-  }
 
   Future<McpToolResult> execute(
     String toolName,
@@ -55,8 +43,12 @@ class McpBasicToolExecutor {
             'Failed to capture screenshot from $serial.',
           );
         }
+        final processed = McpImageProcessor.processFromArguments(
+          bytes,
+          arguments,
+        );
         return McpToolResult.image(
-          base64Data: base64Encode(bytes),
+          base64Data: base64Encode(processed),
           caption:
               'Screenshot from device $serial at ${DateTime.now().toIso8601String()}',
         );
@@ -98,29 +90,49 @@ class McpBasicToolExecutor {
               )
             : McpToolResult.error('Failed to drag.');
 
-      case 'android_type_text':
-        final text = arguments.getRequiredString(
-          'text',
-          aliases: ['input', 'value'],
+      case 'android_pinch_gesture':
+        final scale = arguments.getRequiredDouble(
+          'scale',
+          aliases: ['zoom', 'factor'],
         );
-        final success = await _adb.typeText(serial, text);
-        return success
+        final cx = arguments.getOptionalDouble(
+          'centerX',
+          aliases: ['x', 'center_x', 'xRatio'],
+        ) ?? 0.5;
+        final cy = arguments.getOptionalDouble(
+          'centerY',
+          aliases: ['y', 'center_y', 'yRatio'],
+        ) ?? 0.5;
+        final dur = arguments.getInt(
+          'durationMs',
+          aliases: ['duration', 'timeMs'],
+          defaultValue: 400,
+        );
+        final ok = await _adb.pinchGesture(
+          serial,
+          scale: scale,
+          centerX: cx,
+          centerY: cy,
+          durationMs: dur,
+        );
+        return ok
+            ? McpToolResult.text(
+                'Injected pinch gesture (scale: $scale, center: ($cx, $cy)) on $serial.',
+              )
+            : McpToolResult.error('Failed to inject pinch gesture.');
+
+      case 'android_type_text':
+        final text = arguments.getRequiredString('text', aliases: ['input', 'value']);
+        final ok = await _adb.typeText(serial, text);
+        return ok
             ? McpToolResult.text('Injected text "$text" into $serial.')
             : McpToolResult.error('Failed to inject text.');
 
       case 'android_set_text':
-        final text = arguments.getRequiredString(
-          'text',
-          aliases: ['input', 'value'],
-        );
+        final text = arguments.getRequiredString('text', aliases: ['input', 'value']);
         final id = arguments.getOptionalInt('elementId');
         final clear = arguments.getBool('clearFirst', defaultValue: false);
-        final ok = await _adb.setText(
-          serial,
-          text,
-          elementId: id,
-          clearFirst: clear,
-        );
+        final ok = await _adb.setText(serial, text, elementId: id, clearFirst: clear);
         return ok
             ? McpToolResult.text(
                 'Set text "$text" on $serial (elementId: ${id ?? 'focused'}, clearFirst: $clear).',
@@ -131,16 +143,14 @@ class McpBasicToolExecutor {
         final id = arguments.getOptionalInt('elementId');
         final ok = await _adb.clearText(serial, elementId: id);
         return ok
-            ? McpToolResult.text(
-                'Cleared text on $serial (elementId: ${id ?? 'focused'}).',
-              )
+            ? McpToolResult.text('Cleared text on $serial (elementId: ${id ?? 'focused'}).')
             : McpToolResult.error('Failed to clear text.');
 
       case 'android_press_key':
         final keyName = arguments
             .getRequiredString('key', aliases: ['keyCode', 'name', 'code'])
             .toUpperCase();
-        final code = _resolveKeyCode(keyName);
+        final code = McpAdbTextOps.resolveKeyCode(keyName);
         final success = await _adb.pressKey(serial, code);
         return success
             ? McpToolResult.text('Pressed key $keyName ($code) on $serial.')
