@@ -1,6 +1,6 @@
-# DeskDroid — Technical Specifications & Feature Documentation
+# Azdroid — Technical Specifications & Feature Documentation
 
-> Comprehensive specification and architectural breakdown of the **DeskDroid** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS and Windows (preview) over local Wi-Fi.
+> Comprehensive specification and architectural breakdown of the **Azdroid** open-source project: Ultra-low latency Android screen mirroring and remote control for macOS and Windows (preview) over local Wi-Fi.
 >
 > 🖥️ **Platform status:** Not every feature below is available or verified on both platforms (audio forwarding is new and not yet verified in the app; the menu bar companion is not functional yet). See [platform-support.md](platform-support.md).
 >
@@ -31,7 +31,7 @@
 
 ### 1.3 Session Loss Handling
 - **Clear Stop:** When the video stream fails or the device closes it, mirroring stops with an explanation and a **Retry Connection** button.
-- **No Automatic Reconnect Yet:** DeskDroid does not reconnect by itself when a device drops off the network; reconnect from the device list or press Retry.
+- **No Automatic Reconnect Yet:** Azdroid does not reconnect by itself when a device drops off the network; reconnect from the device list or press Retry.
 
 ### 1.4 1-Click USB-to-Wi-Fi Mode Switch (`adb tcpip 5555`)
 - **Automated Network Query:** Reads the phone's Wi-Fi address with `adb shell ip addr show wlan0`, falling back to `ip route`.
@@ -118,12 +118,12 @@
 - **Intentional Recording Preparation HUD:** Clicking the camera tool button or pressing <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> enters a preparation state with an Apple-style floating HUD rather than recording abruptly, featuring a 3-second countdown toggle, Start button, and quick cancel.
 - **Animated 3-2-1 Countdown Overlay:** Displays an animated pulsating circular dial over the phone display during the 3-second buffer, allowing users to prepare phone context or skip directly with "Start Now" or abort with <kbd>Esc</kbd>.
 - **Live Elapsed Duration & Dual Actions:** Live status pill displaying recording state (`REC 00:15`) with a pulsing recording dot, 1-click **STOP** (finalize & pull MP4), and **DISCARD** (purge temporary file without host disk clutter).
-- **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/DeskDroid_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
+- **Auto-Pull to macOS & Quick Actions:** Seamlessly interrupts the recording to finalize the MP4 container, pulls to `~/Downloads/Azdroid_Recording_YYYYMMDD_HHMMSS.mp4`, and displays preview card with 1-click **Finder** and **Play** actions. Triggerable via vertical toolbar button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>.
 
 ### 4.9 Bidirectional File Transfer & Device File Explorer
 - **macOS to Android Push:** Send arbitrary files, photos, videos, documents, or APKs to the Android device via native Apple Finder file selection dialog or drag-and-drop. APKs are automatically installed; media files trigger an Android MediaScanner broadcast to appear instantly in the Gallery. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>U</kbd>.
 - **Real-Time Transfer Progress & Size HUD:** Floating dynamic banner displays file names, human-readable file sizes (e.g., `14.5 MB`), multi-item counters (`Item 1 of 3`), and dismissible completion badges.
-- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`, and auto-detected `💳 SD Card`), full MicroSD card / external storage volume detection (`/storage/<UUID>/`), storage root navigation (`/storage/`), breadcrumb path display with <kbd>← Back</kbd> navigation, instant search filtering, multi-criteria sorting (Date, Size, Name), "Select All" bulk controls, vibrant file-type badges, formatted total selection sizes, and batch download to `~/Downloads/DeskDroid` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
+- **Android Device File Explorer & Pull to Mac:** Interactive modal file manager to navigate directories on the device with quick shortcuts (`Downloads`, `Camera`, `Screenshots`, `Movies`, and auto-detected `💳 SD Card`), full MicroSD card / external storage volume detection (`/storage/<UUID>/`), storage root navigation (`/storage/`), breadcrumb path display with <kbd>← Back</kbd> navigation, instant search filtering, multi-criteria sorting (Date, Size, Name), "Select All" bulk controls, vibrant file-type badges, formatted total selection sizes, and batch download to `~/Downloads/Azdroid` with 1-click Finder reveal. Triggerable via vertical dock button or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>.
 
 ### 4.10 Professional APK Sideload & Package Manager
 - **Comprehensive Metadata Inspection:** Inspect APK package details prior to installation, including App Name, Package ID (`applicationId`), App Icon, Version Name, Version Code, Minimum & Target Android SDK levels, and precise file size.

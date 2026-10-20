@@ -36,11 +36,11 @@ class QuickStartSection extends StatelessWidget {
             ),
             GuideStepRow(
               number: '2',
-              text: 'DeskDroid will detect your USB device and display a "Wi-Fi Mode" button.',
+              text: 'Azdroid will detect your USB device and display a "Wi-Fi Mode" button.',
             ),
             GuideStepRow(
               number: '3',
-              text: 'Click "Wi-Fi Mode". DeskDroid automatically retrieves the phone Wi-Fi IP, activates port 5555, and connects.',
+              text: 'Click "Wi-Fi Mode". Azdroid automatically retrieves the phone Wi-Fi IP, activates port 5555, and connects.',
             ),
             GuideStepRow(
               number: '4',
@@ -70,7 +70,7 @@ class QuickStartSection extends StatelessWidget {
             ),
             GuideStepRow(
               number: '3',
-              text: 'On DeskDroid: Click "Pair with Wi-Fi Code" on top bar, then enter the IP, pairing port, and 6-digit code shown on screen.',
+              text: 'On Azdroid: Click "Pair with Wi-Fi Code" on top bar, then enter the IP, pairing port, and 6-digit code shown on screen.',
             ),
             GuideStepRow(
               number: '4',
@@ -96,7 +96,7 @@ class QuickStartSection extends StatelessWidget {
             ),
             GuideStepRow(
               number: '2',
-              text: 'Or click "Direct IP" on DeskDroid, enter your phone Wi-Fi IP (e.g. 192.168.1.100:5555), and click Connect.',
+              text: 'Or click "Direct IP" on Azdroid, enter your phone Wi-Fi IP (e.g. 192.168.1.100:5555), and click Connect.',
             ),
           ],
         ),

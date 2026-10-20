@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid needed "keep the phone awake while mirroring". scrcpy-server offers `stay_awake` and `screen_off_timeout`, but both change **global device settings**. DeskDroid ran with `cleanup=false`, so a changed setting would have stayed changed after mirroring, and the phone would never sleep on its own again. Also, `stay_awake` alone does nothing for a phone on battery over Wi-Fi: it sets "stay on while plugged in".
+Azdroid needed "keep the phone awake while mirroring". scrcpy-server offers `stay_awake` and `screen_off_timeout`, but both change **global device settings**. Azdroid ran with `cleanup=false`, so a changed setting would have stayed changed after mirroring, and the phone would never sleep on its own again. Also, `stay_awake` alone does nothing for a phone on battery over Wi-Fi: it sets "stay on while plugged in".
 
 ## 2. Diagnostic Traces & Evidence
 
@@ -24,7 +24,7 @@ Three facts are easy to miss:
 
 1. **Restore needs `cleanup=true`.** Without it, scrcpy changes the setting and never puts it back.
 2. **The restore runs after the server exits, asynchronously.** On a pipeline restart (bitrate or keep-awake change), a new server can start while the old restore process is still running. If it reads the settings before the old values come back, it sees the changed value, considers it "unchanged", and records nothing. The old process then restores the original, so the new session silently is not kept awake. This was **not reproduced** on the Redmi (push + start took longer than the ~0.5 s restore), but nothing in scrcpy orders the two; it depends on device speed.
-3. **`cleanup=true` deletes the pushed jar.** That is fine only because DeskDroid pushes the jar on every start.
+3. **`cleanup=true` deletes the pushed jar.** That is fine only because Azdroid pushes the jar on every start.
 
 ## 4. Architectural Solution
 

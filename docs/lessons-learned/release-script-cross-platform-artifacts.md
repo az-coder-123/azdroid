@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-Preparing DeskDroid v1.1.0 (macOS only; the Windows package stays at v1.0.1) through `scripts/build_release.sh`. Read before running, the script would have:
+Preparing Azdroid v1.1.0 (macOS only; the Windows package stays at v1.0.1) through `scripts/build_release.sh`. Read before running, the script would have:
 
 - deleted the committed Windows package,
 - pushed an old `main` while the release commit sat on the feature branch,
@@ -13,7 +13,7 @@ Two version constants (`AppConstants.appVersion = '1.0.1'`, MCP `serverVersion =
 
 ## 2. Diagnostic Traces & Evidence
 
-- Cleanup: `find RELEASE -name "DeskDroid-v*.zip" ! -name "$ZIP_NAME" -delete` also matches `DeskDroid-v1.0.1-Windows-x64.zip`.
+- Cleanup: `find RELEASE -name "Azdroid-v*.zip" ! -name "$ZIP_NAME" -delete` also matches `DeskDroid-v1.0.1-Windows-x64.zip`.
 - Push: `git commit` on the current branch, then `git push origin main`, which pushes the local `main` ref, not `HEAD`.
 - README links: `releases/latest/download/DeskDroid-v1.0.1-Windows-x64.zip`. GitHub resolves `latest` to the newest release, and v1.1.0 has no Windows asset.
 - `gh release view v1.0.1` lists the Windows ZIP, so a link pinned to `releases/download/v1.0.1/…` stays valid.
@@ -25,7 +25,7 @@ The script was written when only macOS released. Windows packaging was added lat
 
 ## 4. Architectural Solution
 
-- Cleanup removes only `DeskDroid-v*-macOS.zip`.
+- Cleanup removes only `Azdroid-v*-macOS.zip`.
 - `scripts/release/write_release_readme.sh` builds `RELEASE/README.md` from every checksum file present, so each platform keeps its own version, size, and hash.
 - Publishing pushes `HEAD:main` (fast-forward only), then the current branch. The release is tagged at `HEAD`, with notes from `docs/releases/v<version>.md`. The script refuses to publish with uncommitted sources or missing notes.
 - `McpProtocolHandler.serverVersion` uses `AppConstants.appVersion`, and `test/unit/app_version_test.dart` compares it with `pubspec.yaml`.
@@ -44,6 +44,6 @@ The script was written when only macOS released. Windows packaging was added lat
 - **Symptom:** the first real run stopped at `codesign --verify --deep --strict`: *"nested code is modified or invalid"*, `file modified: …/Contents/MacOS/deskdroid-mcp`. The two runs before it had passed.
 - **Evidence:** `_CodeSignature/CodeResources` and the main binary were from the previous build (17:54); `deskdroid-mcp` was from this one (18:01).
 - **Cause:** the "Embed MCP Server" phase is always out of date and recompiles `deskdroid-mcp` on every build, but Xcode re-signs the app only when its own binary changes. Earlier runs passed because the Dart code had changed each time.
-- **Fix:** `build_release.sh` deletes `DeskDroid.app` before `flutter build macos --release`; two back-to-back dry runs now pass.
+- **Fix:** `build_release.sh` deletes `Azdroid.app` before `flutter build macos --release`; two back-to-back dry runs now pass.
 - [ ] A build phase that rewrites files inside a signed bundle must run before the bundle is sealed, or the release must start from no bundle.
 

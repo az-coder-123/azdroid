@@ -1,6 +1,6 @@
 # Dependency Boundaries Between Features
 
-> Rules that keep DeskDroid features independent. Read this before importing one feature from another.
+> Rules that keep Azdroid features independent. Read this before importing one feature from another.
 
 ---
 

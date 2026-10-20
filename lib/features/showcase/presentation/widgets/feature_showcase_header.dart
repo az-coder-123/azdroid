@@ -47,7 +47,7 @@ class FeatureShowcaseHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'DeskDroid Features Showcase',
+                  'Azdroid Features Showcase',
                   style: AppTypography.title,
                 ),
                 if (!isCompact)

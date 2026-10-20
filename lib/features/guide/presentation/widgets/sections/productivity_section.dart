@@ -32,7 +32,7 @@ class ProductivitySection extends StatelessWidget {
           title: 'Drag & Drop Transfers & APK Sideloading',
           children: [
             Text(
-              'Drag files directly from ${keys.usesMetaKey ? "macOS Finder" : "Windows Explorer"} and drop them anywhere onto the DeskDroid screen:',
+              'Drag files directly from ${keys.usesMetaKey ? "macOS Finder" : "Windows Explorer"} and drop them anywhere onto the Azdroid screen:',
               style: AppTypography.body,
             ),
             const SizedBox(height: 10),

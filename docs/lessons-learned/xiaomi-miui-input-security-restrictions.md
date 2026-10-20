@@ -49,7 +49,7 @@ The default Android `input text <string>` command parses keystrokes into softwar
 ## 4. Architectural Solution
 
 ### A. Proactive Device Detection & User Onboarding
-In `UserGuideDialog` and `DeviceCardView`, DeskDroid detects Xiaomi/Redmi devices by checking `ro.product.manufacturer` or `ro.miui.ui.version.name` and presents a dedicated **Xiaomi Setup Warning Banner**:
+In `UserGuideDialog` and `DeviceCardView`, Azdroid detects Xiaomi/Redmi devices by checking `ro.product.manufacturer` or `ro.miui.ui.version.name` and presents a dedicated **Xiaomi Setup Warning Banner**:
 
 1. Open phone **Settings ➔ Additional settings ➔ Developer options**.
 2. Enable **USB debugging (Security settings)** / *Gỡ lỗi USB (Cài đặt bảo mật)*.

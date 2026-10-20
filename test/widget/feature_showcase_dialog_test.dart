@@ -18,7 +18,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('DeskDroid Features Showcase'), findsOneWidget);
+      expect(find.text('Azdroid Features Showcase'), findsOneWidget);
       expect(find.text('All Features'), findsOneWidget);
       expect(find.text('Display & Control'), findsOneWidget);
       expect(find.text('Developer Tools'), findsOneWidget);
@@ -106,7 +106,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.text('DeskDroid Features Showcase'), findsOneWidget);
+        expect(find.text('Azdroid Features Showcase'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );

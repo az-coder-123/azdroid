@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Builds and packages the DeskDroid Windows release as a portable ZIP.
+  Builds and packages the Azdroid Windows release as a portable ZIP.
 
 .DESCRIPTION
   Windows counterpart of scripts/build_release.sh (macOS):
@@ -14,7 +14,7 @@
        runs on a PC without adb, Flutter, or Dart.
     5. Adds the Visual C++ runtime DLLs when the redistributable folder is
        installed with Visual Studio (warns otherwise).
-    6. Writes RELEASE\DeskDroid-v<version>-Windows-x64.zip and a "latest" copy.
+    6. Writes RELEASE\Azdroid-v<version>-Windows-x64.zip and a "latest" copy.
     7. Writes SHA-256 checksums to RELEASE\SHA256SUMS-windows.txt.
     8. Optional (-Publish): uploads the ZIP to a GitHub Release with gh.
 
@@ -52,10 +52,10 @@ $ReleaseDir = Join-Path $RootDir 'RELEASE'
 $PubspecPath = Join-Path $RootDir 'pubspec.yaml'
 $BuildDir = Join-Path $RootDir 'build\windows\x64\runner\Release'
 $StagingRoot = Join-Path $RootDir 'build\windows\package'
-$PackageFolderName = 'DeskDroid'
+$PackageFolderName = 'Azdroid'
 $ExeName = 'desk_droid.exe'
 $ChecksumFileName = 'SHA256SUMS-windows.txt'
-$RepoUrl = 'https://github.com/az-coder-123/desk-droid'
+$RepoUrl = 'https://github.com/az-coder-123/azdroid'
 
 # Files the app cannot start or stream without.
 $RequiredFiles = @(
@@ -157,11 +157,11 @@ function Invoke-McpSmokeTest([string]$McpPath) {
 
 # --- 1. Version ---------------------------------------------------------------
 Write-Host '======================================================================'
-Write-Host ' DeskDroid - Windows release packaging'
+Write-Host ' Azdroid - Windows release packaging'
 Write-Host '======================================================================'
 
 $version = Get-AppVersion $PubspecPath
-$zipName = "DeskDroid-v$($version.Name)-Windows-x64.zip"
+$zipName = "Azdroid-v$($version.Name)-Windows-x64.zip"
 $latestZipName = 'DeskDroid-Windows-x64-latest.zip'
 Write-Host "Version: v$($version.Name) (build $($version.Build)), target: Windows 10/11 x64"
 
@@ -231,7 +231,7 @@ try {
   # --- 6. Archive -------------------------------------------------------------
   Write-Step 'Creating the ZIP archive'
   New-Item -ItemType Directory -Path $ReleaseDir -Force | Out-Null
-  Get-ChildItem -Path $ReleaseDir -Filter 'DeskDroid-v*-Windows-x64.zip' |
+  Get-ChildItem -Path $ReleaseDir -Filter 'Azdroid-v*-Windows-x64.zip' |
     Where-Object { $_.Name -ne $zipName } |
     Remove-Item -Force
   $zipPath = Join-Path $ReleaseDir $zipName
@@ -272,7 +272,7 @@ try {
       Invoke-Checked 'gh' @('release', 'upload', $tag, $zipPath, $checksumPath, '--clobber')
     } else {
       Invoke-Checked 'gh' @('release', 'create', $tag, $zipPath, $checksumPath,
-        '--title', "DeskDroid $tag", '--notes', "Windows 10/11 x64 build of DeskDroid $tag.")
+        '--title', "Azdroid $tag", '--notes', "Windows 10/11 x64 build of Azdroid $tag.")
     }
     Write-Ok "$RepoUrl/releases/tag/$tag"
   }

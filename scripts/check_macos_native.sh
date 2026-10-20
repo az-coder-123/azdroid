@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# DeskDroid — macOS native player check against a real device or emulator
+# Azdroid — macOS native player check against a real device or emulator
 # ==============================================================================
 # Compiles the app's own Swift stream classes (macos/Runner) with scrcpy_core
 # into a command-line tool and runs them against the device:

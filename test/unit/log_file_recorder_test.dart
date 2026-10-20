@@ -41,8 +41,8 @@ void main() {
       final content = file.readAsStringSync();
       expect(content, contains('Line 1: System initialized'));
       expect(content, contains('Line 2: Camera hal bound'));
-      expect(content, contains('DeskDroid Real-time Logcat Session Started'));
-      expect(content, contains('DeskDroid Logcat Session Ended'));
+      expect(content, contains('Azdroid Real-time Logcat Session Started'));
+      expect(content, contains('Azdroid Logcat Session Ended'));
     });
 
     test('formattedSize formats bytes, KB, and MB accurately', () {

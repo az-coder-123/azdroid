@@ -30,7 +30,7 @@ class MenuBarHeader extends StatelessWidget {
               const SizedBox(width: 8),
               const Flexible(
                 child: Text(
-                  'DeskDroid Companion',
+                  'Azdroid Companion',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

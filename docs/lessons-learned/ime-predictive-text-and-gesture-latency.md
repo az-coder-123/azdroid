@@ -41,7 +41,7 @@ During automated end-to-end testing of mobile apps (such as the OpenPlayer3 audi
 
 ## 4. 🏛️ Architectural Solution
 
-DeskDroid introduced dedicated **Phase 1 Friction-Breaker Tools** in `McpAdbInputOps`:
+Azdroid introduced dedicated **Phase 1 Friction-Breaker Tools** in `McpAdbInputOps`:
 
 1. **Atomic Clipboard Paste (`android_set_text`):**
    - Injects text into the Android system clipboard via `cmd clipboard set <text>`.

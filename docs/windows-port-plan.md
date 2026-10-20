@@ -1,6 +1,6 @@
 # Windows Port Plan
 
-> Plan for shipping DeskDroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a running on Windows** (visual check pending), **Phase 4 portable ZIP done**. Current feature status: [platform-support.md](platform-support.md).
+> Plan for shipping Azdroid on Windows 10/11 (x64) with feature parity to macOS. Status: **Phase 0 done**, **Phase 1a running on Windows** (visual check pending), **Phase 4 portable ZIP done**. Current feature status: [platform-support.md](platform-support.md).
 
 ---
 

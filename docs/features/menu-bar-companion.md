@@ -11,7 +11,7 @@
 
 ## 📌 Overview
 
-The **macOS Menu Bar Companion** anchors DeskDroid directly into the macOS system status bar. It provides instantaneous visibility into active device sessions, connection telemetry, and quick window toggle actions without interrupting your desktop workflow.
+The **macOS Menu Bar Companion** anchors Azdroid directly into the macOS system status bar. It provides instantaneous visibility into active device sessions, connection telemetry, and quick window toggle actions without interrupting your desktop workflow.
 
 ```mermaid
 flowchart TD
@@ -36,6 +36,6 @@ Clicking the menu bar icon reveals an Apple-styled frosted glass popover display
 - **Connection Health:** Color-coded status badge signaling optimal, degraded, or congested wireless links.
 
 ### 3. Rapid Window & Session Governance
-- **Show / Hide Window:** Quickly hide or bring the DeskDroid mirroring window to the foreground with a single click.
+- **Show / Hide Window:** Quickly hide or bring the Azdroid mirroring window to the foreground with a single click.
 - **Session Controls:** Pause stream, disconnect current device, or switch between discovered phones without opening the main application window.
 - **Resource Efficiency:** Telemetry polling drops to zero when mirroring is idle, consuming negligible CPU cycles.

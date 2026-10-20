@@ -2,9 +2,9 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid inspects APK files with `aapt2`/`aapt`. When the tool is not on `PATH`, it searches `~/Library/Android/sdk/build-tools/<version>/` and is meant to use the newest version.
+Azdroid inspects APK files with `aapt2`/`aapt`. When the tool is not on `PATH`, it searches `~/Library/Android/sdk/build-tools/<version>/` and is meant to use the newest version.
 
-On machines with an old and a new build-tools folder (for example `9.0.0` and `34.0.0`), DeskDroid used the **oldest** one. Old `aapt` versions can fail to read modern APKs (newer resource table formats, `targetSdkVersion` 34+), so the installer showed only the file name with no package, label, or icon.
+On machines with an old and a new build-tools folder (for example `9.0.0` and `34.0.0`), Azdroid used the **oldest** one. Old `aapt` versions can fail to read modern APKs (newer resource table formats, `targetSdkVersion` 34+), so the installer showed only the file name with no package, label, or icon.
 
 ## 2. Diagnostic Traces & Evidence
 

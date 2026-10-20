@@ -9,7 +9,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid was tested in Windows Sandbox, a fresh Windows with its own ADB key, against a Redmi phone (Android 10, MIUI) in Wi-Fi ADB mode.
+Azdroid was tested in Windows Sandbox, a fresh Windows with its own ADB key, against a Redmi phone (Android 10, MIUI) in Wi-Fi ADB mode.
 
 - The device list showed the phone as **Unauthorized**.
 - Every **Connect** and **Retry Connection** ended with *"USB debugging is not allowed on … yet"*.

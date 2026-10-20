@@ -1,12 +1,12 @@
 # Engineering Lessons Learned & Technical Post-Mortems
 
-> A curated repository of real-world edge cases, operating system quirks, networking anomalies, and reusable architectural solutions discovered during DeskDroid development.
+> A curated repository of real-world edge cases, operating system quirks, networking anomalies, and reusable architectural solutions discovered during Azdroid development.
 
 ---
 
 ## 🎯 Purpose & Philosophy
 
-As an advanced desktop mirroring and remote control utility bridging macOS and Android, DeskDroid interfaces directly with low-level kernel routing, daemon socket lifetimes, USB/Wi-Fi switching, and device permissions.
+As an advanced desktop mirroring and remote control utility bridging macOS and Android, Azdroid interfaces directly with low-level kernel routing, daemon socket lifetimes, USB/Wi-Fi switching, and device permissions.
 
 Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is diagnosed and resolved, it must be documented here to:
 1. **Prevent Regressions:** Ensure future development does not inadvertently reintroduce known antipatterns.

@@ -169,7 +169,7 @@ class DeviceLogRepositoryImpl implements DeviceLogRepository {
 
       final buffer = StringBuffer();
       buffer.writeln(
-        '=== DeskDroid Exported Logs: ${DateTime.now().toIso8601String()} ===',
+        '=== Azdroid Exported Logs: ${DateTime.now().toIso8601String()} ===',
       );
       buffer.writeln('Total Entries: ${entries.length}\n');
       for (final entry in entries) {

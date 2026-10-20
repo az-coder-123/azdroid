@@ -1,4 +1,4 @@
-# 🤖 DeskDroid MCP Server — Tool Enhancement Proposals
+# 🤖 Azdroid MCP Server — Tool Enhancement Proposals
 
 > Architectural evaluation and concrete backlog proposals for future MCP tool enhancements (OpenPlayer3 case study).
 
@@ -6,7 +6,7 @@
 
 ## 📌 1. Executive Summary & Context
 
-During end-to-end testing and automation of the **OpenPlayer3** Android media player using **DeskDroid MCP Server**, friction points across text input, gesture timing, and accessibility navigation were identified.
+During end-to-end testing and automation of the **OpenPlayer3** Android media player using **Azdroid MCP Server**, friction points across text input, gesture timing, and accessibility navigation were identified.
 
 - **Phase 1 (Completed):** Resolved IME autocorrect corruption via `android_set_text` / `android_clear_text` and gesture window constraints via `android_double_tap`.
 - **Phase 2 (Completed):** Added precision drag controls via `android_drag`, direct crash diagnostics via `android_check_crash`, and instant media indexing via `android_scan_media_file`.

@@ -4,7 +4,7 @@
 
 ---
 
-## 1. How DeskDroid Uses scrcpy
+## 1. How Azdroid Uses scrcpy
 
 | Aspect | Current use |
 |:---|:---|
@@ -15,7 +15,7 @@
 | Audio | Raw PCM through the audio socket, played natively ([native-audio-contract.md](native-audio-contract.md)) |
 | Readiness | Waits for the `[server] INFO: Device:` log line |
 
-DeskDroid uses the video, audio and control sockets, so protocol changes to any of them matter.
+Azdroid uses the video, audio and control sockets, so protocol changes to any of them matter.
 
 ---
 
@@ -41,15 +41,15 @@ Verified in the server source (`Streamer.java`, `DesktopConnection.java`) and `d
 | **2.1 → 3.3.4** | codec id + width + height (12 bytes) | bit 63 config, bit 62 key, PTS u62 | **None**: jar + version constant |
 | **4.0 → 5.0.1** | codec id only (4 bytes); then **session packets** (MSB = 1: width, height, "client resized" flag) on every capture session (rotation) | MSB = 0 media; bit 62 config, bit 61 key, PTS u61 | Parser in `scrcpy_core` and in the Swift plugin |
 
-Session metadata ([PR #6159](https://github.com/Genymobile/scrcpy/pull/6159)) was merged on 2026-01-10 and shipped in v4.0. All arguments DeskDroid passes still exist in v3.3.4 and v5.0.1, and both still log `Device: […]`.
+Session metadata ([PR #6159](https://github.com/Genymobile/scrcpy/pull/6159)) was merged on 2026-01-10 and shipped in v4.0. All arguments Azdroid passes still exist in v3.3.4 and v5.0.1, and both still log `Device: […]`.
 
-### 2.3 What newer versions add for DeskDroid
+### 2.3 What newer versions add for Azdroid
 
-| Version | Benefit for DeskDroid |
+| Version | Benefit for Azdroid |
 |:---|:---|
 | 2.4 – 3.3.4 | Android 14 QPR3 / 15 / 16 mirroring fixes, Samsung fixes, generic fix for future added AIDL methods (3.3.3) |
 | 4.0 | Encoder `KEY_PRIORITY` / `KEY_LATENCY` at minimum (lower latency), respects encoder capability constraints, optimal size alignment, explicit session packets on rotation |
-| 5.0 | Mostly client-side (hardware decoding, which DeskDroid already has); server picks up 4.x fixes |
+| 5.0 | Mostly client-side (hardware decoding, which Azdroid already has); server picks up 4.x fixes |
 
 scrcpy does not backport fixes: future Android releases will only be supported on the newest line.
 
@@ -107,21 +107,21 @@ Findings recorded for later:
 
 ## 7. Step 2 Assessment (v5.0.1)
 
-Checked on 2026-10-18 against the v5.0.1 server source and the v4.0 – v5.0.1 release notes. The server diff v3.3.4 → v5.0.1 touches 51 files; v5.0 → v5.0.1 changes only the build version, so the v5.0.1 server behaves like v5.0. Most v4/v5 headlines are client-only (SDL3, hardware decoding, window, shortcuts) and do not affect DeskDroid, which ships only the server.
+Checked on 2026-10-18 against the v5.0.1 server source and the v4.0 – v5.0.1 release notes. The server diff v3.3.4 → v5.0.1 touches 51 files; v5.0 → v5.0.1 changes only the build version, so the v5.0.1 server behaves like v5.0. Most v4/v5 headlines are client-only (SDL3, hardware decoding, window, shortcuts) and do not affect Azdroid, which ships only the server.
 
-**Server changes that help DeskDroid**
+**Server changes that help Azdroid**
 
-| Change (version) | Effect for DeskDroid |
+| Change (version) | Effect for Azdroid |
 |:---|:---|
 | `keep_active` (4.0) | Calls `PowerManager.userActivity()` every ~4 s. Keeps the phone awake **without changing any device setting**. It would replace Keep Phone Awake's `stay_awake` + 24 h `screen_off_timeout`, the risk of a lost restore after a reboot, and `ScrcpyCleanupWaiter`. |
 | Encoder `KEY_PRIORITY` / `KEY_LATENCY` at minimum (4.0) | Lower encoding latency on encoders that honor it. |
-| Encoder size constraints and alignment (4.0, fixed in 4.1) | Fewer encoder configuration failures on devices that need aligned sizes; the size may round by a few pixels (DeskDroid already reads the size from the stream). |
+| Encoder size constraints and alignment (4.0, fixed in 4.1) | Fewer encoder configuration failures on devices that need aligned sizes; the size may round by a few pixels (Azdroid already reads the size from the stream). |
 | Session packets (4.0) | Exact video size at start and after each rotation, before the first frame; touch mapping no longer waits for decoding. |
 | `SCAN_FILE` control message (4.1) | Media scan through `MediaScannerConnection` instead of the deprecated `MEDIA_SCANNER_SCAN_FILE` broadcast. |
 | Clipboard fix on rooted devices (4.0) | Helps the Quick Text paste path there. |
 | Staying current | Future Android fixes land only on new versions. |
 
-Not relevant: hardware decoding (DeskDroid already decodes natively), VP8/VP9, camera torch/zoom, flex display, gamepads, OTG.
+Not relevant: hardware decoding (Azdroid already decodes natively), VP8/VP9, camera torch/zoom, flex display, gamepads, OTG.
 
 **What breaks** (no compatibility mode; the jar and the parsers must change together)
 
@@ -130,7 +130,7 @@ Not relevant: hardware decoding (DeskDroid already decodes natively), VP8/VP9, c
 | Video header after dummy byte + 64-byte name | codec + width + height (12 bytes) | codec only (4 bytes) | `scrcpy_core` `stream_header`, Swift `ScrcpyVideoSession`, `StreamProbe` |
 | Video packets | — | session packet: `u32` (bit 31 = 1, bit 0 = client resize) + width + height | new parse branch in all three |
 | Packet flags (video and audio) | config bit 63, key bit 62 | session bit 63, config bit 62, key bit 61 | `packet_header`, Swift video and audio sessions |
-| Options DeskDroid passes | all present | all present (`send_codec_meta` renamed `send_stream_meta`, unused) | none |
+| Options Azdroid passes | all present | all present (`send_codec_meta` renamed `send_stream_meta`, unused) | none |
 | Socket order, dummy byte, device name, audio header, control messages 0–17, `Device:` log line | — | unchanged | none |
 
 **Recommendation: upgrade now, together with `keep_active`.** The parsing changes are small and mostly in `scrcpy_core`, which is unit-tested on every OS, so the unverified Windows plugin only needs a few lines of glue. `keep_active` removes the most fragile part of Keep Phone Awake. Plan:
@@ -154,5 +154,5 @@ Not relevant: hardware decoding (DeskDroid already decodes natively), VP8/VP9, c
 
 Notes:
 - The size is now `1080x2340` on the Redmi (v3.3.4: `1080x2336`): v4.0's encoder alignment rules round differently. Touch mapping reads the size from the stream, so nothing else changed.
-- Deviation from the plan: `ScrcpyCleanupWaiter` stays. With `keep_active` no setting needs restoring, but the restore process still turns the screen back on after Screen Off. On a pipeline restart, an old restore process that ran after DeskDroid turned the screen off on the new server would turn it on again, so the next start still waits for it.
+- Deviation from the plan: `ScrcpyCleanupWaiter` stays. With `keep_active` no setting needs restoring, but the restore process still turns the screen back on after Screen Off. On a pipeline restart, an old restore process that ran after Azdroid turned the screen off on the new server would turn it on again, so the next start still waits for it.
 - The Windows plugin (`stream_session.cpp`, `audio_session.cpp`) was updated but not compiled or run (no Windows machine); its parsing lives in `scrcpy_core`, which is tested on macOS in three build variants.

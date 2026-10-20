@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# DeskDroid — macOS Release Build & Packaging Automation Script
+# Azdroid — macOS Release Build & Packaging Automation Script
 # ==============================================================================
 # Automates the entire release lifecycle:
 #   1. Runs static analysis and automated test suites
@@ -34,7 +34,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 RELEASE_DIR="${ROOT_DIR}/RELEASE"
 PUBSPEC_PATH="${ROOT_DIR}/pubspec.yaml"
-BUILD_APP_PATH="${ROOT_DIR}/build/macos/Build/Products/Release/DeskDroid.app"
+BUILD_APP_PATH="${ROOT_DIR}/build/macos/Build/Products/Release/Azdroid.app"
 
 # Parse CLI options
 SKIP_TESTS=false
@@ -73,7 +73,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo -e "${BOLD}${CYAN}======================================================================${NC}"
-echo -e "${BOLD}${CYAN}⚡️  DeskDroid — Production Release Packaging Pipeline${NC}"
+echo -e "${BOLD}${CYAN}⚡️  Azdroid — Production Release Packaging Pipeline${NC}"
 echo -e "${BOLD}${CYAN}======================================================================${NC}"
 
 # 1. Extract application version from pubspec.yaml
@@ -86,7 +86,7 @@ VERSION_RAW=$(grep -E '^version:' "$PUBSPEC_PATH" | awk '{print $2}')
 VERSION_NAME=$(echo "$VERSION_RAW" | cut -d'+' -f1)
 BUILD_NUMBER=$(echo "$VERSION_RAW" | cut -d'+' -f2)
 
-ZIP_NAME="DeskDroid-v${VERSION_NAME}-macOS.zip"
+ZIP_NAME="Azdroid-v${VERSION_NAME}-macOS.zip"
 LATEST_ZIP_NAME="DeskDroid-macOS-latest.zip"
 
 echo -e "${BLUE}ℹ️  Application Version:${NC} ${BOLD}v${VERSION_NAME} (Build ${BUILD_NUMBER})${NC}"
@@ -157,7 +157,7 @@ fi
 echo -e "${GREEN}✓ MCP server verified:${NC} $(lipo -archs "$BUNDLED_MCP"), answers tools/list"
 
 APP_SIZE=$(du -sh "$BUILD_APP_PATH" | awk '{print $1}')
-echo -e "${GREEN}✓ Application bundle compiled:${NC} DeskDroid.app (${APP_SIZE})"
+echo -e "${GREEN}✓ Application bundle compiled:${NC} Azdroid.app (${APP_SIZE})"
 
 # 4. Packaging with Apple ditto tool
 echo -e "${YELLOW}📦 [Step 4/5] Packaging release archive into RELEASE/...${NC}"
@@ -166,7 +166,7 @@ cd "$RELEASE_DIR"
 
 # Remove older macOS archives only; the Windows packages are built on Windows
 # (scripts/build_release.ps1) and must survive a macOS release.
-find "${RELEASE_DIR}" -maxdepth 1 -name "DeskDroid-v*-macOS.zip" ! -name "$ZIP_NAME" -delete
+find "${RELEASE_DIR}" -maxdepth 1 -name "Azdroid-v*-macOS.zip" ! -name "$ZIP_NAME" -delete
 rm -f "$ZIP_NAME" "$LATEST_ZIP_NAME" SHA256SUMS.txt
 
 # Use Apple ditto to preserve macOS resource forks, symlinks, and code signature
@@ -193,7 +193,7 @@ if [ "$PUSH_GIT" = true ]; then
   echo -e "${YELLOW}🚀 [Step 5/5] Committing release artifacts and pushing to GitHub...${NC}"
   cd "$ROOT_DIR"
   git add RELEASE/
-  git commit -m "chore(release): package DeskDroid v${VERSION_NAME} macOS release archive" || echo "No changes to commit"
+  git commit -m "chore(release): package Azdroid v${VERSION_NAME} macOS release archive" || echo "No changes to commit"
   git fetch origin
   git push origin "HEAD:main"
   CURRENT_BRANCH=$(git branch --show-current)
@@ -219,10 +219,10 @@ if [ "$CREATE_GH_RELEASE" = true ] && command -v gh &> /dev/null; then
     echo -e "${BLUE}Creating new GitHub release ${TAG_NAME}...${NC}"
     gh release create "$TAG_NAME" "${RELEASE_DIR}/${ZIP_NAME}" \
       --target "$(git -C "$ROOT_DIR" rev-parse HEAD)" \
-      --title "DeskDroid v${VERSION_NAME}" \
+      --title "Azdroid v${VERSION_NAME}" \
       --notes-file "$NOTES_PATH"
   fi
-  echo -e "${GREEN}✓ GitHub Release published:${NC} https://github.com/az-coder-123/desk-droid/releases/tag/${TAG_NAME}"
+  echo -e "${GREEN}✓ GitHub Release published:${NC} https://github.com/az-coder-123/azdroid/releases/tag/${TAG_NAME}"
 fi
 
 echo ""
@@ -231,5 +231,5 @@ echo -e "${BOLD}${GREEN}🎉  Release Build & Publishing Completed Successfully!
 echo -e "${BOLD}${GREEN}======================================================================${NC}"
 echo -e "Archive:    ${BOLD}${RELEASE_DIR}/${ZIP_NAME}${NC}"
 echo -e "Checksum:   ${BOLD}${SHA256_HASH}${NC}"
-echo -e "Repository: ${BOLD}https://github.com/az-coder-123/desk-droid${NC}"
+echo -e "Repository: ${BOLD}https://github.com/az-coder-123/azdroid${NC}"
 echo ""

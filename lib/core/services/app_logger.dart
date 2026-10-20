@@ -13,7 +13,7 @@ class AppLogger {
   static final String logFilePath = SystemHostPaths().diagnosticLogFile;
 
   /// Logger name used when the diagnostic log file itself cannot be written.
-  static const String _fileSinkTag = 'DeskDroid.LogFile';
+  static const String _fileSinkTag = 'Azdroid.LogFile';
 
   static void _logToFile(String line) {
     try {
@@ -42,14 +42,14 @@ class AppLogger {
   }
 
   /// Logs informational system messages.
-  static void info(String message, {String tag = 'DeskDroid'}) {
+  static void info(String message, {String tag = 'Azdroid'}) {
     developer.log(message, name: tag, level: 800);
     _writeStderr('[$tag] $message');
     _logToFile('INFO [$tag] $message');
   }
 
   /// Logs debug messages during development.
-  static void debug(String message, {String tag = 'DeskDroid'}) {
+  static void debug(String message, {String tag = 'Azdroid'}) {
     if (_kDebugMode) {
       developer.log(message, name: tag, level: 500);
       _writeStderr('[$tag] $message');
@@ -60,7 +60,7 @@ class AppLogger {
   /// Logs warnings and recoverable failures with optional error and stack trace.
   static void warning(
     String message, {
-    String tag = 'DeskDroid',
+    String tag = 'Azdroid',
     Object? error,
     StackTrace? stackTrace,
   }) {
@@ -78,7 +78,7 @@ class AppLogger {
   /// Logs critical errors and boundary exceptions with required error details.
   static void error(
     String message, {
-    String tag = 'DeskDroid',
+    String tag = 'Azdroid',
     Object? error,
     StackTrace? stackTrace,
   }) {

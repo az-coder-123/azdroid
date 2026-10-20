@@ -51,7 +51,7 @@ Supported commands: tap, swipe, keyevent, text, draganddrop
 
 ## 4. Architectural Solution
 
-We implemented five decoupled, high-impact enhancements across DeskDroid MCP:
+We implemented five decoupled, high-impact enhancements across Azdroid MCP:
 
 ### A. Normalized Percentage Coordinates & Resolution Caching
 All coordinate-based tools (`android_tap`, `android_double_tap`, `android_swipe`, `android_drag`, `android_batch_actions`) accept normalized ratios (`0.0..1.0`):

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Opens a DeskDroid Windows release ZIP in Windows Sandbox and smoke-tests it.
+  Opens a Azdroid Windows release ZIP in Windows Sandbox and smoke-tests it.
 
 .DESCRIPTION
   Windows Sandbox is a clean, disposable Windows: no Visual C++ runtime,
@@ -22,7 +22,7 @@
   Keep this file ASCII-only (Windows PowerShell 5.1 reads it as ANSI).
 
 .PARAMETER Zip
-  Release ZIP to test. Default: the newest RELEASE\DeskDroid-v*-Windows-x64.zip.
+  Release ZIP to test. Default: the newest RELEASE\Azdroid-v*-Windows-x64.zip.
 
 .PARAMETER ResultsDir
   Host folder for smoke.txt and the copied logs. Default: build\sandbox-results.
@@ -41,9 +41,9 @@ $ErrorActionPreference = 'Stop'
 
 $RootDir = Split-Path -Parent $PSScriptRoot
 $SandboxExe = Join-Path $env:SystemRoot 'System32\WindowsSandbox.exe'
-$SandboxReleaseDir = 'C:\DeskDroidRelease'
-$SandboxScriptsDir = 'C:\DeskDroidScripts'
-$SandboxResultsDir = 'C:\DeskDroidResults'
+$SandboxReleaseDir = 'C:\AzdroidRelease'
+$SandboxScriptsDir = 'C:\AzdroidScripts'
+$SandboxResultsDir = 'C:\AzdroidResults'
 
 if (-not (Test-Path $SandboxExe)) {
   Write-Host 'Windows Sandbox is not enabled. In an elevated PowerShell run:' -ForegroundColor Yellow
@@ -53,9 +53,9 @@ if (-not (Test-Path $SandboxExe)) {
 }
 
 if (-not $Zip) {
-  $latest = Get-ChildItem (Join-Path $RootDir 'RELEASE') -Filter 'DeskDroid-v*-Windows-x64.zip' |
+  $latest = Get-ChildItem (Join-Path $RootDir 'RELEASE') -Filter 'Azdroid-v*-Windows-x64.zip' |
     Sort-Object LastWriteTime -Descending | Select-Object -First 1
-  if (-not $latest) { throw 'No RELEASE\DeskDroid-v*-Windows-x64.zip found. Run scripts\build_release.ps1 first.' }
+  if (-not $latest) { throw 'No RELEASE\Azdroid-v*-Windows-x64.zip found. Run scripts\build_release.ps1 first.' }
   $Zip = $latest.FullName
 }
 $Zip = (Resolve-Path $Zip).Path
@@ -95,7 +95,7 @@ $(New-MappedFolder $ResultsDir $SandboxResultsDir $false)
 
 # Fails early on a malformed configuration instead of inside the sandbox.
 [xml]$config | Out-Null
-$wsbPath = Join-Path $env:TEMP 'DeskDroidSandbox.wsb'
+$wsbPath = Join-Path $env:TEMP 'AzdroidSandbox.wsb'
 Set-Content -Path $wsbPath -Value $config -Encoding UTF8
 Write-Host "Testing $zipName in Windows Sandbox."
 Write-Host "Results: $(Join-Path $ResultsDir 'smoke.txt')"

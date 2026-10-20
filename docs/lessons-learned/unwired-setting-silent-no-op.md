@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid had a `stayAwake` setting (default `true`, documented as "keep the Android device awake while connected"). In practice, a mirrored phone still went to sleep after its own screen timeout, and the mirror froze. No error appeared anywhere.
+Azdroid had a `stayAwake` setting (default `true`, documented as "keep the Android device awake while connected"). In practice, a mirrored phone still went to sleep after its own screen timeout, and the mirror froze. No error appeared anywhere.
 
 ## 2. Diagnostic Traces & Evidence
 

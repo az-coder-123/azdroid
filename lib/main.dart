@@ -20,14 +20,14 @@ void main() async {
   // Initialize service locator and dependency injection container
   await initDependencies();
 
-  runApp(const DeskDroidApp());
+  runApp(const AzdroidApp());
 }
 
-/// Root application widget for DeskDroid.
+/// Root application widget for Azdroid.
 ///
 /// Acts as the composition root that wires feature-to-feature navigation.
-class DeskDroidApp extends StatelessWidget {
-  const DeskDroidApp({super.key});
+class AzdroidApp extends StatelessWidget {
+  const AzdroidApp({super.key});
 
   static Route<void> _mirroringRoute(DeviceEntity device) =>
       MaterialPageRoute<void>(
@@ -69,3 +69,6 @@ class DeskDroidApp extends StatelessWidget {
     );
   }
 }
+
+/// Backwards-compatible alias for the root application widget.
+typedef DeskDroidApp = AzdroidApp;

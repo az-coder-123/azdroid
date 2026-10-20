@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-DeskDroid provides full two-way file sharing between macOS and Android. Users can push arbitrary files to the phone via drag-and-drop or explore and pull files from internal storage and MicroSD cards back to macOS.
+Azdroid provides full two-way file sharing between macOS and Android. Users can push arbitrary files to the phone via drag-and-drop or explore and pull files from internal storage and MicroSD cards back to macOS.
 
 ```mermaid
 flowchart LR
@@ -18,7 +18,7 @@ flowchart LR
     Push --> MediaScan["Android MediaScanner Broadcast\n(Immediate Gallery Reveal)"]
     
     AndroidStorage["Android Storage & SD Card\n(/sdcard/ & /storage/<UUID>/)"] -->|Cmd + Shift + F| Explorer["Device File Explorer\n(Multi-select & Search)"]
-    Explorer -->|Batch Download| MacDownloads["Downloads/DeskDroid/\n(1-Click Reveal)"]
+    Explorer -->|Batch Download| MacDownloads["Downloads/Azdroid/\n(1-Click Reveal)"]
 ```
 
 ---
@@ -45,4 +45,4 @@ flowchart LR
 - **Instant Search:** Real-time client-side name filtering across current directory contents.
 - **Multi-Criteria Sorting:** Sort files by Date Modified, File Size, or Name in ascending/descending order.
 - **Bulk Selection:** "Select All" toggle with checkbox multi-selection and cumulative size display.
-- **Batch Pull to Computer:** Downloads selected files to the `DeskDroid` folder inside Downloads, with 1-click reveal (`open -R` in Finder on macOS, `explorer.exe /select` on Windows).
+- **Batch Pull to Computer:** Downloads selected files to the `Azdroid` folder inside Downloads, with 1-click reveal (`open -R` in Finder on macOS, `explorer.exe /select` on Windows).

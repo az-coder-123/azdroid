@@ -70,12 +70,12 @@ void main() {
   });
 
   testWidgets(
-    'DeskDroidApp renders DiscoveryPage with title, empty state and actions',
+    'AzdroidApp renders DiscoveryPage with title, empty state and actions',
     (WidgetTester tester) async {
-      await tester.pumpWidget(const DeskDroidApp());
+      await tester.pumpWidget(const AzdroidApp());
 
       // Initially loading
-      expect(find.text('DeskDroid'), findsOneWidget);
+      expect(find.text('Azdroid'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsWidgets);
 
       // Wait for discoverDevices to resolve
@@ -92,7 +92,7 @@ void main() {
     },
   );
 
-  testWidgets('DeskDroidApp renders device cards when devices are discovered', (
+  testWidgets('AzdroidApp renders device cards when devices are discovered', (
     WidgetTester tester,
   ) async {
     const testDevice = DeviceEntity(
@@ -108,7 +108,7 @@ void main() {
     when(() => mockRepository.discoverDevices())
         .thenAnswer((_) async => [testDevice]);
 
-    await tester.pumpWidget(const DeskDroidApp());
+    await tester.pumpWidget(const AzdroidApp());
     await tester.pump();
 
     expect(find.text('Discovered Devices (1)'), findsOneWidget);

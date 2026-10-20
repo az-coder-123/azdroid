@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-During automated end-to-end device testing driven by AI agents via the DeskDroid MCP server, agents encountered tool failures and timed-out interactions across three distinct scenarios:
+During automated end-to-end device testing driven by AI agents via the Azdroid MCP server, agents encountered tool failures and timed-out interactions across three distinct scenarios:
 
 1. **Unsafe Type Downcasts in MCP Handlers:**
    Invoking `android_push_file` or `android_wake_screen` failed with unhandled Dart runtime exceptions:
@@ -21,7 +21,7 @@ During automated end-to-end device testing driven by AI agents via the DeskDroid
 
 ### Type Cast Stack Trace
 ```text
-[DeskDroid MCP] Tool error on android_push_file:
+[Azdroid MCP] Tool error on android_push_file:
 TypeError: type 'Null' is not a subtype of type 'String' in type cast
   at McpAppDeviceToolExecutor.execute (mcp_app_device_tool_executor.dart:45)
   at McpToolExecutor.execute (mcp_tool_executor.dart:55)

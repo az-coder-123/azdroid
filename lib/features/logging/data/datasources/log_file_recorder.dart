@@ -44,7 +44,7 @@ class LogFileRecorder {
 
       // Header marker
       final header =
-          '=== DeskDroid Real-time Logcat Session Started: ${DateTime.now().toIso8601String()} ===\n';
+          '=== Azdroid Real-time Logcat Session Started: ${DateTime.now().toIso8601String()} ===\n';
       _activeSink!.write(header);
       _bytesWritten += utf8.encode(header).length;
 
@@ -83,7 +83,7 @@ class LogFileRecorder {
     if (sink != null) {
       try {
         sink.writeln(
-          '=== DeskDroid Logcat Session Ended: ${DateTime.now().toIso8601String()} ===',
+          '=== Azdroid Logcat Session Ended: ${DateTime.now().toIso8601String()} ===',
         );
         await sink.flush();
         await sink.close();

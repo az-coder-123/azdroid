@@ -3,11 +3,11 @@ class AppConstants {
   const AppConstants._();
 
   /// The official application display name.
-  static const String appName = 'DeskDroid';
+  static const String appName = 'Azdroid';
 
   /// Short marketing tagline for desktop window headers and about dialogs.
   static const String appTagline =
-      'High-Performance Android Screen Mirroring & Workstation for macOS';
+      'High-Performance Android Screen Mirroring & Workstation for macOS & Windows';
 
   /// Application version; must equal the `version:` name in pubspec.yaml
   /// (checked by test/unit/app_version_test.dart). Release steps:

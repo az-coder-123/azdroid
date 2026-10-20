@@ -9,7 +9,7 @@
 
 ## 1. 🔍 Context & Symptoms
 
-Prior to this implementation, AI coding agents and autonomous desktop assistants interacting with Android devices through DeskDroid faced two core limitations:
+Prior to this implementation, AI coding agents and autonomous desktop assistants interacting with Android devices through Azdroid faced two core limitations:
 1. **Coordinate & Vision Bottleneck:** AI models relied primarily on coordinate guessing, fuzzy vision inference (`screencap`), or fragile regex pattern matching across raw XML dumps.
 2. **Extreme Token Exhaustion:** A standard Android application view hierarchy produced by `uiautomator dump` yields 30KB to 85KB of dense XML containing 200+ deeply nested, non-interactive layout containers (`FrameLayout`, `LinearLayout`, `ViewGroup`, zero-sized spacer views). Feeding raw XML dumps into LLMs consumed 10,000 to 18,000 tokens per action step, triggering massive latency and context window overflow.
 3. **Regex Attribute Inversion Crashes:** Android vendors and OS versions (AOSP vs MIUI vs EMUI) emit XML attributes in unpredictable sequences (e.g., `bounds` before `text` or `content-desc` before `resource-id`), causing hardcoded regular expressions to fail silently.
@@ -51,7 +51,7 @@ When testing `android_find_element` and `android_dump_hierarchy` on real devices
 
 ## 4. 🏛️ Architectural Solution
 
-DeskDroid implemented **Option A: Pure Dart Semantic Tree Pruner & Indexed Digest**:
+Azdroid implemented **Option A: Pure Dart Semantic Tree Pruner & Indexed Digest**:
 
 1. **Strict DOM Parsing with `package:xml`:**
    Replaced regex pattern matching with structured DOM parsing via `XmlDocument.parse()`, making attribute ordering completely irrelevant.

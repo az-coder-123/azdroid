@@ -1,6 +1,6 @@
-# DeskDroid — Feature Documentation Catalog
+# Azdroid — Feature Documentation Catalog
 
-> Comprehensive, modular catalog of all capabilities, developer tools, and desktop productivity enhancements implemented in **DeskDroid** for macOS and Windows.
+> Comprehensive, modular catalog of all capabilities, developer tools, and desktop productivity enhancements implemented in **Azdroid** for macOS and Windows.
 
 Shortcuts use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows. Platform legend: ✅ works · 🧪 implemented, not yet verified · ❌ not available. Details: [platform-support.md](../platform-support.md).
 

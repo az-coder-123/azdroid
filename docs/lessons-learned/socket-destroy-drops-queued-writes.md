@@ -17,7 +17,7 @@ The channel was written for a stream of small input events, where losing the tai
 
 - `close()` now awaits `socket.flush()` with a 500 ms bound, logs (never throws) when the flush fails, then destroys the socket.
 - The test above stays in `test/unit/scrcpy_control_channel_test.dart`, and it was checked to fail without the flush.
-- `cleanup=true` remains the safety net when DeskDroid cannot send at all (crash, disconnect).
+- `cleanup=true` remains the safety net when Azdroid cannot send at all (crash, disconnect).
 
 ## 5. Prevention & Reusability Checklist
 

@@ -2,7 +2,7 @@
 
 > What runs on each desktop platform, how it was verified, and where the platforms differ. This is the single source of truth for platform status; other documents link here instead of repeating it.
 
-Status date: **2026-10-20** (DeskDroid v1.3.0 on macOS and Windows).
+Status date: **2026-10-20** (Azdroid v1.3.0 on macOS and Windows).
 
 ---
 
@@ -12,7 +12,7 @@ Status date: **2026-10-20** (DeskDroid v1.3.0 on macOS and Windows).
 |:---|:---|:---|
 | OS version | macOS 12.0+ | Windows 10/11 |
 | CPU | Apple Silicon & Intel | x64 |
-| Release package | `DeskDroid-v<version>-macOS.zip` (`.app`) | `DeskDroid-v<version>-Windows-x64.zip` (portable folder) |
+| Release package | `Azdroid-v<version>-macOS.zip` (`.app`) | `Azdroid-v<version>-Windows-x64.zip` (portable folder) |
 | Build script | `scripts/build_release.sh` | `scripts/build_release.ps1` |
 | Video decoder | Apple VideoToolbox (hardware) | Media Foundation H.264 decoder + CPU NV12→RGBA copy |
 | Maturity | Stable | **Preview**: core mirroring verified, most tools not yet tested |

@@ -1,7 +1,7 @@
 # Engineering Lesson: Large File SRP Decomposition via Mixins & Part Files
 
 ## 1. Context & Symptoms
-As DeskDroid expanded to support 58 headless MCP automation tools and an enterprise-grade logcat console, several core service and presentation files grew beyond the strict 250-line Single Responsibility Principle (SRP) limit defined in `AGENTS.md`:
+As Azdroid expanded to support 58 headless MCP automation tools and an enterprise-grade logcat console, several core service and presentation files grew beyond the strict 250-line Single Responsibility Principle (SRP) limit defined in `AGENTS.md`:
 - `McpAdbClient` (358 lines) and `McpAdbAutomationOps` (296 lines) accumulated device queries, gesture injection, semantic UI inspection, and macro automation.
 - `DeviceLogCubit` (344 lines) combined real-time stream ingestion, buffer bounding, viewport presentation toggles, disk persistence, and 10+ log filter/bookmarking actions.
 - `ApkInstallerDialog`, `LogDetailDrawer`, and `CropSelectionOverlay` mixed complex layouts with action footers and floating toolbars.

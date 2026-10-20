@@ -30,7 +30,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Header verification
-      expect(find.text('DeskDroid User Guide'), findsOneWidget);
+      expect(find.text('Azdroid User Guide'), findsOneWidget);
       expect(
         find.text(
           'Complete handbook for wireless mirroring & remote control on macOS',

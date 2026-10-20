@@ -10,10 +10,10 @@
 
 ## 📌 Overview
 
-The **Device Logcat Console** is a developer inspection and diagnostic cockpit built directly into DeskDroid. It captures real-time Android logcat streams over wireless ADB with advanced filtering, stack trace colorization, line bookmarking, and continuous recording.
+The **Device Logcat Console** is a developer inspection and diagnostic cockpit built directly into Azdroid. It captures real-time Android logcat streams over wireless ADB with advanced filtering, stack trace colorization, line bookmarking, and continuous recording.
 
 <p align="center">
-  <img src="../images/deskdroid_logcat_console.png" alt="DeskDroid Device Logcat Console" width="560">
+  <img src="../images/deskdroid_logcat_console.png" alt="Azdroid Device Logcat Console" width="560">
 </p>
 
 ```mermaid

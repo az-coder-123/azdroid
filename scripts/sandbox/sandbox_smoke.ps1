@@ -22,7 +22,7 @@ function Write-Report([string]$Message) {
   "$(Get-Date -Format 'HH:mm:ss') $Message" | Add-Content -Path $report -Encoding Ascii
 }
 
-Set-Content -Path $report -Value "DeskDroid sandbox smoke test: $(Split-Path -Leaf $ZipPath)" -Encoding Ascii
+Set-Content -Path $report -Value "Azdroid sandbox smoke test: $(Split-Path -Leaf $ZipPath)" -Encoding Ascii
 
 # 1. What a clean PC provides.
 Write-Report "Windows: $((Get-CimInstance Win32_OperatingSystem).Caption) $([Environment]::OSVersion.Version)"
@@ -34,7 +34,7 @@ Write-Report "Media Foundation (mfplat.dll): $(Test-Path "$env:SystemRoot\System
 # 2. Extract like a user would.
 $desktop = Join-Path $env:USERPROFILE 'Desktop'
 Expand-Archive -Path $ZipPath -DestinationPath $desktop -Force
-$app = Join-Path $desktop 'DeskDroid'
+$app = Join-Path $desktop 'Azdroid'
 Write-Report "Extracted to $app"
 
 # 3. MCP server: one tools/list request.

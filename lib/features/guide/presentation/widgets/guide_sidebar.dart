@@ -117,7 +117,7 @@ class GuideSidebar extends StatelessWidget {
                       SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          'DeskDroid • macOS Client',
+                          'Azdroid • macOS Client',
                           style: TextStyle(
                             fontSize: 11,
                             color: AppColors.textTertiary,

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# DeskDroid — MCP Server Launcher
+# Azdroid — MCP Server Launcher
 # ==============================================================================
-# Launches the DeskDroid Model Context Protocol (MCP) server over stdio.
+# Launches the Azdroid Model Context Protocol (MCP) server over stdio.
 # Compatible with Claude Desktop, Cursor, and Antigravity IDE.
 # ==============================================================================
 
@@ -26,7 +26,7 @@ done
 
 # Verify dart is available
 if ! command -v dart &> /dev/null; then
-  echo "[DeskDroid MCP Error] 'dart' command not found in PATH." >&2
+  echo "[Azdroid MCP Error] 'dart' command not found in PATH." >&2
   echo "Please ensure Flutter or Dart SDK is installed." >&2
   exit 1
 fi

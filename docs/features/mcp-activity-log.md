@@ -24,8 +24,8 @@ The MCP server and the app are separate processes, and the server runs even when
 
 | | Path |
 |:---|:---|
-| macOS | `~/Library/Application Support/DeskDroid/mcp-activity/<pid>.jsonl` |
-| Windows | `%APPDATA%\DeskDroid\mcp-activity\<pid>.jsonl` |
+| macOS | `~/Library/Application Support/Azdroid/mcp-activity/<pid>.jsonl` |
+| Windows | `%APPDATA%\Azdroid\mcp-activity\<pid>.jsonl` |
 
 One JSON object per line (`McpActivityEvent.toLine`):
 

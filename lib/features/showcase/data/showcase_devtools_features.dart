@@ -66,7 +66,7 @@ const List<AppFeatureItem> showcaseDevToolsFeatures = [
       'Supports taps, text injection, swipes, dumpsys telemetry, and macro batches.',
       'The hub icon in the device list shows the server state, AI client setup, and connected sessions.',
     ],
-    proTip: 'Connect DeskDroid to Claude Desktop or Cursor to automate mobile testing with AI.',
+    proTip: 'Connect Azdroid to Claude Desktop or Cursor to automate mobile testing with AI.',
     docFileName: 'mcp-ai-agent-server.md',
   ),
 ];

@@ -1,6 +1,6 @@
 # Release Guide (Build, Package, Upload, README)
 
-> Step-by-step procedure to publish a DeskDroid release. Written so that a maintainer or an AI assistant can follow it as is. Install and packaging options per platform: [installation.md](installation.md#5-package-a-release).
+> Step-by-step procedure to publish a Azdroid release. Written so that a maintainer or an AI assistant can follow it as is. Install and packaging options per platform: [installation.md](installation.md#5-package-a-release).
 
 ---
 
@@ -67,10 +67,10 @@ The download buttons are near the top of `README.md`, and the install lines are 
 
 | Item | Rule |
 |:---|:---|
-| macOS button | `https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v<version>-macOS.zip`, badge text `v<version>_(Universal)` |
-| Windows button | Use `/releases/latest/download/…` **only** if the latest release has a Windows asset. Otherwise pin the release that has it: `/releases/download/v<old>/DeskDroid-v<old>-Windows-x64.zip`. A `latest` link to a missing asset returns 404. |
+| macOS button | `https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v<version>-macOS.zip`, badge text `v<version>_(Universal)` |
+| Windows button | Use `/releases/latest/download/…` **only** if the latest release has a Windows asset. Otherwise pin the release that has it: `/releases/download/v<old>/Azdroid-v<old>-Windows-x64.zip`. A `latest` link to a missing asset returns 404. |
 | Size line under the buttons | The ZIP size from a dry run (`./scripts/build_release.sh --no-push --no-gh-release`, then `ls -lh RELEASE/*.zip`). The real run rebuilds the same sources, so the size matches. |
-| Install section | File names `DeskDroid-v<version>-macOS.zip` and the Windows name actually offered. |
+| Install section | File names `Azdroid-v<version>-macOS.zip` and the Windows name actually offered. |
 | scrcpy badge | Only when the bundled server changes (guarded by `scrcpy_server_version_test.dart`). |
 
 Find every old version string first:
@@ -103,7 +103,7 @@ The release script refuses to publish while anything outside `RELEASE/` is uncom
 | Stage | What the script does | Stops when |
 |:---|:---|:---|
 | Checks | `flutter analyze`, `flutter test` (skip with `--skip-tests`) | A warning or failing test |
-| Build | Fetches Platform-Tools (checksum-verified), deletes the old `DeskDroid.app` (so the app is always re-signed), `flutter build macos --release` | Build error |
+| Build | Fetches Platform-Tools (checksum-verified), deletes the old `Azdroid.app` (so the app is always re-signed), `flutter build macos --release` | Build error |
 | Bundle checks | Bundled `adb` runs, `codesign --verify --deep --strict`, `deskdroid-mcp` answers `tools/list` | Any check fails |
 | Package | `ditto` ZIP, `-latest` copy, `SHA256SUMS.txt`; deletes older **macOS** ZIPs only | — |
 | Describe | `scripts/release/write_release_readme.sh` writes `RELEASE/README.md` for every platform with a checksum file | No checksum file |
@@ -128,7 +128,7 @@ On a Windows PC with Visual Studio 2022, after pulling the release commit:
 powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1 -Publish
 ```
 
-Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\DeskDroid-v<version>-Windows-x64.zip` (with `adb.exe` and `deskdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
+Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\Azdroid-v<version>-Windows-x64.zip` (with `adb.exe` and `deskdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
 
 Before uploading, test the ZIP on a clean Windows with Windows Sandbox (Windows 10/11 Pro or Enterprise; enable once with `Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All` and restart):
 
@@ -144,7 +144,7 @@ It opens the newest ZIP in the sandbox, which has no Visual C++ runtime, adb, or
 
 ```bash
 gh release view v<version> --json assets,url --jq '.url, .assets[].name'
-curl -sIL https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v<version>-macOS.zip | grep -i '^http'
+curl -sIL https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v<version>-macOS.zip | grep -i '^http'
 ```
 
 - Every README download button returns `200` after redirects (repeat the `curl` for the Windows link).

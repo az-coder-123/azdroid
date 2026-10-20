@@ -8,7 +8,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid's Model Context Protocol (MCP) server is designed to execute as a standalone, headless CLI tool (`bin/deskdroid_mcp.dart`) over Standard I/O (`stdio`) via `scripts/start_mcp_server.sh`. Frontier AI clients (Claude Desktop, Cursor, Antigravity, Windsurf) launch this script directly without launching `DeskDroid.app`.
+Azdroid's Model Context Protocol (MCP) server is designed to execute as a standalone, headless CLI tool (`bin/deskdroid_mcp.dart`) over Standard I/O (`stdio`) via `scripts/start_mcp_server.sh`. Frontier AI clients (Claude Desktop, Cursor, Antigravity, Windsurf) launch this script directly without launching `Azdroid.app`.
 
 When invoking `dart run bin/deskdroid_mcp.dart` in a terminal or headless agent environment, compilation failed immediately with cascading errors:
 

@@ -27,10 +27,10 @@ flowchart LR
 
 | Step | What happens |
 |:---|:---|
-| Turn off | DeskDroid sends scrcpy's `SET_DISPLAY_POWER` (off) message over the control socket. The server sets the panel's power mode to off. The device does **not** go to sleep. |
+| Turn off | Azdroid sends scrcpy's `SET_DISPLAY_POWER` (off) message over the control socket. The server sets the panel's power mode to off. The device does **not** go to sleep. |
 | Turn on | The same message with "on". |
-| Bitrate or keep-awake change | The pipeline restarts; the old server's restore process turns the panel on, so DeskDroid waits for it to finish, then sends "off" again to the new server. |
-| Stop mirroring | DeskDroid sends "on". If DeskDroid quits or the connection drops instead, the server's restore process (`cleanup=true`) turns the panel on when the server exits. |
+| Bitrate or keep-awake change | The pipeline restarts; the old server's restore process turns the panel on, so Azdroid waits for it to finish, then sends "off" again to the new server. |
+| Stop mirroring | Azdroid sends "on". If Azdroid quits or the connection drops instead, the server's restore process (`cleanup=true`) turns the panel on when the server exits. |
 
 The header shows a **Screen Off** badge while it is active. If the control socket is not connected, nothing changes and the app log notes it.
 

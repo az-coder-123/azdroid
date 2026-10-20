@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid ran scrcpy-server with `control=false` and read the 77-byte stream header in one call. Switching to `control=true` with the same native code would hang: the native plugin waits for the header, and the server never sends it.
+Azdroid ran scrcpy-server with `control=false` and read the 77-byte stream header in one call. Switching to `control=true` with the same native code would hang: the native plugin waits for the header, and the server never sends it.
 
 ## 2. Diagnostic Traces & Evidence
 

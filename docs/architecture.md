@@ -1,12 +1,12 @@
-# DeskDroid — Modular Architecture Documentation
+# Azdroid — Modular Architecture Documentation
 
-> Technical blueprint and design patterns implemented in **DeskDroid** adhering to Clean Architecture, SOLID principles, and strict modular feature boundaries.
+> Technical blueprint and design patterns implemented in **Azdroid** adhering to Clean Architecture, SOLID principles, and strict modular feature boundaries.
 
 ---
 
 ## 🏛️ High-Level Architectural Pattern
 
-DeskDroid follows a **Feature-Driven Clean Architecture** powered by the **BLoC / Cubit** reactive state management pattern.
+Azdroid follows a **Feature-Driven Clean Architecture** powered by the **BLoC / Cubit** reactive state management pattern.
 
 ```mermaid
 flowchart TD

@@ -1,11 +1,11 @@
 {
-    "name": "DeskDroid",
-    "short_name": "DeskDroid",
+    "name": "Azdroid",
+    "short_name": "Azdroid",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "DeskDroid - Android screen mirroring & remote control on macOS via Wi-Fi",
+    "description": "Azdroid - Android screen mirroring & remote control on macOS via Wi-Fi",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

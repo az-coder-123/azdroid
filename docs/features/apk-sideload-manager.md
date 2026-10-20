@@ -13,7 +13,7 @@
 The **APK Sideload & Package Manager** provides an end-to-end workflow for inspecting, configuring, installing, and managing Android application packages (`.apk`) directly from macOS.
 
 <p align="center">
-  <img src="../images/deskdroid_apk_installer.png" alt="DeskDroid APK Sideload & Manager Modal" width="480">
+  <img src="../images/deskdroid_apk_installer.png" alt="Azdroid APK Sideload & Manager Modal" width="480">
 </p>
 
 ```mermaid
@@ -30,7 +30,7 @@ flowchart TD
 ## ⚡️ Key Capabilities
 
 ### 1. Pre-Install Metadata Inspection (AAPT2 Engine)
-- **Host-Side Extraction:** Uses `aapt2` from the Android SDK `build-tools` (or on `PATH`) to read the manifest before the APK is pushed. It is not bundled with DeskDroid; without it, the APK still installs, and the card shows only the file name and size.
+- **Host-Side Extraction:** Uses `aapt2` from the Android SDK `build-tools` (or on `PATH`) to read the manifest before the APK is pushed. It is not bundled with Azdroid; without it, the APK still installs, and the card shows only the file name and size.
 - **Detailed Inspection Card:**
   - **App Identity:** Display Name, Package ID (`applicationId`), and high-resolution App Icon.
   - **Versioning:** Version Name (e.g. `1.4.2`) and Version Code (`142`).
@@ -45,7 +45,7 @@ Customize Android package manager behavior with 1-click toggles:
 - **`-d` (Allow Downgrade):** Allows installing an APK with a lower version code than the currently installed version.
 
 ### 3. Intelligent Failure Diagnosis
-When an installation fails, DeskDroid automatically analyzes the raw ADB error string and presents actionable solutions:
+When an installation fails, Azdroid automatically analyzes the raw ADB error string and presents actionable solutions:
 - **`INSTALL_FAILED_UPDATE_INCOMPATIBLE`:** Explains that the signing certificate does not match the installed version; offers 1-click clean uninstall of the older package.
 - **`INSTALL_FAILED_INSUFFICIENT_STORAGE`:** Identifies storage constraints on the target device.
 - **`INSTALL_FAILED_USER_RESTRICTED`:** Specifically diagnoses Xiaomi MIUI / HyperOS USB installation blocks and directs the user to enable **"Install via USB"** in Developer Options.

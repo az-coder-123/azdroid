@@ -11,7 +11,7 @@ When attempting to connect to an Android device (e.g., Motorola Moto G Play 2023
 1. The host Mac and Android phone shared the same subnet (`192.168.1.0/24`).
 2. ICMP ping (`ping -c 1 192.168.1.4`) and ARP cache lookups succeeded with active MAC `fe:4f:21:f9:71:4a`.
 3. Attempts to connect via `adb connect 192.168.1.4:5555` failed with `Connection timed out` or `Connection refused`.
-4. The device did not appear in the DeskDroid auto-discovered device list until a USB cable was plugged in.
+4. The device did not appear in the Azdroid auto-discovered device list until a USB cable was plugged in.
 
 ---
 
@@ -75,13 +75,13 @@ flowchart TD
 
 ### Key Architectural Components:
 1. **Zero-Click USB-to-Wi-Fi Handoff:**
-   Whenever an authorized USB device is detected, DeskDroid can seamlessly query its Wi-Fi IP and issue `enableTcpip()`. The user can unplug the USB cable immediately without manual steps.
+   Whenever an authorized USB device is detected, Azdroid can seamlessly query its Wi-Fi IP and issue `enableTcpip()`. The user can unplug the USB cable immediately without manual steps.
 2. **Persistent History Auto-Reconnect:**
-   Successfully connected Wi-Fi endpoints are saved to `history.json`. On subsequent app launches, DeskDroid prioritizes these endpoints in parallel sweeps.
+   Successfully connected Wi-Fi endpoints are saved to `history.json`. On subsequent app launches, Azdroid prioritizes these endpoints in parallel sweeps.
 3. **Android 11+ Wireless Debugging Pairing:**
-   For devices without USB cables, DeskDroid provides mDNS service discovery and 6-digit pairing PIN authentication (`_adb-tls-pairing._tcp`).
+   For devices without USB cables, Azdroid provides mDNS service discovery and 6-digit pairing PIN authentication (`_adb-tls-pairing._tcp`).
 4. **Smart Diagnostic UI:**
-   When the subnet scanner finds active hosts on the LAN with closed port 5555, DeskDroid presents an ergonomic guide card explaining the 1-time USB switch or pairing code options.
+   When the subnet scanner finds active hosts on the LAN with closed port 5555, Azdroid presents an ergonomic guide card explaining the 1-time USB switch or pairing code options.
 
 ---
 

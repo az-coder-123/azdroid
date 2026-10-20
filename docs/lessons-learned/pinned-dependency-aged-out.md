@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid bundled scrcpy-server v2.1 (June 2023) since its first commit. Mirroring worked on every device the project was tested with, so the pin looked safe. An upgrade assessment in October 2026 (scrcpy was at v5.0.1) found that v2.1 **cannot mirror at all** on Android 14 QPR3, 15, and 16: the newest and most common devices.
+Azdroid bundled scrcpy-server v2.1 (June 2023) since its first commit. Mirroring worked on every device the project was tested with, so the pin looked safe. An upgrade assessment in October 2026 (scrcpy was at v5.0.1) found that v2.1 **cannot mirror at all** on Android 14 QPR3, 15, and 16: the newest and most common devices.
 
 ## 2. Diagnostic Traces & Evidence
 
@@ -17,7 +17,7 @@ DeskDroid bundled scrcpy-server v2.1 (June 2023) since its first commit. Mirrori
 
 ## 3. Root Cause Analysis
 
-scrcpy-server runs on hidden Android framework APIs, which Google changes every release. A pinned server therefore has a **shelf life**, even if DeskDroid's own code never changes. Two gaps hid this: test coverage used one old device, and nothing tracked upstream releases or compatibility fixes.
+scrcpy-server runs on hidden Android framework APIs, which Google changes every release. A pinned server therefore has a **shelf life**, even if Azdroid's own code never changes. Two gaps hid this: test coverage used one old device, and nothing tracked upstream releases or compatibility fixes.
 
 ## 4. Architectural Solution
 

@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid required users to install `adb` themselves (Homebrew, winget, or Android Studio). The goal was a self-contained app. Shipping someone else's native binary raised four questions: where to get a trustworthy copy, which files are really needed, how it interacts with code signing, and what happens when the user also has an adb installed.
+Azdroid required users to install `adb` themselves (Homebrew, winget, or Android Studio). The goal was a self-contained app. Shipping someone else's native binary raised four questions: where to get a trustworthy copy, which files are really needed, how it interacts with code signing, and what happens when the user also has an adb installed.
 
 ## 2. Diagnostic Traces & Evidence
 

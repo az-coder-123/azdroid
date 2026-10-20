@@ -124,7 +124,7 @@ class _Body extends StatelessWidget {
         children: [
           const Text(
             'AI assistants (Claude Desktop, Cursor, Antigravity) start this '
-            'server themselves to control your Android devices. DeskDroid '
+            'server themselves to control your Android devices. Azdroid '
             'does not need to be open; this panel only checks the setup.',
             style: AppTypography.caption,
           ),

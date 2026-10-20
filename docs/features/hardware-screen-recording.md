@@ -10,10 +10,10 @@
 
 ## 📌 Overview
 
-DeskDroid records the phone's screen on the phone itself, so the computer does no capturing or encoding. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
+Azdroid records the phone's screen on the phone itself, so the computer does no capturing or encoding. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
 
 <p align="center">
-  <img src="../images/deskdroid_screen_recording.png" alt="DeskDroid Hardware Screen Recording HUD" width="480">
+  <img src="../images/deskdroid_screen_recording.png" alt="Azdroid Hardware Screen Recording HUD" width="480">
 </p>
 
 ```mermaid
@@ -22,7 +22,7 @@ flowchart TD
     Prep --> Countdown["Animated 3-2-1 Countdown Overlay"]
     Countdown --> Record["Android Hardware screenrecord\n(Up to 180 s, H.264 MP4, 8 Mbps)"]
     Record --> HUD["Live Status HUD (REC 00:15)\n(STOP / DISCARD Controls)"]
-    HUD --> Pull["Auto-Pull to Downloads/DeskDroid_Recording_*.mp4"]
+    HUD --> Pull["Auto-Pull to Downloads/Azdroid_Recording_*.mp4"]
     Pull --> Complete["Preview Card with Reveal & Play Actions"]
 ```
 
@@ -31,7 +31,7 @@ flowchart TD
 ## ⚡️ Key Capabilities
 
 ### 1. On-Device Hardware Video Recording
-- **Native Encoder Pipeline:** Runs Android's `screenrecord` on the device, which records the display as hardware-encoded H.264 MP4 at 8 Mbps. Android limits one recording to 180 seconds; DeskDroid stops there and pulls the file.
+- **Native Encoder Pipeline:** Runs Android's `screenrecord` on the device, which records the display as hardware-encoded H.264 MP4 at 8 Mbps. Android limits one recording to 180 seconds; Azdroid stops there and pulls the file.
 - **No Host Encoding:** The computer only pulls the finished file; it does not grab or re-encode frames. Mirroring keeps running in parallel.
 
 ### 2. Intentional Recording Preparation HUD
@@ -49,5 +49,5 @@ flowchart TD
   - **DISCARD:** Immediately terminates the process and deletes the temporary device file, leaving zero host disk clutter.
 
 ### 5. Auto-Pull to the Computer & Quick Actions
-- **Timestamped File Naming:** Automatically pulls the finished video to `DeskDroid_Recording_YYYYMMDD_HHMMSS.mp4` in the Downloads folder (`~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
+- **Timestamped File Naming:** Automatically pulls the finished video to `Azdroid_Recording_YYYYMMDD_HHMMSS.mp4` in the Downloads folder (`~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
 - **Interactive Completion Card:** Displays a preview card offering 1-click **Reveal** (Finder on macOS, File Explorer on Windows) and **Play** actions.

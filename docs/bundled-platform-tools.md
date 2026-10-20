@@ -1,6 +1,6 @@
 # Bundled Android Platform-Tools (adb)
 
-> Release builds of DeskDroid ship their own `adb`, so users do not have to install anything. This document covers what is bundled, how the app chooses an adb, and how to upgrade it.
+> Release builds of Azdroid ship their own `adb`, so users do not have to install anything. This document covers what is bundled, how the app chooses an adb, and how to upgrade it.
 
 ---
 
@@ -10,8 +10,8 @@ Pinned version: **37.0.1** (`tool/platform_tools/platform_tools_manifest.dart`).
 
 | Platform | Files | Location in the build |
 |:---|:---|:---|
-| macOS | `adb` (universal x86_64 + arm64, ~18.8 MB) | `DeskDroid.app/Contents/MacOS/adb` |
-| macOS | `platform-tools-NOTICE.txt`, `platform-tools-source.properties` | `DeskDroid.app/Contents/Resources/platform-tools/` |
+| macOS | `adb` (universal x86_64 + arm64, ~18.8 MB) | `Azdroid.app/Contents/MacOS/adb` |
+| macOS | `platform-tools-NOTICE.txt`, `platform-tools-source.properties` | `Azdroid.app/Contents/Resources/platform-tools/` |
 | Windows | `adb.exe`, `AdbWinApi.dll`, `AdbWinUsbApi.dll` (~8.5 MB) | Next to `desk_droid.exe` |
 | Windows | `platform-tools-NOTICE.txt`, `platform-tools-source.properties` | Next to `desk_droid.exe` |
 
@@ -50,7 +50,7 @@ The binaries are **not committed**. `vendor/` is gitignored; the fetch tool is i
 3. System installs (Homebrew on macOS)
 4. **The bundled copy** (`HostToolchain.bundledAdbPath`)
 
-An installed adb always wins. All adb clients on one computer share one adb server, and two different adb versions keep restarting it (*"adb server version doesn't match this client; killing..."*). Preferring the installed copy means DeskDroid only falls back to its own adb when no other adb exists.
+An installed adb always wins. All adb clients on one computer share one adb server, and two different adb versions keep restarting it (*"adb server version doesn't match this client; killing..."*). Preferring the installed copy means Azdroid only falls back to its own adb when no other adb exists.
 
 The app log records the choice: `Using installed ADB at …` or `Using bundled ADB at …`.
 

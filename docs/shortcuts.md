@@ -1,4 +1,4 @@
-# DeskDroid — Mouse Gestures & Keyboard Shortcuts
+# Azdroid — Mouse Gestures & Keyboard Shortcuts
 
 > Complete reference for navigation keys, trackpad gestures, and input injection on macOS and Windows. Downloads folder: `~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows.
 

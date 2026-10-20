@@ -27,7 +27,7 @@ void main() {
       await tester.pumpWidget(createSubject(cubit));
       await tester.pumpAndSettle();
 
-      expect(find.text('DeskDroid Companion'), findsOneWidget);
+      expect(find.text('Azdroid Companion'), findsOneWidget);
       expect(find.text('Idle'), findsOneWidget);
       expect(find.text('Hide Mirroring Window'), findsOneWidget);
 

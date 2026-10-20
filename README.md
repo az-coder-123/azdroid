@@ -1,24 +1,24 @@
-# ⚡️ DeskDroid — High-Performance Android Screen Mirroring & Workstation for macOS & Windows
+# ⚡️ Azdroid — High-Performance Android Screen Mirroring & Workstation for macOS & Windows
 
 <p align="center">
   <b>Silky-smooth, low-latency Android screen mirroring, remote control, and developer powerhouse for macOS and Windows over Wi-Fi & USB. Built with Flutter Desktop and scrcpy-server.</b>
 </p>
 
 <p align="center">
-  <a href="https://github.com/az-coder-123/desk-droid/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/az-coder-123/azdroid/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://flutter.dev"><img src="https://img.shields.io/badge/built%20with-Flutter-02569B.svg?logo=flutter" alt="Built with Flutter"></a>
-  <a href="https://github.com/az-coder-123/desk-droid/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Apple%20Silicon%20%26%20Intel-black.svg?logo=apple" alt="macOS Platform"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Apple%20Silicon%20%26%20Intel-black.svg?logo=apple" alt="macOS Platform"></a>
   <a href="docs/platform-support.md"><img src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64%20(Preview)-0078D4.svg" alt="Windows Platform (Preview)"></a>
   <a href="https://github.com/Genymobile/scrcpy/releases/tag/v5.0.1"><img src="https://img.shields.io/badge/scrcpy-v5.0.1-orange.svg" alt="scrcpy v5.0.1 Engine"></a>
-  <a href="https://github.com/az-coder-123/desk-droid/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/az-coder-123/azdroid/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.3.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.3.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download DeskDroid for macOS"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/DeskDroid-v1.3.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.3.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download Azdroid for macOS"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/desk-droid/releases/latest/download/DeskDroid-v1.3.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.3.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download DeskDroid for Windows (Preview)"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/DeskDroid-v1.3.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.3.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/desk-droid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
   <br>
   <sub>macOS: Universal Binary (31 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
   <br>
@@ -26,14 +26,14 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="DeskDroid mirroring workspace on macOS: the phone screen between two vertical control docks, with the latency, FPS, and bitrate header" width="580">
+  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="Azdroid mirroring workspace on macOS: the phone screen between two vertical control docks, with the latency, FPS, and bitrate header" width="580">
 </p>
 
 ---
 
-## 🚀 Why DeskDroid?
+## 🚀 Why Azdroid?
 
-DeskDroid turns your Mac or Windows PC into the ultimate Android command center. Whether you are an Android developer debugging apps, a content creator recording mobile gameplay, or a power user seeking desktop control over your phone, DeskDroid delivers:
+Azdroid turns your Mac or Windows PC into the ultimate Android command center. Whether you are an Android developer debugging apps, a content creator recording mobile gameplay, or a power user seeking desktop control over your phone, Azdroid delivers:
 
 - ⚡️ **Low-Latency Native Decoding:** Hardware H.264 encoding on the phone, decoded natively on the desktop (Apple VideoToolbox on macOS, Media Foundation on Windows) at up to 60 FPS, at the phone's own resolution.
 - 📶 **Dual Connection (Wi-Fi & USB):** Subnet ARP auto-discovery, mDNS wireless debugging, 1-click USB-to-Wi-Fi switch, or instant plug-and-play USB cable mode.
@@ -48,12 +48,12 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_device_discovery.png" alt="DeskDroid device list with two connected phones, a Wi-Fi/USB switch for a dual-mode device, and the MCP status icon" width="100%">
+      <img src="docs/images/deskdroid_device_discovery.png" alt="Azdroid device list with two connected phones, a Wi-Fi/USB switch for a dual-mode device, and the MCP status icon" width="100%">
       <br><b>Multi-Device Discovery</b>
       <br><sub>Subnet auto-scan, connection badges, Wi-Fi/USB switch for dual-mode devices & 1-click mirroring.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_features_showcase.png" alt="DeskDroid Built-in Feature Showcase and Interactive Catalog" width="100%">
+      <img src="docs/images/deskdroid_features_showcase.png" alt="Azdroid Built-in Feature Showcase and Interactive Catalog" width="100%">
       <br><b>Interactive Feature Showcase</b>
       <br><sub>Categorized catalog with performance badges, highlights & pro tips.</sub>
     </td>
@@ -64,12 +64,12 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_logcat_console.png" alt="DeskDroid Real-Time Logcat Console with Multi-Tier Filters" width="100%">
+      <img src="docs/images/deskdroid_logcat_console.png" alt="Azdroid Real-Time Logcat Console with Multi-Tier Filters" width="100%">
       <br><b>Device Logcat Console (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd>)</b>
       <br><sub>Live stream (batched every 100 ms), 5k ring buffer, regex/PID/tag filters, star bookmarks & recording to a file.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_intent_dispatcher.png" alt="DeskDroid Deep Link Tester and Android Intent Dispatcher" width="100%">
+      <img src="docs/images/deskdroid_intent_dispatcher.png" alt="Azdroid Deep Link Tester and Android Intent Dispatcher" width="100%">
       <br><b>Deep Link & Intent Dispatcher (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>)</b>
       <br><sub>Fire custom URI schemes, system actions, targeted packages & typed extras.</sub>
     </td>
@@ -80,12 +80,12 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_apk_installer.png" alt="DeskDroid 1-Click APK Sideload and Package Manager" width="100%">
+      <img src="docs/images/deskdroid_apk_installer.png" alt="Azdroid 1-Click APK Sideload and Package Manager" width="100%">
       <br><b>1-Click APK Manager (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>)</b>
       <br><sub>AAPT2 metadata inspection, permission grant flags, 1-click launch & clean uninstall.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_file_explorer.png" alt="DeskDroid two-way Android File Explorer" width="100%">
+      <img src="docs/images/deskdroid_file_explorer.png" alt="Azdroid two-way Android File Explorer" width="100%">
       <br><b>Device File Explorer (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>)</b>
       <br><sub>Two-way file browser with quick folder shortcuts & batch download.</sub>
     </td>
@@ -96,12 +96,12 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_screen_recording.png" alt="DeskDroid screen recording bar with a 3-second countdown and Start button over the mirrored phone" width="100%">
+      <img src="docs/images/deskdroid_screen_recording.png" alt="Azdroid screen recording bar with a 3-second countdown and Start button over the mirrored phone" width="100%">
       <br><b>Hardware Screen Recording (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>)</b>
       <br><sub>H.264 MP4 encoded by the phone's hardware encoder (up to 3 minutes), with a 3 s countdown HUD.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_area_crop.png" alt="DeskDroid area crop: a marquee with drag handles over the mirrored phone and Clipboard, Save File, and Both actions" width="100%">
+      <img src="docs/images/deskdroid_area_crop.png" alt="Azdroid area crop: a marquee with drag handles over the mirrored phone and Clipboard, Save File, and Both actions" width="100%">
       <br><b>Interactive Area Crop (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>)</b>
       <br><sub>PNG marquee crop with live pixel badge; copy, save, or both.</sub>
     </td>
@@ -110,7 +110,7 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 
 ### 5. Remote Text Input
 <p align="center">
-  <img src="docs/images/deskdroid_text_injection.png" alt="DeskDroid Remote Text Injection dialog over the mirrored phone, with a text field and Inject Text button" width="50%">
+  <img src="docs/images/deskdroid_text_injection.png" alt="Azdroid Remote Text Injection dialog over the mirrored phone, with a text field and Inject Text button" width="50%">
   <br><b>Remote Text Injection (<kbd>Cmd</kbd>+<kbd>K</kbd>)</b>
   <br><sub>Type or paste text for the phone; Vietnamese, CJK, and emoji arrive intact.</sub>
 </p>
@@ -119,7 +119,7 @@ DeskDroid turns your Mac or Windows PC into the ultimate Android command center.
 
 ## ⚡️ Complete Feature Catalog
 
-DeskDroid includes **14 built-in modules** (plus a planned menu bar companion):
+Azdroid includes **14 built-in modules** (plus a planned menu bar companion):
 
 | # | Feature | Highlights & Capabilities | Shortcut | Docs |
 | :-: | :--- | :--- | :--- | :-: |
@@ -178,7 +178,7 @@ flowchart LR
         C_SOCKET["TCP Control Socket (scrcpy Control Messages)"]
     end
 
-    subgraph DesktopApp ["💻 macOS / Windows (DeskDroid App - Flutter)"]
+    subgraph DesktopApp ["💻 macOS / Windows (Azdroid App - Flutter)"]
         M1["Flutter UI"] --> M2["Mouse & Keyboard Event Listener"]
         M3["Native Video Decoder (VideoToolbox / Media Foundation) → Texture"] --> M1
     end
@@ -202,15 +202,15 @@ flowchart LR
 
 ### Install a release
 
-- **macOS:** unzip `DeskDroid-v1.3.0-macOS.zip`, move **DeskDroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/DeskDroid.app` once if Gatekeeper blocks it.
+- **macOS:** unzip `DeskDroid-v1.3.0-macOS.zip`, move **Azdroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/Azdroid.app` once if Gatekeeper blocks it.
 - **Windows:** unzip `DeskDroid-v1.3.0-Windows-x64.zip` (ADB included) and run `DeskDroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
 
 ### Run from source
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/az-coder-123/desk-droid.git
-cd desk-droid
+git clone https://github.com/az-coder-123/azdroid.git
+cd azdroid
 
 # 2. Install dependencies & launch
 flutter pub get
@@ -221,8 +221,8 @@ flutter run -d windows   # Windows (needs Visual Studio 2022 with "Desktop devel
 ### Build a release package
 
 ```bash
-./scripts/build_release.sh                                            # macOS → RELEASE/DeskDroid-v<version>-macOS.zip
-powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1     # Windows → RELEASE\DeskDroid-v<version>-Windows-x64.zip
+./scripts/build_release.sh                                            # macOS → RELEASE/Azdroid-v<version>-macOS.zip
+powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1     # Windows → RELEASE\Azdroid-v<version>-Windows-x64.zip
 ```
 
 Full setup, ADB drivers, and packaging options: [Installation & Building](docs/installation.md). Publishing a release: [Release Guide](docs/release-guide.md).
@@ -265,21 +265,21 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
   <tr>
     <td width="50%" valign="top">
       <h3>🤝 Contributing</h3>
-      <p>Contributions, feature requests, and bug reports are warmly welcome! DeskDroid thrives on community feedback.</p>
+      <p>Contributions, feature requests, and bug reports are warmly welcome! Azdroid thrives on community feedback.</p>
       <p>
-        <a href="https://github.com/az-coder-123/desk-droid/issues"><img src="https://img.shields.io/badge/Issues-Report%20Bug-red?style=flat-square&logo=github" alt="Report Bug"></a>
-        <a href="https://github.com/az-coder-123/desk-droid/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git" alt="PRs Welcome"></a>
-        <a href="https://github.com/az-coder-123/desk-droid/stargazers"><img src="https://img.shields.io/badge/Star-DeskDroid-yellow?style=flat-square&logo=github" alt="Star DeskDroid"></a>
+        <a href="https://github.com/az-coder-123/azdroid/issues"><img src="https://img.shields.io/badge/Issues-Report%20Bug-red?style=flat-square&logo=github" alt="Report Bug"></a>
+        <a href="https://github.com/az-coder-123/azdroid/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git" alt="PRs Welcome"></a>
+        <a href="https://github.com/az-coder-123/azdroid/stargazers"><img src="https://img.shields.io/badge/Star-Azdroid-yellow?style=flat-square&logo=github" alt="Star Azdroid"></a>
       </p>
       <ul>
-        <li>Found a bug? Submit a detailed <a href="https://github.com/az-coder-123/desk-droid/issues/new">GitHub Issue</a>.</li>
-        <li>Have a feature idea? Share it in <a href="https://github.com/az-coder-123/desk-droid/issues">Feature Requests</a>.</li>
+        <li>Found a bug? Submit a detailed <a href="https://github.com/az-coder-123/azdroid/issues/new">GitHub Issue</a>.</li>
+        <li>Have a feature idea? Share it in <a href="https://github.com/az-coder-123/azdroid/issues">Feature Requests</a>.</li>
         <li>Want to contribute code? Fork, branch, and open a Pull Request.</li>
       </ul>
     </td>
     <td width="50%" valign="top">
       <h3>📄 License & Freedom</h3>
-      <p>DeskDroid is 100% free, open-source, and privacy-respecting software released under the <b>MIT License</b>.</p>
+      <p>Azdroid is 100% free, open-source, and privacy-respecting software released under the <b>MIT License</b>.</p>
       <p>
         <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License"></a>
         <img src="https://img.shields.io/badge/Privacy-100%25%20P2P-success?style=flat-square" alt="100% P2P">

@@ -1,6 +1,6 @@
-# DeskDroid Release Packages
+# Azdroid Release Packages
 
-> Android screen mirroring and control for macOS and Windows, over Wi-Fi and USB. All releases and notes: [GitHub Releases](https://github.com/az-coder-123/desk-droid/releases).
+> Android screen mirroring and control for macOS and Windows, over Wi-Fi and USB. All releases and notes: [GitHub Releases](https://github.com/az-coder-123/azdroid/releases).
 
 ## Packages
 
@@ -15,16 +15,16 @@ ADB and scrcpy-server are bundled. An ADB you install yourself takes precedence 
 
 ## Install on macOS
 
-1. Unzip the macOS package and drag **DeskDroid.app** into `/Applications`.
+1. Unzip the macOS package and drag **Azdroid.app** into `/Applications`.
 2. The app is not signed with an Apple Developer ID. If macOS says the developer cannot be verified, run once:
    ```bash
-   xattr -cr /Applications/DeskDroid.app
+   xattr -cr /Applications/Azdroid.app
    ```
    Or right-click the app, choose **Open**, then **Open** again.
 
 ## Install on Windows (Preview)
 
-1. Unzip the Windows package to a folder you own, for example `%LOCALAPPDATA%\Programs\DeskDroid`.
+1. Unzip the Windows package to a folder you own, for example `%LOCALAPPDATA%\Programs\Azdroid`.
 2. Run `desk_droid.exe`. Keep the `.dll` files and the `data` folder next to it.
 3. The app is not code-signed. If SmartScreen appears, click **More info**, then **Run anyway**.
 

@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-DeskDroid turns your computer's trackpad, mouse, and keyboard into Android input. Pointer positions are normalized to the video frame and sent to the phone through the scrcpy **control socket**, with `adb shell input` as the fallback.
+Azdroid turns your computer's trackpad, mouse, and keyboard into Android input. Pointer positions are normalized to the video frame and sent to the phone through the scrcpy **control socket**, with `adb shell input` as the fallback.
 
 ```mermaid
 flowchart LR
@@ -64,7 +64,7 @@ flowchart LR
 - **System Navigation Shortcuts:**
   - <kbd>Cmd</kbd> + <kbd>H</kbd>: Return to Home Screen.
   - <kbd>Cmd</kbd> + <kbd>Backspace</kbd>: Back button.
-  - <kbd>Ctrl</kbd> + <kbd>Tab</kbd> (Windows) or the toolbar button: App Switcher / Recent Apps (`KEYCODE_APP_SWITCH`). On macOS, <kbd>Cmd</kbd> + <kbd>Tab</kbd> is the system app switcher and never reaches DeskDroid.
+  - <kbd>Ctrl</kbd> + <kbd>Tab</kbd> (Windows) or the toolbar button: App Switcher / Recent Apps (`KEYCODE_APP_SWITCH`). On macOS, <kbd>Cmd</kbd> + <kbd>Tab</kbd> is the system app switcher and never reaches Azdroid.
   - <kbd>Cmd</kbd> + <kbd>R</kbd>: Rotate the mirror view on the computer by 90 degrees (the phone does not rotate).
   - <kbd>Cmd</kbd> + <kbd>O</kbd>: Turn the phone screen off/on while mirroring continues ([Screen Off](screen-off-streaming.md)).
 

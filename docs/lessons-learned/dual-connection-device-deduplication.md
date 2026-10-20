@@ -46,7 +46,7 @@ ADB assigns device identifiers based on connection transport:
 ADB treats these as two distinct targetable entities with independent state and separate forward socket tables. Because discovery queried `adb devices` and `adb mdns services`, both transports reported their own device instances.
 
 ### B. Port Collision Hazards
-DeskDroid allocates local loopback ports for video and audio forwarding (e.g., `27183` and `27185`). If two mirroring sessions targeting the same physical device run concurrently over both transports, the scrcpy server binary on Android attempts to bind the same abstract unix socket (`scrcpy`), throwing `java.io.IOException: Address already in use`.
+Azdroid allocates local loopback ports for video and audio forwarding (e.g., `27183` and `27185`). If two mirroring sessions targeting the same physical device run concurrently over both transports, the scrcpy server binary on Android attempts to bind the same abstract unix socket (`scrcpy`), throwing `java.io.IOException: Address already in use`.
 
 ---
 

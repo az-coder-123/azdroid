@@ -132,7 +132,7 @@ class _UserGuideDialogState extends State<UserGuideDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'DeskDroid User Guide',
+                            'Azdroid User Guide',
                             style: AppTypography.title,
                           ),
                           Text(

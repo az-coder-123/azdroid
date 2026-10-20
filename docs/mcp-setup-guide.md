@@ -1,15 +1,15 @@
-# 🤖 DeskDroid MCP Server — AI Agent Integration Guide
+# 🤖 Azdroid MCP Server — AI Agent Integration Guide
 
-> Connect **DeskDroid** to **Claude Desktop**, **Cursor**, and **Antigravity** via the **Model Context Protocol (MCP)** to allow AI assistants to see, control, inspect, test, profile, and automate real Android devices over Wi-Fi and USB.
+> Connect **Azdroid** to **Claude Desktop**, **Cursor**, and **Antigravity** via the **Model Context Protocol (MCP)** to allow AI assistants to see, control, inspect, test, profile, and automate real Android devices over Wi-Fi and USB.
 
 ---
 
 ## ⚡️ Overview
 
-DeskDroid provides a built-in **Model Context Protocol (MCP)** server over standard I/O (`stdio`). This bridges multimodal AI agents directly with your connected Android devices with zero UI overhead.
+Azdroid provides a built-in **Model Context Protocol (MCP)** server over standard I/O (`stdio`). This bridges multimodal AI agents directly with your connected Android devices with zero UI overhead.
 
-- **Headless & Standalone:** You **do not need to launch `DeskDroid.app`** to use this MCP server. AI clients run the pure Dart CLI process independently in the background.
-- **Optional Visual Mirroring:** You can optionally open `DeskDroid.app` concurrently to visually observe the agent's taps, gestures, and inputs in real time at 60 FPS.
+- **Headless & Standalone:** You **do not need to launch `Azdroid.app`** to use this MCP server. AI clients run the pure Dart CLI process independently in the background.
+- **Optional Visual Mirroring:** You can optionally open `Azdroid.app` concurrently to visually observe the agent's taps, gestures, and inputs in real time at 60 FPS.
 
 ---
 
@@ -26,7 +26,7 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
      # Expected output: <device_serial> device
      ```
 2. **Host Machine (macOS or Windows):**
-   - **No GUI Required:** the DeskDroid app does not need to be running.
+   - **No GUI Required:** the Azdroid app does not need to be running.
    - **Installed app (recommended):** release builds include a **precompiled server** (`deskdroid-mcp`) and a bundled `adb`. Nothing else is required: no Dart SDK, no separate ADB install.
    - **Source checkout (developers):** needs the Dart SDK (bundled with Flutter). ADB comes from your install or from `dart run tool/fetch_platform_tools.dart`.
 
@@ -36,26 +36,26 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
 
 ### 0. Installed App — Precompiled Server (Recommended)
 
-Point your client at the executable inside the installed app. It finds the bundled `adb` next to it and logs its choice to stderr (`[DeskDroid MCP] Using installed|bundled adb at …`).
+Point your client at the executable inside the installed app. It finds the bundled `adb` next to it and logs its choice to stderr (`[Azdroid MCP] Using installed|bundled adb at …`).
 
 | Platform | `command` |
 |:---|:---|
-| macOS | `/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp` |
-| Windows | `C:\path\to\DeskDroid\deskdroid-mcp.exe` (next to `desk_droid.exe`; write `\\` in JSON) |
+| macOS | `/Applications/Azdroid.app/Contents/MacOS/deskdroid-mcp` |
+| Windows | `C:\path\to\Azdroid\deskdroid-mcp.exe` (next to `desk_droid.exe`; write `\\` in JSON) |
 
 ```json
 {
   "mcpServers": {
     "deskdroid": {
-      "command": "/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp"
+      "command": "/Applications/Azdroid.app/Contents/MacOS/deskdroid-mcp"
     }
   }
 }
 ```
 
-Smoke test: `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | /Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp`
+Smoke test: `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | /Applications/Azdroid.app/Contents/MacOS/deskdroid-mcp`
 
-Or open DeskDroid and click the **hub icon** in the device list toolbar: it checks the server, shows which AI clients are set up, counts connected sessions, and copies this JSON with the right path ([mcp-status-panel.md](features/mcp-status-panel.md)). While an AI works, the panel lists its tool calls and the mirroring page shows which device it controls; only tool names, devices, results, and durations are recorded, never arguments ([mcp-activity-log.md](features/mcp-activity-log.md)).
+Or open Azdroid and click the **hub icon** in the device list toolbar: it checks the server, shows which AI clients are set up, counts connected sessions, and copies this JSON with the right path ([mcp-status-panel.md](features/mcp-status-panel.md)). While an AI works, the panel lists its tool calls and the mirroring page shows which device it controls; only tool names, devices, results, and durations are recorded, never arguments ([mcp-activity-log.md](features/mcp-activity-log.md)).
 
 > [!NOTE]
 > `dart compile exe` builds for the CPU of the build machine only; Dart cannot cross-compile to macOS arm64. A macOS release built on an Intel Mac ships an **x86_64** server, which runs on Apple Silicon through Rosetta 2 (macOS offers to install it). Release builds made on Apple Silicon ship **arm64**. Windows builds are x64.
@@ -71,7 +71,7 @@ Add `deskdroid` to your `~/Library/Application Support/Claude/claude_desktop_con
 {
   "mcpServers": {
     "deskdroid": {
-      "command": "/absolute/path/to/desk-droid/scripts/start_mcp_server.sh"
+      "command": "/absolute/path/to/azdroid/scripts/start_mcp_server.sh"
     }
   }
 }
@@ -86,7 +86,7 @@ Add to `.cursor/mcp.json` in your project root or user settings:
   "mcpServers": {
     "deskdroid": {
       "command": "dart",
-      "args": ["run", "/absolute/path/to/desk-droid/bin/deskdroid_mcp.dart"]
+      "args": ["run", "/absolute/path/to/azdroid/bin/deskdroid_mcp.dart"]
     }
   }
 }
@@ -100,7 +100,7 @@ Add to `cline_mcp_settings.json`:
 {
   "mcpServers": {
     "deskdroid": {
-      "command": "/absolute/path/to/desk-droid/scripts/start_mcp_server.sh"
+      "command": "/absolute/path/to/azdroid/scripts/start_mcp_server.sh"
     }
   }
 }
@@ -125,7 +125,7 @@ Verify proper functioning using any of the following 3 methods:
   - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (58 tools)`.
 
 - **Method 3: Direct Natural Language Prompt**
-  Ask your AI: *"List all connected Android devices with DeskDroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
+  Ask your AI: *"List all connected Android devices with Azdroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
 
 ### 5. Windows Configuration
 

@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid's **Screen Off** button (documented as "turn the phone screen off, keep mirroring, like `--turn-screen-off`") actually sent `adb shell input keyevent 26` (POWER). The phone went to sleep: the mirror froze on the last frame, the lock screen engaged, and turning it "on" again pressed POWER a second time.
+Azdroid's **Screen Off** button (documented as "turn the phone screen off, keep mirroring, like `--turn-screen-off`") actually sent `adb shell input keyevent 26` (POWER). The phone went to sleep: the mirror froze on the last frame, the lock screen engaged, and turning it "on" again pressed POWER a second time.
 
 ## 2. Diagnostic Traces & Evidence
 

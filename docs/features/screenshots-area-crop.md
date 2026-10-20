@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-DeskDroid includes a lossless image capture system engineered with macOS desktop ergonomics. Developers and designers can capture pixel-perfect full-screen screenshots or draw an interactive 8-point regional crop box with live dimension overlays.
+Azdroid includes a lossless image capture system engineered with macOS desktop ergonomics. Developers and designers can capture pixel-perfect full-screen screenshots or draw an interactive 8-point regional crop box with live dimension overlays.
 
 ```mermaid
 flowchart TD
@@ -27,7 +27,7 @@ flowchart TD
 
 ### 1. Full Lossless Screenshot (<kbd>Cmd</kbd> + <kbd>S</kbd>)
 - **Direct Framebuffer Capture:** Captures the current Android frame via ADB SurfaceFlinger screencap in lossless PNG format.
-- **Dual Destination:** Automatically saves the image to `DeskDroid_Screenshot_*.png` in the Downloads folder and simultaneously copies it to the clipboard (on Windows through PowerShell).
+- **Dual Destination:** Automatically saves the image to `Azdroid_Screenshot_*.png` in the Downloads folder and simultaneously copies it to the clipboard (on Windows through PowerShell).
 
 ### 2. Interactive Area Crop Marquee (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>)
 - **Interactive Drag Marquee:** Click and drag anywhere on the phone display to frame the region of interest.

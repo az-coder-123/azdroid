@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid had an audio feature that never played anything. `AudioRepositoryImpl` ran `adb forward tcp:27185 localabstract:scrcpy_<scid>` and opened its own socket on port 27185, while the server ran with `audio=false`. The UI showed an audio button with a fake 15 ms latency.
+Azdroid had an audio feature that never played anything. `AudioRepositoryImpl` ran `adb forward tcp:27185 localabstract:scrcpy_<scid>` and opened its own socket on port 27185, while the server ran with `audio=false`. The UI showed an audio button with a fake 15 ms latency.
 
 ## 2. Diagnostic Traces & Evidence
 

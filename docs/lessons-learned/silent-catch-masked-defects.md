@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-DeskDroid had ten `catch (_) {}` blocks in data sources, resolvers, and the viewport keyboard handler. Everything appeared to work, and every test passed.
+Azdroid had ten `catch (_) {}` blocks in data sources, resolvers, and the viewport keyboard handler. Everything appeared to work, and every test passed.
 
 After replacing them with typed handlers (`on Exception catch`) and logging, one existing test failed at once:
 

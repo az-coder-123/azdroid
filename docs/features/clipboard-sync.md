@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-DeskDroid provides seamless bidirectional clipboard synchronization between macOS and Android. Text copied on your computer can be pasted on Android, and text copied on Android can be pasted on the computer, within about 2 seconds.
+Azdroid provides seamless bidirectional clipboard synchronization between macOS and Android. Text copied on your computer can be pasted on Android, and text copied on Android can be pasted on the computer, within about 2 seconds.
 
 ```mermaid
 flowchart LR

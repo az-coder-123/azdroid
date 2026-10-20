@@ -10,12 +10,12 @@
 
 ## 1. What It Shows
 
-AI clients start the MCP server themselves over stdio ([mcp-ai-agent-server.md](mcp-ai-agent-server.md)). DeskDroid does not run or control it, so the panel reports only what the app can check:
+AI clients start the MCP server themselves over stdio ([mcp-ai-agent-server.md](mcp-ai-agent-server.md)). Azdroid does not run or control it, so the panel reports only what the app can check:
 
 | Check | How | Shown as |
 |:---|:---|:---|
 | Server executable | `deskdroid-mcp` next to the app executable exists; `lipo -archs` (macOS); a `tools/list` handshake | Runs and answers · Runs (through Rosetta 2) · Needs Rosetta 2 · Does not answer · Not in this build |
-| AI client setup | Reads Claude Desktop, Cursor, and Antigravity configuration files (read-only) and looks for an entry that runs DeskDroid's server | Set up · Uses another copy · Not set up · Not installed · Config is not valid JSON |
+| AI client setup | Reads Claude Desktop, Cursor, and Antigravity configuration files (read-only) and looks for an entry that runs Azdroid's server | Set up · Uses another copy · Not set up · Not installed · Config is not valid JSON |
 | Sessions | Lists running server processes: `pgrep -f` (macOS), `tasklist` (Windows) | N AI sessions connected |
 | Live activity | Reads each server's activity file ([mcp-activity-log.md](mcp-activity-log.md)) | Sessions, recent tool calls, "is using … on …" |
 
@@ -43,7 +43,7 @@ The tooltip repeats the summary. The full check runs at startup and each time th
 | Cursor | `~/.cursor/mcp.json` | `%USERPROFILE%\.cursor\mcp.json` |
 | Antigravity | `~/.gemini/antigravity/mcp_config.json` | `%USERPROFILE%\.gemini\antigravity\mcp_config.json` |
 
-An entry counts as DeskDroid when its command is `deskdroid-mcp` (any folder, any case), `start_mcp_server.sh`, or `dart` with `deskdroid_mcp.dart` in its arguments. It is **Set up** only when the command is this app's own executable; otherwise **Uses another copy** (for example an old download or a source checkout). Cursor's per-project `.cursor/mcp.json` is not checked.
+An entry counts as Azdroid when its command is `deskdroid-mcp` (any folder, any case), `start_mcp_server.sh`, or `dart` with `deskdroid_mcp.dart` in its arguments. It is **Set up** only when the command is this app's own executable; otherwise **Uses another copy** (for example an old download or a source checkout). Cursor's per-project `.cursor/mcp.json` is not checked.
 
 ## 4. Architecture
 

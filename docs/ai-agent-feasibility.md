@@ -1,6 +1,6 @@
-# 🤖 Feasibility Study: Transforming DeskDroid into an Autonomous AI Agent
+# 🤖 Feasibility Study: Transforming Azdroid into an Autonomous AI Agent
 
-> **Architectural RFC & Roadmap:** Evaluating the feasibility, design patterns, and engineering roadmap to turn DeskDroid into an AI Agent and an MCP (Model Context Protocol) Server for Android automation.
+> **Architectural RFC & Roadmap:** Evaluating the feasibility, design patterns, and engineering roadmap to turn Azdroid into an AI Agent and an MCP (Model Context Protocol) Server for Android automation.
 
 ---
 
@@ -8,14 +8,14 @@
 
 | Dimension | Rating | Analysis |
 | :--- | :---: | :--- |
-| **Technical Feasibility** | **9.5 / 10** | **Extremely High.** 90% of the low-level infrastructure (sub-20ms frame capture, sub-5ms socket input injection, intent dispatcher, logcat streaming, APK sideloading) is already implemented and stable in DeskDroid. |
-| **Market Impact** | **10 / 10** | Existing AI mobile agents (AppAgent, Mobile-Agent, OSWorld) suffer from slow `adb screencap` (1.5s/frame) and process-spawning input taps (300ms). DeskDroid offers **30x faster feedback loops**. |
+| **Technical Feasibility** | **9.5 / 10** | **Extremely High.** 90% of the low-level infrastructure (sub-20ms frame capture, sub-5ms socket input injection, intent dispatcher, logcat streaming, APK sideloading) is already implemented and stable in Azdroid. |
+| **Market Impact** | **10 / 10** | Existing AI mobile agents (AppAgent, Mobile-Agent, OSWorld) suffer from slow `adb screencap` (1.5s/frame) and process-spawning input taps (300ms). Azdroid offers **30x faster feedback loops**. |
 | **Architectural Fit** | **9.5 / 10** | Clean Architecture with decoupled Cubit/BLoC state and repository contracts makes exposing headless APIs or an MCP server straightforward. |
 | **Portfolio Synergy** | **10 / 10** | Perfectly complements the `@az-coder-123` ecosystem (`sql-server-mcp`, `postgres-mcp`, `mongodb-mcp`) by introducing the **first high-performance macOS-to-Android MCP Server**. |
 
 ---
 
-## ⚡️ 2. The DeskDroid Advantage over Traditional Mobile AI Tooling
+## ⚡️ 2. The Azdroid Advantage over Traditional Mobile AI Tooling
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,7 @@ flowchart LR
         T2 --> T3["adb shell input tap x y\n(Fork new shell process: 250ms)"]
     end
 
-    subgraph DeskDroid ["⚡️ DeskDroid AI Engine (Native Sockets & VideoToolbox)"]
+    subgraph Azdroid ["⚡️ Azdroid AI Engine (Native Sockets & VideoToolbox)"]
         D1["Direct Memory Texture / SurfaceControl\n(< 20ms Zero-Copy Frame)"] --> D2["Multimodal LLM / VLA Agent"]
         D2 --> D3["Direct TCP Socket Packet to scrcpy-server\n(< 5ms Input Injection)"]
     end
@@ -34,13 +34,13 @@ flowchart LR
 
 ## 🏛️ 3. Proposed Dual-Architecture Paradigms
 
-### Paradigm A: DeskDroid as an MCP Server (`deskdroid-mcp`) — *Highest Priority*
-DeskDroid acts as a **Model Context Protocol (MCP)** server over `stdio` or Server-Sent Events (SSE). 
+### Paradigm A: Azdroid as an MCP Server (`deskdroid-mcp`) — *Highest Priority*
+Azdroid acts as a **Model Context Protocol (MCP)** server over `stdio` or Server-Sent Events (SSE). 
 - Allows external AI assistants (e.g. **Antigravity**, **Claude Desktop**, **Cursor**) to observe and drive real Android devices natively.
 - Developers can say: *"Run my checkout flow, inspect Logcat if any errors occur, and take a screenshot of the confirmation page."*
 
 ### Paradigm B: Embedded In-App AI Operator
-An integrated multimodal agent (powered by Gemini 1.5/2.0 Flash or local Ollama) operating inside the DeskDroid macOS window:
+An integrated multimodal agent (powered by Gemini 1.5/2.0 Flash or local Ollama) operating inside the Azdroid macOS window:
 - Natural language command prompt bar at the bottom of the mirroring viewport.
 - Real-time visual overlay drawing bounding boxes and planned action paths.
 - Emergency manual override (<kbd>Esc</kbd> / touch interrupt).
@@ -72,7 +72,7 @@ install_and_launch_apk(apk_path: string, launch_package: string): { installed: b
 
 1. **Resolution & Coordinate Normalization:**
    - *Challenge:* LLM vision models scale images down (e.g., to 1024x1024 or 768x768), while Android screens have varying native resolutions (e.g., 1080x2400).
-   - *Solution:* DeskDroid already handles viewport-to-device coordinate translation matrices in `ControlRepository`. Expose normalized coordinates `[0.0, 1.0]` across all tools.
+   - *Solution:* Azdroid already handles viewport-to-device coordinate translation matrices in `ControlRepository`. Expose normalized coordinates `[0.0, 1.0]` across all tools.
 2. **Semantic UI Understanding (Accessibility Tree):**
    - *Challenge:* Vision-only agents can hallucinate click targets.
    - *Solution:* Combine vision with a background daemon querying `AccessibilityNodeInfo` to provide element IDs and bounding boxes.
@@ -90,6 +90,6 @@ install_and_launch_apk(apk_path: string, launch_package: string): { installed: b
 - [ ] **Phase 2: Semantic UI Element Grounding (2 weeks)**
   - Integrate fast accessibility node inspection alongside raw screenshot capture.
   - Return combined `{ image, elements: [...] }` payload for multimodal LLMs.
-- [ ] **Phase 3: Native DeskDroid In-App AI Copilot (2–3 weeks)**
+- [ ] **Phase 3: Native Azdroid In-App AI Copilot (2–3 weeks)**
   - Add native Flutter prompt bar and visual action overlay directly in the macOS mirroring window.
   - Support Gemini API keys and local Ollama endpoints for autonomous task execution.

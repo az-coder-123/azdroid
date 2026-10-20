@@ -1,6 +1,6 @@
 # Platform Abstraction Layer
 
-> How DeskDroid keeps macOS and Windows equally maintainable. Read this before adding any code that behaves differently per OS.
+> How Azdroid keeps macOS and Windows equally maintainable. Read this before adding any code that behaves differently per OS.
 
 ---
 

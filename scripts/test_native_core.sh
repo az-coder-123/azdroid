@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# DeskDroid — Native scrcpy_core Test Runner (macOS / Linux)
+# Azdroid — Native scrcpy_core Test Runner (macOS / Linux)
 # ==============================================================================
 # Builds native/scrcpy_core with strict warnings (matching MSVC /W4 /WX used by
 # the Windows runner) and runs its tests three times:
