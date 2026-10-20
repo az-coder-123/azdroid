@@ -23,10 +23,31 @@ mixin McpAdbAutomationDelegator {
     pollIntervalMs: pollIntervalMs,
   );
 
+  Future<Map<String, dynamic>> waitForCondition(
+    String serial, {
+    required String condition,
+    String? target,
+    String? text,
+    String? resourceId,
+    String? contentDesc,
+    int timeoutMs = 10000,
+    int pollIntervalMs = 300,
+  }) => McpAdbAutomationOps.waitForCondition(
+    _adbClient,
+    serial,
+    condition: condition,
+    target: target,
+    text: text,
+    resourceId: resourceId,
+    contentDesc: contentDesc,
+    timeoutMs: timeoutMs,
+    pollIntervalMs: pollIntervalMs,
+  );
+
   Future<List<Map<String, dynamic>>> batchActions(
     String serial,
     List<Map<String, dynamic>> actions,
-  ) => McpAdbAutomationOps.batchActions(_adbClient, serial, actions);
+  ) => McpAdbBatchOps.batchActions(_adbClient, serial, actions);
 
   Future<List<Map<String, String>>> getNotifications(
     String serial, {

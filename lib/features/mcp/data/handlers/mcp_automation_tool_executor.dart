@@ -2,8 +2,7 @@ import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
-/// Handler for smart waiting, macro batching, notifications, mock location,
-/// network conditioning, and hardware button tools.
+/// Handler for smart element waiting, condition monitoring, and macro batching tools.
 class McpAutomationToolExecutor {
   const McpAutomationToolExecutor(this._adb);
 
@@ -12,15 +11,8 @@ class McpAutomationToolExecutor {
   bool canHandle(String toolName) {
     return const {
       'android_wait_for_element',
+      'android_wait_for_condition',
       'android_batch_actions',
-      'android_get_notifications',
-      'android_dismiss_notification',
-      'android_set_location',
-      'android_set_network_condition',
-      'android_long_press',
-      'android_open_notification_panel',
-      'android_read_shared_prefs',
-      'android_press_button',
     }.contains(toolName);
   }
 
@@ -77,6 +69,54 @@ class McpAutomationToolExecutor {
           'Element appeared (${res['elapsedMs']}ms):\n$res',
         );
 
+      case 'android_wait_for_condition':
+        final condition = arguments.getRequiredString(
+          'condition',
+          aliases: ['type', 'cond'],
+        );
+        final target = arguments.getString(
+          'target',
+          aliases: ['pattern', 'activity', 'name'],
+        );
+        final text = arguments.getString('text');
+        final resId = arguments.getString(
+          'resourceId',
+          aliases: ['resId', 'id'],
+        );
+        final desc = arguments.getString(
+          'contentDesc',
+          aliases: ['desc', 'contentDescription'],
+        );
+        final timeout = arguments.getInt(
+          'timeoutMs',
+          aliases: ['timeout'],
+          defaultValue: 10000,
+        );
+        final poll = arguments.getInt(
+          'pollIntervalMs',
+          aliases: ['pollInterval', 'interval'],
+          defaultValue: 300,
+        );
+        final res = await _adb.waitForCondition(
+          serial,
+          condition: condition,
+          target: target,
+          text: text,
+          resourceId: resId,
+          contentDesc: desc,
+          timeoutMs: timeout,
+          pollIntervalMs: poll,
+        );
+        final met = res['conditionMet'] == true;
+        return met
+            ? McpToolResult.text(
+                'Condition "$condition" met (${res['elapsedMs']}ms):\n$res',
+              )
+            : McpToolResult.error(
+                res['error']?.toString() ??
+                    'Condition "$condition" timed out after ${timeout}ms.',
+              );
+
       case 'android_batch_actions':
         final rawActions = arguments['actions'];
         final list = <Map<String, dynamic>>[];
@@ -91,141 +131,6 @@ class McpAutomationToolExecutor {
         return McpToolResult.text(
           'Executed ${res.length} batch actions on $serial:\n$res',
         );
-
-      case 'android_get_notifications':
-        final filter = arguments.getString(
-          'filter',
-          aliases: ['package', 'pkg', 'query'],
-        );
-        final notifs = await _adb.getNotifications(serial, filter: filter);
-        if (notifs.isEmpty) {
-          return McpToolResult.text(
-            'No active notifications found on $serial.',
-          );
-        }
-        final buf = StringBuffer(
-          'Active Notifications on $serial (${notifs.length}):\n',
-        );
-        for (final n in notifs) {
-          buf.writeln('• [${n['package']}] ${n['title']}: ${n['text']}');
-        }
-        return McpToolResult.text(buf.toString().trim());
-
-      case 'android_dismiss_notification':
-        final key = arguments.getString(
-          'key',
-          aliases: ['id', 'notificationKey'],
-        );
-        final clearAll = arguments.getBool(
-          'clearAll',
-          aliases: ['all'],
-          defaultValue: false,
-        );
-        final ok = await _adb.dismissNotification(
-          serial,
-          key: key,
-          clearAll: clearAll,
-        );
-        return ok
-            ? McpToolResult.text(
-                clearAll
-                    ? 'Cleared all notifications.'
-                    : 'Dismissed notification: $key',
-              )
-            : McpToolResult.error('Failed to dismiss notification.');
-
-      case 'android_set_location':
-        final lat = arguments.getRequiredDouble('latitude', aliases: ['lat']);
-        final lng = arguments.getRequiredDouble(
-          'longitude',
-          aliases: ['lng', 'lon'],
-        );
-        final alt = arguments.getOptionalDouble('altitude', aliases: ['alt']);
-        final ok = await _adb.setLocation(
-          serial,
-          latitude: lat,
-          longitude: lng,
-          altitude: alt,
-        );
-        return ok
-            ? McpToolResult.text('Mock location set on $serial: ($lat, $lng)')
-            : McpToolResult.error('Failed to set mock location.');
-
-      case 'android_set_network_condition':
-        final mode = arguments.getRequiredString(
-          'mode',
-          aliases: ['condition', 'networkMode', 'network'],
-        );
-        final ok = await _adb.setNetworkCondition(serial, mode);
-        return ok
-            ? McpToolResult.text('Network condition set on $serial: $mode')
-            : McpToolResult.error('Failed to set network condition.');
-
-      case 'android_long_press':
-        final x = arguments.getRequiredDouble('x');
-        final y = arguments.getRequiredDouble('y');
-        final duration = arguments.getInt(
-          'durationMs',
-          aliases: ['duration', 'timeMs', 'delayMs'],
-          defaultValue: 1000,
-        );
-        final ok = await _adb.longPress(serial, x, y, durationMs: duration);
-        return ok
-            ? McpToolResult.text(
-                'Long pressed ($x, $y) for ${duration}ms on $serial.',
-              )
-            : McpToolResult.error('Failed to inject long press.');
-
-      case 'android_open_notification_panel':
-        final expand = arguments.getBool(
-          'expand',
-          aliases: ['open'],
-          defaultValue: true,
-        );
-        final qs = arguments.getBool(
-          'quickSettings',
-          aliases: ['qs'],
-          defaultValue: false,
-        );
-        final ok = await _adb.openNotificationPanel(
-          serial,
-          expand: expand,
-          quickSettings: qs,
-        );
-        return ok
-            ? McpToolResult.text(
-                expand
-                    ? (qs
-                          ? 'Opened Quick Settings.'
-                          : 'Opened notification shade.')
-                    : 'Collapsed panels.',
-              )
-            : McpToolResult.error('Failed to toggle notification panel.');
-
-      case 'android_read_shared_prefs':
-        final pkg = arguments.getRequiredString(
-          'package',
-          aliases: ['pkg', 'packageName', 'app'],
-        );
-        final file = arguments.getString('fileName', aliases: ['file', 'name']);
-        final content = await _adb.readSharedPreferences(
-          serial,
-          package: pkg,
-          fileName: file,
-        );
-        return McpToolResult.text('SharedPreferences for $pkg:\n$content');
-
-      case 'android_press_button':
-        final btn = arguments.getRequiredString(
-          'button',
-          aliases: ['btn', 'key', 'name'],
-        );
-        final ok = await _adb.pressButton(serial, btn);
-        return ok
-            ? McpToolResult.text('Pressed button $btn on $serial.')
-            : McpToolResult.error(
-                'Failed to press button $btn or invalid button.',
-              );
 
       default:
         return McpToolResult.error('Unknown tool: $toolName');

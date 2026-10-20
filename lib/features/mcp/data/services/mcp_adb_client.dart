@@ -10,6 +10,7 @@ import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_tree_parser
 part 'mcp_adb_app_ops.dart';
 part 'mcp_adb_automation_delegator.dart';
 part 'mcp_adb_automation_ops.dart';
+part 'mcp_adb_batch_ops.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
 part 'mcp_adb_environment_ops.dart';

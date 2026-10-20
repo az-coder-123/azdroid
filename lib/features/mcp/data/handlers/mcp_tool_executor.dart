@@ -1,6 +1,7 @@
 import 'package:desk_droid/features/mcp/data/handlers/mcp_app_device_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_automation_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_basic_tool_executor.dart';
+import 'package:desk_droid/features/mcp/data/handlers/mcp_device_control_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_performance_media_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_semantic_system_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
@@ -18,7 +19,8 @@ class McpToolExecutor {
       _appDevice = McpAppDeviceToolExecutor(adbClient ?? McpAdbClient()),
       _semantic = McpSemanticSystemToolExecutor(adbClient ?? McpAdbClient()),
       _perfMedia = McpPerformanceMediaToolExecutor(adbClient ?? McpAdbClient()),
-      _automation = McpAutomationToolExecutor(adbClient ?? McpAdbClient());
+      _automation = McpAutomationToolExecutor(adbClient ?? McpAdbClient()),
+      _deviceControl = McpDeviceControlToolExecutor(adbClient ?? McpAdbClient());
 
   static const String _listDevicesTool = 'android_list_devices';
 
@@ -29,6 +31,7 @@ class McpToolExecutor {
   final McpSemanticSystemToolExecutor _semantic;
   final McpPerformanceMediaToolExecutor _perfMedia;
   final McpAutomationToolExecutor _automation;
+  final McpDeviceControlToolExecutor _deviceControl;
 
   Future<String?> _resolveDevice(String? providedSerial) async {
     if (providedSerial != null && providedSerial.trim().isNotEmpty) {
@@ -98,6 +101,9 @@ class McpToolExecutor {
     }
     if (_automation.canHandle(toolName)) {
       return _automation.execute(toolName, serial, arguments);
+    }
+    if (_deviceControl.canHandle(toolName)) {
+      return _deviceControl.execute(toolName, serial, arguments);
     }
     return Future.value(McpToolResult.error('Unknown tool: $toolName'));
   }
