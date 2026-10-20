@@ -2,11 +2,12 @@ import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:desk_droid/core/platform/host_paths.dart';
-import 'package:flutter/foundation.dart';
 
 /// Centralized, structured application logger adhering to AGENTS.md error handling standards.
 class AppLogger {
   const AppLogger._();
+
+  static const bool _kDebugMode = !bool.fromEnvironment('dart.vm.product');
 
   /// Append-only diagnostic log file used for post-mortem debugging.
   static final String logFilePath = SystemHostPaths().diagnosticLogFile;
@@ -32,18 +33,26 @@ class AppLogger {
     }
   }
 
+  static void _writeStderr(String line) {
+    try {
+      stderr.writeln(line);
+    } catch (_) {
+      // Fallback if stderr is closed.
+    }
+  }
+
   /// Logs informational system messages.
   static void info(String message, {String tag = 'DeskDroid'}) {
     developer.log(message, name: tag, level: 800);
-    debugPrint('[$tag] $message');
+    _writeStderr('[$tag] $message');
     _logToFile('INFO [$tag] $message');
   }
 
   /// Logs debug messages during development.
   static void debug(String message, {String tag = 'DeskDroid'}) {
-    if (kDebugMode) {
+    if (_kDebugMode) {
       developer.log(message, name: tag, level: 500);
-      debugPrint('[$tag] $message');
+      _writeStderr('[$tag] $message');
       _logToFile('DEBUG [$tag] $message');
     }
   }
@@ -62,7 +71,7 @@ class AppLogger {
       error: error,
       stackTrace: stackTrace,
     );
-    debugPrint('[$tag] WARNING: $message ${error ?? ""}');
+    _writeStderr('[$tag] WARNING: $message ${error ?? ""}');
     _logToFile('WARN [$tag] $message ${error ?? ""}');
   }
 
@@ -80,7 +89,7 @@ class AppLogger {
       error: error,
       stackTrace: stackTrace,
     );
-    debugPrint('[$tag] ERROR: $message ${error ?? ""}');
+    _writeStderr('[$tag] ERROR: $message ${error ?? ""}');
     _logToFile('ERROR [$tag] $message ${error ?? ""}');
   }
 }
