@@ -12,10 +12,10 @@ description: >-
 Follow this strict 7-step pipeline whenever the user requests "thực hiện deploy", "deploy", or publishing a new DeskDroid release.
 
 ## Reference Documentation
-- [docs/release-guide.md](file:///Users/trannamlong/PROJECT/wifi-desk/docs/release-guide.md) (Standard release guide)
-- [docs/installation.md](file:///Users/trannamlong/PROJECT/wifi-desk/docs/installation.md#5-package-a-release) (Installation and packaging guide)
-- [docs/lessons-learned/release-script-cross-platform-artifacts.md](file:///Users/trannamlong/PROJECT/wifi-desk/docs/lessons-learned/release-script-cross-platform-artifacts.md) (Cross-platform artifacts & 404 link prevention)
-- [docs/lessons-learned/docs-claims-without-code.md](file:///Users/trannamlong/PROJECT/wifi-desk/docs/lessons-learned/docs-claims-without-code.md) (Accuracy in release notes)
+- [docs/release-guide.md](file:///Users/<USER>/PROJECT/wifi-desk/docs/release-guide.md) (Standard release guide)
+- [docs/installation.md](file:///Users/<USER>/PROJECT/wifi-desk/docs/installation.md#5-package-a-release) (Installation and packaging guide)
+- [docs/lessons-learned/release-script-cross-platform-artifacts.md](file:///Users/<USER>/PROJECT/wifi-desk/docs/lessons-learned/release-script-cross-platform-artifacts.md) (Cross-platform artifacts & 404 link prevention)
+- [docs/lessons-learned/docs-claims-without-code.md](file:///Users/<USER>/PROJECT/wifi-desk/docs/lessons-learned/docs-claims-without-code.md) (Accuracy in release notes)
 
 ---
 
