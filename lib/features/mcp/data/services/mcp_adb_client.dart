@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:desk_droid/core/extensions/line_split_extension.dart';
 import 'package:desk_droid/core/services/adb_binary_locator.dart';
@@ -19,6 +20,7 @@ part 'mcp_adb_batch_ops.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
 part 'mcp_adb_environment_ops.dart';
+part 'mcp_adb_gesture_ops.dart';
 part 'mcp_adb_input_ops.dart';
 part 'mcp_adb_media_proc_ops.dart';
 part 'mcp_adb_notification_button_ops.dart';
@@ -118,12 +120,28 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     double centerX = 0.5,
     double centerY = 0.5,
     int durationMs = 400,
-  }) => McpAdbInputOps.pinchGesture(
+  }) => McpAdbGestureOps.pinchGesture(
     this,
     serial,
     scale: scale,
     centerX: centerX,
     centerY: centerY,
+    durationMs: durationMs,
+  );
+  Future<bool> rotateGesture(
+    String serial, {
+    required double angleDegrees,
+    double centerX = 0.5,
+    double centerY = 0.5,
+    double radius = 200,
+    int durationMs = 400,
+  }) => McpAdbGestureOps.rotateGesture(
+    this,
+    serial,
+    angleDegrees: angleDegrees,
+    centerX: centerX,
+    centerY: centerY,
+    radius: radius,
     durationMs: durationMs,
   );
 

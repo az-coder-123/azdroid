@@ -148,4 +148,58 @@ void main() {
       },
     );
   });
+
+  group('android_rotate_gesture Tests', () {
+    test('executes clockwise rotation via McpAdbClient', () async {
+      when(
+        () => mockAdb.rotateGesture(
+          '192.168.1.100:5555',
+          angleDegrees: 90.0,
+          centerX: 0.5,
+          centerY: 0.5,
+          radius: 200.0,
+          durationMs: 400,
+        ),
+      ).thenAnswer((_) async => true);
+
+      final res = await executor.execute('android_rotate_gesture', {
+        'deviceSerial': '192.168.1.100:5555',
+        'angleDegrees': 90.0,
+      });
+
+      expect(res.isError, isFalse);
+      expect(
+        res.content.first.text,
+        contains('Injected rotate gesture (90.0° around (0.5, 0.5))'),
+      );
+    });
+
+    test('executes counter-clockwise rotation with aliases and custom center/radius', () async {
+      when(
+        () => mockAdb.rotateGesture(
+          '192.168.1.100:5555',
+          angleDegrees: -45.0,
+          centerX: 0.4,
+          centerY: 0.6,
+          radius: 150.0,
+          durationMs: 600,
+        ),
+      ).thenAnswer((_) async => true);
+
+      final res = await executor.execute('android_rotate_gesture', {
+        'deviceSerial': '192.168.1.100:5555',
+        'angle': -45.0,
+        'center_x': 0.4,
+        'center_y': 0.6,
+        'r': 150.0,
+        'duration': 600,
+      });
+
+      expect(res.isError, isFalse);
+      expect(
+        res.content.first.text,
+        contains('Injected rotate gesture (-45.0° around (0.4, 0.6))'),
+      );
+    });
+  });
 }

@@ -13,7 +13,6 @@ class McpBasicToolExecutor {
     'android_double_tap',
     'android_swipe',
     'android_drag',
-    'android_pinch_gesture',
     'android_type_text',
     'android_set_text',
     'android_clear_text',
@@ -68,41 +67,6 @@ class McpBasicToolExecutor {
                 'Dragged from ($sx, $sy) to ($ex, $ey) with duration ${dur}ms on $serial.',
               )
             : McpToolResult.error('Failed to drag.');
-
-      case 'android_pinch_gesture':
-        final scale = arguments.getRequiredDouble(
-          'scale',
-          aliases: ['zoom', 'factor', 'scaleFactor', 'scale_factor'],
-        );
-        final cx =
-            arguments.getOptionalDouble(
-              'centerX',
-              aliases: ['x', 'center_x', 'xRatio'],
-            ) ??
-            0.5;
-        final cy =
-            arguments.getOptionalDouble(
-              'centerY',
-              aliases: ['y', 'center_y', 'yRatio'],
-            ) ??
-            0.5;
-        final dur = arguments.getInt(
-          'durationMs',
-          aliases: ['duration', 'timeMs'],
-          defaultValue: 400,
-        );
-        final ok = await _adb.pinchGesture(
-          serial,
-          scale: scale,
-          centerX: cx,
-          centerY: cy,
-          durationMs: dur,
-        );
-        return ok
-            ? McpToolResult.text(
-                'Injected pinch gesture (scale: $scale, center: ($cx, $cy)) on $serial.',
-              )
-            : McpToolResult.error('Failed to inject pinch gesture.');
 
       case 'android_type_text':
         final text = arguments.getRequiredString(

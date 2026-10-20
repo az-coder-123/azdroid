@@ -3,41 +3,6 @@ import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart
 /// Catalog of touch gestures, text entry, and basic hardware input tools for MCP.
 final List<McpToolDefinition> mcpTouchInputTools = [
   const McpToolDefinition(
-    name: 'android_pinch_gesture',
-    description: 'Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.',
-    inputSchema: {
-      'type': 'object',
-      'properties': {
-        'scale': {
-          'type': 'number',
-          'description': 'Scale factor (> 1.0 to zoom in, e.g. 1.5; < 1.0 to zoom out, e.g. 0.5). Alias: scaleFactor.',
-        },
-        'scaleFactor': {
-          'type': 'number',
-          'description':
-              'Alias for scale (> 1.0 to zoom in, < 1.0 to zoom out).',
-        },
-        'centerX': {
-          'type': 'number',
-          'description': 'Horizontal center (0.0..1.0 or pixels, default 0.5).',
-        },
-        'centerY': {
-          'type': 'number',
-          'description': 'Vertical center (0.0..1.0 or pixels, default 0.5).',
-        },
-        'durationMs': {
-          'type': 'integer',
-          'description': 'Gesture duration in milliseconds (default 400).',
-        },
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
-      },
-      'required': ['scale'],
-    },
-  ),
-  const McpToolDefinition(
     name: 'android_tap',
     description: 'Simulates a touch tap gesture at normalized coordinates (0.0 to 1.0) on the Android screen.',
     inputSchema: {

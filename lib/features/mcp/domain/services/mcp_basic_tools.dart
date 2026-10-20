@@ -1,9 +1,11 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_cmd_diagnostic_tools.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_gesture_tools.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_screen_tools.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_touch_input_tools.dart';
 
 export 'package:desk_droid/features/mcp/domain/services/mcp_cmd_diagnostic_tools.dart';
+export 'package:desk_droid/features/mcp/domain/services/mcp_gesture_tools.dart';
 export 'package:desk_droid/features/mcp/domain/services/mcp_screen_tools.dart';
 export 'package:desk_droid/features/mcp/domain/services/mcp_touch_input_tools.dart';
 
@@ -13,6 +15,7 @@ class McpBasicTools {
 
   static List<McpToolDefinition> get tools => [
     ...mcpScreenTools,
+    ...mcpGestureTools,
     ...mcpTouchInputTools,
     ...mcpCmdDiagnosticTools,
   ];
