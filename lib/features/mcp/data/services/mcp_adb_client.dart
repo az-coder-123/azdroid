@@ -16,6 +16,7 @@ import 'package:get_it/get_it.dart';
 part 'mcp_adb_app_ops.dart';
 part 'mcp_adb_automation_delegator.dart';
 part 'mcp_adb_automation_ops.dart';
+part 'mcp_adb_batch_compiler.dart';
 part 'mcp_adb_batch_ops.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
@@ -142,6 +143,28 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     centerX: centerX,
     centerY: centerY,
     radius: radius,
+    durationMs: durationMs,
+  );
+  Future<bool> scroll(
+    String serial, {
+    String direction = 'down',
+    double distance = 0.6,
+    String speed = 'normal',
+    double? startX,
+    double? startY,
+    double? endX,
+    double? endY,
+    int? durationMs,
+  }) => McpAdbInputOps.scroll(
+    this,
+    serial,
+    direction: direction,
+    distance: distance,
+    speed: speed,
+    startX: startX,
+    startY: startY,
+    endX: endX,
+    endY: endY,
     durationMs: durationMs,
   );
 

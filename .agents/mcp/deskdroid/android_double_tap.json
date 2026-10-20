@@ -10,11 +10,11 @@
       },
       "x": {
         "type": "number",
-        "description": "X coordinate (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "y": {
         "type": "number",
-        "description": "Y coordinate (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "intervalMs": {
         "type": "integer",

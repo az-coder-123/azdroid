@@ -1,0 +1,56 @@
+{
+  "name": "android_scroll",
+  "description": "Performs a directional scroll or inertial fling gesture (up, down, left, right) on scrollable views (RecyclerView, ScrollView, LazyColumn).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "direction": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "left",
+          "right"
+        ],
+        "description": "Scroll direction (down reveals lower content, up reveals higher content). Default: down."
+      },
+      "distance": {
+        "type": "number",
+        "description": "Fractional screen distance to scroll (0.1..1.0, default 0.6)."
+      },
+      "speed": {
+        "type": "string",
+        "enum": [
+          "fast",
+          "normal",
+          "slow"
+        ],
+        "description": "Scroll speed/inertia: fast (high-inertia fling), normal (smooth scroll), slow (drag). Default: normal."
+      },
+      "startX": {
+        "type": "number",
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
+      },
+      "startY": {
+        "type": "number",
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
+      },
+      "endX": {
+        "type": "number",
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
+      },
+      "endY": {
+        "type": "number",
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
+      },
+      "durationMs": {
+        "type": "integer",
+        "description": "Optional explicit duration in milliseconds."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      }
+    }
+  }
+}

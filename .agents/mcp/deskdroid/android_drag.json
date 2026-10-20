@@ -6,23 +6,23 @@
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Target device serial or IP:port."
       },
       "startX": {
         "type": "number",
-        "description": "Start X (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "startY": {
         "type": "number",
-        "description": "Start Y (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "endX": {
         "type": "number",
-        "description": "End X (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "endY": {
         "type": "number",
-        "description": "End Y (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "durationMs": {
         "type": "integer",

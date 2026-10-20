@@ -1,5 +1,15 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
+const _serialProp = {
+  'type': 'string',
+  'description': 'Target device serial or IP:port.',
+};
+
+const _coordProp = {
+  'type': 'number',
+  'description': 'Coordinate (normalized 0.0-1.0 or pixels).',
+};
+
 /// Catalog of touch gestures, text entry, and basic hardware input tools for MCP.
 final List<McpToolDefinition> mcpTouchInputTools = [
   const McpToolDefinition(
@@ -8,18 +18,9 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
-        'x': {
-          'type': 'number',
-          'description': 'Normalized horizontal coordinate (0.0 to 1.0).',
-        },
-        'y': {
-          'type': 'number',
-          'description': 'Normalized vertical coordinate (0.0 to 1.0).',
-        },
+        'deviceSerial': _serialProp,
+        'x': _coordProp,
+        'y': _coordProp,
       },
       'required': ['x', 'y'],
     },
@@ -30,18 +31,9 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
-        'x': {
-          'type': 'number',
-          'description': 'X coordinate (normalized 0.0-1.0 or pixels).',
-        },
-        'y': {
-          'type': 'number',
-          'description': 'Y coordinate (normalized 0.0-1.0 or pixels).',
-        },
+        'deviceSerial': _serialProp,
+        'x': _coordProp,
+        'y': _coordProp,
         'intervalMs': {
           'type': 'integer',
           'description': 'Delay between taps in milliseconds (default 120ms).',
@@ -56,26 +48,11 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
-        'startX': {
-          'type': 'number',
-          'description': 'Start X normalized coordinate (0.0 to 1.0).',
-        },
-        'startY': {
-          'type': 'number',
-          'description': 'Start Y normalized coordinate (0.0 to 1.0).',
-        },
-        'endX': {
-          'type': 'number',
-          'description': 'End X normalized coordinate (0.0 to 1.0).',
-        },
-        'endY': {
-          'type': 'number',
-          'description': 'End Y normalized coordinate (0.0 to 1.0).',
-        },
+        'deviceSerial': _serialProp,
+        'startX': _coordProp,
+        'startY': _coordProp,
+        'endX': _coordProp,
+        'endY': _coordProp,
         'durationMs': {
           'type': 'integer',
           'description': 'Duration of the swipe in ms (default 300ms).',
@@ -90,26 +67,11 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
-        'startX': {
-          'type': 'number',
-          'description': 'Start X (normalized 0.0-1.0 or pixels).',
-        },
-        'startY': {
-          'type': 'number',
-          'description': 'Start Y (normalized 0.0-1.0 or pixels).',
-        },
-        'endX': {
-          'type': 'number',
-          'description': 'End X (normalized 0.0-1.0 or pixels).',
-        },
-        'endY': {
-          'type': 'number',
-          'description': 'End Y (normalized 0.0-1.0 or pixels).',
-        },
+        'deviceSerial': _serialProp,
+        'startX': _coordProp,
+        'startY': _coordProp,
+        'endX': _coordProp,
+        'endY': _coordProp,
         'durationMs': {
           'type': 'integer',
           'description': 'Drag duration in milliseconds (default 1000ms).',
@@ -124,10 +86,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': _serialProp,
         'text': {
           'type': 'string',
           'description': 'Text to type into the focused field.',
@@ -142,10 +101,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
+        'deviceSerial': _serialProp,
         'text': {
           'type': 'string',
           'description': 'Exact text string to insert (supports unicode, spaces, and punctuation).',
@@ -168,10 +124,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
+        'deviceSerial': _serialProp,
         'elementId': {
           'type': 'integer',
           'description': 'Optional target element ID from semantic tree to tap before clearing.',
@@ -185,10 +138,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': _serialProp,
         'key': {
           'type': 'string',
           'enum': [
@@ -205,6 +155,39 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         },
       },
       'required': ['key'],
+    },
+  ),
+  const McpToolDefinition(
+    name: 'android_scroll',
+    description: 'Performs a directional scroll or inertial fling gesture (up, down, left, right) on scrollable views (RecyclerView, ScrollView, LazyColumn).',
+    inputSchema: {
+      'type': 'object',
+      'properties': {
+        'direction': {
+          'type': 'string',
+          'enum': ['up', 'down', 'left', 'right'],
+          'description': 'Scroll direction (down reveals lower content, up reveals higher content). Default: down.',
+        },
+        'distance': {
+          'type': 'number',
+          'description':
+              'Fractional screen distance to scroll (0.1..1.0, default 0.6).',
+        },
+        'speed': {
+          'type': 'string',
+          'enum': ['fast', 'normal', 'slow'],
+          'description': 'Scroll speed/inertia: fast (high-inertia fling), normal (smooth scroll), slow (drag). Default: normal.',
+        },
+        'startX': _coordProp,
+        'startY': _coordProp,
+        'endX': _coordProp,
+        'endY': _coordProp,
+        'durationMs': {
+          'type': 'integer',
+          'description': 'Optional explicit duration in milliseconds.',
+        },
+        'deviceSerial': _serialProp,
+      },
     },
   ),
 ];

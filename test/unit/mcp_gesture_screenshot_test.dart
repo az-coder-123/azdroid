@@ -202,4 +202,40 @@ void main() {
       );
     });
   });
+
+  group('android_scroll Tests', () {
+    test(
+      'executes directional scroll (down, fast fling) via McpAdbClient',
+      () async {
+        when(
+          () => mockAdb.scroll(
+            '192.168.1.100:5555',
+            direction: 'down',
+            distance: 0.7,
+            speed: 'fast',
+            startX: null,
+            startY: null,
+            endX: null,
+            endY: null,
+            durationMs: null,
+          ),
+        ).thenAnswer((_) async => true);
+
+        final res = await executor.execute('android_scroll', {
+          'deviceSerial': '192.168.1.100:5555',
+          'direction': 'down',
+          'distance': 0.7,
+          'speed': 'fast',
+        });
+
+        expect(res.isError, isFalse);
+        expect(
+          res.content.first.text,
+          contains(
+            'Scrolled down (fast, distance: 0.7) on 192.168.1.100:5555.',
+          ),
+        );
+      },
+    );
+  });
 }

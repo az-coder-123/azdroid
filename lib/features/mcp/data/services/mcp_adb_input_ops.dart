@@ -147,4 +147,78 @@ class McpAdbInputOps {
     double endY, {
     int durationMs = 1000,
   }) => swipe(client, serial, startX, startY, endX, endY, durationMs);
+
+  /// Performs an inertial scroll or fling gesture in [direction] ('down', 'up', 'left', 'right')
+  /// or between explicit normalized/pixel coordinates.
+  static Future<bool> scroll(
+    McpAdbClient client,
+    String serial, {
+    String direction = 'down',
+    double distance = 0.6,
+    String speed = 'normal',
+    double? startX,
+    double? startY,
+    double? endX,
+    double? endY,
+    int? durationMs,
+  }) async {
+    int duration;
+    if (durationMs != null && durationMs > 0) {
+      duration = durationMs;
+    } else {
+      switch (speed.toLowerCase().trim()) {
+        case 'fast' || 'fling':
+          duration = 80;
+        case 'slow' || 'drag':
+          duration = 600;
+        case 'normal':
+        default:
+          duration = 250;
+      }
+    }
+
+    final dist = distance.clamp(0.05, 0.95);
+    double sx;
+    double sy;
+    double ex;
+    double ey;
+
+    if (startX != null && startY != null && endX != null && endY != null) {
+      sx = startX;
+      sy = startY;
+      ex = endX;
+      ey = endY;
+    } else {
+      final dir = direction.toLowerCase().trim();
+      switch (dir) {
+        case 'up':
+          // Swipe downwards to scroll view UP (reveal higher content)
+          sx = 0.5;
+          sy = (0.5 - dist / 2).clamp(0.05, 0.95);
+          ex = 0.5;
+          ey = (0.5 + dist / 2).clamp(0.05, 0.95);
+        case 'left':
+          // Swipe rightwards to scroll view LEFT (reveal content on the left)
+          sx = (0.5 - dist / 2).clamp(0.05, 0.95);
+          sy = 0.5;
+          ex = (0.5 + dist / 2).clamp(0.05, 0.95);
+          ey = 0.5;
+        case 'right':
+          // Swipe leftwards to scroll view RIGHT (reveal content on the right)
+          sx = (0.5 + dist / 2).clamp(0.05, 0.95);
+          sy = 0.5;
+          ex = (0.5 - dist / 2).clamp(0.05, 0.95);
+          ey = 0.5;
+        case 'down':
+        default:
+          // Swipe upwards to scroll view DOWN (reveal lower content)
+          sx = 0.5;
+          sy = (0.5 + dist / 2).clamp(0.05, 0.95);
+          ex = 0.5;
+          ey = (0.5 - dist / 2).clamp(0.05, 0.95);
+      }
+    }
+
+    return swipe(client, serial, sx, sy, ex, ey, duration);
+  }
 }

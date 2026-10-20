@@ -13,6 +13,7 @@ class McpBasicToolExecutor {
     'android_double_tap',
     'android_swipe',
     'android_drag',
+    'android_scroll',
     'android_type_text',
     'android_set_text',
     'android_clear_text',
@@ -67,6 +68,38 @@ class McpBasicToolExecutor {
                 'Dragged from ($sx, $sy) to ($ex, $ey) with duration ${dur}ms on $serial.',
               )
             : McpToolResult.error('Failed to drag.');
+
+      case 'android_scroll':
+        final dir =
+            arguments.getString('direction', aliases: ['dir']) ?? 'down';
+        final dist =
+            arguments.getOptionalDouble('distance', aliases: ['dist']) ?? 0.6;
+        final spd =
+            arguments.getString('speed', aliases: ['velocity']) ?? 'normal';
+        final dur = arguments.getOptionalInt(
+          'durationMs',
+          aliases: ['duration'],
+        );
+        final sx = arguments.getOptionalDouble('startX', aliases: ['sx', 'x1']);
+        final sy = arguments.getOptionalDouble('startY', aliases: ['sy', 'y1']);
+        final ex = arguments.getOptionalDouble('endX', aliases: ['ex', 'x2']);
+        final ey = arguments.getOptionalDouble('endY', aliases: ['ey', 'y2']);
+        final ok = await _adb.scroll(
+          serial,
+          direction: dir,
+          distance: dist,
+          speed: spd,
+          startX: sx,
+          startY: sy,
+          endX: ex,
+          endY: ey,
+          durationMs: dur,
+        );
+        return ok
+            ? McpToolResult.text(
+                'Scrolled $dir ($spd, distance: $dist) on $serial.',
+              )
+            : McpToolResult.error('Failed to scroll $dir on $serial.');
 
       case 'android_type_text':
         final text = arguments.getRequiredString(

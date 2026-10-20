@@ -99,5 +99,49 @@ void main() {
         ),
       ).called(1);
     });
+
+    test(
+      'compiles shell actions and executes in a single compound ADB shell call',
+      () async {
+        when(() => mockAdb.run(any())).thenAnswer((invocation) async {
+          final args = invocation.positionalArguments[0] as List<String>;
+          if (args.contains('shell')) {
+            return ProcessResult(
+              123,
+              0,
+              'DD_STEP:0:OK\nDD_STEP:1:OK\nDD_STEP:2:OK',
+              '',
+            );
+          }
+          return ProcessResult(123, 0, '', '');
+        });
+
+        final results = await McpAdbBatchOps.batchActions(mockAdb, 'dev1', [
+          {'action': 'tap', 'x': 200, 'y': 400},
+          {'action': 'type', 'text': 'hello'},
+          {'action': 'scroll', 'direction': 'down', 'distance': 0.5},
+        ]);
+
+        expect(results.length, equals(3));
+        expect(results.every((r) => r['success'] == true), isTrue);
+      },
+    );
+
+    test('McpAdbBatchCompiler compiles scroll and fling correctly', () {
+      const size = Point(1080, 2400);
+      final scrollDown = McpAdbBatchCompiler.compile({
+        'action': 'scroll',
+        'direction': 'down',
+        'distance': 0.6,
+      }, size);
+      expect(scrollDown, contains('input swipe 540 1920 540 480 250'));
+
+      final flingUp = McpAdbBatchCompiler.compile({
+        'action': 'fling',
+        'direction': 'up',
+        'distance': 0.5,
+      }, size);
+      expect(flingUp, contains('input swipe 540 600 540 1800 80'));
+    });
   });
 }

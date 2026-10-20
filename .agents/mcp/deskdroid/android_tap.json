@@ -10,11 +10,11 @@
       },
       "x": {
         "type": "number",
-        "description": "Normalized horizontal coordinate (0.0 to 1.0)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       },
       "y": {
         "type": "number",
-        "description": "Normalized vertical coordinate (0.0 to 1.0)."
+        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
       }
     },
     "required": [

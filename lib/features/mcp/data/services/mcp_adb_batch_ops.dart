@@ -14,7 +14,7 @@ class McpAdbBatchOps {
     final size = await McpAdbInputOps.getDisplaySize(client, serial);
     final commands = <int, String>{};
     for (var i = 0; i < actions.length; i++) {
-      final cmd = _compileShellAction(actions[i], size);
+      final cmd = McpAdbBatchCompiler.compile(actions[i], size);
       if (cmd != null) commands[i] = cmd;
     }
 
@@ -51,7 +51,7 @@ class McpAdbBatchOps {
       try {
         switch (type) {
           case 'tap':
-            final (x, y) = _resolvePoint(
+            final (x, y) = McpAdbBatchCompiler.resolvePoint(
               a,
               size,
               'x',
@@ -70,11 +70,15 @@ class McpAdbBatchOps {
             final ok = await client.typeText(serial, text);
             results.add({'step': i, 'action': 'type', 'success': ok});
           case 'key':
-            final code = _parseInt(a['keyCode'] ?? a['key'] ?? a['code']) ?? 0;
+            final code =
+                McpAdbBatchCompiler.parseInt(
+                  a['keyCode'] ?? a['key'] ?? a['code'],
+                ) ??
+                0;
             final ok = await client.pressKey(serial, code);
             results.add({'step': i, 'action': 'key', 'success': ok});
           case 'swipe':
-            final (x1, y1) = _resolvePoint(
+            final (x1, y1) = McpAdbBatchCompiler.resolvePoint(
               a,
               size,
               'startX',
@@ -82,7 +86,7 @@ class McpAdbBatchOps {
               altX: 'x1',
               altY: 'y1',
             );
-            final (x2, y2) = _resolvePoint(
+            final (x2, y2) = McpAdbBatchCompiler.resolvePoint(
               a,
               size,
               'endX',
@@ -94,7 +98,11 @@ class McpAdbBatchOps {
               results.add({'step': i, 'error': 'Missing coordinates'});
               continue;
             }
-            final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 300;
+            final dur =
+                McpAdbBatchCompiler.parseInt(
+                  a['durationMs'] ?? a['duration'],
+                ) ??
+                300;
             final ok = await client.swipe(
               serial,
               x1.toDouble(),
@@ -104,14 +112,28 @@ class McpAdbBatchOps {
               dur,
             );
             results.add({'step': i, 'action': 'swipe', 'success': ok});
+          case 'scroll' || 'fling':
+            final (sx, sy, ex, ey, dur) =
+                McpAdbBatchCompiler.resolveScrollCoordinates(a, size);
+            final ok = await client.swipe(
+              serial,
+              sx.toDouble(),
+              sy.toDouble(),
+              ex.toDouble(),
+              ey.toDouble(),
+              dur,
+            );
+            results.add({'step': i, 'action': type ?? 'scroll', 'success': ok});
           case 'sleep':
             final ms =
-                _parseInt(a['durationMs'] ?? a['duration'] ?? a['timeMs']) ??
+                McpAdbBatchCompiler.parseInt(
+                  a['durationMs'] ?? a['duration'] ?? a['timeMs'],
+                ) ??
                 500;
             await Future<void>.delayed(Duration(milliseconds: ms));
             results.add({'step': i, 'action': 'sleep', 'success': true});
           case 'double_tap' || 'doubletap':
-            final (x, y) = _resolvePoint(
+            final (x, y) = McpAdbBatchCompiler.resolvePoint(
               a,
               size,
               'x',
@@ -123,7 +145,8 @@ class McpAdbBatchOps {
               results.add({'step': i, 'error': 'Missing coordinates'});
               continue;
             }
-            final interval = _parseInt(a['intervalMs']) ?? 120;
+            final interval =
+                McpAdbBatchCompiler.parseInt(a['intervalMs']) ?? 120;
             final ok = await client.doubleTap(
               serial,
               x.toDouble(),
@@ -133,10 +156,11 @@ class McpAdbBatchOps {
             results.add({'step': i, 'action': 'double_tap', 'success': ok});
           case 'pinch':
             final scale =
-                _parseNum(a['scale'] ?? a['scaleFactor'] ?? a['zoom'])
-                    ?.toDouble() ??
+                McpAdbBatchCompiler.parseNum(
+                  a['scale'] ?? a['scaleFactor'] ?? a['zoom'],
+                )?.toDouble() ??
                 1.5;
-            final (cx, cy) = _resolvePoint(
+            final (cx, cy) = McpAdbBatchCompiler.resolvePoint(
               a,
               size,
               'centerX',
@@ -144,7 +168,11 @@ class McpAdbBatchOps {
               altX: 'x',
               altY: 'y',
             );
-            final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 400;
+            final dur =
+                McpAdbBatchCompiler.parseInt(
+                  a['durationMs'] ?? a['duration'],
+                ) ??
+                400;
             final ok = await client.pinchGesture(
               serial,
               scale: scale,
@@ -155,10 +183,11 @@ class McpAdbBatchOps {
             results.add({'step': i, 'action': 'pinch', 'success': ok});
           case 'rotate':
             final angle =
-                _parseNum(a['angleDegrees'] ?? a['angle'] ?? a['degrees'])
-                    ?.toDouble() ??
+                McpAdbBatchCompiler.parseNum(
+                  a['angleDegrees'] ?? a['angle'] ?? a['degrees'],
+                )?.toDouble() ??
                 90.0;
-            final (cx, cy) = _resolvePoint(
+            final (cx, cy) = McpAdbBatchCompiler.resolvePoint(
               a,
               size,
               'centerX',
@@ -166,8 +195,15 @@ class McpAdbBatchOps {
               altX: 'x',
               altY: 'y',
             );
-            final r = _parseNum(a['radius'] ?? a['r'])?.toDouble() ?? 200.0;
-            final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 400;
+            final r =
+                McpAdbBatchCompiler.parseNum(a['radius'] ?? a['r'])
+                    ?.toDouble() ??
+                200.0;
+            final dur =
+                McpAdbBatchCompiler.parseInt(
+                  a['durationMs'] ?? a['duration'],
+                ) ??
+                400;
             final ok = await client.rotateGesture(
               serial,
               angleDegrees: angle,
@@ -186,102 +222,4 @@ class McpAdbBatchOps {
     }
     return results;
   }
-
-  static String? _compileShellAction(Map<String, dynamic> a, Point<int> size) {
-    final type = a['action']?.toString().toLowerCase().trim();
-    switch (type) {
-      case 'tap':
-        final (x, y) = _resolvePoint(
-          a,
-          size,
-          'x',
-          'y',
-          altX: 'xCoord',
-          altY: 'yCoord',
-        );
-        if (x == null || y == null) return null;
-        return 'input tap $x $y';
-      case 'double_tap' || 'doubletap':
-        final (x, y) = _resolvePoint(
-          a,
-          size,
-          'x',
-          'y',
-          altX: 'xCoord',
-          altY: 'yCoord',
-        );
-        if (x == null || y == null) return null;
-        final interval = _parseInt(a['intervalMs']) ?? 120;
-        final sec = (interval / 1000.0).toStringAsFixed(3);
-        return 'input tap $x $y && sleep $sec && input tap $x $y';
-      case 'type':
-        final text = (a['text'] ?? a['input'] ?? '').toString();
-        final escaped = text
-            .replaceAll(r'\', r'\\')
-            .replaceAll('"', r'\"')
-            .replaceAll(r'$', r'\$')
-            .replaceAll('`', r'\`');
-        return 'input text "$escaped"';
-      case 'key':
-        final code = _parseInt(a['keyCode'] ?? a['key'] ?? a['code']) ?? 0;
-        return 'input keyevent $code';
-      case 'swipe':
-        final (x1, y1) = _resolvePoint(
-          a,
-          size,
-          'startX',
-          'startY',
-          altX: 'x1',
-          altY: 'y1',
-        );
-        final (x2, y2) = _resolvePoint(
-          a,
-          size,
-          'endX',
-          'endY',
-          altX: 'x2',
-          altY: 'y2',
-        );
-        if (x1 == null || y1 == null || x2 == null || y2 == null) return null;
-        final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 300;
-        return 'input swipe $x1 $y1 $x2 $y2 $dur';
-      case 'sleep':
-        final ms =
-            _parseInt(a['durationMs'] ?? a['duration'] ?? a['timeMs']) ?? 500;
-        return 'sleep ${(ms / 1000.0).toStringAsFixed(2)}';
-      default:
-        return null;
-    }
-  }
-
-  static (int?, int?) _resolvePoint(
-    Map<String, dynamic> a,
-    Point<int> size,
-    String xKey,
-    String yKey, {
-    String? altX,
-    String? altY,
-  }) {
-    final xr = _parseNum(a['${xKey}Ratio'] ?? a['${xKey}Percent']);
-    final yr = _parseNum(a['${yKey}Ratio'] ?? a['${yKey}Percent']);
-    if (xr != null && yr != null) {
-      return ((xr * size.x).round(), (yr * size.y).round());
-    }
-    final rx = _parseNum(a[xKey] ?? (altX != null ? a[altX] : null));
-    final ry = _parseNum(a[yKey] ?? (altY != null ? a[altY] : null));
-    if (rx == null || ry == null) return (null, null);
-    if (rx > 0.0 && rx < 1.0 && ry > 0.0 && ry < 1.0) {
-      return ((rx * size.x).round(), ((ry * size.y).round()));
-    }
-    return (rx.round(), ry.round());
-  }
-
-  static num? _parseNum(dynamic v) =>
-      v == null ? null : (v is num ? v : num.tryParse(v.toString().trim()));
-
-  static int? _parseInt(dynamic v) => v == null
-      ? null
-      : (v is int
-            ? v
-            : (v is num ? v.toInt() : int.tryParse(v.toString().trim())));
 }
