@@ -95,14 +95,18 @@ class McpBasicToolExecutor {
           'scale',
           aliases: ['zoom', 'factor'],
         );
-        final cx = arguments.getOptionalDouble(
-          'centerX',
-          aliases: ['x', 'center_x', 'xRatio'],
-        ) ?? 0.5;
-        final cy = arguments.getOptionalDouble(
-          'centerY',
-          aliases: ['y', 'center_y', 'yRatio'],
-        ) ?? 0.5;
+        final cx =
+            arguments.getOptionalDouble(
+              'centerX',
+              aliases: ['x', 'center_x', 'xRatio'],
+            ) ??
+            0.5;
+        final cy =
+            arguments.getOptionalDouble(
+              'centerY',
+              aliases: ['y', 'center_y', 'yRatio'],
+            ) ??
+            0.5;
         final dur = arguments.getInt(
           'durationMs',
           aliases: ['duration', 'timeMs'],
@@ -122,17 +126,28 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to inject pinch gesture.');
 
       case 'android_type_text':
-        final text = arguments.getRequiredString('text', aliases: ['input', 'value']);
+        final text = arguments.getRequiredString(
+          'text',
+          aliases: ['input', 'value'],
+        );
         final ok = await _adb.typeText(serial, text);
         return ok
             ? McpToolResult.text('Injected text "$text" into $serial.')
             : McpToolResult.error('Failed to inject text.');
 
       case 'android_set_text':
-        final text = arguments.getRequiredString('text', aliases: ['input', 'value']);
+        final text = arguments.getRequiredString(
+          'text',
+          aliases: ['input', 'value'],
+        );
         final id = arguments.getOptionalInt('elementId');
         final clear = arguments.getBool('clearFirst', defaultValue: false);
-        final ok = await _adb.setText(serial, text, elementId: id, clearFirst: clear);
+        final ok = await _adb.setText(
+          serial,
+          text,
+          elementId: id,
+          clearFirst: clear,
+        );
         return ok
             ? McpToolResult.text(
                 'Set text "$text" on $serial (elementId: ${id ?? 'focused'}, clearFirst: $clear).',
@@ -143,7 +158,9 @@ class McpBasicToolExecutor {
         final id = arguments.getOptionalInt('elementId');
         final ok = await _adb.clearText(serial, elementId: id);
         return ok
-            ? McpToolResult.text('Cleared text on $serial (elementId: ${id ?? 'focused'}).')
+            ? McpToolResult.text(
+                'Cleared text on $serial (elementId: ${id ?? 'focused'}).',
+              )
             : McpToolResult.error('Failed to clear text.');
 
       case 'android_press_key':
@@ -207,11 +224,16 @@ class McpBasicToolExecutor {
         );
         final ok = await _adb.scanMediaFile(serial, path);
         return ok
-            ? McpToolResult.text('Triggered MediaStore scan for file: $path on $serial.')
+            ? McpToolResult.text(
+                'Triggered MediaStore scan for file: $path on $serial.',
+              )
             : McpToolResult.error('Failed to trigger MediaScanner for $path.');
 
       case 'android_shell_command':
-        final cmd = arguments.getRequiredString('command', aliases: ['cmd', 'shell']);
+        final cmd = arguments.getRequiredString(
+          'command',
+          aliases: ['cmd', 'shell'],
+        );
         final out = await _adb.shell(serial, cmd);
         return McpToolResult.text('Shell output:\n$out');
 

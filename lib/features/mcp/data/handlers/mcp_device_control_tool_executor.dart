@@ -47,7 +47,9 @@ class McpDeviceControlToolExecutor {
         );
         final notifs = await _adb.getNotifications(serial, filter: filter);
         if (notifs.isEmpty) {
-          return McpToolResult.text('No active notifications found on $serial.');
+          return McpToolResult.text(
+            'No active notifications found on $serial.',
+          );
         }
         final buf = StringBuffer(
           'Active Notifications on $serial (${notifs.length}):\n',

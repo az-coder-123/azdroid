@@ -208,12 +208,10 @@ class McpAdbInputOps {
       y: (cy + s / 2).round().clamp(0, size.y),
     );
 
-    final ok = await ds.injectTouchStream(
-      serial,
-      TouchStreamPhase.start,
-      [p1(startSpan), p2(startSpan)],
-      frame: frame,
-    );
+    final ok = await ds.injectTouchStream(serial, TouchStreamPhase.start, [
+      p1(startSpan),
+      p2(startSpan),
+    ], frame: frame);
     if (!ok) return false;
 
     const steps = 8;
@@ -224,19 +222,15 @@ class McpAdbInputOps {
       await Future<void>.delayed(stepDelay);
       final t = i / steps;
       final current = startSpan + (endSpan - startSpan) * t;
-      await ds.injectTouchStream(
-        serial,
-        TouchStreamPhase.move,
-        [p1(current), p2(current)],
-        frame: frame,
-      );
+      await ds.injectTouchStream(serial, TouchStreamPhase.move, [
+        p1(current),
+        p2(current),
+      ], frame: frame);
     }
 
-    return ds.injectTouchStream(
-      serial,
-      TouchStreamPhase.end,
-      [p1(endSpan), p2(endSpan)],
-      frame: frame,
-    );
+    return ds.injectTouchStream(serial, TouchStreamPhase.end, [
+      p1(endSpan),
+      p2(endSpan),
+    ], frame: frame);
   }
 }

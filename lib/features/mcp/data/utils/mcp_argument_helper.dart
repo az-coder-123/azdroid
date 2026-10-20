@@ -116,14 +116,14 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     List<String> xAliases = const [],
     List<String> yAliases = const [],
   }) {
-    final xRatio = getOptionalDouble('${xKey}Ratio', aliases: [
-      '${xKey}Percent',
-      'ratio${xKey.toUpperCase()}',
-    ]);
-    final yRatio = getOptionalDouble('${yKey}Ratio', aliases: [
-      '${yKey}Percent',
-      'ratio${yKey.toUpperCase()}',
-    ]);
+    final xRatio = getOptionalDouble(
+      '${xKey}Ratio',
+      aliases: ['${xKey}Percent', 'ratio${xKey.toUpperCase()}'],
+    );
+    final yRatio = getOptionalDouble(
+      '${yKey}Ratio',
+      aliases: ['${yKey}Percent', 'ratio${yKey.toUpperCase()}'],
+    );
 
     if (xRatio != null && yRatio != null) {
       return (xRatio * displayWidth, yRatio * displayHeight);
@@ -158,25 +158,23 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     List<String> xAliases = const [],
     List<String> yAliases = const [],
   }) {
-    final xr = getOptionalDouble('${xKey}Ratio', aliases: [
-      '${xKey}_ratio',
-      '${xKey}Percent',
-    ]);
-    final yr = getOptionalDouble('${yKey}Ratio', aliases: [
-      '${yKey}_ratio',
-      '${yKey}Percent',
-    ]);
-    if (xr != null && yr != null) return (xr, yr);
-    final rawX = getRequiredDouble(xKey, aliases: [
-      ...xAliases,
+    final xr = getOptionalDouble(
       '${xKey}Ratio',
-      '${xKey}Coord',
-    ]);
-    final rawY = getRequiredDouble(yKey, aliases: [
-      ...yAliases,
+      aliases: ['${xKey}_ratio', '${xKey}Percent'],
+    );
+    final yr = getOptionalDouble(
       '${yKey}Ratio',
-      '${yKey}Coord',
-    ]);
+      aliases: ['${yKey}_ratio', '${yKey}Percent'],
+    );
+    if (xr != null && yr != null) return (xr, yr);
+    final rawX = getRequiredDouble(
+      xKey,
+      aliases: [...xAliases, '${xKey}Ratio', '${xKey}Coord'],
+    );
+    final rawY = getRequiredDouble(
+      yKey,
+      aliases: [...yAliases, '${yKey}Ratio', '${yKey}Coord'],
+    );
     return (rawX, rawY);
   }
 
@@ -226,10 +224,13 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     final parts = s.split(RegExp(r'[_-]'));
     if (parts.isEmpty) return s;
     final first = parts.first.toLowerCase();
-    final rest = parts.skip(1).map(
-      (p) =>
-          p.isEmpty ? '' : '${p[0].toUpperCase()}${p.substring(1).toLowerCase()}',
-    );
+    final rest = parts
+        .skip(1)
+        .map(
+          (p) => p.isEmpty
+              ? ''
+              : '${p[0].toUpperCase()}${p.substring(1).toLowerCase()}',
+        );
     return '$first${rest.join()}';
   }
 

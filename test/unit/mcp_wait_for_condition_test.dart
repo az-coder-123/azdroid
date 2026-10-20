@@ -32,7 +32,10 @@ void main() {
           'conditionMet': true,
           'condition': 'element_present',
           'elapsedMs': 240,
-          'element': {'text': 'Login', 'bounds': [100, 200, 300, 400]},
+          'element': {
+            'text': 'Login',
+            'bounds': [100, 200, 300, 400],
+          },
         },
       );
 
@@ -44,43 +47,52 @@ void main() {
       });
 
       expect(res.isError, isFalse);
-      expect(res.content.first.text, contains('Condition "element_present" met (240ms)'));
+      expect(
+        res.content.first.text,
+        contains('Condition "element_present" met (240ms)'),
+      );
       expect(res.content.first.text, contains('Login'));
     });
 
-    test('succeeds when activity_resumed condition matches foreground app', () async {
-      when(
-        () => mockAdb.waitForCondition(
-          '192.168.1.100:5555',
-          condition: 'activity_resumed',
-          target: 'MainActivity',
-          text: null,
-          resourceId: null,
-          contentDesc: null,
-          timeoutMs: 8000,
-          pollIntervalMs: 300,
-        ),
-      ).thenAnswer(
-        (_) async => {
-          'conditionMet': true,
+    test(
+      'succeeds when activity_resumed condition matches foreground app',
+      () async {
+        when(
+          () => mockAdb.waitForCondition(
+            '192.168.1.100:5555',
+            condition: 'activity_resumed',
+            target: 'MainActivity',
+            text: null,
+            resourceId: null,
+            contentDesc: null,
+            timeoutMs: 8000,
+            pollIntervalMs: 300,
+          ),
+        ).thenAnswer(
+          (_) async => {
+            'conditionMet': true,
+            'condition': 'activity_resumed',
+            'elapsedMs': 600,
+            'package': 'com.example.app',
+            'activity': 'com.example.app.MainActivity',
+          },
+        );
+
+        final res = await executor.execute('android_wait_for_condition', {
+          'deviceSerial': '192.168.1.100:5555',
           'condition': 'activity_resumed',
-          'elapsedMs': 600,
-          'package': 'com.example.app',
-          'activity': 'com.example.app.MainActivity',
-        },
-      );
+          'target': 'MainActivity',
+          'timeoutMs': 8000,
+        });
 
-      final res = await executor.execute('android_wait_for_condition', {
-        'deviceSerial': '192.168.1.100:5555',
-        'condition': 'activity_resumed',
-        'target': 'MainActivity',
-        'timeoutMs': 8000,
-      });
-
-      expect(res.isError, isFalse);
-      expect(res.content.first.text, contains('Condition "activity_resumed" met (600ms)'));
-      expect(res.content.first.text, contains('MainActivity'));
-    });
+        expect(res.isError, isFalse);
+        expect(
+          res.content.first.text,
+          contains('Condition "activity_resumed" met (600ms)'),
+        );
+        expect(res.content.first.text, contains('MainActivity'));
+      },
+    );
 
     test('succeeds when logcat_match condition finds pattern', () async {
       when(
@@ -110,7 +122,10 @@ void main() {
       });
 
       expect(res.isError, isFalse);
-      expect(res.content.first.text, contains('Condition "logcat_match" met (850ms)'));
+      expect(
+        res.content.first.text,
+        contains('Condition "logcat_match" met (850ms)'),
+      );
       expect(res.content.first.text, contains('HTTP 200 OK'));
     });
 

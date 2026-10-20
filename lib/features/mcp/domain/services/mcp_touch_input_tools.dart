@@ -4,15 +4,13 @@ import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart
 final List<McpToolDefinition> mcpTouchInputTools = [
   const McpToolDefinition(
     name: 'android_pinch_gesture',
-    description:
-        'Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.',
+    description: 'Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.',
     inputSchema: {
       'type': 'object',
       'properties': {
         'scale': {
           'type': 'number',
-          'description':
-              'Scale factor (> 1.0 to zoom in, e.g. 2.0; < 1.0 to zoom out, e.g. 0.5).',
+          'description': 'Scale factor (> 1.0 to zoom in, e.g. 2.0; < 1.0 to zoom out, e.g. 0.5).',
         },
         'centerX': {
           'type': 'number',

@@ -7,8 +7,7 @@ class McpAutomationTools {
   static List<McpToolDefinition> get tools => const [
     McpToolDefinition(
       name: 'android_wait_for_element',
-      description:
-          'Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips.',
+      description: 'Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -38,8 +37,7 @@ class McpAutomationTools {
     ),
     McpToolDefinition(
       name: 'android_wait_for_condition',
-      description:
-          'Polls host-side conditions (element_present, element_gone, activity_resumed, logcat_match) with configurable intervals and timeouts, saving multi-turn LLM polling overhead.',
+      description: 'Polls host-side conditions (element_present, element_gone, activity_resumed, logcat_match) with configurable intervals and timeouts, saving multi-turn LLM polling overhead.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -68,7 +66,8 @@ class McpAutomationTools {
           },
           'contentDesc': {
             'type': 'string',
-            'description': 'Target content description for element_present/gone.',
+            'description':
+                'Target content description for element_present/gone.',
           },
           'timeoutMs': {
             'type': 'integer',
@@ -88,15 +87,13 @@ class McpAutomationTools {
     ),
     McpToolDefinition(
       name: 'android_batch_actions',
-      description:
-          'Executes a sequential compound macro of actions (tap, type, key, swipe, sleep) locally in one shot.',
+      description: 'Executes a sequential compound macro of actions (tap, type, key, swipe, sleep) locally in one shot.',
       inputSchema: {
         'type': 'object',
         'properties': {
           'actions': {
             'type': 'array',
-            'description':
-                'List of action maps: {"action": "tap"|"type"|"key"|"swipe"|"sleep", ...}',
+            'description': 'List of action maps: {"action": "tap"|"type"|"key"|"swipe"|"sleep", ...}',
             'items': {'type': 'object'},
           },
           'deviceSerial': {

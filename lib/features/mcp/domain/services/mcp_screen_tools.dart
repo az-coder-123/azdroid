@@ -10,20 +10,17 @@ final List<McpToolDefinition> mcpScreenTools = [
   ),
   const McpToolDefinition(
     name: 'android_take_screenshot',
-    description:
-        'Captures a high-resolution screenshot with optional Region-of-Interest (ROI) cropping and JPEG/PNG compression to save up to 85% Vision tokens.',
+    description: 'Captures a high-resolution screenshot with optional Region-of-Interest (ROI) cropping and JPEG/PNG compression to save up to 85% Vision tokens.',
     inputSchema: {
       'type': 'object',
       'properties': {
         'deviceSerial': {
           'type': 'string',
-          'description':
-              'Device serial or IP:port (optional if only one device is connected).',
+          'description': 'Device serial or IP:port (optional if only one device is connected).',
         },
         'crop': {
           'type': 'object',
-          'description':
-              'Optional pixel or ratio bounding box: {"x": 0, "y": 0, "width": 500, "height": 500}.',
+          'description': 'Optional pixel or ratio bounding box: {"x": 0, "y": 0, "width": 500, "height": 500}.',
           'properties': {
             'x': {'type': 'number', 'description': 'X coordinate or ratio.'},
             'y': {'type': 'number', 'description': 'Y coordinate or ratio.'},
@@ -73,8 +70,7 @@ final List<McpToolDefinition> mcpScreenTools = [
         },
         'quality': {
           'type': 'integer',
-          'description':
-              'JPEG compression quality from 1 to 100 (default 80).',
+          'description': 'JPEG compression quality from 1 to 100 (default 80).',
         },
       },
     },

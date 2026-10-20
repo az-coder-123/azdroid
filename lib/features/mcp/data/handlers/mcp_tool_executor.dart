@@ -20,7 +20,9 @@ class McpToolExecutor {
       _semantic = McpSemanticSystemToolExecutor(adbClient ?? McpAdbClient()),
       _perfMedia = McpPerformanceMediaToolExecutor(adbClient ?? McpAdbClient()),
       _automation = McpAutomationToolExecutor(adbClient ?? McpAdbClient()),
-      _deviceControl = McpDeviceControlToolExecutor(adbClient ?? McpAdbClient());
+      _deviceControl = McpDeviceControlToolExecutor(
+        adbClient ?? McpAdbClient(),
+      );
 
   static const String _listDevicesTool = 'android_list_devices';
 

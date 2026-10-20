@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:image/image.dart' as img;
 
 /// Service for region-of-interest (ROI) cropping, format conversion,
@@ -23,7 +24,8 @@ class McpImageProcessor {
   }) {
     if (rawBytes.isEmpty) return rawBytes;
 
-    final hasCrop = cropX != null ||
+    final hasCrop =
+        cropX != null ||
         cropY != null ||
         cropWidth != null ||
         cropHeight != null ||
@@ -49,12 +51,8 @@ class McpImageProcessor {
       final imgW = decoded.width;
       final imgH = decoded.height;
 
-      int x = cropXRatio != null
-          ? (cropXRatio * imgW).round()
-          : (cropX ?? 0);
-      int y = cropYRatio != null
-          ? (cropYRatio * imgH).round()
-          : (cropY ?? 0);
+      int x = cropXRatio != null ? (cropXRatio * imgW).round() : (cropX ?? 0);
+      int y = cropYRatio != null ? (cropYRatio * imgH).round() : (cropY ?? 0);
       int w = cropWidthRatio != null
           ? (cropWidthRatio * imgW).round()
           : (cropWidth ?? (imgW - x));
@@ -82,8 +80,9 @@ class McpImageProcessor {
     Map<String, dynamic> arguments,
   ) {
     final crop = arguments['crop'] is Map ? arguments['crop'] as Map : null;
-    final cropRatio =
-        arguments['cropRatio'] is Map ? arguments['cropRatio'] as Map : null;
+    final cropRatio = arguments['cropRatio'] is Map
+        ? arguments['cropRatio'] as Map
+        : null;
 
     int? parseInt(dynamic v) {
       if (v == null) return null;

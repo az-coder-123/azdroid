@@ -95,7 +95,7 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     clearFirst: clearFirst,
   );
   Future<bool> clearText(String serial, {int? elementId}) =>
-    McpAdbTextOps.clearText(this, serial, elementId: elementId);
+      McpAdbTextOps.clearText(this, serial, elementId: elementId);
   Future<bool> drag(
     String serial,
     double startX,
