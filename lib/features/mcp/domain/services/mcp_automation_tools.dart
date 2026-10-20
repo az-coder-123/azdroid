@@ -87,13 +87,13 @@ class McpAutomationTools {
     ),
     McpToolDefinition(
       name: 'android_batch_actions',
-      description: 'Executes a sequential compound macro of actions (tap, type, key, swipe, sleep) locally in one shot.',
+      description: 'Executes a sequential compound macro of actions (tap, double_tap, type, key, swipe, pinch, rotate, sleep) locally in one shot.',
       inputSchema: {
         'type': 'object',
         'properties': {
           'actions': {
             'type': 'array',
-            'description': 'List of action maps: {"action": "tap"|"type"|"key"|"swipe"|"sleep", ...}',
+            'description': 'List of action maps: {"action": "tap"|"double_tap"|"type"|"key"|"swipe"|"pinch"|"rotate"|"sleep", ...}',
             'items': {'type': 'object'},
           },
           'deviceSerial': {

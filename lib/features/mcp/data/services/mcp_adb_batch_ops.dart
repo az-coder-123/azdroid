@@ -110,6 +110,73 @@ class McpAdbBatchOps {
                 500;
             await Future<void>.delayed(Duration(milliseconds: ms));
             results.add({'step': i, 'action': 'sleep', 'success': true});
+          case 'double_tap' || 'doubletap':
+            final (x, y) = _resolvePoint(
+              a,
+              size,
+              'x',
+              'y',
+              altX: 'xCoord',
+              altY: 'yCoord',
+            );
+            if (x == null || y == null) {
+              results.add({'step': i, 'error': 'Missing coordinates'});
+              continue;
+            }
+            final interval = _parseInt(a['intervalMs']) ?? 120;
+            final ok = await client.doubleTap(
+              serial,
+              x.toDouble(),
+              y.toDouble(),
+              intervalMs: interval,
+            );
+            results.add({'step': i, 'action': 'double_tap', 'success': ok});
+          case 'pinch':
+            final scale =
+                _parseNum(a['scale'] ?? a['scaleFactor'] ?? a['zoom'])
+                    ?.toDouble() ??
+                1.5;
+            final (cx, cy) = _resolvePoint(
+              a,
+              size,
+              'centerX',
+              'centerY',
+              altX: 'x',
+              altY: 'y',
+            );
+            final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 400;
+            final ok = await client.pinchGesture(
+              serial,
+              scale: scale,
+              centerX: cx != null ? cx / size.x : 0.5,
+              centerY: cy != null ? cy / size.y : 0.5,
+              durationMs: dur,
+            );
+            results.add({'step': i, 'action': 'pinch', 'success': ok});
+          case 'rotate':
+            final angle =
+                _parseNum(a['angleDegrees'] ?? a['angle'] ?? a['degrees'])
+                    ?.toDouble() ??
+                90.0;
+            final (cx, cy) = _resolvePoint(
+              a,
+              size,
+              'centerX',
+              'centerY',
+              altX: 'x',
+              altY: 'y',
+            );
+            final r = _parseNum(a['radius'] ?? a['r'])?.toDouble() ?? 200.0;
+            final dur = _parseInt(a['durationMs'] ?? a['duration']) ?? 400;
+            final ok = await client.rotateGesture(
+              serial,
+              angleDegrees: angle,
+              centerX: cx != null ? cx / size.x : 0.5,
+              centerY: cy != null ? cy / size.y : 0.5,
+              radius: r,
+              durationMs: dur,
+            );
+            results.add({'step': i, 'action': 'rotate', 'success': ok});
           default:
             results.add({'step': i, 'error': 'Unknown action: $type'});
         }
@@ -134,6 +201,19 @@ class McpAdbBatchOps {
         );
         if (x == null || y == null) return null;
         return 'input tap $x $y';
+      case 'double_tap' || 'doubletap':
+        final (x, y) = _resolvePoint(
+          a,
+          size,
+          'x',
+          'y',
+          altX: 'xCoord',
+          altY: 'yCoord',
+        );
+        if (x == null || y == null) return null;
+        final interval = _parseInt(a['intervalMs']) ?? 120;
+        final sec = (interval / 1000.0).toStringAsFixed(3);
+        return 'input tap $x $y && sleep $sec && input tap $x $y';
       case 'type':
         final text = (a['text'] ?? a['input'] ?? '').toString();
         final escaped = text
@@ -196,16 +276,12 @@ class McpAdbBatchOps {
     return (rx.round(), ry.round());
   }
 
-  static num? _parseNum(dynamic v) {
-    if (v == null) return null;
-    if (v is num) return v;
-    return num.tryParse(v.toString().trim());
-  }
+  static num? _parseNum(dynamic v) =>
+      v == null ? null : (v is num ? v : num.tryParse(v.toString().trim()));
 
-  static int? _parseInt(dynamic v) {
-    if (v == null) return null;
-    if (v is int) return v;
-    if (v is num) return v.toInt();
-    return int.tryParse(v.toString().trim());
-  }
+  static int? _parseInt(dynamic v) => v == null
+      ? null
+      : (v is int
+            ? v
+            : (v is num ? v.toInt() : int.tryParse(v.toString().trim())));
 }
