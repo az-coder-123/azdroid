@@ -6,7 +6,7 @@ import 'package:desk_droid/features/mcp/domain/services/mcp_device_control_tools
 import 'package:desk_droid/features/mcp/domain/services/mcp_performance_media_tools.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_system_tools.dart';
 
-/// Registry of all Android automation tools published by DeskDroid MCP Server.
+/// Registry of all Android automation tools published by Azdroid MCP Server.
 class McpToolRegistry {
   const McpToolRegistry();
 

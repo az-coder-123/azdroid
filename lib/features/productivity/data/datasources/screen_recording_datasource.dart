@@ -60,7 +60,7 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
     }
 
     final ts = DateTime.now().millisecondsSinceEpoch;
-    final remotePath = '/sdcard/deskdroid_rec_$ts.mp4';
+    final remotePath = '/sdcard/azdroid_rec_$ts.mp4';
     final bitrate = (bitrateBps ?? 8000000).toString();
     final timeLimit = (timeLimitSeconds ?? 180).toString();
 
@@ -125,7 +125,7 @@ class ScreenRecordingDatasourceImpl implements ScreenRecordingDatasource {
     final h = now.hour.toString().padLeft(2, '0');
     final min = now.minute.toString().padLeft(2, '0');
     final s = now.second.toString().padLeft(2, '0');
-    final fileName = 'DeskDroid_Recording_$y$m${d}_$h$min$s.mp4';
+    final fileName = 'Azdroid_Recording_$y$m${d}_$h$min$s.mp4';
     final filePath = _paths.context.join(targetDir.path, fileName);
 
     try {

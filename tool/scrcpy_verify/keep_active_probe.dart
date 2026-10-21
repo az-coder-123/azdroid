@@ -1,6 +1,6 @@
 import 'dart:io';
 
-/// The two device settings older DeskDroid builds changed for "stay awake".
+/// The two device settings older Azdroid builds changed for "stay awake".
 typedef AwakeSettings = ({String stayOn, String screenOffTimeout});
 
 /// Checks scrcpy's `keep_active` option: while the server runs, it reports

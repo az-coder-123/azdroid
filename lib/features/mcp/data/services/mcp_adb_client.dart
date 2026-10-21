@@ -32,7 +32,7 @@ part 'mcp_adb_system_ops.dart';
 part 'mcp_adb_text_ops.dart';
 part 'mcp_adb_ui_ops.dart';
 
-/// Pure Dart ADB client for DeskDroid MCP Server.
+/// Pure Dart ADB client for Azdroid MCP Server.
 /// Operates without UI or Flutter framework dependencies.
 class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
   McpAdbClient({String? explicitAdbPath}) : _cachedAdbPath = explicitAdbPath;

@@ -64,4 +64,4 @@ Write errors never stop the server: they go to stderr (stdout carries the protoc
 
 - Unit: `test/unit/mcp_activity/` (format, writer, reader and pruning, snapshot, server integration).
 - Widget: `test/widget/mcp_activity_widgets_test.dart`.
-- Device (2026-10-18, Redmi 9): a release `deskdroid-mcp` session wrote `start` + two `tool` lines with `"device":"192.168.1.3:5555"`, deleted the file on disconnect, and the app's repository reported the session and the device as active. The toolbar showed **1** session.
+- Device (2026-10-18, Redmi 9): a release `azdroid-mcp` session wrote `start` + two `tool` lines with `"device":"192.168.1.3:5555"`, deleted the file on disconnect, and the app's repository reported the session and the device as active. The toolbar showed **1** session.

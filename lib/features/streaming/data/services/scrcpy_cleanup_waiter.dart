@@ -8,7 +8,7 @@ import 'package:desk_droid/core/services/process_executor.dart';
 /// With `cleanup=true`, each server starts a restore process that turns the
 /// phone screen back on (after "Screen Off") about half a second after the
 /// server exits. On a pipeline restart (bitrate or stay-awake change, quick
-/// reconnect), DeskDroid turns the screen off again on the new server; an
+/// reconnect), Azdroid turns the screen off again on the new server; an
 /// old restore process that runs after that would turn it back on. Waiting
 /// for it first keeps the order.
 class ScrcpyCleanupWaiter {
@@ -22,7 +22,7 @@ class ScrcpyCleanupWaiter {
   final Duration pollInterval;
 
   /// Upper bound; another scrcpy client's restore process may run for its
-  /// whole session, and it must not block DeskDroid.
+  /// whole session, and it must not block Azdroid.
   final Duration timeout;
 
   /// `pgrep` exit code when no process matches.

@@ -12,7 +12,7 @@ class McpAdbResolver {
   );
 
   static void _logProbe(String probe, Object error) =>
-      stderr.writeln('[DeskDroid MCP] ADB probe "$probe" failed: $error');
+      stderr.writeln('[Azdroid MCP] ADB probe "$probe" failed: $error');
 
   /// Locates the adb executable on the local host machine.
   ///
@@ -22,12 +22,12 @@ class McpAdbResolver {
     if (cached != null) return cached;
     final path = await _locator.locate();
     if (path == null) {
-      stderr.writeln('[DeskDroid MCP] No adb found (installed or bundled).');
+      stderr.writeln('[Azdroid MCP] No adb found (installed or bundled).');
     } else {
       final source = path == _locator.toolchain.bundledAdbPath
           ? 'bundled'
           : 'installed';
-      stderr.writeln('[DeskDroid MCP] Using $source adb at $path');
+      stderr.writeln('[Azdroid MCP] Using $source adb at $path');
     }
     return path;
   }

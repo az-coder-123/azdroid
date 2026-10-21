@@ -11,7 +11,7 @@ class McpAdbMediaProcOps {
     int durationSec = 5,
     required String localDestination,
   }) async {
-    const remotePath = '/sdcard/deskdroid_mcp_recording.mp4';
+    const remotePath = '/sdcard/azdroid_mcp_recording.mp4';
     final dur = durationSec.clamp(1, 180);
 
     // Execute screenrecord on device

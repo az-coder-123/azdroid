@@ -10,7 +10,7 @@
   The sandbox gets three mapped folders: the ZIP's folder and scripts\sandbox
   (read-only), and a results folder (writable). At logon,
   scripts\sandbox\sandbox_smoke.ps1 extracts the ZIP to the sandbox desktop,
-  records what the clean PC provides, smoke-tests deskdroid-mcp.exe and
+  records what the clean PC provides, smoke-tests azdroid-mcp.exe and
   desk_droid.exe, and keeps copying the app logs to the results folder.
   Read <ResultsDir>\smoke.txt on the host.
 

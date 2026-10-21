@@ -241,15 +241,15 @@ void main() {
     );
   });
 
-  test('defaultDownloadDirectory is <Downloads>/DeskDroid', () {
-    expect(cubit.defaultDownloadDirectory, '/Users/dev/Downloads/DeskDroid');
+  test('defaultDownloadDirectory is <Downloads>/Azdroid', () {
+    expect(cubit.defaultDownloadDirectory, '/Users/dev/Downloads/Azdroid');
   });
 
   test(
     'openDownloadFolder opens the default folder via HostFileLauncher',
     () async {
       await cubit.openDownloadFolder();
-      expect(fileLauncher.opened, ['/Users/dev/Downloads/DeskDroid']);
+      expect(fileLauncher.opened, ['/Users/dev/Downloads/Azdroid']);
     },
   );
 }

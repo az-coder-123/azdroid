@@ -13,7 +13,7 @@
 The **Deep Link & Intent Dispatcher** empowers mobile developers, QA engineers, and power users to fire Android Intents, deep link URLs, and app URI schemes directly into any running Android device over Wi-Fi without leaving macOS.
 
 <p align="center">
-  <img src="../images/deskdroid_intent_dispatcher.png" alt="Azdroid Deep Link & Intent Dispatcher" width="480">
+  <img src="../images/azdroid_intent_dispatcher.png" alt="Azdroid Deep Link & Intent Dispatcher" width="480">
 </p>
 
 ```mermaid

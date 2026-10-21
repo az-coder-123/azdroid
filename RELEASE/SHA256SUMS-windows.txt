@@ -1,2 +1,2 @@
-8bc7452f84af1419e2e290f7c8cedec904e50e4f48fd4b1504b189d56ea48a96  DeskDroid-v1.3.0-Windows-x64.zip
-8bc7452f84af1419e2e290f7c8cedec904e50e4f48fd4b1504b189d56ea48a96  DeskDroid-Windows-x64-latest.zip
+8bc7452f84af1419e2e290f7c8cedec904e50e4f48fd4b1504b189d56ea48a96  Azdroid-v1.3.0-Windows-x64.zip
+8bc7452f84af1419e2e290f7c8cedec904e50e4f48fd4b1504b189d56ea48a96  Azdroid-Windows-x64-latest.zip

@@ -21,8 +21,8 @@ void main() {
   const testSerial = '192.168.1.100:5555';
 
   final testScreenshot = ScreenshotEntity(
-    filePath: '/Users/mac/Downloads/DeskDroid_Screenshot_20261013_183000.png',
-    fileName: 'DeskDroid_Screenshot_20261013_183000.png',
+    filePath: '/Users/mac/Downloads/Azdroid_Screenshot_20261013_183000.png',
+    fileName: 'Azdroid_Screenshot_20261013_183000.png',
     fileSizeBytes: 245000,
     capturedAt: DateTime(2026, 10, 13, 18, 30),
     copiedToClipboard: true,
@@ -66,7 +66,7 @@ void main() {
         isA<ScreenshotSuccess>().having(
           (s) => s.screenshot.fileName,
           'fileName',
-          'DeskDroid_Screenshot_20261013_183000.png',
+          'Azdroid_Screenshot_20261013_183000.png',
         ),
       ],
       verify: (_) {

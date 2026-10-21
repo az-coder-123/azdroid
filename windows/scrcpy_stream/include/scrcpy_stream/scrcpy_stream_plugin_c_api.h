@@ -1,4 +1,4 @@
-// C entry point used by the runner to register the DeskDroid video plugin.
+// C entry point used by the runner to register the Azdroid video plugin.
 #ifndef SCRCPY_STREAM_SCRCPY_STREAM_PLUGIN_C_API_H_
 #define SCRCPY_STREAM_SCRCPY_STREAM_PLUGIN_C_API_H_
 

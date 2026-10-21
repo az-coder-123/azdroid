@@ -3,7 +3,7 @@ import 'package:desk_droid/core/platform/host_process_tools.dart';
 import 'package:desk_droid/core/services/app_logger.dart';
 import 'package:desk_droid/core/services/process_executor.dart';
 
-/// Lists running DeskDroid MCP server processes: one per AI client session.
+/// Lists running Azdroid MCP server processes: one per AI client session.
 class McpProcessLister {
   McpProcessLister({
     required ProcessExecutor processExecutor,
@@ -15,7 +15,7 @@ class McpProcessLister {
   final ProcessExecutor _executor;
   final HostProcessTools _hostTools;
 
-  /// File name of the server (`deskdroid-mcp`, `deskdroid-mcp.exe`).
+  /// File name of the server (`azdroid-mcp`, `azdroid-mcp.exe`).
   final String executableName;
 
   /// `pgrep` exit code when no process matches.

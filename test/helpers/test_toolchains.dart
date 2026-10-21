@@ -21,7 +21,7 @@ HostToolchain toolchainFor(
 
 /// Installed app executables used by tests, so bundled-tool paths are fixed.
 const Map<HostOs, String> testExecutablePaths = {
-  HostOs.macos: '/Applications/DeskDroid.app/Contents/MacOS/DeskDroid',
-  HostOs.windows: r'C:\Program Files\DeskDroid\desk_droid.exe',
-  HostOs.linux: '/opt/deskdroid/desk_droid',
+  HostOs.macos: '/Applications/Azdroid.app/Contents/MacOS/Azdroid',
+  HostOs.windows: r'C:\Program Files\Azdroid\desk_droid.exe',
+  HostOs.linux: '/opt/azdroid/desk_droid',
 };

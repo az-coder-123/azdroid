@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Categories classifying features in DeskDroid for intuitive browsing.
+/// Categories classifying features in Azdroid for intuitive browsing.
 enum FeatureCategory {
   all(label: 'All Features', icon: Icons.apps_rounded),
   displayAndControl(
@@ -27,7 +27,7 @@ enum FeatureCategory {
   final IconData icon;
 }
 
-/// Entity describing an individual feature in the DeskDroid application.
+/// Entity describing an individual feature in the Azdroid application.
 class AppFeatureItem {
   const AppFeatureItem({
     required this.id,

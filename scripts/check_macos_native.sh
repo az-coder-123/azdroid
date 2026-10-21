@@ -17,7 +17,7 @@ SECONDS_TO_RUN="${3:-6}"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CORE_DIR="${ROOT_DIR}/native/scrcpy_core"
 RUNNER_DIR="${ROOT_DIR}/macos/Runner"
-OUT_DIR="${TMPDIR:-/tmp}/deskdroid_macos_native_check"
+OUT_DIR="${TMPDIR:-/tmp}/azdroid_macos_native_check"
 ADB="${ADB:-$(command -v adb)}"
 mkdir -p "${OUT_DIR}"
 

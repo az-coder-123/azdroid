@@ -1,4 +1,4 @@
-# DeskDroid Windows video plugin: scrcpy H.264 stream -> Flutter texture.
+# Azdroid Windows video plugin: scrcpy H.264 stream -> Flutter texture.
 # Contract: docs/native-video-contract.md. Built as a DLL like Flutter plugins.
 cmake_minimum_required(VERSION 3.14)
 project(scrcpy_stream LANGUAGES CXX)

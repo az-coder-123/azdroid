@@ -21,7 +21,7 @@ class McpProtocolHandler {
   final McpActivitySink _activity;
 
   static const String protocolVersion = '2024-11-05';
-  static const String serverName = 'deskdroid-mcp';
+  static const String serverName = 'azdroid-mcp';
   static const String serverVersion = AppConstants.appVersion;
 
   /// Processes an incoming raw JSON-RPC string message. Returns null if notification.

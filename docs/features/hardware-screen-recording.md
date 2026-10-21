@@ -13,7 +13,7 @@
 Azdroid records the phone's screen on the phone itself, so the computer does no capturing or encoding. It coordinates Android's native hardware `screenrecord` engine with an Apple-style preparation HUD, animated countdown, and automatic pulling to macOS.
 
 <p align="center">
-  <img src="../images/deskdroid_screen_recording.png" alt="Azdroid Hardware Screen Recording HUD" width="480">
+  <img src="../images/azdroid_screen_recording.png" alt="Azdroid Hardware Screen Recording HUD" width="480">
 </p>
 
 ```mermaid

@@ -1,9 +1,9 @@
 # Feature: Model Context Protocol (MCP) AI Agent Server
 
-> **Subsystem:** `lib/features/mcp/` & `bin/deskdroid_mcp.dart`  
+> **Subsystem:** `lib/features/mcp/` & `bin/azdroid_mcp.dart`  
 > **Key Interfaces:** `McpProtocolHandler`, `McpToolExecutor`, `McpAdbClient`, `McpToolRegistry`  
 > **Protocol:** JSON-RPC 2.0 over Standard I/O (`stdio`)  
-> **Trigger / Launcher:** `./scripts/start_mcp_server.sh` or `dart run bin/deskdroid_mcp.dart`  
+> **Trigger / Launcher:** `./scripts/start_mcp_server.sh` or `dart run bin/azdroid_mcp.dart`  
 > **Platforms:** macOS ✅ · Windows ✅ via `dart run` (no launcher script yet) ([status](../platform-support.md))
 
 ---
@@ -80,7 +80,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "/absolute/path/to/azdroid/scripts/start_mcp_server.sh"
     }
   }
@@ -92,9 +92,9 @@ Add to `.cursor/mcp.json` or project settings:
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "dart",
-      "args": ["run", "/absolute/path/to/azdroid/bin/deskdroid_mcp.dart"]
+      "args": ["run", "/absolute/path/to/azdroid/bin/azdroid_mcp.dart"]
     }
   }
 }
@@ -105,7 +105,7 @@ Add to `cline_mcp_settings.json`:
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "/absolute/path/to/azdroid/scripts/start_mcp_server.sh"
     }
   }
@@ -119,7 +119,7 @@ Add to `cline_mcp_settings.json`:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
   ```
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is normal MCP behavior. Press `Ctrl+C` to exit.)*
-- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `deskdroid` with 58 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
+- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `azdroid` with 58 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
 
 ---
 

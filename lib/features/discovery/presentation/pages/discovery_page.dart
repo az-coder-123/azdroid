@@ -15,7 +15,7 @@ import 'package:desk_droid/features/showcase/presentation/widgets/feature_showca
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Main landing page of DeskDroid hosting the device discovery and pairing dashboard.
+/// Main landing page of Azdroid hosting the device discovery and pairing dashboard.
 class DiscoveryPage extends StatefulWidget {
   const DiscoveryPage({
     required this.mirroringRouteBuilder,

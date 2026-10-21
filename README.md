@@ -14,9 +14,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/DeskDroid-v1.3.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.3.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download Azdroid for macOS"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v1.3.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.3.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download Azdroid for macOS"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/DeskDroid-v1.3.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.3.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v1.3.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.3.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
   &nbsp;
   <a href="https://github.com/az-coder-123/azdroid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
   <br>
@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/deskdroid_mirroring_workspace.png" alt="Azdroid mirroring workspace on macOS: the phone screen between two vertical control docks, with the latency, FPS, and bitrate header" width="580">
+  <img src="docs/images/azdroid_mirroring_workspace.png" alt="Azdroid mirroring workspace on macOS: the phone screen between two vertical control docks, with the latency, FPS, and bitrate header" width="580">
 </p>
 
 ---
@@ -48,12 +48,12 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_device_discovery.png" alt="Azdroid device list with two connected phones, a Wi-Fi/USB switch for a dual-mode device, and the MCP status icon" width="100%">
+      <img src="docs/images/azdroid_device_discovery.png" alt="Azdroid device list with two connected phones, a Wi-Fi/USB switch for a dual-mode device, and the MCP status icon" width="100%">
       <br><b>Multi-Device Discovery</b>
       <br><sub>Subnet auto-scan, connection badges, Wi-Fi/USB switch for dual-mode devices & 1-click mirroring.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_features_showcase.png" alt="Azdroid Built-in Feature Showcase and Interactive Catalog" width="100%">
+      <img src="docs/images/azdroid_features_showcase.png" alt="Azdroid Built-in Feature Showcase and Interactive Catalog" width="100%">
       <br><b>Interactive Feature Showcase</b>
       <br><sub>Categorized catalog with performance badges, highlights & pro tips.</sub>
     </td>
@@ -64,12 +64,12 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_logcat_console.png" alt="Azdroid Real-Time Logcat Console with Multi-Tier Filters" width="100%">
+      <img src="docs/images/azdroid_logcat_console.png" alt="Azdroid Real-Time Logcat Console with Multi-Tier Filters" width="100%">
       <br><b>Device Logcat Console (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd>)</b>
       <br><sub>Live stream (batched every 100 ms), 5k ring buffer, regex/PID/tag filters, star bookmarks & recording to a file.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_intent_dispatcher.png" alt="Azdroid Deep Link Tester and Android Intent Dispatcher" width="100%">
+      <img src="docs/images/azdroid_intent_dispatcher.png" alt="Azdroid Deep Link Tester and Android Intent Dispatcher" width="100%">
       <br><b>Deep Link & Intent Dispatcher (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>)</b>
       <br><sub>Fire custom URI schemes, system actions, targeted packages & typed extras.</sub>
     </td>
@@ -80,12 +80,12 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_apk_installer.png" alt="Azdroid 1-Click APK Sideload and Package Manager" width="100%">
+      <img src="docs/images/azdroid_apk_installer.png" alt="Azdroid 1-Click APK Sideload and Package Manager" width="100%">
       <br><b>1-Click APK Manager (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>)</b>
       <br><sub>AAPT2 metadata inspection, permission grant flags, 1-click launch & clean uninstall.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_file_explorer.png" alt="Azdroid two-way Android File Explorer" width="100%">
+      <img src="docs/images/azdroid_file_explorer.png" alt="Azdroid two-way Android File Explorer" width="100%">
       <br><b>Device File Explorer (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>)</b>
       <br><sub>Two-way file browser with quick folder shortcuts & batch download.</sub>
     </td>
@@ -96,12 +96,12 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_screen_recording.png" alt="Azdroid screen recording bar with a 3-second countdown and Start button over the mirrored phone" width="100%">
+      <img src="docs/images/azdroid_screen_recording.png" alt="Azdroid screen recording bar with a 3-second countdown and Start button over the mirrored phone" width="100%">
       <br><b>Hardware Screen Recording (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>)</b>
       <br><sub>H.264 MP4 encoded by the phone's hardware encoder (up to 3 minutes), with a 3 s countdown HUD.</sub>
     </td>
     <td width="50%" align="center" valign="top">
-      <img src="docs/images/deskdroid_area_crop.png" alt="Azdroid area crop: a marquee with drag handles over the mirrored phone and Clipboard, Save File, and Both actions" width="100%">
+      <img src="docs/images/azdroid_area_crop.png" alt="Azdroid area crop: a marquee with drag handles over the mirrored phone and Clipboard, Save File, and Both actions" width="100%">
       <br><b>Interactive Area Crop (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>)</b>
       <br><sub>PNG marquee crop with live pixel badge; copy, save, or both.</sub>
     </td>
@@ -110,7 +110,7 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 
 ### 5. Remote Text Input
 <p align="center">
-  <img src="docs/images/deskdroid_text_injection.png" alt="Azdroid Remote Text Injection dialog over the mirrored phone, with a text field and Inject Text button" width="50%">
+  <img src="docs/images/azdroid_text_injection.png" alt="Azdroid Remote Text Injection dialog over the mirrored phone, with a text field and Inject Text button" width="50%">
   <br><b>Remote Text Injection (<kbd>Cmd</kbd>+<kbd>K</kbd>)</b>
   <br><sub>Type or paste text for the phone; Vietnamese, CJK, and emoji arrive intact.</sub>
 </p>
@@ -202,8 +202,8 @@ flowchart LR
 
 ### Install a release
 
-- **macOS:** unzip `DeskDroid-v1.3.0-macOS.zip`, move **Azdroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/Azdroid.app` once if Gatekeeper blocks it.
-- **Windows:** unzip `DeskDroid-v1.3.0-Windows-x64.zip` (ADB included) and run `DeskDroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
+- **macOS:** unzip `Azdroid-v1.3.0-macOS.zip`, move **Azdroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/Azdroid.app` once if Gatekeeper blocks it.
+- **Windows:** unzip `Azdroid-v1.3.0-Windows-x64.zip` (ADB included) and run `Azdroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
 
 ### Run from source
 

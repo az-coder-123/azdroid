@@ -13,7 +13,7 @@
 The **APK Sideload & Package Manager** provides an end-to-end workflow for inspecting, configuring, installing, and managing Android application packages (`.apk`) directly from macOS.
 
 <p align="center">
-  <img src="../images/deskdroid_apk_installer.png" alt="Azdroid APK Sideload & Manager Modal" width="480">
+  <img src="../images/azdroid_apk_installer.png" alt="Azdroid APK Sideload & Manager Modal" width="480">
 </p>
 
 ```mermaid

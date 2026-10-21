@@ -44,7 +44,7 @@ final class ScrcpyVideoSession {
   func start() {
     stats.reset(to: .connecting)
     let thread = Thread { [self] in run() }
-    thread.name = "com.deskdroid.scrcpy_stream"
+    thread.name = "com.azdroid.scrcpy_stream"
     thread.start()
   }
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 # ==============================================================================
-# DeskDroid — Embed bundled adb into DeskDroid.app (Xcode Run Script phase)
+# Azdroid — Embed bundled adb into Azdroid.app (Xcode Run Script phase)
 # ==============================================================================
 # Copies vendor/platform-tools/macos (filled by `dart run
 # tool/fetch_platform_tools.dart`) into the app:

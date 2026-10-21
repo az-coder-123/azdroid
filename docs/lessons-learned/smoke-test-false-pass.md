@@ -5,7 +5,7 @@
 While verifying the precompiled MCP server inside a release build, a shell smoke test reported `exit=0` but printed **no** JSON-RPC replies. The parser printed nothing either, so at first glance the run looked clean.
 
 ```bash
-printf '...' | (cd / && env -i ... perl -e 'alarm 30; exec @ARGV' "$PWD/$APP/Contents/MacOS/deskdroid-mcp")
+printf '...' | (cd / && env -i ... perl -e 'alarm 30; exec @ARGV' "$PWD/$APP/Contents/MacOS/azdroid-mcp")
 # exit=0, stdout 0 bytes, stderr 0 bytes
 ```
 

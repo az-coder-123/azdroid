@@ -51,7 +51,7 @@ class IntentPresetsBar extends StatelessWidget {
       label: 'Custom App Link',
       icon: Icons.link_rounded,
       action: 'android.intent.action.VIEW',
-      dataUri: 'myapp://product/456?ref=deskdroid',
+      dataUri: 'myapp://product/456?ref=azdroid',
     ),
   ];
 

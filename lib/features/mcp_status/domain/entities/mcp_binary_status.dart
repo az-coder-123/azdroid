@@ -16,7 +16,7 @@ enum McpBinaryAvailability {
   missing,
 }
 
-/// The bundled `deskdroid-mcp` executable, as checked on this computer.
+/// The bundled `azdroid-mcp` executable, as checked on this computer.
 class McpBinaryStatus extends Equatable {
   const McpBinaryStatus({
     required this.availability,

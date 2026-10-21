@@ -4,7 +4,7 @@
 
 ---
 
-## 1. MethodChannel `com.deskdroid/audio_stream`
+## 1. MethodChannel `com.azdroid/audio_stream`
 
 Dart client: `lib/core/services/audio_stream_native_service.dart`.
 

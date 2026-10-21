@@ -22,13 +22,13 @@ abstract class IVideoStreamNativeService {
   Future<NativeStreamStats?> getStats();
 }
 
-/// Production implementation of the `com.deskdroid/video_stream` channel.
+/// Production implementation of the `com.azdroid/video_stream` channel.
 ///
 /// Served by `macos/Runner/ScrcpyStreamPlugin.swift` and
 /// `windows/scrcpy_stream/` (see docs/native-video-contract.md).
 class VideoStreamNativeService implements IVideoStreamNativeService {
   VideoStreamNativeService({MethodChannel? channel})
-    : _channel = channel ?? const MethodChannel('com.deskdroid/video_stream');
+    : _channel = channel ?? const MethodChannel('com.azdroid/video_stream');
 
   final MethodChannel _channel;
 

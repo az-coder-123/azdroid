@@ -130,7 +130,7 @@
 
 ### 🔍 Where Are the Logs?
 
-- `%TEMP%\deskdroid_dart.log`: app log (connections, ADB commands, stream state).
+- `%TEMP%\azdroid_dart.log`: app log (connections, ADB commands, stream state).
 - `%TEMP%\scrcpy_stream.log`: native video plugin log (socket, header, decoder, frames).
 
 ---

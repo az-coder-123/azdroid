@@ -9,10 +9,10 @@
 namespace scrcpy_stream {
 
 // MethodChannel shared with lib/core/services/video_stream_native_service.dart.
-inline constexpr char kChannelName[] = "com.deskdroid/video_stream";
+inline constexpr char kChannelName[] = "com.azdroid/video_stream";
 
 // MethodChannel shared with lib/core/services/audio_stream_native_service.dart.
-inline constexpr char kAudioChannelName[] = "com.deskdroid/audio_stream";
+inline constexpr char kAudioChannelName[] = "com.azdroid/audio_stream";
 
 inline constexpr char kDefaultHost[] = "127.0.0.1";
 inline constexpr int32_t kDefaultPort = 27183;

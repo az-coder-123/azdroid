@@ -1,6 +1,6 @@
 import 'package:desk_droid/core/platform/host_os.dart';
 
-/// Pinned Android SDK Platform-Tools release bundled with DeskDroid.
+/// Pinned Android SDK Platform-Tools release bundled with Azdroid.
 ///
 /// To upgrade: read the version, size, and SHA-1 for `platform-tools` from
 /// https://dl.google.com/android/repository/repository2-3.xml, download each
@@ -11,7 +11,7 @@ const String platformToolsVersion = '37.0.1';
 /// Base URL of Google's Android SDK repository.
 const String _repositoryBaseUrl = 'https://dl.google.com/android/repository';
 
-/// One downloadable platform-tools archive and the files DeskDroid ships.
+/// One downloadable platform-tools archive and the files Azdroid ships.
 class PlatformToolsPackage {
   const PlatformToolsPackage({
     required this.archiveName,
@@ -28,7 +28,7 @@ class PlatformToolsPackage {
   /// Checksum published by Google in repository2-3.xml (provenance).
   final String sha1;
 
-  /// Checksum DeskDroid verifies before extracting (integrity).
+  /// Checksum Azdroid verifies before extracting (integrity).
   final String sha256;
 
   /// Archive entry path -> file name in the output folder.

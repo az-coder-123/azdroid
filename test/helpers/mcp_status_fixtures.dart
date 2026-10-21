@@ -4,7 +4,7 @@ import 'package:desk_droid/features/mcp_status/domain/entities/mcp_client_status
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_server_status.dart';
 
 const String fixtureMcpExecutable =
-    '/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp';
+    '/Applications/Azdroid.app/Contents/MacOS/azdroid-mcp';
 
 /// An MCP status for tests; defaults to a ready server, Claude Desktop set
 /// up, and no running session.
@@ -35,7 +35,7 @@ McpServerStatus mcpStatus({
       name: 'Antigravity',
       configPath: '/Users/dev/.gemini/antigravity/mcp_config.json',
       setup: McpClientSetup.configuredElsewhere,
-      configuredCommand: 'dart run /src/bin/deskdroid_mcp.dart',
+      configuredCommand: 'dart run /src/bin/azdroid_mcp.dart',
     ),
   ],
   livePids: livePids,

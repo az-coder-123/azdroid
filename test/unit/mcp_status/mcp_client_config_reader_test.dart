@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'fake_mcp_file_probe.dart';
 
 void main() {
-  const app = '/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp';
+  const app = '/Applications/Azdroid.app/Contents/MacOS/azdroid-mcp';
   const config = '/Users/dev/.cursor/mcp.json';
   const client = (name: 'Cursor', configPath: config);
 
@@ -30,10 +30,10 @@ void main() {
 
   test('another copy or a source checkout is configured elsewhere', () async {
     final copy = await readJson(
-      '{"mcpServers":{"d":{"command":"/Users/dev/Downloads/DeskDroid.app/Contents/MacOS/deskdroid-mcp"}}}',
+      '{"mcpServers":{"d":{"command":"/Users/dev/Downloads/Azdroid.app/Contents/MacOS/azdroid-mcp"}}}',
     );
     final source = await readJson(
-      '{"mcpServers":{"d":{"command":"dart","args":["run","/src/bin/deskdroid_mcp.dart"]}}}',
+      '{"mcpServers":{"d":{"command":"dart","args":["run","/src/bin/azdroid_mcp.dart"]}}}',
     );
     final script = await readJson(
       '{"mcpServers":{"d":{"command":"/src/scripts/start_mcp_server.sh"}}}',
@@ -41,7 +41,7 @@ void main() {
     for (final s in [copy, source, script]) {
       expect(s.setup, McpClientSetup.configuredElsewhere);
     }
-    expect(source.configuredCommand, 'dart run /src/bin/deskdroid_mcp.dart');
+    expect(source.configuredCommand, 'dart run /src/bin/azdroid_mcp.dart');
   });
 
   test('other servers only, or no mcpServers, is not configured', () async {
@@ -79,14 +79,14 @@ void main() {
   });
 
   test('Windows paths compare without case', () async {
-    const winApp = r'C:\Apps\DeskDroid\deskdroid-mcp.exe';
+    const winApp = r'C:\Apps\Azdroid\azdroid-mcp.exe';
     const winConfig = r'C:\Users\dev\.cursor\mcp.json';
     final status = await McpClientConfigReader(
       expectedExecutable: winApp,
       pathContext: p.windows,
       files: FakeMcpFileProbe(
         files: {
-          winConfig: r'{"mcpServers":{"d":{"command":"c:\\apps\\deskdroid\\DESKDROID-MCP.EXE"}}}',
+          winConfig: r'{"mcpServers":{"d":{"command":"c:\\apps\\azdroid\\AZDROID-MCP.EXE"}}}',
         },
       ),
     ).read((name: 'Cursor', configPath: winConfig));

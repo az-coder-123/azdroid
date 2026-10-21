@@ -1,7 +1,7 @@
 import 'package:desk_droid/core/platform/host_os.dart';
 import 'package:desk_droid/core/platform/host_paths.dart';
 
-/// An AI client that can launch the DeskDroid MCP server, and the file in
+/// An AI client that can launch the Azdroid MCP server, and the file in
 /// which it lists its MCP servers (`mcpServers` JSON object).
 typedef McpClientLocation = ({String name, String configPath});
 

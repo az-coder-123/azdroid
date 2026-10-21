@@ -1,7 +1,7 @@
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_activity.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_server_status.dart';
 
-/// Reads the state of the DeskDroid MCP server on this computer.
+/// Reads the state of the Azdroid MCP server on this computer.
 abstract class McpStatusRepository {
   /// Full check: executable, AI client configurations, running sessions,
   /// activity. Never throws; failures are reported inside the status.

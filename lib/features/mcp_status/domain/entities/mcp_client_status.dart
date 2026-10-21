@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 
-/// How an AI client is set up to launch the DeskDroid MCP server.
+/// How an AI client is set up to launch the Azdroid MCP server.
 enum McpClientSetup {
-  /// Its configuration launches this app's `deskdroid-mcp`.
+  /// Its configuration launches this app's `azdroid-mcp`.
   configured,
 
   /// Its configuration launches another copy (an older install or a source
   /// checkout); see [McpClientStatus.configuredCommand].
   configuredElsewhere,
 
-  /// The client is installed, but DeskDroid is not in its configuration.
+  /// The client is installed, but Azdroid is not in its configuration.
   notConfigured,
 
   /// No configuration file and no folder for it: the client is probably not
@@ -20,7 +20,7 @@ enum McpClientSetup {
   unreadable,
 }
 
-/// One AI client's DeskDroid MCP setup on this computer.
+/// One AI client's Azdroid MCP setup on this computer.
 class McpClientStatus extends Equatable {
   const McpClientStatus({
     required this.name,
@@ -36,7 +36,7 @@ class McpClientStatus extends Equatable {
 
   final McpClientSetup setup;
 
-  /// The command the client runs for DeskDroid, when it has an entry.
+  /// The command the client runs for Azdroid, when it has an entry.
   final String? configuredCommand;
 
   @override

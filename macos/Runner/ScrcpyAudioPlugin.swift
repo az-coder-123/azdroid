@@ -1,13 +1,13 @@
 import FlutterMacOS
 import Foundation
 
-/// MethodChannel `com.deskdroid/audio_stream` (docs/native-audio-contract.md).
+/// MethodChannel `com.azdroid/audio_stream` (docs/native-audio-contract.md).
 ///
 /// Owns the jitter buffer (so volume and mute survive sessions) and the
 /// current [ScrcpyAudioSession], which does the reading and playing.
 final class ScrcpyAudioPlugin: NSObject {
   private static var shared: ScrcpyAudioPlugin?
-  private static let channelName = "com.deskdroid/audio_stream"
+  private static let channelName = "com.azdroid/audio_stream"
 
   private let buffer: OpaquePointer = sc_audio_buffer_create()
   private let lock = NSLock()

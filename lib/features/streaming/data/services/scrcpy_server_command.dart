@@ -28,7 +28,7 @@ class ScrcpyServerCommand {
     mainClass,
     serverVersion,
     'scid=$scid',
-    // DeskDroid connects through `adb forward`, so the device listens.
+    // Azdroid connects through `adb forward`, so the device listens.
     'tunnel_forward=true',
     'video_bit_rate=$videoBitRateBps',
     'max_fps=$maxFps',
@@ -43,7 +43,7 @@ class ScrcpyServerCommand {
     'clipboard_autosync=false',
     // A restore process turns the phone screen back on when the server
     // exits after "Screen Off", even if it is killed. It also deletes the
-    // pushed jar; DeskDroid pushes it on every start.
+    // pushed jar; Azdroid pushes it on every start.
     'cleanup=true',
     // Reports user activity every few seconds, so the screen does not time
     // out, on battery or charging. Unlike `stay_awake`, it changes no device

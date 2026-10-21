@@ -40,4 +40,4 @@ BUNDLED_ADB_DIR="${ROOT_DIR}/vendor/platform-tools/macos"
 [[ -d "$BUNDLED_ADB_DIR" ]] && export PATH="$PATH:$BUNDLED_ADB_DIR"
 
 cd "$ROOT_DIR"
-exec dart run "${ROOT_DIR}/bin/deskdroid_mcp.dart" "$@"
+exec dart run "${ROOT_DIR}/bin/azdroid_mcp.dart" "$@"

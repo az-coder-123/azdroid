@@ -232,7 +232,7 @@ lib/
 
 ```text
 macos/Runner/
-├── ScrcpyStreamPlugin.swift                # VideoToolbox decoder + texture (com.deskdroid/video_stream)
+├── ScrcpyStreamPlugin.swift                # VideoToolbox decoder + texture (com.azdroid/video_stream)
 └── ScrcpyStreamStats.swift                 # getStats state & counters
 windows/scrcpy_stream/                      # Media Foundation decoder plugin (same channel contract)
 native/scrcpy_core/                         # Platform-neutral C++17: scrcpy parsing, NV12 conversion, stats

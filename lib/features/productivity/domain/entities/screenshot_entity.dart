@@ -14,7 +14,7 @@ class ScreenshotEntity extends Equatable {
   /// Absolute file system path where the PNG screenshot is saved.
   final String filePath;
 
-  /// Base file name (e.g. DeskDroid_Screenshot_20261013_183500.png).
+  /// Base file name (e.g. Azdroid_Screenshot_20261013_183500.png).
   final String fileName;
 
   /// Size of the saved image file in bytes.

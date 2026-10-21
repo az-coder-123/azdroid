@@ -2,14 +2,14 @@ import Cocoa
 import CoreVideo
 import FlutterMacOS
 
-/// MethodChannel `com.deskdroid/video_stream` and the Flutter texture of the
+/// MethodChannel `com.azdroid/video_stream` and the Flutter texture of the
 /// mirrored screen (docs/native-video-contract.md).
 ///
 /// The reading and decoding live in [ScrcpyVideoSession]; this class owns
 /// the texture and hands the latest decoded frame to Flutter.
 public class ScrcpyStreamPlugin: NSObject, FlutterPlugin, FlutterTexture {
   private static var shared: ScrcpyStreamPlugin?
-  private static let channelName = "com.deskdroid/video_stream"
+  private static let channelName = "com.azdroid/video_stream"
   private static let defaultHost = "127.0.0.1"
   private static let defaultPort = 27183
 

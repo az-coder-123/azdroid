@@ -1,12 +1,12 @@
 import Foundation
 
 /// Starts scrcpy-server on a device for the native checks, with its own
-/// scid, port, and jar path so a running DeskDroid is not disturbed.
+/// scid, port, and jar path so a running Azdroid is not disturbed.
 /// Control is off, so the socket order is video, then audio (when on).
 final class DeviceServer {
   static let localPort = 27195
   private static let scid = "7a5e000b"
-  private static let remoteJar = "/data/local/tmp/deskdroid-native-check.jar"
+  private static let remoteJar = "/data/local/tmp/azdroid-native-check.jar"
   private static let startupDelay: TimeInterval = 2.5
 
   private let adb: String

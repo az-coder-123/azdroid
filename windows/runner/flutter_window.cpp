@@ -27,7 +27,7 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
-  // DeskDroid's own video plugin lives in windows/scrcpy_stream (not a pub
+  // Azdroid's own video plugin lives in windows/scrcpy_stream (not a pub
   // package), so it is registered here, like ScrcpyStreamPlugin on macOS.
   ScrcpyStreamPluginRegisterWithRegistrar(
       flutter_controller_->engine()->GetRegistrarForPlugin("ScrcpyStreamPlugin"));

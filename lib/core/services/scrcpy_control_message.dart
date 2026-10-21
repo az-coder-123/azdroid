@@ -20,7 +20,7 @@ class ScrcpyControlMessage {
   static const int typeSetClipboard = 9;
   static const int typeSetDisplayPower = 10;
 
-  /// Android `KeyEvent` / `MotionEvent` actions used by DeskDroid.
+  /// Android `KeyEvent` / `MotionEvent` actions used by Azdroid.
   static const int actionDown = 0;
   static const int actionUp = 1;
   static const int actionMove = 2;

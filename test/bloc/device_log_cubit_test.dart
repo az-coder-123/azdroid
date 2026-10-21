@@ -392,15 +392,13 @@ void main() {
         when(() => mockRepository.streamLogs(testSerial))
             .thenAnswer((_) => const Stream.empty());
         when(() => mockRepository.defaultSnapshotPath(testSerial))
-            .thenReturn('/Users/dev/Downloads/deskdroid_logs/snap.log');
+            .thenReturn('/Users/dev/Downloads/azdroid_logs/snap.log');
         when(
           () => mockRepository.exportLogsToFile(
             entries: any(named: 'entries'),
             destinationPath: any(named: 'destinationPath'),
           ),
-        ).thenAnswer(
-          (_) async => '/Users/dev/Downloads/deskdroid_logs/snap.log',
-        );
+        ).thenAnswer((_) async => '/Users/dev/Downloads/azdroid_logs/snap.log');
         return DeviceLogCubit(repository: mockRepository);
       },
       act: (cubit) async {
@@ -412,7 +410,7 @@ void main() {
         isA<DeviceLogStreaming>().having(
           (s) => s.feedbackMessage,
           'feedbackMessage',
-          contains('/Users/dev/Downloads/deskdroid_logs/snap.log'),
+          contains('/Users/dev/Downloads/azdroid_logs/snap.log'),
         ),
       ],
     );

@@ -29,12 +29,12 @@ abstract class IAudioStreamNativeService {
   Future<NativeAudioStats?> getStats();
 }
 
-/// Production implementation of the `com.deskdroid/audio_stream` channel,
+/// Production implementation of the `com.azdroid/audio_stream` channel,
 /// served by `macos/Runner/ScrcpyAudioPlugin.swift` and
 /// `windows/scrcpy_stream/` (see docs/native-audio-contract.md).
 class AudioStreamNativeService implements IAudioStreamNativeService {
   AudioStreamNativeService({MethodChannel? channel})
-    : _channel = channel ?? const MethodChannel('com.deskdroid/audio_stream');
+    : _channel = channel ?? const MethodChannel('com.azdroid/audio_stream');
 
   final MethodChannel _channel;
   bool? _available;

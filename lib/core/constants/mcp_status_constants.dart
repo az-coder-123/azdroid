@@ -5,17 +5,26 @@ class McpStatusConstants {
   const McpStatusConstants._();
 
   /// Base name of the precompiled server inside the app (`.exe` on Windows).
-  static const String executableBaseName = 'deskdroid-mcp';
+  static const String executableBaseName = 'azdroid-mcp';
+
+  /// Legacy binary name for backwards compatibility.
+  static const String legacyExecutableBaseName = 'deskdroid-mcp';
 
   /// Entry point that `dart run` (or `scripts/start_mcp_server.sh`) runs
   /// from a source checkout; counted as a running server too.
-  static const String sourceEntryPoint = 'deskdroid_mcp.dart';
+  static const String sourceEntryPoint = 'azdroid_mcp.dart';
+
+  /// Legacy entry point for backwards compatibility.
+  static const String legacySourceEntryPoint = 'deskdroid_mcp.dart';
 
   /// Launcher script for a source checkout (`scripts/start_mcp_server.sh`).
   static const String startScriptName = 'start_mcp_server.sh';
 
   /// Name under which the copied configuration registers the server.
-  static const String configServerKey = 'deskdroid';
+  static const String configServerKey = 'azdroid';
+
+  /// Legacy config server key.
+  static const String legacyConfigServerKey = 'deskdroid';
 
   /// The handshake sent to check that the server starts and answers.
   static const String handshakeRequest =

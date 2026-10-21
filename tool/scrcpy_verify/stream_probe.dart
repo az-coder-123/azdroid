@@ -26,7 +26,7 @@ class StreamProbe {
 
   _SocketReader? _activeReader;
 
-  /// Reads the stream like DeskDroid does: the dummy byte first, then
+  /// Reads the stream like Azdroid does: the dummy byte first, then
   /// [onVideoAccepted] (which must open the control socket, because the
   /// server sends the rest of the header only after that), then the header
   /// and packets until the stream is healthy and either [packets] arrived

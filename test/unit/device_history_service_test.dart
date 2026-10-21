@@ -9,7 +9,7 @@ void main() {
   late DeviceHistoryServiceImpl historyService;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('deskdroid_test_');
+    tempDir = Directory.systemTemp.createTempSync('azdroid_test_');
     historyFilePath = '${tempDir.path}/history.json';
     historyService = DeviceHistoryServiceImpl(customFilePath: historyFilePath);
   });

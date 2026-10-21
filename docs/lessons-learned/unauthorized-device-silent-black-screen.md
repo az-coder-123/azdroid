@@ -18,7 +18,7 @@ wrong or what to do.
 
 ## 2. 🔬 Diagnostic Traces & Evidence
 
-1. `deskdroid_dart.log` contained the real cause, logged only at debug level:
+1. `azdroid_dart.log` contained the real cause, logged only at debug level:
    ```text
    [scrcpy err] adb.exe: device unauthorized.
    Native video stream started with textureId: 2935551678384

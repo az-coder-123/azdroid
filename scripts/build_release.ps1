@@ -8,9 +8,9 @@
     2. Runs flutter analyze and flutter test (skip with -SkipTests).
     3. Fetches the bundled adb (Android Platform-Tools, checksum-verified)
        and builds the x64 release with flutter build windows --release,
-       which also compiles the MCP server (deskdroid-mcp.exe).
+       which also compiles the MCP server (azdroid-mcp.exe).
     4. Stages the bundle, checks the files it needs at runtime, and
-       smoke-tests the bundled adb.exe and deskdroid-mcp.exe, so the ZIP
+       smoke-tests the bundled adb.exe and azdroid-mcp.exe, so the ZIP
        runs on a PC without adb, Flutter, or Dart.
     5. Adds the Visual C++ runtime DLLs when the redistributable folder is
        installed with Visual Studio (warns otherwise).
@@ -68,7 +68,7 @@ $RequiredFiles = @(
   'AdbWinApi.dll',
   'AdbWinUsbApi.dll',
   'platform-tools-NOTICE.txt',
-  'deskdroid-mcp.exe'
+  'azdroid-mcp.exe'
 )
 
 # The bundled MCP server must answer tools/list within this time.
@@ -146,7 +146,7 @@ function Invoke-McpSmokeTest([string]$McpPath) {
     $process.StandardInput.Close()
     $readLine = $process.StandardOutput.ReadLineAsync()
     if (-not $readLine.Wait($McpSmokeTimeoutMs)) {
-      throw "deskdroid-mcp.exe did not answer tools/list within $($McpSmokeTimeoutMs / 1000) s."
+      throw "azdroid-mcp.exe did not answer tools/list within $($McpSmokeTimeoutMs / 1000) s."
     }
     return $readLine.Result
   } finally {
@@ -162,7 +162,7 @@ Write-Host '====================================================================
 
 $version = Get-AppVersion $PubspecPath
 $zipName = "Azdroid-v$($version.Name)-Windows-x64.zip"
-$latestZipName = 'DeskDroid-Windows-x64-latest.zip'
+$latestZipName = 'Azdroid-Windows-x64-latest.zip'
 Write-Host "Version: v$($version.Name) (build $($version.Build)), target: Windows 10/11 x64"
 
 if (-not (Get-Command flutter -ErrorAction SilentlyContinue)) {
@@ -207,9 +207,9 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'The bundled adb.exe does not run.' }
   Write-Ok "Bundled adb runs: $adbVersion"
 
-  $mcpReply = Invoke-McpSmokeTest (Join-Path $packageDir 'deskdroid-mcp.exe')
+  $mcpReply = Invoke-McpSmokeTest (Join-Path $packageDir 'azdroid-mcp.exe')
   if ($mcpReply -notmatch '"tools"') {
-    throw "deskdroid-mcp.exe did not list its tools. Reply: $mcpReply"
+    throw "azdroid-mcp.exe did not list its tools. Reply: $mcpReply"
   }
   Write-Ok 'Bundled MCP server answers tools/list'
 

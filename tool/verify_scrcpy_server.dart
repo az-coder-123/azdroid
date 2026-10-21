@@ -1,10 +1,10 @@
 // Verifies the bundled scrcpy-server against a real device or emulator, with
-// the exact arguments DeskDroid uses (ScrcpyServerCommand). Run it after every
+// the exact arguments Azdroid uses (ScrcpyServerCommand). Run it after every
 // scrcpy upgrade, on an old and on the newest Android version:
 //
 //   dart run tool/verify_scrcpy_server.dart --serial=<adb serial> [--adb=<path>]
 //
-// It is isolated from a running DeskDroid (own scid, local port, and remote
+// It is isolated from a running Azdroid (own scid, local port, and remote
 // jar path) and cleans up after itself. See docs/scrcpy-upgrade-assessment.md.
 import 'dart:async';
 import 'dart:convert';
@@ -38,7 +38,7 @@ Future<void> main(List<String> args) async {
     return;
   }
   const version = ScrcpyServerConstants.version;
-  const remoteJar = '/data/local/tmp/deskdroid-verify-$version.jar';
+  const remoteJar = '/data/local/tmp/azdroid-verify-$version.jar';
   Process? server;
   final serverLog = <String>[];
   try {

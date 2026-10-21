@@ -1,7 +1,7 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Catalog of Notifications, Mock Location, Network Conditioning,
-/// and Hardware Button tools for DeskDroid MCP.
+/// and Hardware Button tools for Azdroid MCP.
 class McpDeviceControlTools {
   const McpDeviceControlTools._();
 

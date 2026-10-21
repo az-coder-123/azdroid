@@ -92,7 +92,7 @@ Every new case study added to this directory must adhere strictly to the followi
    - Keep the file compact and readable (< 250 lines).
 2. **Mandatory 5-Section Structure:**
    - **1. Context & Symptoms:** What failed? Exact error messages, error codes, and observable UI state.
-   - **2. Diagnostic Traces & Evidence:** Exact terminal commands, log snippets (`deskdroid_dart.log`), and reproduction steps.
+   - **2. Diagnostic Traces & Evidence:** Exact terminal commands, log snippets (`azdroid_dart.log`), and reproduction steps.
    - **3. Root Cause Analysis:** Deep technical explanation of why the failure occurred (OS kernel, networking, daemon state, etc.).
    - **4. Architectural Solution:** How it was resolved in code, design patterns used, and code references.
    - **5. Prevention & Reusability Checklist:** Rules of thumb for engineers to reuse or avoid in other features.

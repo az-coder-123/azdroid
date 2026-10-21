@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-While moving the diagnostic log path into `HostPaths`, the first draft used `Directory.systemTemp` for every OS. This would have **silently moved** the macOS log from `/tmp/deskdroid_dart.log` to a folder like `/var/folders/8_/7881x22x.../T/`.
+While moving the diagnostic log path into `HostPaths`, the first draft used `Directory.systemTemp` for every OS. This would have **silently moved** the macOS log from `/tmp/azdroid_dart.log` to a folder like `/var/folders/8_/7881x22x.../T/`.
 
 ## 2. Diagnostic Traces & Evidence
 

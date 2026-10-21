@@ -81,7 +81,7 @@ void main() {
     expect(find.text('Built for Intel (x86_64)'), findsOneWidget);
     expect(find.text('Uses another copy'), findsOneWidget);
     expect(
-      find.text('Runs: dart run /src/bin/deskdroid_mcp.dart'),
+      find.text('Runs: dart run /src/bin/azdroid_mcp.dart'),
       findsOneWidget,
     );
     expect(find.text('Set Up an AI Client'), findsOneWidget);

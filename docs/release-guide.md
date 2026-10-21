@@ -104,7 +104,7 @@ The release script refuses to publish while anything outside `RELEASE/` is uncom
 |:---|:---|:---|
 | Checks | `flutter analyze`, `flutter test` (skip with `--skip-tests`) | A warning or failing test |
 | Build | Fetches Platform-Tools (checksum-verified), deletes the old `Azdroid.app` (so the app is always re-signed), `flutter build macos --release` | Build error |
-| Bundle checks | Bundled `adb` runs, `codesign --verify --deep --strict`, `deskdroid-mcp` answers `tools/list` | Any check fails |
+| Bundle checks | Bundled `adb` runs, `codesign --verify --deep --strict`, `azdroid-mcp` answers `tools/list` | Any check fails |
 | Package | `ditto` ZIP, `-latest` copy, `SHA256SUMS.txt`; deletes older **macOS** ZIPs only | — |
 | Describe | `scripts/release/write_release_readme.sh` writes `RELEASE/README.md` for every platform with a checksum file | No checksum file |
 | Commit and push | Commits `RELEASE/`, `git push origin HEAD:main` (fast-forward only), pushes the current branch | Push rejected: run `git fetch`, rebase, rerun. Never force-push. |
@@ -128,7 +128,7 @@ On a Windows PC with Visual Studio 2022, after pulling the release commit:
 powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1 -Publish
 ```
 
-Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\Azdroid-v<version>-Windows-x64.zip` (with `adb.exe` and `deskdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
+Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\Azdroid-v<version>-Windows-x64.zip` (with `adb.exe` and `azdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
 
 Before uploading, test the ZIP on a clean Windows with Windows Sandbox (Windows 10/11 Pro or Enterprise; enable once with `Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All` and restart):
 
@@ -136,7 +136,7 @@ Before uploading, test the ZIP on a clean Windows with Windows Sandbox (Windows 
 powershell -ExecutionPolicy Bypass -File scripts\test_in_windows_sandbox.ps1
 ```
 
-It opens the newest ZIP in the sandbox, which has no Visual C++ runtime, adb, or Dart. `build\sandbox-results\smoke.txt` must show the MCP server's tool count, `App running ... True`, the runtime DLLs loaded from the app folder, and the bundled adb server. Then connect the phone over Wi-Fi (Direct IP) in the sandbox and mirror; the copied `deskdroid_dart.log` and `scrcpy_stream.log` in the same folder show the result.
+It opens the newest ZIP in the sandbox, which has no Visual C++ runtime, adb, or Dart. `build\sandbox-results\smoke.txt` must show the MCP server's tool count, `App running ... True`, the runtime DLLs loaded from the app folder, and the bundled adb server. Then connect the phone over Wi-Fi (Direct IP) in the sandbox and mirror; the copied `azdroid_dart.log` and `scrcpy_stream.log` in the same folder show the result.
 
 ---
 

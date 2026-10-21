@@ -5,7 +5,7 @@ import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_status_l
 import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_status_line.dart';
 import 'package:flutter/material.dart';
 
-/// Whether each known AI client is set up to launch the DeskDroid server.
+/// Whether each known AI client is set up to launch the Azdroid server.
 class McpClientsSection extends StatelessWidget {
   const McpClientsSection({super.key, required this.clients});
 

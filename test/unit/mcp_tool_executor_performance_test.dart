@@ -100,7 +100,7 @@ void main() {
       when(() => mockAdb.getNetworkInfo('192.168.1.100:5555')).thenAnswer(
         (_) async => {
           'ipAddress': '192.168.1.100',
-          'ssid': 'DeskDroid_5G',
+          'ssid': 'Azdroid_5G',
           'linkSpeed': '433 Mbps',
         },
       );
@@ -111,7 +111,7 @@ void main() {
 
       expect(result.isError, isFalse);
       expect(result.content.first.text, contains('192.168.1.100'));
-      expect(result.content.first.text, contains('DeskDroid_5G'));
+      expect(result.content.first.text, contains('Azdroid_5G'));
     });
 
     test(

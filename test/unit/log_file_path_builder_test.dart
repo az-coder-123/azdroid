@@ -19,10 +19,10 @@ void main() {
   group('LogFilePathBuilder on macOS', () {
     final builder = builderFor(HostOs.macos, {'HOME': '/Users/dev'});
 
-    test('recording path uses Downloads/deskdroid_logs and a safe serial', () {
+    test('recording path uses Downloads/azdroid_logs and a safe serial', () {
       expect(
         builder.recordingPath('192.168.43.148:5555'),
-        '/Users/dev/Downloads/deskdroid_logs/'
+        '/Users/dev/Downloads/azdroid_logs/'
         'logcat_192_168_43_148_5555_20261017_090507.log',
       );
     });
@@ -42,7 +42,7 @@ void main() {
 
     expect(
       builder.recordingPath('R58M123'),
-      r'C:\Users\dev\Downloads\deskdroid_logs\logcat_R58M123_20261017_090507.log',
+      r'C:\Users\dev\Downloads\azdroid_logs\logcat_R58M123_20261017_090507.log',
     );
   });
 }

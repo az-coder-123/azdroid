@@ -17,7 +17,7 @@ class MockHostFileLauncher extends Mock implements HostFileLauncher {}
 void main() {
   late MockScreenRecordingRepository mockRepository;
   const testSerial = '192.168.1.100:5555';
-  const testRemotePath = '/sdcard/deskdroid_rec_12345.mp4';
+  const testRemotePath = '/sdcard/azdroid_rec_12345.mp4';
 
   final testRecording = ScreenRecordingEntity(
     filePath: '/Users/mac/Downloads/rec.mp4',

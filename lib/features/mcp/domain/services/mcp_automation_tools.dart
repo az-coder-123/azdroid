@@ -1,6 +1,6 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
-/// Catalog of Smart Waiting, Condition Monitoring, and Macro Batching tools for DeskDroid MCP.
+/// Catalog of Smart Waiting, Condition Monitoring, and Macro Batching tools for Azdroid MCP.
 class McpAutomationTools {
   const McpAutomationTools._();
 

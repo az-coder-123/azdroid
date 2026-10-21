@@ -95,8 +95,8 @@ Follow this strict 7-step pipeline whenever the user requests "thực hiện dep
    - Cleans the old `.app` bundle to preserve code signature integrity.
    - Builds release: `flutter build macos --release`.
    - Verifies bundled `adb` and executes codesign strict verification.
-   - Performs JSON-RPC smoke test on bundled `deskdroid-mcp` binary (`tools/list`).
-   - Compresses via Apple `ditto` into `RELEASE/Azdroid-v<version>-macOS.zip` and `RELEASE/DeskDroid-macOS-latest.zip`.
+   - Performs JSON-RPC smoke test on bundled `azdroid-mcp` binary (`tools/list`).
+   - Compresses via Apple `ditto` into `RELEASE/Azdroid-v<version>-macOS.zip` and `RELEASE/Azdroid-macOS-latest.zip`.
    - Preserves existing Windows packages and updates `RELEASE/README.md`.
    - Commits `RELEASE/` artifacts and pushes to GitHub `origin/main`.
    - Publishes GitHub Release via `gh release create v<version>` with `docs/releases/v<version>.md`.

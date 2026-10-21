@@ -2,7 +2,7 @@
 
 ## 1. Context & Symptoms
 
-To spare MCP users the Dart SDK, release builds now ship `bin/deskdroid_mcp.dart` compiled with `dart compile exe` inside `Azdroid.app/Contents/MacOS/deskdroid-mcp`. Signed with the hardened runtime (required for notarization), the server **exited immediately with code 137** and printed nothing.
+To spare MCP users the Dart SDK, release builds now ship `bin/azdroid_mcp.dart` compiled with `dart compile exe` inside `Azdroid.app/Contents/MacOS/azdroid-mcp`. Signed with the hardened runtime (required for notarization), the server **exited immediately with code 137** and printed nothing.
 
 ## 2. Diagnostic Traces & Evidence
 

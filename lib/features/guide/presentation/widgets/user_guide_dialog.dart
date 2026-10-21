@@ -9,7 +9,7 @@ import 'package:desk_droid/features/guide/presentation/widgets/sections/troubles
 import 'package:desk_droid/features/guide/presentation/widgets/sections/xiaomi_setup_section.dart';
 import 'package:flutter/material.dart';
 
-/// Modal dialog orchestrator for the DeskDroid user guide, presenting a macOS-native
+/// Modal dialog orchestrator for the Azdroid user guide, presenting a macOS-native
 /// two-column split view with categorized documentation tabs.
 class UserGuideDialog extends StatefulWidget {
   const UserGuideDialog({super.key});

@@ -64,7 +64,7 @@ class ScreenshotDatasourceImpl implements ScreenshotDatasource {
     final h = now.hour.toString().padLeft(2, '0');
     final min = now.minute.toString().padLeft(2, '0');
     final s = now.second.toString().padLeft(2, '0');
-    final fileName = 'DeskDroid_Screenshot_$y$m${d}_$h$min$s.png';
+    final fileName = 'Azdroid_Screenshot_$y$m${d}_$h$min$s.png';
     final filePath = _paths.context.join(targetDir.path, fileName);
     final targetFile = File(filePath);
 

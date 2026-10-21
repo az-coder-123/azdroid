@@ -8,7 +8,7 @@ import 'package:desk_droid/features/showcase/presentation/widgets/feature_catego
 import 'package:desk_droid/features/showcase/presentation/widgets/feature_showcase_header.dart';
 import 'package:flutter/material.dart';
 
-/// Modal dialog presenting a modern, categorized showcase of all DeskDroid features.
+/// Modal dialog presenting a modern, categorized showcase of all Azdroid features.
 class FeatureShowcaseDialog extends StatefulWidget {
   const FeatureShowcaseDialog({super.key});
 

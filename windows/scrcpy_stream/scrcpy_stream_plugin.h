@@ -1,4 +1,4 @@
-// Windows implementation of the `com.deskdroid/video_stream` MethodChannel
+// Windows implementation of the `com.azdroid/video_stream` MethodChannel
 // (docs/native-video-contract.md) and owner of the audio channel
 // (docs/native-audio-contract.md). Shared contracts with the macOS plugins.
 #ifndef SCRCPY_STREAM_SCRCPY_STREAM_PLUGIN_H_

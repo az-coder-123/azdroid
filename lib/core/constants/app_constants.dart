@@ -1,4 +1,4 @@
-/// General application-wide constants for DeskDroid.
+/// General application-wide constants for Azdroid.
 class AppConstants {
   const AppConstants._();
 

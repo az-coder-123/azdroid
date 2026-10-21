@@ -17,7 +17,7 @@ class _MockExecutor extends Mock implements ProcessExecutor {}
 class _MockProcess extends Mock implements Process {}
 
 void main() {
-  const exe = '/Applications/DeskDroid.app/Contents/MacOS/deskdroid-mcp';
+  const exe = '/Applications/Azdroid.app/Contents/MacOS/azdroid-mcp';
   late _MockExecutor executor;
   late List<String> sentToServer;
 

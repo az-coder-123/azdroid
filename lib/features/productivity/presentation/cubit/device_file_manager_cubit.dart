@@ -21,7 +21,7 @@ class DeviceFileManagerCubit extends Cubit<DeviceFileManagerState> {
        super(const DeviceFileManagerInitial());
 
   /// Folder created inside the user's Downloads for pulled files.
-  static const String downloadFolderName = 'DeskDroid';
+  static const String downloadFolderName = 'Azdroid';
 
   final FileTransferRepository repository;
   final HostFileLauncher _fileLauncher;

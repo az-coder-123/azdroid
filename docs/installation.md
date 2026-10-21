@@ -31,7 +31,7 @@ Download the ZIP for your platform from [GitHub Releases](https://github.com/az-
 ### Windows (Preview)
 
 1. Unzip `Azdroid-v<version>-Windows-x64.zip` to a folder you own, for example `%LOCALAPPDATA%\Programs\Azdroid`. There is no installer; the folder is the app.
-2. Run `Azdroid\desk_droid.exe`. Keep all files in the folder together: the `.dll` files and the `data` folder are required. The folder also contains `adb.exe` and the MCP server `deskdroid-mcp.exe`, so nothing else has to be installed; an adb you install yourself takes precedence ([details](bundled-platform-tools.md#3-which-adb-is-used)).
+2. Run `Azdroid\desk_droid.exe`. Keep all files in the folder together: the `.dll` files and the `data` folder are required. The folder also contains `adb.exe` and the MCP server `azdroid-mcp.exe`, so nothing else has to be installed; an adb you install yourself takes precedence ([details](bundled-platform-tools.md#3-which-adb-is-used)).
 3. The build is not code-signed. If SmartScreen shows *"Windows protected your PC"*, click **More info**, then **Run anyway**.
 4. If Windows reports a missing `VCRUNTIME140.dll` or `MSVCP140.dll`, install the [Microsoft Visual C++ Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe). Release ZIPs normally include these DLLs.
 
@@ -79,7 +79,7 @@ Both scripts read the version from `pubspec.yaml`, run `flutter analyze` and `fl
 | Skip checks | `--skip-tests` | `-SkipTests` |
 | Publish | Commits `RELEASE/`, fast-forwards `origin/main`, and creates a GitHub Release with `docs/releases/v<version>.md` **by default** (`--no-push`, `--no-gh-release` to skip) | Never commits or pushes; `-Publish` uploads the ZIP to the GitHub Release `v<version>` with `gh` |
 
-The Windows script fetches the bundled adb first (`dart run tool/fetch_platform_tools.dart --os=windows`, see [bundled-platform-tools.md](bundled-platform-tools.md)), and the release build compiles `deskdroid-mcp.exe`. Before zipping, it checks that the packaged `adb.exe` runs and that `deskdroid-mcp.exe` answers `tools/list`, so the ZIP works on a PC without adb, Flutter, or Dart.
+The Windows script fetches the bundled adb first (`dart run tool/fetch_platform_tools.dart --os=windows`, see [bundled-platform-tools.md](bundled-platform-tools.md)), and the release build compiles `azdroid-mcp.exe`. Before zipping, it checks that the packaged `adb.exe` runs and that `azdroid-mcp.exe` answers `tools/list`, so the ZIP works on a PC without adb, Flutter, or Dart.
 
 The Windows script also copies the Visual C++ runtime DLLs into the package when Visual Studio has the redistributable files installed (`VC\Redist\MSVC\<version>\x64\Microsoft.VC143.CRT`). Without them it prints a warning, and users may need the redistributable from section 2.
 

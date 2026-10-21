@@ -5,7 +5,7 @@ import 'package:desk_droid/core/services/scrcpy_control_message.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Expected bytes are copied from scrcpy v3.3.4 (unchanged in v5.0.1)
-/// `app/tests/test_control_msg_serialize.c`, so DeskDroid serializes exactly
+/// `app/tests/test_control_msg_serialize.c`, so Azdroid serializes exactly
 /// like the official client.
 void main() {
   test('keycode matches test_serialize_inject_keycode', () {

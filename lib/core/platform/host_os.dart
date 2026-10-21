@@ -1,6 +1,6 @@
 import 'dart:io';
 
-/// Desktop operating systems DeskDroid can run on.
+/// Desktop operating systems Azdroid can run on.
 ///
 /// Pure Dart (no Flutter) so both the app and the MCP server can use it.
 enum HostOs {

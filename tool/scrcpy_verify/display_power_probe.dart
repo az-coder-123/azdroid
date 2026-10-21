@@ -1,6 +1,6 @@
 import 'dart:io';
 
-/// Checks scrcpy's SET_DISPLAY_POWER the way DeskDroid's Screen Off uses
+/// Checks scrcpy's SET_DISPLAY_POWER the way Azdroid's Screen Off uses
 /// it: the panel turns off while the device stays awake and video keeps
 /// flowing, and the server's restore process turns it on when it exits.
 class DisplayPowerProbe {

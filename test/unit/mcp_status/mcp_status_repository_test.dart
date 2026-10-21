@@ -22,10 +22,10 @@ class _MockActivity extends Mock implements McpActivityReader {}
 
 void main() {
   test('the snippet is valid JSON and escapes Windows backslashes', () {
-    const exe = r'C:\Apps\DeskDroid\deskdroid-mcp.exe';
+    const exe = r'C:\Apps\Azdroid\azdroid-mcp.exe';
     final json = jsonDecode(buildMcpConfigSnippet(exe)) as Map<String, Object?>;
     final servers = json['mcpServers']! as Map<String, Object?>;
-    final entry = servers['deskdroid']! as Map<String, Object?>;
+    final entry = servers['azdroid']! as Map<String, Object?>;
     expect(entry['command'], exe);
   });
 

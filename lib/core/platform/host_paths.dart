@@ -16,7 +16,7 @@ abstract class HostPaths {
   /// The user's Downloads folder.
   String get downloadsDirectory;
 
-  /// Per-user application data folder for DeskDroid.
+  /// Per-user application data folder for Azdroid.
   String get appDataDirectory;
 
   /// Writable temporary directory.
@@ -50,10 +50,13 @@ class SystemHostPaths implements HostPaths {
        _executable = executablePath ?? Platform.resolvedExecutable;
 
   /// Folder name used under the per-user application data directory.
-  static const String appFolderName = 'DeskDroid';
+  static const String appFolderName = 'Azdroid';
+
+  /// Legacy folder name for backwards compatibility.
+  static const String legacyAppFolderName = 'DeskDroid';
 
   /// File name of the diagnostic log inside [tempDirectory].
-  static const String diagnosticLogFileName = 'deskdroid_dart.log';
+  static const String diagnosticLogFileName = 'azdroid_dart.log';
 
   static const String _downloadsFolderName = 'Downloads';
   static const String _posixLogDirectory = '/tmp';

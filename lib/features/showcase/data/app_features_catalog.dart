@@ -11,11 +11,11 @@ export 'package:desk_droid/features/showcase/data/showcase_display_control_featu
 export 'package:desk_droid/features/showcase/data/showcase_productivity_features.dart';
 export 'package:desk_droid/features/showcase/data/showcase_shortcuts_features.dart';
 
-/// Curated registry of all built-in DeskDroid features with user-friendly descriptions.
+/// Curated registry of all built-in Azdroid features with user-friendly descriptions.
 class AppFeaturesCatalog {
   const AppFeaturesCatalog._();
 
-  /// Combined master catalog of all DeskDroid features across all categories.
+  /// Combined master catalog of all Azdroid features across all categories.
   static const List<AppFeatureItem> allFeatures = [
     ...showcaseDisplayControlFeatures,
     ...showcaseProductivityFeatures,

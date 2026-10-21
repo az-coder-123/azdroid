@@ -14,7 +14,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CORE_DIR="${ROOT_DIR}/native/scrcpy_core"
-OUT_DIR="${TMPDIR:-/tmp}/deskdroid_scrcpy_core_tests"
+OUT_DIR="${TMPDIR:-/tmp}/azdroid_scrcpy_core_tests"
 CXX="${CXX:-c++}"
 
 mkdir -p "${OUT_DIR}"

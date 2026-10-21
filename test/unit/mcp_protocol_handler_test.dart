@@ -33,7 +33,7 @@ void main() {
         expect(result['protocolVersion'], '2024-11-05');
         expect(
           (result['serverInfo'] as Map<String, dynamic>)['name'],
-          'deskdroid-mcp',
+          'azdroid-mcp',
         );
         expect(
           (result['capabilities'] as Map<String, dynamic>)['tools'],

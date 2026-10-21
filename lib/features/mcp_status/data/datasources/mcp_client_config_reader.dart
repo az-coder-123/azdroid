@@ -8,7 +8,7 @@ import 'package:desk_droid/features/mcp_status/data/datasources/mcp_file_probe.d
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_client_status.dart';
 import 'package:path/path.dart' as p;
 
-/// Reads an AI client's MCP configuration and finds the DeskDroid entry.
+/// Reads an AI client's MCP configuration and finds the Azdroid entry.
 ///
 /// Read-only: the app never edits client configuration files.
 class McpClientConfigReader {
@@ -19,7 +19,7 @@ class McpClientConfigReader {
   }) : _path = pathContext,
        _fileProbe = files;
 
-  /// This app's `deskdroid-mcp`; an entry launching it is [McpClientSetup.configured].
+  /// This app's `azdroid-mcp`; an entry launching it is [McpClientSetup.configured].
   final String expectedExecutable;
   final p.Context _path;
   final McpFileProbe _fileProbe;
@@ -47,7 +47,7 @@ class McpClientConfigReader {
     }
     try {
       final json = jsonDecode(await _fileProbe.readText(client.configPath));
-      final command = _deskDroidCommand(json);
+      final command = _azdroidCommand(json);
       if (command == null) return status(McpClientSetup.notConfigured);
       return status(
         _isThisApp(command)
@@ -64,9 +64,9 @@ class McpClientConfigReader {
     }
   }
 
-  /// The command line of the first server entry that runs DeskDroid's MCP
+  /// The command line of the first server entry that runs Azdroid's MCP
   /// server (precompiled, `dart run`, or the start script), whatever its key.
-  String? _deskDroidCommand(Object? json) {
+  String? _azdroidCommand(Object? json) {
     if (json is! Map) return null;
     final servers = json[_serversKey];
     if (servers is! Map) return null;
@@ -78,19 +78,24 @@ class McpClientConfigReader {
         for (final a in entry[_argsKey] is List ? entry[_argsKey] as List : [])
           '$a',
       ];
-      if (_runsDeskDroid(command, args)) {
+      if (_runsAzdroid(command, args)) {
         return [command, ...args].join(' ');
       }
     }
     return null;
   }
 
-  bool _runsDeskDroid(String command, List<String> args) {
-    // Lowercase: Windows file names ignore case (DESKDROID-MCP.EXE).
+  bool _runsAzdroid(String command, List<String> args) {
+    // Lowercase: Windows file names ignore case (AZDROID-MCP.EXE / DESKDROID-MCP.EXE).
     final name = _path.basenameWithoutExtension(command).toLowerCase();
     return name == McpStatusConstants.executableBaseName ||
+        name == McpStatusConstants.legacyExecutableBaseName ||
         command.contains(McpStatusConstants.startScriptName) ||
-        args.any((a) => a.contains(McpStatusConstants.sourceEntryPoint));
+        args.any(
+          (a) =>
+              a.contains(McpStatusConstants.sourceEntryPoint) ||
+              a.contains(McpStatusConstants.legacySourceEntryPoint),
+        );
   }
 
   bool _isThisApp(String command) => _path.equals(

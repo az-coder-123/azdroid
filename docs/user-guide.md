@@ -141,7 +141,7 @@ Shown with <kbd>Cmd</kbd> (macOS). On Windows use <kbd>Ctrl</kbd> instead, for e
 - **Bookmarking (Star Logs):** Click the star icon on any log row to bookmark it. Toggle the **Starred** filter chip to isolate flagged logs during testing.
 - **Detail Drawer & Stack Trace Viewer:** Click any log row to open the side inspector drawer. View full metadata, colored Java/Kotlin stack traces, and switch **JSON: Raw / Formatted** to pretty-print JSON payloads.
 - **Toggle Soft-Wrap:** Click the wrap icon in the footer to toggle between multi-line text wrapping and single-line fixed-height rows (fastest scrolling).
-- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log` inside your Downloads folder.
+- **Pause & Disk Recording:** Click **Pause** to freeze the log stream for inspection, or click **Record** to continuously save streaming logs to `azdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log` inside your Downloads folder.
 
 ### Bidirectional Clipboard Sync
 - Text copied on the computer (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>C</kbd>) is synced to the Android clipboard within about 2 seconds.

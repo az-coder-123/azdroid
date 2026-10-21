@@ -34,7 +34,7 @@ flowchart LR
 
 ## 🏛️ 3. Proposed Dual-Architecture Paradigms
 
-### Paradigm A: Azdroid as an MCP Server (`deskdroid-mcp`) — *Highest Priority*
+### Paradigm A: Azdroid as an MCP Server (`azdroid-mcp`) — *Highest Priority*
 Azdroid acts as a **Model Context Protocol (MCP)** server over `stdio` or Server-Sent Events (SSE). 
 - Allows external AI assistants (e.g. **Antigravity**, **Claude Desktop**, **Cursor**) to observe and drive real Android devices natively.
 - Developers can say: *"Run my checkout flow, inspect Logcat if any errors occur, and take a screenshot of the confirmation page."*
@@ -86,7 +86,7 @@ install_and_launch_apk(apk_path: string, launch_package: string): { installed: b
 
 - [ ] **Phase 1: Headless CLI & MCP Protocol Bridge (1–2 weeks)**
   - Implement Dart `shelf` or `stdio` MCP server exposing core tools (`screenshot`, `tap`, `swipe`, `text`, `intent`, `logcat`).
-  - Publish `deskdroid-mcp` package and configuration snippet for Claude/Cursor.
+  - Publish `azdroid-mcp` package and configuration snippet for Claude/Cursor.
 - [ ] **Phase 2: Semantic UI Element Grounding (2 weeks)**
   - Integrate fast accessibility node inspection alongside raw screenshot capture.
   - Return combined `{ image, elements: [...] }` payload for multimodal LLMs.

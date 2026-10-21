@@ -9,8 +9,8 @@ class LogFilePathBuilder {
     : _paths = hostPaths,
       _clock = clock ?? DateTime.now;
 
-  /// Folder created inside Downloads for DeskDroid log files.
-  static const String logFolderName = 'deskdroid_logs';
+  /// Folder created inside Downloads for Azdroid log files.
+  static const String logFolderName = 'azdroid_logs';
 
   static const String _recordingPrefix = 'logcat';
   static const String _snapshotPrefix = 'logcat_snapshot';
@@ -20,7 +20,7 @@ class LogFilePathBuilder {
   final HostPaths _paths;
   final DateTime Function() _clock;
 
-  /// Default folder for log files: `<Downloads>/deskdroid_logs`.
+  /// Default folder for log files: `<Downloads>/azdroid_logs`.
   String get defaultDirectory =>
       _paths.context.join(_paths.downloadsDirectory, logFolderName);
 

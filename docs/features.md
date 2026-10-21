@@ -148,7 +148,7 @@
 - **Bookmarking & Star Logs:** 1-click star toggle on console rows and the inspector drawer to bookmark critical logs, filterable with the dedicated **Starred** chip.
 - **Side Detail Drawer & Stack Trace Viewer:** Slide-out inspector with the entry's metadata, Java/Kotlin stack trace highlighting, and a **JSON: Raw / Formatted** toggle for JSON payloads.
 - **Adaptive Soft-Wrap vs. Fixed Row Height:** Toggle between fixed 26 px rows (fastest virtualized scrolling) and soft-wrap multi-line rendering for long log lines.
-- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file in the Downloads folder (`deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`).
+- **Pause & Continuous Disk Recording:** Freeze log stream for manual inspection or stream directly to a timestamped file in the Downloads folder (`azdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`).
 
 ---
 

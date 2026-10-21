@@ -57,7 +57,7 @@ add_subdirectory("runner")
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
-# DeskDroid native video plugin (scrcpy stream -> texture).
+# Azdroid native video plugin (scrcpy stream -> texture).
 # See docs/native-video-contract.md.
 add_subdirectory("scrcpy_stream")
 target_link_libraries(${BINARY_NAME} PRIVATE scrcpy_stream_plugin)
@@ -113,12 +113,12 @@ else()
     " COMPONENT Runtime)
 endif()
 
-# Precompiled MCP server (deskdroid-mcp.exe) next to the bundled adb, so MCP
+# Precompiled MCP server (azdroid-mcp.exe) next to the bundled adb, so MCP
 # clients need no Dart SDK. Release only; Debug users run
-# `dart run bin/deskdroid_mcp.dart`. See docs/mcp-setup-guide.md.
+# `dart run bin/azdroid_mcp.dart`. See docs/mcp-setup-guide.md.
 # FLUTTER_ROOT is defined in the flutter/ subdirectory scope, so read it here.
 include("${CMAKE_CURRENT_SOURCE_DIR}/flutter/ephemeral/generated_config.cmake")
-set(MCP_SERVER_ENTRYPOINT "${CMAKE_CURRENT_SOURCE_DIR}/../bin/deskdroid_mcp.dart")
+set(MCP_SERVER_ENTRYPOINT "${CMAKE_CURRENT_SOURCE_DIR}/../bin/azdroid_mcp.dart")
 # install(CODE) ignores CONFIGURATIONS, so the Release check is in the code.
 # The output path is expanded now, not at install time: CMAKE_INSTALL_PREFIX
 # holds a generator expression that install(CODE) only resolves when it is
@@ -128,11 +128,15 @@ install(CODE "
     execute_process(
       COMMAND \"${FLUTTER_ROOT}/bin/dart.bat\" compile exe
               \"${MCP_SERVER_ENTRYPOINT}\"
-              -o \"${INSTALL_BUNDLE_LIB_DIR}/deskdroid-mcp.exe\"
+              -o \"${INSTALL_BUNDLE_LIB_DIR}/azdroid-mcp.exe\"
       RESULT_VARIABLE mcp_result)
     if(NOT mcp_result EQUAL 0)
-      message(FATAL_ERROR \"Failed to compile the MCP server (deskdroid-mcp.exe).\")
+      message(FATAL_ERROR \"Failed to compile the MCP server (azdroid-mcp.exe).\")
     endif()
+    execute_process(
+      COMMAND \"${CMAKE_COMMAND}\" -E copy
+              \"${INSTALL_BUNDLE_LIB_DIR}/azdroid-mcp.exe\"
+              \"${INSTALL_BUNDLE_LIB_DIR}/deskdroid-mcp.exe\")
   endif()
   " COMPONENT Runtime)
 

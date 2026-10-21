@@ -26,10 +26,7 @@ void main() {
   );
 
   test('the folder is under the app data folder', () {
-    expect(
-      dir,
-      '/Users/dev/Library/Application Support/DeskDroid/mcp-activity',
-    );
+    expect(dir, '/Users/dev/Library/Application Support/Azdroid/mcp-activity');
     expect(paths.pidOf(paths.fileFor(77)), 77);
     expect(paths.pidOf('$dir/notes.txt'), isNull);
   });

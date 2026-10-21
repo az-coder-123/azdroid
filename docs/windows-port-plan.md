@@ -28,7 +28,7 @@
 | Tool lookup | `/usr/bin/which`, Homebrew paths, `~/Library/Android/sdk` | `adb_binary_locator.dart`, `aapt_path_resolver.dart` |
 | APK icon extraction | `/usr/bin/unzip` | `apk_metadata_datasource.dart` |
 | Subnet discovery | `/usr/sbin/arp -an` output format | `network_subnet_scanner.dart` |
-| Home and temp paths | `HOME`, `/tmp/deskdroid_dart.log` (6 call sites) | logger, history, recorder, screenshots |
+| Home and temp paths | `HOME`, `/tmp/azdroid_dart.log` (6 call sites) | logger, history, recorder, screenshots |
 | Path handling | `split('/')` (4), `'$dir/file'` joins (21) | across data layer |
 | Process output parsing | `split('\n')` (13), breaks on `\r\n` | ADB parsers |
 | Bundled asset path | `../Frameworks/App.framework/...` | `scrcpy_server_manager.dart` |
@@ -36,7 +36,7 @@
 | Typography | `.AppleSystemUIFont` | `core/theme/app_typography.dart` |
 | Tooling | `build_release.sh`, `start_mcp_server.sh` (bash) | `scripts/` |
 
-The Dart MCP server (`bin/deskdroid_mcp.dart`) is already portable except for ADB lookup, which `AdbBinaryLocator` now owns.
+The Dart MCP server (`bin/azdroid_mcp.dart`) is already portable except for ADB lookup, which `AdbBinaryLocator` now owns.
 
 ---
 
@@ -46,7 +46,7 @@ The Dart MCP server (`bin/deskdroid_mcp.dart`) is already portable except for AD
 flowchart LR
     subgraph Dart ["Dart (shared)"]
         Cubits --> Contracts["core contracts\nHostFilePicker · HostFileLauncher\nImageClipboard · HostPaths\nToolLocator · ShortcutScheme"]
-        VideoSvc["VideoStreamNativeService\nMethodChannel com.deskdroid/video_stream"]
+        VideoSvc["VideoStreamNativeService\nMethodChannel com.azdroid/video_stream"]
     end
     Contracts --> MacImpl["macOS impls"]
     Contracts --> WinImpl["Windows impls"]
@@ -119,7 +119,7 @@ Decision: use Media Foundation, not FFmpeg. It ships with Windows, adds no licen
 - `scripts/build_release.ps1` produces a signed MSIX (`msix` package) and a portable ZIP.
 
 **Status (2026-10-18): portable ZIP done.** `scripts/build_release.ps1` runs analyze and tests, builds the x64 release, bundles the Visual C++ runtime, and writes the ZIP with SHA-256 checksums (usage: [installation.md](installation.md#5-package-a-release)). The packaged `desk_droid.exe` starts on Windows 10. Still open: code signing, MSIX, CI, and the MCP launcher script (the server already runs with `dart run`).
-- ~~MCP launcher for Windows~~: release builds ship `deskdroid-mcp.exe` (compiled during the Release install step), so no `.ps1` launcher is needed for users. Not yet built on Windows.
+- ~~MCP launcher for Windows~~: release builds ship `azdroid-mcp.exe` (compiled during the Release install step), so no `.ps1` launcher is needed for users. Not yet built on Windows.
 - Bind every local socket to `127.0.0.1`, so Windows Defender Firewall does not prompt.
 
 ### Phase 5 — Documentation (alongside each phase)

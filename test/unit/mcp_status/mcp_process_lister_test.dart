@@ -17,7 +17,7 @@ void main() {
   McpProcessLister lister(HostOs os) => McpProcessLister(
     processExecutor: executor,
     tools: HostProcessTools.forHost(os),
-    executableName: os.executableName('deskdroid-mcp'),
+    executableName: os.executableName('azdroid-mcp'),
   );
 
   void result(int exit, String out) =>
@@ -37,7 +37,7 @@ void main() {
   });
 
   test('tasklist rows give their PIDs on Windows', () async {
-    result(0, '"deskdroid-mcp.exe","4120","Console","1","12,340 K"\r\n');
+    result(0, '"azdroid-mcp.exe","4120","Console","1","12,340 K"\r\n');
     expect(await lister(HostOs.windows).listPids(), {4120});
   });
 }

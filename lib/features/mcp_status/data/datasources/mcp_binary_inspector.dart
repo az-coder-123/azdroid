@@ -9,7 +9,7 @@ import 'package:desk_droid/core/services/process_executor.dart';
 import 'package:desk_droid/features/mcp_status/data/datasources/mcp_file_probe.dart';
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_binary_status.dart';
 
-/// Checks the `deskdroid-mcp` executable bundled next to the app: whether
+/// Checks the `azdroid-mcp` executable bundled next to the app: whether
 /// it exists, which CPUs it targets, and whether it answers a handshake.
 class McpBinaryInspector {
   McpBinaryInspector({

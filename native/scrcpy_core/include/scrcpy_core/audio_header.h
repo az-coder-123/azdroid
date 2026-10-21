@@ -22,10 +22,10 @@ inline constexpr uint32_t kAudioDisabledCode = 0;
 inline constexpr uint32_t kAudioConfigErrorCode = 1;
 
 enum class AudioStreamKind {
-  kRaw,               // Playable by DeskDroid.
+  kRaw,               // Playable by Azdroid.
   kDisabled,          // The device cannot capture audio (Android 10 or older).
   kConfigError,       // The server rejected the audio configuration.
-  kUnsupportedCodec,  // A codec DeskDroid does not decode.
+  kUnsupportedCodec,  // A codec Azdroid does not decode.
 };
 
 struct AudioHeader {

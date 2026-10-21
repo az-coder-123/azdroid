@@ -13,7 +13,7 @@
 The **Device Logcat Console** is a developer inspection and diagnostic cockpit built directly into Azdroid. It captures real-time Android logcat streams over wireless ADB with advanced filtering, stack trace colorization, line bookmarking, and continuous recording.
 
 <p align="center">
-  <img src="../images/deskdroid_logcat_console.png" alt="Azdroid Device Logcat Console" width="560">
+  <img src="../images/azdroid_logcat_console.png" alt="Azdroid Device Logcat Console" width="560">
 </p>
 
 ```mermaid
@@ -57,7 +57,7 @@ Switch instantly between common developer workflows using the Preset dropdown:
 
 ### 5. Adaptive Soft-Wrap & Continuous Disk Recording
 - **Performance Toggle:** Switch between fixed 26 px rows (`itemExtent`, fastest virtualized scrolling) and soft-wrap multi-line rendering.
-- **Live File Recording:** Stream logs directly to a timestamped file in the Downloads folder (`deskdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`; `~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
+- **Live File Recording:** Stream logs directly to a timestamped file in the Downloads folder (`azdroid_logs/logcat_<serial>_<yyyyMMdd_HHmmss>.log`; `~/Downloads` on macOS, `%USERPROFILE%\Downloads` on Windows).
 
 ### 6. macOS Native Keyboard Shortcuts & Navigation
 Ergonomic keyboard bindings orchestrated via `LogcatShortcutHandler`:

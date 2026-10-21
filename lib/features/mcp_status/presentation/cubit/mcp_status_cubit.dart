@@ -8,7 +8,7 @@ import 'package:desk_droid/features/mcp_status/domain/repositories/mcp_status_re
 import 'package:desk_droid/features/mcp_status/presentation/cubit/mcp_status_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Reports the DeskDroid MCP server state: one full check on [load] (and on
+/// Reports the Azdroid MCP server state: one full check on [load] (and on
 /// each refresh), then the running sessions every [sessionPollInterval] and
 /// their activity every [activityPollInterval]. A state is emitted only when
 /// something visible changed.

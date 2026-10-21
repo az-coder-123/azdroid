@@ -3,7 +3,7 @@ import 'package:desk_droid/features/mcp_status/domain/entities/mcp_binary_status
 import 'package:desk_droid/features/mcp_status/domain/entities/mcp_client_status.dart';
 import 'package:equatable/equatable.dart';
 
-/// Everything the app can observe about the DeskDroid MCP server.
+/// Everything the app can observe about the Azdroid MCP server.
 ///
 /// The app does not run the server: AI clients start it over stdio, so the
 /// app checks the executable, reads client configurations, lists running

@@ -4,7 +4,7 @@
 
 ---
 
-## 1. MethodChannel `com.deskdroid/video_stream`
+## 1. MethodChannel `com.azdroid/video_stream`
 
 Dart client: `lib/core/services/video_stream_native_service.dart`.
 

@@ -27,7 +27,7 @@ Before configuring and executing MCP tools with an AI assistant, ensure:
      ```
 2. **Host Machine (macOS or Windows):**
    - **No GUI Required:** the Azdroid app does not need to be running.
-   - **Installed app (recommended):** release builds include a **precompiled server** (`deskdroid-mcp`) and a bundled `adb`. Nothing else is required: no Dart SDK, no separate ADB install.
+   - **Installed app (recommended):** release builds include a **precompiled server** (`azdroid-mcp`) and a bundled `adb`. Nothing else is required: no Dart SDK, no separate ADB install.
    - **Source checkout (developers):** needs the Dart SDK (bundled with Flutter). ADB comes from your install or from `dart run tool/fetch_platform_tools.dart`.
 
 ---
@@ -40,20 +40,20 @@ Point your client at the executable inside the installed app. It finds the bundl
 
 | Platform | `command` |
 |:---|:---|
-| macOS | `/Applications/Azdroid.app/Contents/MacOS/deskdroid-mcp` |
-| Windows | `C:\path\to\Azdroid\deskdroid-mcp.exe` (next to `desk_droid.exe`; write `\\` in JSON) |
+| macOS | `/Applications/Azdroid.app/Contents/MacOS/azdroid-mcp` |
+| Windows | `C:\path\to\Azdroid\azdroid-mcp.exe` (next to `desk_droid.exe`; write `\\` in JSON) |
 
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
-      "command": "/Applications/Azdroid.app/Contents/MacOS/deskdroid-mcp"
+    "azdroid": {
+      "command": "/Applications/Azdroid.app/Contents/MacOS/azdroid-mcp"
     }
   }
 }
 ```
 
-Smoke test: `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | /Applications/Azdroid.app/Contents/MacOS/deskdroid-mcp`
+Smoke test: `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | /Applications/Azdroid.app/Contents/MacOS/azdroid-mcp`
 
 Or open Azdroid and click the **hub icon** in the device list toolbar: it checks the server, shows which AI clients are set up, counts connected sessions, and copies this JSON with the right path ([mcp-status-panel.md](features/mcp-status-panel.md)). While an AI works, the panel lists its tool calls and the mirroring page shows which device it controls; only tool names, devices, results, and durations are recorded, never arguments ([mcp-activity-log.md](features/mcp-activity-log.md)).
 
@@ -65,12 +65,12 @@ The sections below configure the server **from a source checkout** instead.
 
 ### 1. Claude Desktop Integration
 
-Add `deskdroid` to your `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS; for Windows see [Windows Configuration](#5-windows-configuration)):
+Add `azdroid` to your `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS; for Windows see [Windows Configuration](#5-windows-configuration)):
 
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "/absolute/path/to/azdroid/scripts/start_mcp_server.sh"
     }
   }
@@ -84,9 +84,9 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "dart",
-      "args": ["run", "/absolute/path/to/azdroid/bin/deskdroid_mcp.dart"]
+      "args": ["run", "/absolute/path/to/azdroid/bin/azdroid_mcp.dart"]
     }
   }
 }
@@ -99,7 +99,7 @@ Add to `cline_mcp_settings.json`:
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "/absolute/path/to/azdroid/scripts/start_mcp_server.sh"
     }
   }
@@ -121,7 +121,7 @@ Verify proper functioning using any of the following 3 methods:
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is standard stdio behavior, not a freeze. Press `Ctrl+C` to exit.)*
 
 - **Method 2: Visual Indicator in Claude / Cursor**
-  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `deskdroid` with 58 tools enabled.
+  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 58 tools enabled.
   - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (58 tools)`.
 
 - **Method 3: Direct Natural Language Prompt**
@@ -136,9 +136,9 @@ Claude Desktop reads `%APPDATA%\Claude\claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "deskdroid": {
+    "azdroid": {
       "command": "dart",
-      "args": ["run", "C:\\path\\to\\desk-droid\\bin\\deskdroid_mcp.dart"]
+      "args": ["run", "C:\\path\\to\\desk-droid\\bin\\azdroid_mcp.dart"]
     }
   }
 }
@@ -147,7 +147,7 @@ Claude Desktop reads `%APPDATA%\Claude\claude_desktop_config.json`:
 Smoke test in PowerShell, from the repository folder:
 
 ```powershell
-'{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | dart run bin/deskdroid_mcp.dart
+'{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | dart run bin/azdroid_mcp.dart
 ```
 
 ---

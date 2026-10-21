@@ -39,7 +39,8 @@ Write-Report "Extracted to $app"
 
 # 3. MCP server: one tools/list request.
 $request = '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
-$reply = $request | & (Join-Path $app 'deskdroid-mcp.exe') 2>$null | Select-Object -First 1
+$mcpExe = if (Test-Path (Join-Path $app 'azdroid-mcp.exe')) { 'azdroid-mcp.exe' } else { 'deskdroid-mcp.exe' }
+$reply = $request | & (Join-Path $app $mcpExe) 2>$null | Select-Object -First 1
 try {
   Write-Report "MCP tools/list: $((($reply | ConvertFrom-Json).result.tools).Count) tools"
 } catch {
@@ -64,7 +65,7 @@ Write-Report "adb server: $(if ($adbProcess) { $adbProcess.ExecutablePath } else
 Write-Report 'Ready: connect the phone over Wi-Fi in the app (Direct IP, port 5555).'
 
 # 5. Keep the logs visible on the host while the tester uses the app.
-$logs = @('deskdroid_dart.log', 'scrcpy_stream.log') | ForEach-Object { Join-Path $env:TEMP $_ }
+$logs = @('azdroid_dart.log', 'deskdroid_dart.log', 'scrcpy_stream.log') | ForEach-Object { Join-Path $env:TEMP $_ }
 $rounds = [int]($LogCopyMinutes * 60 / $LogCopyIntervalSeconds)
 for ($i = 0; $i -lt $rounds; $i++) {
   foreach ($log in $logs) {

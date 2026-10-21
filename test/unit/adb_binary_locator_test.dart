@@ -60,7 +60,7 @@ void main() {
 
     test('uses the bundled adb when nothing is installed', () async {
       stubWhich(ProcessResult(0, 1, '', 'not found'));
-      const bundled = '/Applications/DeskDroid.app/Contents/MacOS/adb';
+      const bundled = '/Applications/Azdroid.app/Contents/MacOS/adb';
 
       expect(
         await buildLocator(mac, existingFiles: {bundled}).locate(),
@@ -71,7 +71,7 @@ void main() {
     test('prefers an installed adb over the bundled one', () async {
       stubWhich(ProcessResult(0, 1, '', 'not found'));
       const homebrew = '/opt/homebrew/bin/adb';
-      const bundled = '/Applications/DeskDroid.app/Contents/MacOS/adb';
+      const bundled = '/Applications/Azdroid.app/Contents/MacOS/adb';
 
       expect(
         await buildLocator(mac, existingFiles: {homebrew, bundled}).locate(),

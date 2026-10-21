@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:desk_droid/core/constants/mcp_status_constants.dart';
 import 'package:desk_droid/core/models/mcp_activity_event.dart';
 
-/// Receives what the MCP server does, for the DeskDroid app to display.
+/// Receives what the MCP server does, for the Azdroid app to display.
 abstract class McpActivitySink {
   /// The AI client connected (`initialize`).
   void sessionStarted(String? clientName);
@@ -100,7 +100,7 @@ class FileMcpActivityRecorder implements McpActivitySink {
     try {
       if (_file.existsSync()) await _file.delete();
     } on FileSystemException catch (error) {
-      _report('[DeskDroid MCP] Could not remove activity file: $error');
+      _report('[Azdroid MCP] Could not remove activity file: $error');
     }
   }
 
@@ -114,7 +114,7 @@ class FileMcpActivityRecorder implements McpActivitySink {
       _file.writeAsStringSync('${lines.join('\n')}\n', flush: true);
       _linesInFile = lines.length;
     } on FileSystemException catch (error) {
-      _report('[DeskDroid MCP] Could not write activity file: $error');
+      _report('[Azdroid MCP] Could not write activity file: $error');
     }
   }
 
@@ -122,7 +122,7 @@ class FileMcpActivityRecorder implements McpActivitySink {
     try {
       _file.writeAsStringSync(text, mode: FileMode.append, flush: true);
     } on FileSystemException catch (error) {
-      _report('[DeskDroid MCP] Could not append activity: $error');
+      _report('[Azdroid MCP] Could not append activity: $error');
     }
   }
 }

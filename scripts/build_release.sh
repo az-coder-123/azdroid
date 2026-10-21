@@ -87,7 +87,7 @@ VERSION_NAME=$(echo "$VERSION_RAW" | cut -d'+' -f1)
 BUILD_NUMBER=$(echo "$VERSION_RAW" | cut -d'+' -f2)
 
 ZIP_NAME="Azdroid-v${VERSION_NAME}-macOS.zip"
-LATEST_ZIP_NAME="DeskDroid-macOS-latest.zip"
+LATEST_ZIP_NAME="Azdroid-macOS-latest.zip"
 
 echo -e "${BLUE}ℹ️  Application Version:${NC} ${BOLD}v${VERSION_NAME} (Build ${BUILD_NUMBER})${NC}"
 echo -e "${BLUE}ℹ️  Target Architecture:${NC} Apple Silicon & Intel Universal (macOS 12.0+)"
@@ -124,7 +124,7 @@ echo -e "${BLUE}Fetching bundled adb (Android Platform-Tools, checksum-verified)
 dart run tool/fetch_platform_tools.dart --os=macos
 # Start from no app bundle: on an incremental build Xcode re-signs the app
 # only when its own binary changes, while the embed phases always rewrite
-# deskdroid-mcp, which then no longer matches the app's seal.
+# azdroid-mcp, which then no longer matches the app's seal.
 rm -rf "$BUILD_APP_PATH"
 flutter build macos --release
 
@@ -143,7 +143,7 @@ codesign --verify --deep --strict "$BUILD_APP_PATH"
 echo -e "${GREEN}✓ Bundled adb verified:${NC} $("$BUNDLED_ADB" version | head -1)"
 
 # The precompiled MCP server must answer a real JSON-RPC handshake.
-BUNDLED_MCP="$BUILD_APP_PATH/Contents/MacOS/deskdroid-mcp"
+BUNDLED_MCP="$BUILD_APP_PATH/Contents/MacOS/azdroid-mcp"
 if [[ ! -x "$BUNDLED_MCP" ]]; then
   echo -e "${RED}Error: Precompiled MCP server missing at:${NC} $BUNDLED_MCP"
   exit 1

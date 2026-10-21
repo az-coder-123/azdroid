@@ -1,6 +1,6 @@
 # CMake `install(CODE)` Ignores Configurations and Escaped Generator Expressions
 
-> **Subsystem:** Windows build (`windows/CMakeLists.txt`): bundled adb check and `deskdroid-mcp.exe` compile step
+> **Subsystem:** Windows build (`windows/CMakeLists.txt`): bundled adb check and `azdroid-mcp.exe` compile step
 > **Affected Platform:** Windows (Flutter desktop, CMake 3.14+, Visual Studio generator)
 > **Severity:** High (Debug runs blocked; Release packages could not be built)
 > **Resolution Date:** October 2026
@@ -9,7 +9,7 @@
 
 ## 1. Context & Symptoms
 
-Two install-time steps were added for standalone Windows packages: a check that fails Release builds without the bundled adb, and a step that compiles the MCP server into `deskdroid-mcp.exe`. Both were declared with `install(CODE ... CONFIGURATIONS Release)`.
+Two install-time steps were added for standalone Windows packages: a check that fails Release builds without the bundled adb, and a step that compiles the MCP server into `azdroid-mcp.exe`. Both were declared with `install(CODE ... CONFIGURATIONS Release)`.
 
 1. `flutter run -d windows` (Debug) failed at the INSTALL step, although the check was meant for Release only:
    ```text
@@ -19,7 +19,7 @@ Two install-time steps were added for standalone Windows packages: a check that 
    ```text
    The system cannot find the file specified.
    CMake Error at cmake_install.cmake:251 (message):
-     Failed to compile the MCP server (deskdroid-mcp.exe).
+     Failed to compile the MCP server (azdroid-mcp.exe).
    ```
 
 MSBuild only reports `MSB3073`; the real message appears when the install script runs on its own.
@@ -39,7 +39,7 @@ MSBuild only reports `MSB3073`; the real message appears when the install script
    ```cmake
    set(CMAKE_INSTALL_PREFIX "$<TARGET_FILE_DIR:desk_droid>")
    ```
-   The compile step wrote to `${CMAKE_INSTALL_PREFIX}/deskdroid-mcp.exe`, escaped as `\${...}` in `CMakeLists.txt`, so `dart` received the literal path `$<TARGET_FILE_DIR:desk_droid>/deskdroid-mcp.exe`.
+   The compile step wrote to `${CMAKE_INSTALL_PREFIX}/azdroid-mcp.exe`, escaped as `\${...}` in `CMakeLists.txt`, so `dart` received the literal path `$<TARGET_FILE_DIR:desk_droid>/azdroid-mcp.exe`.
 
 ---
 
@@ -59,7 +59,7 @@ install(CODE "
   if(\"\${CMAKE_INSTALL_CONFIG_NAME}\" STREQUAL \"Release\")
     execute_process(
       COMMAND \"${FLUTTER_ROOT}/bin/dart.bat\" compile exe \"${MCP_SERVER_ENTRYPOINT}\"
-              -o \"${INSTALL_BUNDLE_LIB_DIR}/deskdroid-mcp.exe\"
+              -o \"${INSTALL_BUNDLE_LIB_DIR}/azdroid-mcp.exe\"
       RESULT_VARIABLE mcp_result)
     ...
   endif()
@@ -69,7 +69,7 @@ install(CODE "
 - `\${CMAKE_INSTALL_CONFIG_NAME}` stays escaped: it must be read at install time.
 - `${INSTALL_BUNDLE_LIB_DIR}` is not escaped: its generator expression is written into the code and resolved per configuration.
 
-`scripts/build_release.ps1` now fetches Platform-Tools before building and smoke-tests the packaged `adb.exe` and `deskdroid-mcp.exe`. The ZIP was then verified in an environment without adb, Flutter, Dart, or `ANDROID_HOME`: the app and the MCP server both logged `Using bundled adb` and listed real devices.
+`scripts/build_release.ps1` now fetches Platform-Tools before building and smoke-tests the packaged `adb.exe` and `azdroid-mcp.exe`. The ZIP was then verified in an environment without adb, Flutter, Dart, or `ANDROID_HOME`: the app and the MCP server both logged `Using bundled adb` and listed real devices.
 
 ---
 

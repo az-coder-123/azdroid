@@ -13,19 +13,19 @@ void main() {
 
     test('pgrep matches the precompiled server and the source entry', () {
       final command = tools.processList(
-        executableName: 'deskdroid-mcp',
-        scriptName: 'deskdroid_mcp.dart',
+        executableName: 'azdroid-mcp',
+        scriptName: 'azdroid_mcp.dart',
       );
       expect(command.executable, '/usr/bin/pgrep');
-      expect(command.arguments, ['-f', 'deskdroid-mcp|deskdroid_mcp.dart']);
+      expect(command.arguments, ['-f', 'azdroid-mcp|azdroid_mcp.dart']);
     });
 
     test('reads one PID per line', () {
-      expect(tools.parsePids('123\n456\n\n', executableName: 'deskdroid-mcp'), {
+      expect(tools.parsePids('123\n456\n\n', executableName: 'azdroid-mcp'), {
         123,
         456,
       });
-      expect(tools.parsePids('', executableName: 'deskdroid-mcp'), isEmpty);
+      expect(tools.parsePids('', executableName: 'azdroid-mcp'), isEmpty);
     });
   });
 
@@ -39,25 +39,25 @@ void main() {
 
     test('tasklist filters by image name, as CSV', () {
       final command = tools.processList(
-        executableName: 'deskdroid-mcp.exe',
-        scriptName: 'deskdroid_mcp.dart',
+        executableName: 'azdroid-mcp.exe',
+        scriptName: 'azdroid_mcp.dart',
       );
       expect(command.executable, 'tasklist');
-      expect(command.arguments, contains('IMAGENAME eq deskdroid-mcp.exe'));
+      expect(command.arguments, contains('IMAGENAME eq azdroid-mcp.exe'));
     });
 
     test('reads the PID column and ignores the "no tasks" message', () {
       const rows =
-          '"deskdroid-mcp.exe","4120","Console","1","12,340 K"\r\n'
-          '"DeskDroid-MCP.exe","4188","Console","1","12,100 K"\r\n';
-      expect(tools.parsePids(rows, executableName: 'deskdroid-mcp.exe'), {
+          '"azdroid-mcp.exe","4120","Console","1","12,340 K"\r\n'
+          '"Azdroid-MCP.exe","4188","Console","1","12,100 K"\r\n';
+      expect(tools.parsePids(rows, executableName: 'azdroid-mcp.exe'), {
         4120,
         4188,
       });
       expect(
         tools.parsePids(
           'INFO: No tasks are running which match the specified criteria.',
-          executableName: 'deskdroid-mcp.exe',
+          executableName: 'azdroid-mcp.exe',
         ),
         isEmpty,
       );

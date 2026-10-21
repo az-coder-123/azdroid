@@ -1,4 +1,4 @@
-// Windows implementation of the `com.deskdroid/audio_stream` MethodChannel.
+// Windows implementation of the `com.azdroid/audio_stream` MethodChannel.
 // Contract: docs/native-audio-contract.md (shared with macOS
 // ScrcpyAudioPlugin). Owns the jitter buffer, so volume and mute survive
 // sessions, and the current AudioSession.
