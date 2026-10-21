@@ -249,7 +249,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 | [🪟 Windows Port Plan](docs/windows-port-plan.md) | Phases, status, and risks of the Windows port |
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
-| [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (58 tools) |
+| [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (62 tools; [Workflow Guide](docs/mcp-agent-workflow.md)) |
 
 ---
 

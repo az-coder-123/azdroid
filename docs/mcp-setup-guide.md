@@ -10,6 +10,7 @@ Azdroid provides a built-in **Model Context Protocol (MCP)** server over standar
 
 - **Headless & Standalone:** You **do not need to launch `Azdroid.app`** to use this MCP server. AI clients run the pure Dart CLI process independently in the background.
 - **Optional Visual Mirroring:** You can optionally open `Azdroid.app` concurrently to visually observe the agent's taps, gestures, and inputs in real time at 60 FPS.
+- **End-to-End Workflow:** For a practical real-world scenario (request, planning, interaction, triage, code fix, verification), see [mcp-agent-workflow.md](mcp-agent-workflow.md).
 
 ---
 
