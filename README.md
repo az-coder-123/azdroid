@@ -22,7 +22,7 @@
   <br>
   <sub>macOS: Universal Binary (31 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
   <br>
-  <sub>Windows (Preview): portable ZIP (21 MB) • Windows 10/11 x64 • <a href="docs/platform-support.md">what works on each platform</a></sub>
+  <sub>Windows (Preview): portable ZIP (25 MB) • Windows 10/11 x64 • <a href="docs/platform-support.md">what works on each platform</a></sub>
 </p>
 
 <p align="center">
