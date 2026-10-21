@@ -117,6 +117,124 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 
 ---
 
+## 🤖 Autonomous AI Agent Architecture & Workflow (MCP Server)
+
+> Connect **Claude Desktop**, **Cursor**, **Antigravity**, and **Cline** directly to your physical or emulated Android devices with zero UI overhead. For detailed step-by-step triage, see the [Autonomous Workflow Guide](docs/mcp-agent-workflow.md) and [AI Agent Setup Guide](docs/mcp-setup-guide.md).
+
+### ⚡️ Executive Overview
+
+The **Azdroid MCP Server** (`azdroid-mcp`) transforms your connected Android devices (physical hardware or emulators over Wi-Fi and USB) into an autonomous testing and automation environment for AI assistants (e.g., **Claude Desktop**, **Cursor**, **Antigravity**, **Cline**).
+
+Operating over standard I/O (`stdio`) via JSON-RPC 2.0, the server provides **62 specialized tools**. This empowers AI agents to see, touch, inspect, debug, and verify Android applications in a complete **autonomous closed loop**:
+
+```mermaid
+flowchart TD
+    subgraph P1 ["Phase 1: Task Intake"]
+        A["🎯 1. User Request\nHigh-level goal or bug report"]
+    end
+
+    subgraph P2 ["Phase 2: Perception & Action (Observe & Act)"]
+        B["👀 2. Sensory Inspection\nXML Semantic Tree & Screenshot"]
+        C["👆 3. Touch & Input\nHardware taps, typing & gestures"]
+        B --> C
+    end
+
+    subgraph P3 ["Phase 3: Triage & Rectification (Diagnose & Repair)"]
+        D["🚨 4. Error Interception\nCrash dump & logcat traces"]
+        E["🛠️ 5. Source Code Fix\nRoot cause repair in IDE"]
+        D --> E
+    end
+
+    subgraph P4 ["Phase 4: Closed-Loop Assurance (Verify & Deliver)"]
+        F["🔁 6. Automated Re-verification\nCold restart & replay macro"]
+        G["✅ 7. Final Delivery\nAudited report with proof"]
+        F --> G
+    end
+
+    A ==> B
+    C ==> D
+    E ==> F
+    F -.->|Regression Detected| D
+
+    classDef stage fill:#1E293B,stroke:#475569,stroke-width:1.5px,color:#F8FAFC;
+    class A,B,C,D,E,F,G stage;
+    style A stroke:#3B82F6,stroke-width:2px
+    style B stroke:#0EA5E9,stroke-width:2px
+    style C stroke:#14B8A6,stroke-width:2px
+    style D stroke:#EF4444,stroke-width:2px
+    style E stroke:#F59E0B,stroke-width:2px
+    style F stroke:#8B5CF6,stroke-width:2px
+    style G stroke:#10B981,stroke-width:2px
+```
+
+| Phase | Step | Purpose | Primary Azdroid MCP Tools |
+| :---: | :--- | :--- | :--- |
+| **1** | **🎯 User Request** | Delegating task or bug reproduction prompt | Client Prompt Context |
+| **2** | **👀 Sensory Inspection** | Grounding UI structure with millimeter accuracy | `android_get_semantic_tree`, `android_take_screenshot` |
+| **3** | **👆 Touch & Action** | Injecting multi-touch, typing, and key events | `android_tap`, `android_type_text`, `android_swipe` |
+| **4** | **🚨 Error Interception** | Capturing stack traces, ANRs, and log buffers | `android_check_crash`, `android_get_logcat` |
+| **5** | **🛠️ Source Code Fix** | Editing source files and resolving root causes | IDE File Tools / Compiler |
+| **6** | **🔁 Re-verification** | Replaying user journey on physical device | `android_launch_app`, `android_batch_actions` |
+| **7** | **✅ Final Delivery** | Delivering verified outcome with evidence | Final Audit Report |
+
+---
+
+### 🏛️ High-Level Interaction Architecture
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 👤 Engineer / QA
+    participant AI as 🤖 AI Assistant (Claude / Cursor / Antigravity)
+    participant MCP as ⚡️ Azdroid MCP Server (azdroid-mcp)
+    participant Device as 📱 Android Device (Wi-Fi / USB)
+    participant Desktop as 🖥️ Azdroid Desktop Viewport (macOS / Windows)
+
+    User->>AI: 1. Dispatches high-level task / bug report
+    Note over AI: 2. Formulates multi-step execution plan
+
+    rect rgb(240, 248, 255)
+        Note over AI,Device: Perception & Interaction Loop (Observe & Act)
+        AI->>MCP: android_list_devices & android_get_current_app
+        MCP->>Device: Low-level ADB inspection
+        Device-->>MCP: Hardware state & foreground activity
+        MCP-->>AI: Active device telemetry
+
+        AI->>MCP: android_get_semantic_tree & android_take_screenshot
+        MCP->>Device: Dump accessibility hierarchy & screen frame
+        Device-->>MCP: UI node coordinates & visual frame
+        MCP-->>AI: Semantic UI Tree (XML) & PNG screenshot
+        
+        opt Real-time Mirroring Observation
+            Device-->>Desktop: H.264 Video Stream (60 FPS, < 30ms latency)
+            Desktop-->>User: Visual feedback of AI gestures & clicks in real time
+        end
+
+        AI->>MCP: android_tap / android_type_text / android_swipe
+        MCP->>Device: Hardware input event injection
+    end
+
+    rect rgb(255, 245, 245)
+        Note over AI,Device: Diagnostic Interception (Triage)
+        AI->>MCP: android_check_crash & android_get_logcat
+        Device-->>MCP: Crash stack trace & logcat buffer
+        MCP-->>AI: Root cause evidence (NullPointer, ANR, 500 API)
+    end
+
+    rect rgb(245, 255, 245)
+        Note over AI,User: Source Code Rectification & Verification (Fix & Verify)
+        AI->>AI: Locates error in codebase, edits code, triggers build
+        AI->>MCP: android_launch_app (Restarts updated application)
+        AI->>MCP: android_batch_actions (Re-plays user flow)
+        AI->>MCP: android_get_semantic_tree (Verifies success dialog)
+        MCP-->>AI: UI validated with zero crashes
+    end
+
+    AI-->>User: Delivers comprehensive completion report with evidence
+```
+
+---
+
 ## ⚡️ Complete Feature Catalog
 
 Azdroid includes **14 built-in modules** (plus a planned menu bar companion):
@@ -136,7 +254,7 @@ Azdroid includes **14 built-in modules** (plus a planned menu bar companion):
 | **11** | **Bidirectional Clipboard Sync** | Desktop clipboard ⇄ Android clipboard every 2 s, with loop prevention | Auto, or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> / <kbd>V</kbd> | [Guide](docs/features/clipboard-sync.md) |
 | **12** | **Hardware MP4 Screen Recording** | H.264 MP4 (8 Mbps, up to 3 minutes) encoded on the phone, 3 s countdown HUD, live timer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | [Guide](docs/features/hardware-screen-recording.md) |
 | **13** | **Lossless Screenshots & Area Crop** | Full PNG capture or interactive 8-handle marquee crop, to the clipboard, your Downloads folder, or both | <kbd>Cmd</kbd>+<kbd>S</kbd> / <kbd>Shift</kbd>+<kbd>S</kbd> | [Guide](docs/features/screenshots-area-crop.md) |
-| **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 58 tools for Claude Desktop, Cursor & Antigravity; the toolbar hub icon shows its setup, connected AI sessions, and live tool calls; the mirror shows when an AI controls the device | Stdio CLI / Hub icon | [Guide](docs/mcp-setup-guide.md) |
+| **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 62 tools for Claude Desktop, Cursor & Antigravity; the toolbar hub icon shows its setup, connected AI sessions, and live tool calls; the mirror shows when an AI controls the device | Stdio CLI / Hub icon | [Guide](docs/mcp-setup-guide.md) |
 | **+** | **Menu Bar Companion** *(not yet available)* | Status bar popover for quick window toggle and live telemetry (FPS & latency); designed, not yet wired into the app | Menu Bar | [Guide](docs/features/menu-bar-companion.md) |
 
 > Shortcuts are shown with <kbd>Cmd</kbd> (macOS); use <kbd>Ctrl</kbd> on Windows. Most features are verified on macOS; the Windows preview has verified mirroring, logcat, bitrate presets, and the MCP server. Audio forwarding (Android 11+) is new and not yet verified in the app on either platform. Full matrix: [Platform Support](docs/platform-support.md).
