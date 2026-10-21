@@ -4,17 +4,27 @@
 
 ---
 
-## 1. Overview
+## 1. Overview & Canonical Automation
 
-| Step | What | Where |
-|:---|:---|:---|
-| 1 | Choose the version | `pubspec.yaml`, `AppConstants.appVersion` |
-| 2 | Write the release notes | `docs/releases/v<version>.md` |
-| 3 | Update README download links | `README.md` |
-| 4 | Verify and commit the sources | `flutter analyze`, `flutter test` |
-| 5 | Build, package, upload (macOS) | `./scripts/build_release.sh` |
-| 6 | Build and upload Windows (optional) | `scripts\build_release.ps1 -Publish` on a Windows PC |
-| 7 | Check the published release | GitHub Releases page, README links |
+The entire release workflow is fully automated via the canonical deployment script:
+
+```bash
+# Automated 7-step release (replaces manual step-by-step execution)
+./scripts/deploy.sh [patch | minor | major | <version>]
+
+# Safe dry-run (builds, runs quality gate, creates artifacts locally without push)
+./scripts/deploy.sh [patch | minor | major] --dry-run
+```
+
+| Step | What | Automated By (`deploy.sh`) | Manual Alternative |
+|:---|:---|:---|:---|
+| 1 | Choose & sync version | Step 2 (calculates & updates) | `pubspec.yaml`, `AppConstants.appVersion` |
+| 2 | Write release notes | Step 3 (drafts from git log) | `docs/releases/v<version>.md` |
+| 3 | Update README links | Step 4 (anti-404 guard) | `README.md` |
+| 4 | Quality gate & commit | Step 5 & 6 (format, analyze, test) | `flutter analyze`, `flutter test` |
+| 5 | Build, package, upload (macOS) | Step 7 (build, sign, ditto, gh) | `./scripts/build_release.sh` |
+| 6 | Build and upload Windows (optional) | Windows PC required | `scripts\build_release.ps1 -Publish` |
+| 7 | Check published release | Step 8 (curl HTTP 200 verify) | GitHub Releases page, curl |
 
 Outputs live in `RELEASE/` (committed): versioned ZIPs, `*-latest.zip` copies, `SHA256SUMS*.txt`, and `RELEASE/README.md`.
 

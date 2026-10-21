@@ -1,0 +1,17 @@
+# Cursor AI Rules — Azdroid
+
+You are working on Azdroid, an open-source wireless Android mirroring and productivity desk app built with Flutter and Dart.
+
+## Core Rules & Architecture
+1. Strictly follow all engineering and design standards defined in `AGENTS.md`.
+2. Follow the 4-role protocol: Senior Software Architect, Senior Software Engineer, Senior App Designer, Senior Flutter Programmer.
+3. Architecture: Feature-first structure in `lib/features/`. Never violate platform isolation rules defined in `docs/platform-abstraction.md`.
+4. State Management: Exclusively use `flutter_bloc` (`Cubit` / `Bloc`).
+5. Quality Gate: Zero static analysis warnings (`flutter analyze`), 100% test pass rate (`flutter test`), clean code under SRP (< 250 lines per file).
+
+## Release & Deployment Protocol
+When the user asks to deploy, release, or publish:
+1. Always execute `./scripts/deploy.sh [patch|minor|major]` (or with `--dry-run` for preview).
+2. Never perform piecemeal manual updates or bypass analyzer checks.
+3. Strictly preserve the Anti-404 Windows badge pinning in `README.md` if releasing macOS-only updates.
+4. Consult `.agents/skills/deploy-release/SKILL.md` and `docs/release-guide.md` for complete runbook details.

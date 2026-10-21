@@ -214,3 +214,23 @@ In addition to the overarching standards defined in this file, AI assistants **m
 4. **Lessons Learned Case Studies Standard (`docs/lessons-learned/README.md`):**
    - When diagnosing and resolving intricate bugs or platform anomalies, document the finding in `docs/lessons-learned/<slug>.md` following the mandatory 5-part structure (< 250 lines per file) and update `docs/lessons-learned/README.md`.
 
+---
+
+## 🚀 10. Automated Release & Deployment Protocol (scripts/deploy.sh)
+
+When the user requests to release, deploy, or publish a new version (e.g., "thực hiện deploy", "deploy", "release", "build release", "phát hành"):
+
+1. **Mandatory Canonical Script:**
+   - AI assistants **must not** perform fragmented or ad-hoc manual release steps. Always invoke the end-to-end automated deployment pipeline:
+     ```bash
+     ./scripts/deploy.sh [patch | minor | major | <version>]
+     ```
+   - For safe dry-run validation without pushing: `./scripts/deploy.sh [bump] --dry-run`
+2. **Mandatory Invariants Enforced by Protocol:**
+   - **Version Synchronization:** `pubspec.yaml` (`version: X.Y.Z+N`) and `lib/core/constants/app_constants.dart` (`appVersion = 'X.Y.Z'`) must remain identical (tested via `test/unit/app_version_test.dart`).
+   - **Anti-404 Windows Badge Rule:** When releasing macOS packages without a Windows binary, never link the Windows badge to `latest/download/...` on `README.md`. Pin the last known valid Windows release tag.
+   - **Zero Claims Without Code:** Release notes in `docs/releases/v<version>.md` must only document verified features present in code.
+   - **Quality Gate:** Zero analyzer warnings (`flutter analyze`) and 100% test pass rate (`flutter test`) required before packaging.
+3. **Reference Runbook & Skills:**
+   - Consult [.agents/skills/deploy-release/SKILL.md](.agents/skills/deploy-release/SKILL.md) and [docs/release-guide.md](docs/release-guide.md) for full operational context.
+
