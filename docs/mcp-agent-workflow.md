@@ -10,9 +10,55 @@ The **Azdroid MCP Server** (`azdroid-mcp`) transforms your connected Android dev
 
 Operating over standard I/O (`stdio`) via JSON-RPC 2.0, the server provides **62 specialized tools**. This empowers AI agents to see, touch, inspect, debug, and verify Android applications in a complete **autonomous closed loop**:
 
-```text
-User Request ➔ Sensory Inspection ➔ Touch & Action ➔ Error Interception ➔ Source Code Fix ➔ Automated Re-verification ➔ Final Delivery
+```mermaid
+flowchart TD
+    subgraph P1 ["Phase 1: Task Intake"]
+        A["🎯 1. User Request\nHigh-level goal or bug report"]
+    end
+
+    subgraph P2 ["Phase 2: Perception & Action (Observe & Act)"]
+        B["👀 2. Sensory Inspection\nXML Semantic Tree & Screenshot"]
+        C["👆 3. Touch & Input\nHardware taps, typing & gestures"]
+        B --> C
+    end
+
+    subgraph P3 ["Phase 3: Triage & Rectification (Diagnose & Repair)"]
+        D["🚨 4. Error Interception\nCrash dump & logcat traces"]
+        E["🛠️ 5. Source Code Fix\nRoot cause repair in IDE"]
+        D --> E
+    end
+
+    subgraph P4 ["Phase 4: Closed-Loop Assurance (Verify & Deliver)"]
+        F["🔁 6. Automated Re-verification\nCold restart & replay macro"]
+        G["✅ 7. Final Delivery\nAudited report with proof"]
+        F --> G
+    end
+
+    A ==> B
+    C ==> D
+    E ==> F
+    F -.->|Regression Detected| D
+
+    classDef stage fill:#1E293B,stroke:#475569,stroke-width:1.5px,color:#F8FAFC;
+    class A,B,C,D,E,F,G stage;
+    style A stroke:#3B82F6,stroke-width:2px
+    style B stroke:#0EA5E9,stroke-width:2px
+    style C stroke:#14B8A6,stroke-width:2px
+    style D stroke:#EF4444,stroke-width:2px
+    style E stroke:#F59E0B,stroke-width:2px
+    style F stroke:#8B5CF6,stroke-width:2px
+    style G stroke:#10B981,stroke-width:2px
 ```
+
+| Phase | Step | Purpose | Primary Azdroid MCP Tools |
+| :---: | :--- | :--- | :--- |
+| **1** | **🎯 User Request** | Delegating task or bug reproduction prompt | Client Prompt Context |
+| **2** | **👀 Sensory Inspection** | Grounding UI structure with millimeter accuracy | `android_get_semantic_tree`, `android_take_screenshot` |
+| **3** | **👆 Touch & Action** | Injecting multi-touch, typing, and key events | `android_tap`, `android_type_text`, `android_swipe` |
+| **4** | **🚨 Error Interception** | Capturing stack traces, ANRs, and log buffers | `android_check_crash`, `android_get_logcat` |
+| **5** | **🛠️ Source Code Fix** | Editing source files and resolving root causes | IDE File Tools / Compiler |
+| **6** | **🔁 Re-verification** | Replaying user journey on physical device | `android_launch_app`, `android_batch_actions` |
+| **7** | **✅ Final Delivery** | Delivering verified outcome with evidence | Final Audit Report |
 
 ---
 
