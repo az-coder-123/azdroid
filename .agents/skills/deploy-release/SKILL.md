@@ -24,7 +24,7 @@ Whenever a user requests to deploy or publish a release (e.g., *"thực hiện d
    - **minor**: New features, new tools, performance enhancements.
    - **major**: Breaking architectural changes, protocol rewrites.
 
-2. **Execute the Canonical Deployment Script**:
+2. **Execute the Canonical Deployment Script (macOS):**
    ```bash
    ./scripts/deploy.sh <patch|minor|major>
    ```
@@ -36,6 +36,14 @@ Whenever a user requests to deploy or publish a release (e.g., *"thực hiện d
      ```bash
      ./scripts/deploy.sh <patch|minor|major> --no-push
      ```
+
+3. **Execute the Canonical Deployment Pipeline (Windows PC):**
+   After macOS initiates a release tag, complete the Windows build on a Windows machine:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1
+   ```
+   - *For dry-run:* `powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1 -DryRun`
+   - *With sandbox verification:* `powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1 -TestSandbox`
 
 ---
 

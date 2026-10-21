@@ -18,15 +18,10 @@ Welcome to the **Azdroid** project. All AI assistants working on this repository
 
 When the user requests to deploy, release, build a release, or publish a version (e.g., *"deploy"*, *"thực hiện deploy"*, *"release"*, *"phát hành"*):
 
-### Canonical Execution Command
-**Never perform manual or fragmented release steps.** Always execute the canonical all-in-one script:
-```bash
-./scripts/deploy.sh [patch | minor | major | <version>]
-```
-
-### Safety Flags
-- **Dry Run (Testing):** `./scripts/deploy.sh [bump] --dry-run` (executes pre-flight, version calculation, static analysis, unit tests, and build, but skips remote push and GitHub publishing).
-- **Local Packaging Only:** `./scripts/deploy.sh [bump] --no-push` (builds and commits locally without pushing to GitHub).
+### Canonical Execution Commands
+**Never perform manual or fragmented release steps.** Always execute the canonical all-in-one scripts:
+- **macOS:** `./scripts/deploy.sh [patch | minor | major | <version>]` (Dry-run: `--dry-run`)
+- **Windows:** `powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1` (Dry-run: `-DryRun`)
 
 ### Invariants Enforced by Protocol
 1. **Version Synchronization:** `pubspec.yaml` and `lib/core/constants/app_constants.dart` must always match (tested via `test/unit/app_version_test.dart`).

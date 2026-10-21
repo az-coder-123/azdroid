@@ -23,7 +23,7 @@ The entire release workflow is fully automated via the canonical deployment scri
 | 3 | Update README links | Step 4 (anti-404 guard) | `README.md` |
 | 4 | Quality gate & commit | Step 5 & 6 (format, analyze, test) | `flutter analyze`, `flutter test` |
 | 5 | Build, package, upload (macOS) | Step 7 (build, sign, ditto, gh) | `./scripts/build_release.sh` |
-| 6 | Build and upload Windows (optional) | Windows PC required | `scripts\build_release.ps1 -Publish` |
+| 6 | Build, package, upload (Windows) | `./scripts/deploy.ps1` (Windows PC) | `scripts\build_release.ps1 -Publish` |
 | 7 | Check published release | Step 8 (curl HTTP 200 verify) | GitHub Releases page, curl |
 
 Outputs live in `RELEASE/` (committed): versioned ZIPs, `*-latest.zip` copies, `SHA256SUMS*.txt`, and `RELEASE/README.md`.
@@ -130,23 +130,34 @@ gh release upload v<version> RELEASE/SHA256SUMS.txt --clobber
 
 ---
 
-## 7. Windows Package (Optional)
+## 7. Windows Package Deployment (`scripts\deploy.ps1`)
 
-On a Windows PC with Visual Studio 2022, after pulling the release commit:
+On a Windows PC with Visual Studio 2022, after a release tag is initiated on macOS, run the automated Windows deployment pipeline:
 
+```powershell
+# Full automated Windows deployment (pulls, builds, stages, bundles VC++, uploads, updates README, commits & pushes)
+powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1
+
+# Dry-run validation (builds and stages without remote GitHub upload or git push)
+powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1 -DryRun
+
+# Run with clean-machine Windows Sandbox smoke testing
+powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1 -TestSandbox
+```
+
+What `scripts\deploy.ps1` automates:
+1. **Pull & Align:** Pulls latest commits from `origin/main` and verifies target version against `v<version>`.
+2. **Quality Gate:** Executes `flutter analyze` and `flutter test`.
+3. **Build & Bundle:** Downloads pinned Windows Platform-Tools, builds `flutter build windows --release`, smoke-tests `adb.exe` and `azdroid-mcp.exe`, and bundles VC++ Runtime DLLs.
+4. **Clean Machine Test (Optional):** Invokes `scripts\test_in_windows_sandbox.ps1` if `-TestSandbox` is passed.
+5. **Anti-404 Inversion:** Unpins the Windows download badge on `README.md` to point directly to `latest/download/` now that the asset exists.
+6. **RELEASE\README.md Sync:** Re-generates the cross-platform release table listing both macOS and Windows packages.
+7. **Publish & Push:** Uploads assets to the GitHub Release (`gh release upload v<version> ... --clobber`), commits documentation updates, and pushes to `origin/main`.
+
+*Manual packaging alternative (without automated git commit/push):*
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1 -Publish
 ```
-
-Network access is required: the script downloads the pinned Platform-Tools when `vendor/platform-tools/windows` is missing. It writes `RELEASE\Azdroid-v<version>-Windows-x64.zip` (with `adb.exe` and `azdroid-mcp.exe`, both smoke-tested) and `SHA256SUMS-windows.txt` and uploads the ZIP to the release `v<version>`. It never commits. Commit `RELEASE/` from there, then rerun `scripts/release/write_release_readme.sh RELEASE` on any machine (bash) to list both platforms, and switch the README Windows button to `latest` (section 4).
-
-Before uploading, test the ZIP on a clean Windows with Windows Sandbox (Windows 10/11 Pro or Enterprise; enable once with `Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All` and restart):
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\test_in_windows_sandbox.ps1
-```
-
-It opens the newest ZIP in the sandbox, which has no Visual C++ runtime, adb, or Dart. `build\sandbox-results\smoke.txt` must show the MCP server's tool count, `App running ... True`, the runtime DLLs loaded from the app folder, and the bundled adb server. Then connect the phone over Wi-Fi (Direct IP) in the sandbox and mirror; the copied `azdroid_dart.log` and `scrcpy_stream.log` in the same folder show the result.
 
 ---
 

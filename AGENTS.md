@@ -216,16 +216,14 @@ In addition to the overarching standards defined in this file, AI assistants **m
 
 ---
 
-## 🚀 10. Automated Release & Deployment Protocol (scripts/deploy.sh)
+## 🚀 10. Automated Release & Deployment Protocol (deploy.sh & deploy.ps1)
 
 When the user requests to release, deploy, or publish a new version (e.g., "thực hiện deploy", "deploy", "release", "build release", "phát hành"):
 
-1. **Mandatory Canonical Script:**
-   - AI assistants **must not** perform fragmented or ad-hoc manual release steps. Always invoke the end-to-end automated deployment pipeline:
-     ```bash
-     ./scripts/deploy.sh [patch | minor | major | <version>]
-     ```
-   - For safe dry-run validation without pushing: `./scripts/deploy.sh [bump] --dry-run`
+1. **Mandatory Canonical Scripts:**
+   - AI assistants **must not** perform fragmented or ad-hoc manual release steps:
+     - **macOS (Initial Release):** `./scripts/deploy.sh [patch | minor | major | <version>]` (Dry-run: `--dry-run`)
+     - **Windows (Follow-up on Windows PC):** `powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1` (Dry-run: `-DryRun`)
 2. **Mandatory Invariants Enforced by Protocol:**
    - **Version Synchronization:** `pubspec.yaml` (`version: X.Y.Z+N`) and `lib/core/constants/app_constants.dart` (`appVersion = 'X.Y.Z'`) must remain identical (tested via `test/unit/app_version_test.dart`).
    - **Anti-404 Windows Badge Rule:** When releasing macOS packages without a Windows binary, never link the Windows badge to `latest/download/...` on `README.md`. Pin the last known valid Windows release tag.
