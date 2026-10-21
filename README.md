@@ -1,7 +1,7 @@
 # ⚡️ Azdroid — High-Performance Android Screen Mirroring & Workstation for macOS & Windows
 
 <p align="center">
-  <b>Silky-smooth, low-latency Android screen mirroring, remote control, and developer powerhouse for macOS and Windows over Wi-Fi & USB. Built with Flutter Desktop and scrcpy-server.</b>
+  <b>Next-gen Android screen mirroring, desktop control, and Model Context Protocol (MCP) server for macOS and Windows over Wi-Fi & USB. Built with Flutter Desktop & scrcpy.</b>
 </p>
 
 <p align="center">
