@@ -150,7 +150,14 @@ function Invoke-McpSmokeTest([string]$McpPath) {
     }
     return $readLine.Result
   } finally {
-    if (-not $process.HasExited) { $process.Kill() }
+    try {
+      if (-not $process.HasExited) { $process.Kill() }
+    } catch {
+      # Best-effort cleanup: the smoke test already produced its answer, and
+      # the process has almost always exited by now. A kill race (or antivirus
+      # holding the fresh executable) must never abort the release pipeline.
+      Write-Warn "Smoke-test process kill skipped: $($_.Exception.Message)"
+    }
     $process.Dispose()
   }
 }
