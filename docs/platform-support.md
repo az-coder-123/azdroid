@@ -2,7 +2,7 @@
 
 > What runs on each desktop platform, how it was verified, and where the platforms differ. This is the single source of truth for platform status; other documents link here instead of repeating it.
 
-Status date: **2026-10-22** (Azdroid v1.4.0 on macOS and Windows).
+Status date: **2026-10-22** (Azdroid v1.4.1 on macOS and Windows).
 
 ---
 
