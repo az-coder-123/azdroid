@@ -99,7 +99,9 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 
 ### 3. Cline / Roo Code (VS Code Extension)
 
-Add to `cline_mcp_settings.json`:
+Two configuration scopes are supported:
+
+**Global (all workspaces)** — open the Cline panel → MCP icon → *Configure MCP Servers*, then add to `cline_mcp_settings.json`:
 
 ```json
 {
@@ -110,6 +112,22 @@ Add to `cline_mcp_settings.json`:
   }
 }
 ```
+
+**Project-level (this repo)** — create a machine-local `.mcp.json` at the workspace root (this filename is gitignored because it holds an absolute, user-specific path). VS Code (1.99+) auto-detects it and asks for approval once per workspace:
+
+```json
+{
+  "servers": {
+    "azdroid": {
+      "type": "stdio",
+      "command": "bash",
+      "args": ["/absolute/path/to/azdroid/scripts/start_mcp_server.sh"]
+    }
+  }
+}
+```
+
+Cline loads MCP servers when a new task starts, so start a fresh task (or reload the window) after editing either file.
 
 ### 4. How to Verify if the Server is Working
 
