@@ -1,0 +1,25 @@
+{
+  "name": "android_click_element_by_id",
+  "description": "Taps an element directly using its sequential [#ID] from the most recent android_get_semantic_tree output.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "id": {
+        "type": "integer",
+        "description": "Sequential element ID (e.g. 1, 2, 5) from the semantic tree digest."
+      }
+    },
+    "required": [
+      "id"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

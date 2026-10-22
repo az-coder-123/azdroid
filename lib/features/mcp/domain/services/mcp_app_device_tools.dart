@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of app lifecycle, clipboard, device metrics, and file transfer tools for MCP.
 class McpAppDeviceTools {
@@ -7,6 +8,7 @@ class McpAppDeviceTools {
   static List<McpToolDefinition> get tools => const [
     McpToolDefinition(
       name: 'android_get_current_app',
+      annotations: readOnlyToolAnnotations,
       description: 'Returns the package name and active Activity of the application currently focused on the screen.',
       inputSchema: {
         'type': 'object',
@@ -20,6 +22,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_launch_app',
+      annotations: inputToolAnnotations,
       description: 'Launches an application by package name using the default launcher activity.',
       inputSchema: {
         'type': 'object',
@@ -38,6 +41,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_stop_app',
+      annotations: destructiveToolAnnotations,
       description: 'Force terminates a running application by package name.',
       inputSchema: {
         'type': 'object',
@@ -56,6 +60,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_clear_app_data',
+      annotations: destructiveToolAnnotations,
       description: 'Clears all user data and cache for an application (resets it to fresh install state).',
       inputSchema: {
         'type': 'object',
@@ -74,6 +79,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_list_packages',
+      annotations: readOnlyToolAnnotations,
       description: 'Lists packages installed on the device with optional third-party filter and search query.',
       inputSchema: {
         'type': 'object',
@@ -95,6 +101,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_get_clipboard',
+      annotations: readOnlyToolAnnotations,
       description: 'Retrieves the text currently stored in the Android system clipboard.',
       inputSchema: {
         'type': 'object',
@@ -108,6 +115,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_set_clipboard',
+      annotations: stateSetToolAnnotations,
       description: 'Sets text directly into the Android system clipboard.',
       inputSchema: {
         'type': 'object',
@@ -126,6 +134,7 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_get_device_info',
+      annotations: readOnlyToolAnnotations,
       description: 'Returns hardware model, Android OS version, API level, screen resolution, density, and battery percentage.',
       inputSchema: {
         'type': 'object',
@@ -139,7 +148,8 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_push_file',
-      description: 'Uploads a local file from the Mac host to the Android device (e.g. to /sdcard/Download/).',
+      annotations: destructiveStateSetToolAnnotations,
+      description: 'Uploads a local file from the computer to the Android device (e.g. to /sdcard/Download/). Overwrites an existing file at remotePath without asking.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -149,7 +159,7 @@ class McpAppDeviceTools {
           },
           'localPath': {
             'type': 'string',
-            'description': 'Absolute path to file on Mac host.',
+            'description': 'Absolute path of the file on the computer.',
           },
           'remotePath': {
             'type': 'string',
@@ -161,7 +171,8 @@ class McpAppDeviceTools {
     ),
     McpToolDefinition(
       name: 'android_pull_file',
-      description: 'Downloads a file from the Android device to the Mac host filesystem.',
+      annotations: destructiveStateSetToolAnnotations,
+      description: 'Downloads a file from the Android device to the computer. Overwrites an existing file at localPath without asking.',
       inputSchema: {
         'type': 'object',
         'properties': {

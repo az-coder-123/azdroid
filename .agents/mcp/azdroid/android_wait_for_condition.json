@@ -1,0 +1,55 @@
+{
+  "name": "android_wait_for_condition",
+  "description": "Polls host-side conditions (element_present, element_gone, activity_resumed, logcat_match) with configurable intervals and timeouts, saving multi-turn LLM polling overhead.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "condition": {
+        "type": "string",
+        "enum": [
+          "element_present",
+          "element_gone",
+          "activity_resumed",
+          "logcat_match"
+        ],
+        "description": "Target state condition to wait for."
+      },
+      "target": {
+        "type": "string",
+        "description": "Target substring/regex for activity_resumed or logcat_match."
+      },
+      "text": {
+        "type": "string",
+        "description": "Target text to match for element_present/gone."
+      },
+      "resourceId": {
+        "type": "string",
+        "description": "Target resource ID for element_present/gone."
+      },
+      "contentDesc": {
+        "type": "string",
+        "description": "Target content description for element_present/gone."
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "description": "Maximum wait duration in ms (default 10000)."
+      },
+      "pollIntervalMs": {
+        "type": "integer",
+        "description": "Host polling interval in ms (default 300)."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      }
+    },
+    "required": [
+      "condition"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

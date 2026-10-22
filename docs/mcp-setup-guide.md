@@ -11,6 +11,7 @@ Azdroid provides a built-in **Model Context Protocol (MCP)** server over standar
 - **Headless & Standalone:** You **do not need to launch `Azdroid.app`** to use this MCP server. AI clients run the pure Dart CLI process independently in the background.
 - **Optional Visual Mirroring:** You can optionally open `Azdroid.app` concurrently to visually observe the agent's taps, gestures, and inputs in real time at 60 FPS.
 - **End-to-End Workflow:** For a practical real-world scenario (request, planning, interaction, triage, code fix, verification), see [mcp-agent-workflow.md](mcp-agent-workflow.md).
+- **Agent Guidance at Handshake:** On `initialize`, the server returns workflow `instructions` (`lib/features/mcp/domain/services/mcp_server_instructions.dart`) so clients like Claude Desktop and Cursor learn the recommended tool-usage patterns (semantic-tree-first targeting, host-side waiting, tool selection rules) before the first tool call.
 
 ---
 
@@ -113,7 +114,7 @@ Verify proper functioning using any of the following 3 methods:
 
 - **Method 1: Terminal Pipe Test (CLI Smoke Test)**
   ```bash
-  # 1. Verify all 58 tools are registered:
+  # 1. Verify all 62 tools are registered:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
 
   # 2. Test live device discovery:
@@ -122,15 +123,15 @@ Verify proper functioning using any of the following 3 methods:
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is standard stdio behavior, not a freeze. Press `Ctrl+C` to exit.)*
 
 - **Method 2: Visual Indicator in Claude / Cursor**
-  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 58 tools enabled.
-  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (58 tools)`.
+  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 62 tools enabled.
+  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (62 tools)`.
 
 - **Method 3: Direct Natural Language Prompt**
   Ask your AI: *"List all connected Android devices with Azdroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
 
 ### 5. Windows Configuration
 
-The server runs on Windows with `dart run` (verified: all 58 tools listed, `android_list_devices` sees a real device). `start_mcp_server.sh` is a bash script, so point clients at `dart` directly. Use the full path to `dart.exe` if the client does not inherit your `PATH`.
+The server runs on Windows with `dart run` (verified with the 58-tool catalog of that time: all tools listed, `android_list_devices` sees a real device). `start_mcp_server.sh` is a bash script, so point clients at `dart` directly. Use the full path to `dart.exe` if the client does not inherit your `PATH`.
 
 Claude Desktop reads `%APPDATA%\Claude\claude_desktop_config.json`:
 
@@ -153,14 +154,27 @@ Smoke test in PowerShell, from the repository folder:
 
 ---
 
-## 🛠️ Published MCP Tools (58 Tools)
+## 🛠️ Published MCP Tools (62 Tools)
+
+> **Single source of truth:** tool names, descriptions, input schemas, and
+> safety annotations are defined in `lib/features/mcp/domain/services/mcp_*_tools.dart`
+> (`McpToolRegistry`). After changing the registry, regenerate the client
+> manifests with `dart run tool/generate_mcp_manifests.dart` (writes
+> `.agents/mcp/azdroid/`). `test/architecture/mcp_tool_catalog_guard_test.dart`
+> fails the build on any drift (missing executor, stale manifest, orphan
+> manifest, duplicate name, or missing/invalid annotations). Destructive tools
+> (`destructiveHint: true`) are gated by a reviewed allowlist in the same
+> guard test, and the guard also requires the `initialize` instructions to
+> name each of them; read-only tools carry `readOnlyHint: true`.
+
+**Safety, coordinates, protocol revision:** which tools need confirmation, how points and text are read, and how the revision is negotiated — [mcp-tool-safety.md](mcp-tool-safety.md).
 
 ### 1. Touch & System Navigation
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_list_devices`** | *none* | Lists all connected USB and Wi-Fi Android devices and their status. |
 | **`android_take_screenshot`** | `deviceSerial` (optional) | Returns high-resolution screenshot as a base64 image artifact for visual inspection. |
-| **`android_tap`** | `x`, `y` (normalized 0.0–1.0 or pixels), `deviceSerial` | Simulates a touch tap gesture on screen. |
+| **`android_tap`** | `x`, `y` (fractions when both are within 0.0–1.0, else pixels), or `xRatio`/`yRatio`, `xPixel`/`yPixel`; `deviceSerial` | Simulates a touch tap gesture on screen. |
 | **`android_double_tap`** | `x`, `y`, `intervalMs` (default 120), `deviceSerial` | Executes rapid double-tap within native Android window to seek video, zoom, or like. |
 | **`android_swipe`** | `startX`, `startY`, `endX`, `endY`, `durationMs` | Injects a swipe gesture across screen coordinates. |
 | **`android_drag`** | `startX`, `startY`, `endX`, `endY`, `durationMs` (1000) | Smooth, controlled drag gesture for timeline seekbars, sliders, and list reordering. |
@@ -227,7 +241,7 @@ Smoke test in PowerShell, from the repository folder:
 | **`android_set_orientation`** | `orientation` (0..3), `deviceSerial` | Rotates screen: 0=Portrait, 1=Landscape, 2=Rev. Portrait, 3=Rev. Landscape. |
 | **`android_simulate_biometric`** | `success` (bool), `deviceSerial` | Simulates biometric (fingerprint/face) authentication prompt. |
 | **`android_wait_for_element`** | `text`, `resourceId`, `timeoutMs` | Polls UI until element appears to eliminate LLM polling round-trips. |
-| **`android_batch_actions`** | `actions` (array of maps) | Executes compound sequence of actions locally in one shot. |
+| **`android_batch_actions`** | `actions` (array of maps) | Executes compound sequence of actions (tap, double_tap, type, key, swipe, scroll, fling, pinch, rotate, sleep) locally in one shot. Each action map's fields and defaults are documented in its schema. |
 | **`android_get_notifications`** | `filter`, `deviceSerial` | Extracts active system notifications and status bar 2FA/OTP codes. |
 | **`android_dismiss_notification`** | `key`, `clearAll`, `deviceSerial` | Dismisses a specific notification or clears all notifications. |
 | **`android_set_location`** | `latitude`, `longitude`, `altitude` | Injects mock GPS coordinates for maps and geo-fencing QA. |

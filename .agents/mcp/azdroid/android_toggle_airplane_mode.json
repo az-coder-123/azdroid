@@ -1,0 +1,25 @@
+{
+  "name": "android_toggle_airplane_mode",
+  "description": "Enables or disables device Airplane mode. Enabling it turns the radios off and drops a Wi-Fi ADB connection; only use over USB, or confirm first.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "enable": {
+        "type": "boolean",
+        "description": "True to enable Airplane mode, false to disable."
+      }
+    },
+    "required": [
+      "enable"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": true
+  }
+}

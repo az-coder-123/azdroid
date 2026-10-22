@@ -1,0 +1,13 @@
+{
+  "name": "android_list_devices",
+  "description": "Lists all connected and discovered Android devices via USB and Wi-Fi.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

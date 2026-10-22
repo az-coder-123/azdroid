@@ -1,0 +1,47 @@
+{
+  "name": "android_find_element",
+  "description": "Searches the UI hierarchy for an element by text, resource ID, or content description. Returns bounds and center tap coordinates.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "text": {
+        "type": "string",
+        "description": "Visible text to search for (case-insensitive substring match)."
+      },
+      "resourceId": {
+        "type": "string",
+        "description": "Android view ID to search for (e.g. \"com.example:id/login_btn\")."
+      },
+      "contentDesc": {
+        "type": "string",
+        "description": "Accessibility content description to search for."
+      }
+    },
+    "anyOf": [
+      {
+        "required": [
+          "text"
+        ]
+      },
+      {
+        "required": [
+          "resourceId"
+        ]
+      },
+      {
+        "required": [
+          "contentDesc"
+        ]
+      }
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

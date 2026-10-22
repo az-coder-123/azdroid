@@ -1,9 +1,11 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// MCP tool definitions for UI hierarchy semantic inspection and element interactions.
 final List<McpToolDefinition> mcpSemanticUiTools = [
   const McpToolDefinition(
     name: 'android_dump_hierarchy',
+    annotations: readOnlyToolAnnotations,
     description: 'Dumps the raw active window UI accessibility hierarchy XML (classes, resource IDs, text, bounds, clickable).',
     inputSchema: {
       'type': 'object',
@@ -21,6 +23,7 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
   ),
   const McpToolDefinition(
     name: 'android_get_semantic_tree',
+    annotations: readOnlyToolAnnotations,
     description: 'Inspects the active window accessibility UI tree, pruning invisible and empty layouts into a compact token-efficient digest with [#ID] tags.',
     inputSchema: {
       'type': 'object',
@@ -34,6 +37,7 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
   ),
   const McpToolDefinition(
     name: 'android_click_element_by_id',
+    annotations: inputToolAnnotations,
     description: 'Taps an element directly using its sequential [#ID] from the most recent android_get_semantic_tree output.',
     inputSchema: {
       'type': 'object',
@@ -52,6 +56,7 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
   ),
   const McpToolDefinition(
     name: 'android_find_element',
+    annotations: readOnlyToolAnnotations,
     description: 'Searches the UI hierarchy for an element by text, resource ID, or content description. Returns bounds and center tap coordinates.',
     inputSchema: {
       'type': 'object',
@@ -74,10 +79,22 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
           'description': 'Accessibility content description to search for.',
         },
       },
+      'anyOf': [
+        {
+          'required': ['text'],
+        },
+        {
+          'required': ['resourceId'],
+        },
+        {
+          'required': ['contentDesc'],
+        },
+      ],
     },
   ),
   const McpToolDefinition(
     name: 'android_click_element',
+    annotations: inputToolAnnotations,
     description: 'Finds an on-screen element by text, ID, or description and immediately taps its center coordinates.',
     inputSchema: {
       'type': 'object',
@@ -99,6 +116,17 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
           'description': 'Accessibility description of the element to click.',
         },
       },
+      'anyOf': [
+        {
+          'required': ['text'],
+        },
+        {
+          'required': ['resourceId'],
+        },
+        {
+          'required': ['contentDesc'],
+        },
+      ],
     },
   ),
 ];

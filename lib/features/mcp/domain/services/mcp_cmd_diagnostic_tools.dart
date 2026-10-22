@@ -1,9 +1,11 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of Intent dispatching, logcat inspection, APK installation, and shell execution tools.
 final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   const McpToolDefinition(
     name: 'android_dispatch_intent',
+    annotations: inputToolAnnotations,
     description: 'Fires an Android Intent, custom URL scheme, or deep link with optional package and typed extras.',
     inputSchema: {
       'type': 'object',
@@ -35,6 +37,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   ),
   const McpToolDefinition(
     name: 'android_get_logcat',
+    annotations: readOnlyToolAnnotations,
     description: 'Extracts real-time or recent logcat records from the device with optional tag and level filtering.',
     inputSchema: {
       'type': 'object',
@@ -54,6 +57,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   ),
   const McpToolDefinition(
     name: 'android_check_crash',
+    annotations: readOnlyToolAnnotations,
     description: 'Inspects the Android dedicated crash buffer (-b crash), runtime fatal exceptions, or ANRs for a target package, returning clean crash traces.',
     inputSchema: {
       'type': 'object',
@@ -77,6 +81,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   ),
   const McpToolDefinition(
     name: 'android_scan_media_file',
+    annotations: inputToolAnnotations,
     description: 'Triggers Android MediaStore to scan and index a newly pushed or modified audio/video file so media apps immediately discover it.',
     inputSchema: {
       'type': 'object',
@@ -95,6 +100,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   ),
   const McpToolDefinition(
     name: 'android_install_apk',
+    annotations: destructiveToolAnnotations,
     description: 'Sideloads an APK package onto the Android device.',
     inputSchema: {
       'type': 'object',
@@ -121,6 +127,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   ),
   const McpToolDefinition(
     name: 'android_shell_command',
+    annotations: destructiveToolAnnotations,
     description: 'Executes a raw adb shell command on the Android device for advanced troubleshooting.',
     inputSchema: {
       'type': 'object',

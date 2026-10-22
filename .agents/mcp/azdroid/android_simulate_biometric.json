@@ -1,0 +1,22 @@
+{
+  "name": "android_simulate_biometric",
+  "description": "Simulates biometric prompt authentication (fingerprint or face recognition) success or failure.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "success": {
+        "type": "boolean",
+        "description": "True to simulate authenticated biometric match, false for rejected match."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

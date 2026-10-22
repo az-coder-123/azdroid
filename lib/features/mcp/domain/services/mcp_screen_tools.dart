@@ -1,15 +1,18 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of screen capture and device enumeration tools for MCP.
 final List<McpToolDefinition> mcpScreenTools = [
   const McpToolDefinition(
     name: 'android_list_devices',
+    annotations: readOnlyToolAnnotations,
     description:
         'Lists all connected and discovered Android devices via USB and Wi-Fi.',
     inputSchema: {'type': 'object', 'properties': {}},
   ),
   const McpToolDefinition(
     name: 'android_take_screenshot',
+    annotations: readOnlyToolAnnotations,
     description: 'Captures a high-resolution screenshot with optional Region-of-Interest (ROI) cropping and JPEG/PNG compression to save up to 85% Vision tokens.',
     inputSchema: {
       'type': 'object',

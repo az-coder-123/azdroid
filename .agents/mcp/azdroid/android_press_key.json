@@ -1,0 +1,35 @@
+{
+  "name": "android_press_key",
+  "description": "Presses an Android hardware or system navigation key (BACK, HOME, APP_SWITCH, ENTER, TAB, POWER, VOLUME_UP, VOLUME_DOWN). For media, camera, wake, or sleep controls prefer android_press_button.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "key": {
+        "type": "string",
+        "enum": [
+          "BACK",
+          "HOME",
+          "APP_SWITCH",
+          "ENTER",
+          "TAB",
+          "POWER",
+          "VOLUME_UP",
+          "VOLUME_DOWN"
+        ],
+        "description": "Key name to press."
+      }
+    },
+    "required": [
+      "key"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

@@ -119,7 +119,7 @@ Add to `cline_mcp_settings.json`:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
   ```
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is normal MCP behavior. Press `Ctrl+C` to exit.)*
-- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `azdroid` with 58 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
+- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `azdroid` with 62 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
 
 ---
 

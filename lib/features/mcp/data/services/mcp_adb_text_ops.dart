@@ -23,6 +23,9 @@ class McpAdbTextOps {
   }
 
   /// Injects exact text bypassing IME predictive engines and Telex autocorrect.
+  ///
+  /// Pastes through the device clipboard (which it replaces). Falls back to
+  /// [typeText] when the clipboard cannot be set or the paste key fails.
   static Future<bool> setText(
     McpAdbClient client,
     String serial,
@@ -54,10 +57,14 @@ class McpAdbTextOps {
       'shell',
       'input',
       'keyevent',
-      '279',
+      '$_keycodePaste',
     ]);
-    return res.exitCode == 0;
+    if (res.exitCode == 0) return true;
+    return typeText(client, serial, text);
   }
+
+  /// Android `KEYCODE_PASTE`.
+  static const int _keycodePaste = 279;
 
   /// Clears text in the focused field or focuses an element by ID before clearing.
   static Future<bool> clearText(

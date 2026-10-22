@@ -1,0 +1,25 @@
+{
+  "name": "android_get_gfx_info",
+  "description": "Queries Android Choreographer / RenderThread frame rendering statistics and jank metrics for an app.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Target package name."
+      }
+    },
+    "required": [
+      "package"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

@@ -66,18 +66,24 @@ class McpToolDefinition extends Equatable {
     required this.name,
     required this.description,
     required this.inputSchema,
+    this.annotations,
   });
 
   final String name;
   final String description;
   final Map<String, dynamic> inputSchema;
 
+  /// Optional MCP safety hints (readOnlyHint, destructiveHint, idempotentHint)
+  /// from `mcp_tool_annotations.dart`, surfaced to clients in `tools/list`.
+  final Map<String, dynamic>? annotations;
+
   Map<String, dynamic> toJson() => {
     'name': name,
     'description': description,
     'inputSchema': inputSchema,
+    if (annotations != null) 'annotations': annotations,
   };
 
   @override
-  List<Object?> get props => [name, description, inputSchema];
+  List<Object?> get props => [name, description, inputSchema, annotations];
 }

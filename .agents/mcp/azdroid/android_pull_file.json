@@ -1,0 +1,30 @@
+{
+  "name": "android_pull_file",
+  "description": "Downloads a file from the Android device to the computer. Overwrites an existing file at localPath without asking.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "remotePath": {
+        "type": "string",
+        "description": "Absolute file path on Android."
+      },
+      "localPath": {
+        "type": "string",
+        "description": "Target absolute destination path on Mac host."
+      }
+    },
+    "required": [
+      "remotePath",
+      "localPath"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": true
+  }
+}

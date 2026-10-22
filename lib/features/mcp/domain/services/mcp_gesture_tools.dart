@@ -1,9 +1,11 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of advanced multi-touch gesture tools (pinch zoom, two-finger rotation).
 final List<McpToolDefinition> mcpGestureTools = [
   const McpToolDefinition(
     name: 'android_pinch_gesture',
+    annotations: inputToolAnnotations,
     description: 'Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.',
     inputSchema: {
       'type': 'object',
@@ -39,6 +41,7 @@ final List<McpToolDefinition> mcpGestureTools = [
   ),
   const McpToolDefinition(
     name: 'android_rotate_gesture',
+    annotations: inputToolAnnotations,
     description: 'Executes a two-finger rotation gesture (clockwise / counter-clockwise) by specified degrees around a center coordinate.',
     inputSchema: {
       'type': 'object',

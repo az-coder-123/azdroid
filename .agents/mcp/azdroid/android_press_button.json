@@ -1,0 +1,36 @@
+{
+  "name": "android_press_button",
+  "description": "Triggers hardware physical buttons (volume_up, volume_down, camera, mute, wakeup, sleep, media_play_pause, media_next, media_prev). For navigation keys (BACK, HOME, APP_SWITCH) prefer android_press_key.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "button": {
+        "type": "string",
+        "enum": [
+          "volume_up",
+          "volume_down",
+          "camera",
+          "mute",
+          "wakeup",
+          "sleep",
+          "media_play_pause",
+          "media_next",
+          "media_prev"
+        ],
+        "description": "Target hardware button."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      }
+    },
+    "required": [
+      "button"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

@@ -4,6 +4,8 @@ import 'package:desk_droid/core/constants/app_constants.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_json_rpc.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_protocol_version.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_server_instructions.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_registry.dart';
 
 /// Handles parsing, routing, and response formatting for the MCP JSON-RPC 2.0 protocol.
@@ -20,7 +22,6 @@ class McpProtocolHandler {
   final McpToolExecutor _executor;
   final McpActivitySink _activity;
 
-  static const String protocolVersion = '2024-11-05';
   static const String serverName = 'azdroid-mcp';
   static const String serverVersion = AppConstants.appVersion;
 
@@ -83,11 +84,14 @@ class McpProtocolHandler {
         return McpResponse(
           id: request.id,
           result: {
-            'protocolVersion': protocolVersion,
+            'protocolVersion': negotiateMcpProtocolVersion(
+              request.params?['protocolVersion'],
+            ),
             'capabilities': {
               'tools': {'listChanged': false},
             },
             'serverInfo': {'name': serverName, 'version': serverVersion},
+            'instructions': mcpServerInstructions,
           },
         );
 

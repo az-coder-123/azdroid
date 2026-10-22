@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 const _serialProp = {
   'type': 'string',
@@ -7,7 +8,10 @@ const _serialProp = {
 
 const _coordProp = {
   'type': 'number',
-  'description': 'Coordinate (normalized 0.0-1.0 or physical pixels).',
+  'description':
+      'Coordinate. Raw pairs where both values are within 0.0-1.0 are '
+      'interpreted as normalized screen ratios; otherwise as physical pixels. '
+      'Use the *Ratio or *Pixel variants to pin the unit explicitly.',
 };
 
 const _coordRatioProp = {
@@ -24,7 +28,8 @@ const _coordPixelProp = {
 final List<McpToolDefinition> mcpTouchInputTools = [
   const McpToolDefinition(
     name: 'android_tap',
-    description: 'Simulates a touch tap gesture at normalized coordinates (0.0 to 1.0) or physical pixels on the Android screen.',
+    annotations: inputToolAnnotations,
+    description: 'Simulates a touch tap gesture at normalized coordinates (0.0 to 1.0) or physical pixels on the Android screen. Prefer android_click_element_by_id or android_click_element when a semantic element reference is available.',
     inputSchema: {
       'type': 'object',
       'properties': {
@@ -48,6 +53,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_double_tap',
+    annotations: inputToolAnnotations,
     description: 'Executes a rapid double-tap gesture within the native Android double-tap window (default 120ms) to seek video (+10s/-10s), zoom, or trigger secondary actions.',
     inputSchema: {
       'type': 'object',
@@ -68,6 +74,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_swipe',
+    annotations: inputToolAnnotations,
     description: 'Performs a swipe or drag gesture between two coordinates on the Android device.',
     inputSchema: {
       'type': 'object',
@@ -94,6 +101,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_drag',
+    annotations: inputToolAnnotations,
     description: 'Performs a smooth, controlled drag gesture between two points (default duration 1000ms) for timeline seekbars, volume sliders, and list reordering.',
     inputSchema: {
       'type': 'object',
@@ -120,6 +128,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_type_text',
+    annotations: inputToolAnnotations,
     description: 'Injects raw or international Unicode text into the currently focused Android input field.',
     inputSchema: {
       'type': 'object',
@@ -135,7 +144,8 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_set_text',
-    description: 'Sets exact text into the focused field or target element by ID, bypassing IME predictive autocorrect and Vietnamese Telex alteration.',
+    annotations: inputToolAnnotations,
+    description: 'Sets exact text into the focused field or target element by ID, bypassing IME predictive autocorrect and Vietnamese Telex alteration. Pastes through the device clipboard, so the clipboard content is replaced; use android_type_text to keep it.',
     inputSchema: {
       'type': 'object',
       'properties': {
@@ -158,6 +168,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_clear_text',
+    annotations: inputToolAnnotations,
     description: 'Clears all existing text in the currently focused input field or target element by ID in a single shot.',
     inputSchema: {
       'type': 'object',
@@ -172,7 +183,8 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_press_key',
-    description: 'Presses an Android hardware or system navigation key (BACK, HOME, APP_SWITCH, ENTER, TAB, POWER).',
+    annotations: inputToolAnnotations,
+    description: 'Presses an Android hardware or system navigation key (BACK, HOME, APP_SWITCH, ENTER, TAB, POWER, VOLUME_UP, VOLUME_DOWN). For media, camera, wake, or sleep controls prefer android_press_button.',
     inputSchema: {
       'type': 'object',
       'properties': {
@@ -197,6 +209,7 @@ final List<McpToolDefinition> mcpTouchInputTools = [
   ),
   const McpToolDefinition(
     name: 'android_scroll',
+    annotations: inputToolAnnotations,
     description: 'Performs a directional scroll or inertial fling gesture (up, down, left, right) on scrollable views (RecyclerView, ScrollView, LazyColumn).',
     inputSchema: {
       'type': 'object',

@@ -1,0 +1,50 @@
+{
+  "name": "android_tap",
+  "description": "Simulates a touch tap gesture at normalized coordinates (0.0 to 1.0) or physical pixels on the Android screen. Prefer android_click_element_by_id or android_click_element when a semantic element reference is available.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "x": {
+        "type": "number",
+        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+      },
+      "y": {
+        "type": "number",
+        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+      },
+      "xRatio": {
+        "type": "number",
+        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+      },
+      "yRatio": {
+        "type": "number",
+        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+      },
+      "xPixel": {
+        "type": "number",
+        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+      },
+      "yPixel": {
+        "type": "number",
+        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+      },
+      "verifyChange": {
+        "type": "boolean",
+        "description": "Optional. If true, inspects UI hierarchy before and after tap (~300ms window) to verify whether the gesture caused a detectable UI state change."
+      },
+      "verifyDelayMs": {
+        "type": "integer",
+        "description": "Optional wait duration in milliseconds before capturing post-tap hierarchy (default 300ms for animation settlement)."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "android_batch_actions",
+  "description": "Executes a sequential compound macro of actions (tap, double_tap, type, key, swipe, scroll, fling, pinch, rotate, sleep) locally in one shot.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "actions": {
+        "type": "array",
+        "description": "List of action maps. Each requires an \"action\" field plus per-type fields (defaults in parentheses): tap/double_tap: x, y (ratio when both <= 1.0, else pixels; intervalMs 120 for double_tap) — {\"action\":\"tap\",\"x\":0.5,\"y\":0.5}; type: text — {\"action\":\"type\",\"text\":\"hello\"}; key: keyCode (numeric Android keycode) — {\"action\":\"key\",\"keyCode\":66}; swipe: startX, startY, endX, endY, durationMs (300); scroll/fling: direction (down), distance (0.6), speed fast|normal|slow (normal), durationMs; pinch: scale (1.5), centerX, centerY (0.5), durationMs (400); rotate: angleDegrees (90), centerX, centerY (0.5), radius (200), durationMs (400); sleep: durationMs (500) — {\"action\":\"sleep\",\"durationMs\":800}.",
+        "items": {
+          "type": "object"
+        }
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      }
+    },
+    "required": [
+      "actions"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

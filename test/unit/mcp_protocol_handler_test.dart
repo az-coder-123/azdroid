@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:desk_droid/features/mcp/data/handlers/mcp_protocol_handler.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_json_rpc.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_protocol_version.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -41,6 +42,57 @@ void main() {
         );
       },
     );
+
+    test('initialize answers the revision the client asked for', () async {
+      Future<String> negotiated(Object? requested) async {
+        final response = await handler.handleMessage(
+          jsonEncode({
+            'jsonrpc': '2.0',
+            'id': 3,
+            'method': 'initialize',
+            'params': {'protocolVersion': ?requested, 'capabilities': {}},
+          }),
+        );
+        final result =
+            (jsonDecode(response!) as Map<String, dynamic>)['result']
+                as Map<String, dynamic>;
+        return result['protocolVersion'] as String;
+      }
+
+      // Annotations need 2025-03-26 or later; such clients must get it back.
+      expect(await negotiated('2025-03-26'), '2025-03-26');
+      expect(await negotiated('2025-06-18'), '2025-06-18');
+      expect(await negotiated('2024-11-05'), '2024-11-05');
+      // Unknown or missing: the newest supported revision.
+      expect(
+        await negotiated('2099-01-01'),
+        mcpSupportedProtocolVersions.first,
+      );
+      expect(await negotiated(null), mcpSupportedProtocolVersions.first);
+    });
+
+    test('initialize returns agent workflow instructions', () async {
+      final requestJson = jsonEncode({
+        'jsonrpc': '2.0',
+        'id': 7,
+        'method': 'initialize',
+        'params': {'protocolVersion': '2024-11-05', 'capabilities': {}},
+      });
+
+      final responseStr = await handler.handleMessage(requestJson);
+      final responseMap = jsonDecode(responseStr!) as Map<String, dynamic>;
+      final result = responseMap['result'] as Map<String, dynamic>;
+
+      final instructions = result['instructions'];
+      expect(instructions, isA<String>());
+      expect((instructions as String).trim(), isNotEmpty);
+
+      // Guidance must reference the core verified workflows.
+      expect(instructions, contains('android_list_devices'));
+      expect(instructions, contains('android_get_semantic_tree'));
+      expect(instructions, contains('android_click_element_by_id'));
+      expect(instructions, contains('android_wait_for_condition'));
+    });
 
     test(
       'notifications/initialized returns null (no response for notification)',

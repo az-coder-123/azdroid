@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of Smart Waiting, Condition Monitoring, and Macro Batching tools for Azdroid MCP.
 class McpAutomationTools {
@@ -7,7 +8,8 @@ class McpAutomationTools {
   static List<McpToolDefinition> get tools => const [
     McpToolDefinition(
       name: 'android_wait_for_element',
-      description: 'Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips.',
+      annotations: readOnlyToolAnnotations,
+      description: 'Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips. Convenience shortcut for element appearance; use android_wait_for_condition for element_gone, activity_resumed, or logcat_match conditions.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -37,6 +39,7 @@ class McpAutomationTools {
     ),
     McpToolDefinition(
       name: 'android_wait_for_condition',
+      annotations: readOnlyToolAnnotations,
       description: 'Polls host-side conditions (element_present, element_gone, activity_resumed, logcat_match) with configurable intervals and timeouts, saving multi-turn LLM polling overhead.',
       inputSchema: {
         'type': 'object',
@@ -87,13 +90,27 @@ class McpAutomationTools {
     ),
     McpToolDefinition(
       name: 'android_batch_actions',
-      description: 'Executes a sequential compound macro of actions (tap, double_tap, type, key, swipe, pinch, rotate, sleep) locally in one shot.',
+      annotations: inputToolAnnotations,
+      description: 'Executes a sequential compound macro of actions (tap, double_tap, type, key, swipe, scroll, fling, pinch, rotate, sleep) locally in one shot.',
       inputSchema: {
         'type': 'object',
         'properties': {
           'actions': {
             'type': 'array',
-            'description': 'List of action maps: {"action": "tap"|"double_tap"|"type"|"key"|"swipe"|"pinch"|"rotate"|"sleep", ...}',
+            'description':
+                'List of action maps. Each requires an "action" '
+                'field plus per-type fields (defaults in parentheses): '
+                'tap/double_tap: x, y (ratio when both <= 1.0, else pixels; '
+                'intervalMs 120 for double_tap) — {"action":"tap","x":0.5,"y":0.5}; '
+                'type: text — {"action":"type","text":"hello"}; '
+                'key: keyCode (numeric Android keycode) — {"action":"key","keyCode":66}; '
+                'swipe: startX, startY, endX, endY, durationMs (300); '
+                'scroll/fling: direction (down), distance (0.6), speed '
+                'fast|normal|slow (normal), durationMs; '
+                'pinch: scale (1.5), centerX, centerY (0.5), durationMs (400); '
+                'rotate: angleDegrees (90), centerX, centerY (0.5), radius '
+                '(200), durationMs (400); '
+                'sleep: durationMs (500) — {"action":"sleep","durationMs":800}.',
             'items': {'type': 'object'},
           },
           'deviceSerial': {

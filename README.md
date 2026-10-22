@@ -368,6 +368,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 | [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
 | [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
 | [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (62 tools; [Workflow Guide](docs/mcp-agent-workflow.md)) |
+| [🛡️ MCP Tool Safety](docs/mcp-tool-safety.md) | Which MCP tools need confirmation, how coordinates and text are read, and the protocol revision |
 
 ---
 

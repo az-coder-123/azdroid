@@ -1,0 +1,46 @@
+{
+  "name": "android_double_tap",
+  "description": "Executes a rapid double-tap gesture within the native Android double-tap window (default 120ms) to seek video (+10s/-10s), zoom, or trigger secondary actions.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "x": {
+        "type": "number",
+        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+      },
+      "y": {
+        "type": "number",
+        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+      },
+      "xRatio": {
+        "type": "number",
+        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+      },
+      "yRatio": {
+        "type": "number",
+        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+      },
+      "xPixel": {
+        "type": "number",
+        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+      },
+      "yPixel": {
+        "type": "number",
+        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+      },
+      "intervalMs": {
+        "type": "integer",
+        "description": "Delay between taps in milliseconds (default 120ms)."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

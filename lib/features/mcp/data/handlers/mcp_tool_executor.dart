@@ -30,6 +30,21 @@ class McpToolExecutor {
 
   static const String _listDevicesTool = 'android_list_devices';
 
+  /// Whether [toolName] maps to a known executor route in this server.
+  ///
+  /// Mirrors the routing table used by [execute] so guard tests can verify
+  /// every published tool actually has an implementation.
+  bool canHandle(String toolName) =>
+      toolName == _listDevicesTool ||
+      _screen.canHandle(toolName) ||
+      _gesture.canHandle(toolName) ||
+      _basic.canHandle(toolName) ||
+      _appDevice.canHandle(toolName) ||
+      _semantic.canHandle(toolName) ||
+      _perfMedia.canHandle(toolName) ||
+      _automation.canHandle(toolName) ||
+      _deviceControl.canHandle(toolName);
+
   final McpAdbClient _adb;
   final McpActivitySink _activity;
   final McpScreenToolExecutor _screen;

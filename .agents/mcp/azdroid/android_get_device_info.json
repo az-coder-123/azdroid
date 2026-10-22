@@ -1,0 +1,18 @@
+{
+  "name": "android_get_device_info",
+  "description": "Returns hardware model, Android OS version, API level, screen resolution, density, and battery percentage.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "android_type_text",
+  "description": "Injects raw or international Unicode text into the currently focused Android input field.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial or IP:port."
+      },
+      "text": {
+        "type": "string",
+        "description": "Text to type into the focused field."
+      }
+    },
+    "required": [
+      "text"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false
+  }
+}

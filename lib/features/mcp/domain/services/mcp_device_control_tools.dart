@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of Notifications, Mock Location, Network Conditioning,
 /// and Hardware Button tools for Azdroid MCP.
@@ -8,6 +9,7 @@ class McpDeviceControlTools {
   static List<McpToolDefinition> get tools => const [
     McpToolDefinition(
       name: 'android_get_notifications',
+      annotations: readOnlyToolAnnotations,
       description: 'Extracts active system notifications and status bar alerts including 2FA SMS and OTP codes.',
       inputSchema: {
         'type': 'object',
@@ -26,6 +28,7 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_dismiss_notification',
+      annotations: destructiveToolAnnotations,
       description: 'Dismisses a specific notification by key or clears all notifications from the status bar.',
       inputSchema: {
         'type': 'object',
@@ -43,10 +46,19 @@ class McpDeviceControlTools {
             'description': 'Target device serial.',
           },
         },
+        'anyOf': [
+          {
+            'required': ['key'],
+          },
+          {
+            'required': ['clearAll'],
+          },
+        ],
       },
     ),
     McpToolDefinition(
       name: 'android_set_location',
+      annotations: stateSetToolAnnotations,
       description: 'Sets mock GPS coordinates (latitude, longitude, altitude) for geo-fencing and maps QA testing.',
       inputSchema: {
         'type': 'object',
@@ -67,7 +79,8 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_set_network_condition',
-      description: 'Simulates network connectivity conditions (normal, offline, wifi_only, data_only) for offline mode testing.',
+      annotations: destructiveStateSetToolAnnotations,
+      description: 'Simulates network connectivity conditions (normal, offline, wifi_only, data_only) for offline mode testing. "offline" and "data_only" turn Wi-Fi off and drop a Wi-Fi ADB connection; only use them over USB, or confirm first.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -86,6 +99,7 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_long_press',
+      annotations: inputToolAnnotations,
       description: 'Performs a long-press touch gesture at normalized coordinates (0.0 to 1.0) or physical pixels with configurable hold duration.',
       inputSchema: {
         'type': 'object',
@@ -129,6 +143,7 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_open_notification_panel',
+      annotations: inputToolAnnotations,
       description: 'Expands or collapses the Android notification shade or Quick Settings drawer.',
       inputSchema: {
         'type': 'object',
@@ -151,6 +166,7 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_read_shared_prefs',
+      annotations: readOnlyToolAnnotations,
       description: 'Reads SharedPreferences XML keys and values for deep application state inspection and QA validation.',
       inputSchema: {
         'type': 'object',
@@ -174,7 +190,8 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_press_button',
-      description: 'Triggers hardware physical buttons (VOLUME_UP, VOLUME_DOWN, CAMERA, MUTE, WAKEUP, SLEEP, MEDIA_PLAY_PAUSE).',
+      annotations: inputToolAnnotations,
+      description: 'Triggers hardware physical buttons (volume_up, volume_down, camera, mute, wakeup, sleep, media_play_pause, media_next, media_prev). For navigation keys (BACK, HOME, APP_SWITCH) prefer android_press_key.',
       inputSchema: {
         'type': 'object',
         'properties': {

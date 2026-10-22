@@ -1,0 +1,30 @@
+{
+  "name": "android_revoke_permission",
+  "description": "Revokes a runtime Android permission from an installed application. Android kills the app process when a granted permission is revoked, so unsaved app state is lost.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "deviceSerial": {
+        "type": "string",
+        "description": "Target device serial."
+      },
+      "package": {
+        "type": "string",
+        "description": "Application package name."
+      },
+      "permission": {
+        "type": "string",
+        "description": "Android permission string to revoke."
+      }
+    },
+    "required": [
+      "package",
+      "permission"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": true
+  }
+}
