@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Azdroid — Automated Windows Release & Deployment Pipeline.
+  Azdroid - Automated Windows Release & Deployment Pipeline.
 
 .DESCRIPTION
   Automates the complete Windows release lifecycle after a release tag
@@ -195,7 +195,7 @@ function Update-ReleaseReadme {
 Push-Location $RootDir
 try {
   Write-Host '======================================================================'
-  Write-Host ' Azdroid — Automated Windows Release & Deployment Pipeline'
+  Write-Host ' Azdroid - Automated Windows Release & Deployment Pipeline'
   Write-Host '======================================================================'
 
   # ----------------------------------------------------------------------------
@@ -350,7 +350,7 @@ try {
 
   # Update install command
   $installPattern = 'unzip `Azdroid-v[0-9.]+-Windows-x64\.zip`'
-  $newInstall = "unzip \`$zipName\`"
+  $newInstall = "unzip ``$zipName``"
   $readmeContent = [regex]::Replace($readmeContent, $installPattern, $newInstall)
 
   $readmeContent | Set-Content -Path $ReadmePath -Encoding Ascii

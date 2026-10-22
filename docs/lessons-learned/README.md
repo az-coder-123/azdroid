@@ -97,6 +97,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Device-Reaching Statics in Tests** | Testing & MCP Touch | A static path to a device needs a seam switched off in `flutter_test_config.dart`; mocks throwing by accident is not a test. | [device-reaching-statics-in-tests.md](device-reaching-statics-in-tests.md) |
 | **Fast Input: Key Overtakes Click** | MCP Input & Timing | A key sent 0 ms after a navigating tap is lost; adb's 100 ms start-up hid it. Keep 120 ms between separate inputs. | [fast-input-key-overtakes-click.md](fast-input-key-overtakes-click.md) |
 | **Release Script Version Check & Windows Pin** | Release & Packaging | `dart test` cannot load flutter_test; the anti-404 Windows pin is now a script check, not a manual rule. | [release-script-version-check-and-windows-pin.md](release-script-version-check-and-windows-pin.md) |
+| **PowerShell Bash-Style Escapes Break Parsing** | Release Tooling & PS 5.1 | Fix `` \` ``-style escapes that leave strings unterminated; keep `.ps1` ASCII-pure and parse-gate scripts before deploys. | [powershell-bash-escape-unterminated-string.md](powershell-bash-escape-unterminated-string.md) |
 
 ---
 
