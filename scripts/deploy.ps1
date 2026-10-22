@@ -330,7 +330,9 @@ try {
   Write-Step 'Step 7: Synchronizing README & Release Documentation'
 
   # 1. Update README.md
-  $readmeContent = Get-Content -Path $ReadmePath -Raw
+  # Read/write via .NET UTF-8 APIs: Get-Content defaults to the ANSI codepage
+  # and Set-Content -Encoding Ascii destroys emoji and other non-ASCII text.
+  $readmeContent = [System.IO.File]::ReadAllText($ReadmePath)
 
   # Unpin Windows download link to latest/download
   $latestWinUrl = "$RepoUrl/releases/latest/download/$zipName"
@@ -353,7 +355,8 @@ try {
   $newInstall = "unzip ``$zipName``"
   $readmeContent = [regex]::Replace($readmeContent, $installPattern, $newInstall)
 
-  $readmeContent | Set-Content -Path $ReadmePath -Encoding Ascii
+  [System.IO.File]::WriteAllText($ReadmePath, $readmeContent,
+    (New-Object System.Text.UTF8Encoding($false)))
   Write-Ok "Updated README.md: Windows download button unpinned to latest ($zipName)"
 
   # 2. Update RELEASE/README.md

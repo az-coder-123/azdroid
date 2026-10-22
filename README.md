@@ -16,7 +16,7 @@
 <p align="center">
   <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v1.4.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.4.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download Azdroid for macOS"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/azdroid/releases/download/v1.3.0/Azdroid-v1.3.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.3.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v1.4.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.4.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
   &nbsp;
   <a href="https://github.com/az-coder-123/azdroid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
   <br>
@@ -321,7 +321,7 @@ flowchart LR
 ### Install a release
 
 - **macOS:** unzip `Azdroid-v1.4.0-macOS.zip`, move **Azdroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/Azdroid.app` once if Gatekeeper blocks it.
-- **Windows:** unzip `Azdroid-v1.3.0-Windows-x64.zip` (ADB included) and run `Azdroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
+- **Windows:** unzip `Azdroid-v1.4.0-Windows-x64.zip` (ADB included) and run `Azdroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
 
 ### Run from source
 
