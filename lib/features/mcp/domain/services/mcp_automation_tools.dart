@@ -8,34 +8,6 @@ class McpAutomationTools {
 
   static List<McpToolDefinition> get tools => const [
     McpToolDefinition(
-      name: 'android_wait_for_element',
-      annotations: readOnlyToolAnnotations,
-      description: 'Waits on the computer until an element matching text, resourceId, or contentDesc appears (give at least one), instead of polling with repeated calls. Use android_wait_for_condition for element_gone, activity_resumed, or logcat_match.',
-      inputSchema: {
-        'type': 'object',
-        'properties': {
-          'text': {'type': 'string', 'description': 'Target text to match.'},
-          'resourceId': {
-            'type': 'string',
-            'description': 'Target resource ID to match.',
-          },
-          'contentDesc': {
-            'type': 'string',
-            'description': 'Target content-desc to match.',
-          },
-          'timeoutMs': {
-            'type': 'integer',
-            'description': 'Maximum wait duration in ms (default 10000).',
-          },
-          'pollIntervalMs': {
-            'type': 'integer',
-            'description': 'Polling interval in ms (default 500).',
-          },
-          'deviceSerial': mcpDeviceSerialProp,
-        },
-      },
-    ),
-    McpToolDefinition(
       name: 'android_wait_for_condition',
       annotations: readOnlyToolAnnotations,
       description: 'Polls host-side conditions (element_present, element_gone, activity_resumed, logcat_match) with configurable intervals and timeouts, saving multi-turn LLM polling overhead.',

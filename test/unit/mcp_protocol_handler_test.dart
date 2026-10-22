@@ -89,8 +89,8 @@ void main() {
 
       // Guidance must reference the core verified workflows.
       expect(instructions, contains('android_list_devices'));
-      expect(instructions, contains('android_get_semantic_tree'));
-      expect(instructions, contains('android_click_element_by_id'));
+      expect(instructions, contains('android_get_ui_tree'));
+      expect(instructions, contains('android_click_element'));
       expect(instructions, contains('android_wait_for_condition'));
     });
 
@@ -144,7 +144,7 @@ void main() {
       expect(toolNames, contains('android_take_screenshot'));
       expect(toolNames, contains('android_tap'));
       expect(toolNames, contains('android_swipe'));
-      expect(toolNames, contains('android_type_text'));
+      expect(toolNames, contains('android_input_text'));
       expect(toolNames, contains('android_press_key'));
       expect(toolNames, contains('android_dispatch_intent'));
       expect(toolNames, contains('android_get_logcat'));

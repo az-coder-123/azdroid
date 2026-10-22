@@ -81,9 +81,7 @@ void main() {
       expect(digest, contains('[#6] Switch desc:"Toggle Airplane"'));
       expect(
         digest,
-        contains(
-          'Tip: Use android_click_element_by_id(id: N) to tap any element.',
-        ),
+        contains('Tip: Use android_click_element(id: N) to tap any element.'),
       );
     });
 

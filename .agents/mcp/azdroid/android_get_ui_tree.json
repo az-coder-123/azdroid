@@ -1,0 +1,30 @@
+{
+  "name": "android_get_ui_tree",
+  "description": "Reads the active window UI. format \"semantic\" (default): a compact digest with [#ID] tags for android_click_element and android_input_text. format \"xml\": the raw accessibility XML (classes, resource IDs, bounds).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "format": {
+        "type": "string",
+        "enum": [
+          "semantic",
+          "xml"
+        ],
+        "description": "semantic (default) or xml."
+      },
+      "compressed": {
+        "type": "boolean",
+        "description": "xml only: merge layout containers (default true); false for full Compose/Flutter trees."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

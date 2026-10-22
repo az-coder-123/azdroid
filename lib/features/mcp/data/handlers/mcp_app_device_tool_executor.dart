@@ -104,10 +104,7 @@ class McpAppDeviceToolExecutor {
         );
 
       case 'android_set_clipboard':
-        final text = arguments.getRequiredString(
-          'text',
-          aliases: ['content', 'value'],
-        );
+        final text = arguments.getText('text', aliases: ['content', 'value']);
         final success = await _adb.setClipboard(serial, text);
         return success
             ? McpToolResult.text('Text copied to Android clipboard on $serial.')

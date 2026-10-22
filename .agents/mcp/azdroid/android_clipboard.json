@@ -1,21 +1,18 @@
 {
-  "name": "android_wake_screen",
-  "description": "Wakes up the device screen or puts it into sleep mode. Prefer this dedicated tool over android_press_button (wakeup/sleep) for screen power state.",
+  "name": "android_clipboard",
+  "description": "Reads the device clipboard, or replaces it when text is given. Needs the `cmd clipboard` shell command, which many devices lack (the Android 10 and 13 devices tested): then it returns an error saying so.",
   "parameters": {
     "type": "object",
     "properties": {
+      "text": {
+        "type": "string",
+        "description": "New clipboard text; omit to read it."
+      },
       "deviceSerial": {
         "type": "string",
         "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
-      },
-      "wake": {
-        "type": "boolean",
-        "description": "True to wake screen up, false to put device into sleep mode."
       }
-    },
-    "required": [
-      "wake"
-    ]
+    }
   },
   "annotations": {
     "readOnlyHint": false,

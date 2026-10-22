@@ -36,7 +36,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   const McpToolDefinition(
     name: 'android_get_logcat',
     annotations: readOnlyToolAnnotations,
-    description: 'Returns the most recent logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F).',
+    description: 'Returns the newest logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F). With crashesOnly: true, returns crash traces and ANRs from the crash buffer instead, optionally for one package.',
     inputSchema: {
       'type': 'object',
       'properties': {
@@ -47,49 +47,20 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
           'enum': ['V', 'D', 'I', 'W', 'E', 'F'],
           'description': 'Minimum level (default V: everything).',
         },
+        'crashesOnly': {
+          'type': 'boolean',
+          'description': 'Crash buffer only: crashes and ANRs (default false).',
+        },
+        'package': {
+          'type': 'string',
+          'description': 'crashesOnly: only this app.',
+        },
         'limit': {
           'type': 'integer',
           'description':
               'Maximum number of log lines to retrieve (default 50).',
         },
       },
-    },
-  ),
-  const McpToolDefinition(
-    name: 'android_check_crash',
-    annotations: readOnlyToolAnnotations,
-    description: 'Inspects the Android dedicated crash buffer (-b crash), runtime fatal exceptions, or ANRs for a target package, returning clean crash traces.',
-    inputSchema: {
-      'type': 'object',
-      'properties': {
-        'deviceSerial': mcpDeviceSerialProp,
-        'package': {
-          'type': 'string',
-          'description':
-              'Target application package name to filter crash logs for.',
-        },
-        'limit': {
-          'type': 'integer',
-          'description':
-              'Maximum number of crash log lines to retrieve (default 50).',
-        },
-      },
-    },
-  ),
-  const McpToolDefinition(
-    name: 'android_scan_media_file',
-    annotations: inputToolAnnotations,
-    description: 'Triggers Android MediaStore to scan and index a newly pushed or modified audio/video file so media apps immediately discover it.',
-    inputSchema: {
-      'type': 'object',
-      'properties': {
-        'deviceSerial': mcpDeviceSerialProp,
-        'filePath': {
-          'type': 'string',
-          'description': 'Absolute path to the media file on device (e.g., /sdcard/Music/song.mp3).',
-        },
-      },
-      'required': ['filePath'],
     },
   ),
   const McpToolDefinition(

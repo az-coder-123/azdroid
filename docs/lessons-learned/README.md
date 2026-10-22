@@ -86,6 +86,8 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Dart Extension Shadowed Names** | Dart Language | Inside an extension, top-level names (`dart:io` `stdout`) win over members; qualify with `this.`. | [dart-extension-shadowed-names.md](dart-extension-shadowed-names.md) |
 | **logcat Buffer Header Lines** | MCP Tools & Android Logs | `--------- beginning of` lines are framing; drop them before deciding a crash exists, and filter before `-t`. | [logcat-buffer-header-lines.md](logcat-buffer-header-lines.md) |
 | **Input Select-All Unsupported** | MCP Tools & Android Input | `input keyevent --meta` does not exist (exit 0 anyway); use `keycombination` on Android 13+, else DEL per character. | [input-select-all-unsupported.md](input-select-all-unsupported.md) |
+| **Text Arguments Must Not Be Trimmed** | MCP Tools & Arguments | Trim identifiers, never content; a trimmed `" "` became "clear the field" after tools merged. | [text-argument-trimming.md](text-argument-trimming.md) |
+| **MCP Tool Count Limit** | MCP Server & AI Clients | Clients such as Cursor cap tools (~40); group by decision behind `McpToolRouter`, keep old names routable, guard the count in a test. | [mcp-tool-count-limit.md](mcp-tool-count-limit.md) |
 
 ---
 

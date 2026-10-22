@@ -1,0 +1,35 @@
+{
+  "name": "android_set_permission",
+  "description": "Grants (grant: true) or revokes (grant: false) a runtime permission of an app. Revoking a granted permission makes Android kill the app process, so unsaved app state is lost.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "package": {
+        "type": "string",
+        "description": "App package name."
+      },
+      "permission": {
+        "type": "string",
+        "description": "e.g. android.permission.CAMERA."
+      },
+      "grant": {
+        "type": "boolean",
+        "description": "true to grant, false to revoke."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    },
+    "required": [
+      "package",
+      "permission",
+      "grant"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": true
+  }
+}

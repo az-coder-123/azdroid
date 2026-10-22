@@ -31,7 +31,7 @@ One JSON object per line (`McpActivityEvent.toLine`):
 
 ```json
 {"kind":"start","at":"2026-10-18T15:33:44.656Z","client":"claude-ai"}
-{"kind":"tool","at":"2026-10-18T15:33:45.394Z","tool":"android_get_device_info","device":"192.168.1.3:5555","ok":true,"ms":735}
+{"kind":"tool","at":"2026-10-18T15:33:45.394Z","tool":"android_get_device_stats","device":"192.168.1.3:5555","ok":true,"ms":735}
 ```
 
 - `client` is `clientInfo.name` from the client's `initialize` request.

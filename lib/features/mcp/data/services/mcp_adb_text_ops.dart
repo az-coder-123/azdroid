@@ -17,10 +17,10 @@ class McpAdbTextOps {
   ) async {
     if (!isAscii(text)) {
       throw const McpUnsupportedOnDeviceException(
-        'android_type_text can only type ASCII characters: Android\'s '
-        '`input text` crashes on others (accents, CJK, emoji). Use '
-        'android_set_text, which pastes through the clipboard on devices '
-        'that support it.',
+        'Typing (android_input_text method "type") handles ASCII only: '
+        'Android\'s `input text` crashes on other characters (accents, CJK, '
+        'emoji). Use method "paste", which pastes through the clipboard on '
+        'devices that support it.',
       );
     }
     final res = await client.run([

@@ -82,7 +82,7 @@ Add `azdroid` to your `~/Library/Application Support/Claude/claude_desktop_confi
 ### 2. Cursor IDE & Windsurf Integration
 
 > [!WARNING]
-> Cursor has long sent at most about **40 MCP tools** across all servers to the model and dropped the rest (forum reports from 2025; not confirmed for current versions). Azdroid publishes 62. If Cursor warns about the tool count, disable the Azdroid tools you do not need under *Settings → MCP*.
+> Cursor has long sent at most about **40 MCP tools** across all servers to the model and dropped the rest (forum reports from 2025; not confirmed for current versions). Azdroid publishes 35, which leaves room for a few tools from other servers. If Cursor warns about the tool count, disable the tools you do not need under *Settings → MCP*.
 
 Add to `.cursor/mcp.json` in your project root or user settings:
 
@@ -117,7 +117,7 @@ Verify proper functioning using any of the following 3 methods:
 
 - **Method 1: Terminal Pipe Test (CLI Smoke Test)**
   ```bash
-  # 1. Verify all 62 tools are registered:
+  # 1. Verify all 35 tools are registered:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
 
   # 2. Test live device discovery:
@@ -126,8 +126,8 @@ Verify proper functioning using any of the following 3 methods:
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is standard stdio behavior, not a freeze. Press `Ctrl+C` to exit.)*
 
 - **Method 2: Visual Indicator in Claude / Cursor**
-  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 62 tools enabled.
-  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (62 tools)`.
+  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 35 tools enabled.
+  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (35 tools)`.
 
 - **Method 3: Direct Natural Language Prompt**
   Ask your AI: *"List all connected Android devices with Azdroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
@@ -157,7 +157,7 @@ Smoke test in PowerShell, from the repository folder:
 
 ---
 
-## 🛠️ Published MCP Tools (62 Tools)
+## 🛠️ Published MCP Tools (35 Tools)
 
 > **Single source of truth:** tool names, descriptions, input schemas, and
 > safety annotations are defined in `lib/features/mcp/domain/services/mcp_*_tools.dart`
@@ -172,87 +172,66 @@ Smoke test in PowerShell, from the repository folder:
 
 **Safety, coordinates, protocol revision:** which tools need confirmation, how points and text are read, and how the revision is negotiated — [mcp-tool-safety.md](mcp-tool-safety.md).
 
-### 1. Touch & System Navigation
-| Tool Name | Parameters | Purpose |
-| :--- | :--- | :--- |
-| **`android_list_devices`** | *none* | Lists the devices adb can reach (`adb devices -l`). With several devices, every other tool needs `deviceSerial`. |
-| **`android_take_screenshot`** | `x`/`y`/`width`/`height` (pixels) or `xRatio`/`yRatio`/`widthRatio`/`heightRatio`, `format`, `quality`, `deviceSerial` | Screenshot as PNG or JPEG, optionally cropped. |
-| **`android_tap`** | `x`, `y` (fractions when both are within 0.0–1.0, else pixels), or `xRatio`/`yRatio`, `xPixel`/`yPixel`; `deviceSerial` | Simulates a touch tap gesture on screen. |
-| **`android_double_tap`** | `x`, `y`, `intervalMs` (default 120), `deviceSerial` | Executes rapid double-tap within native Android window to seek video, zoom, or like. |
-| **`android_swipe`** | `startX`, `startY`, `endX`, `endY`, `durationMs` | Injects a swipe gesture across screen coordinates. |
-| **`android_drag`** | `startX`, `startY`, `endX`, `endY`, `durationMs` (1000) | Smooth, controlled drag gesture for timeline seekbars, sliders, and list reordering. |
-| **`android_type_text`** | `text`, `deviceSerial` | Types **ASCII** text as key events; other characters return an error (use `android_set_text`). |
-| **`android_set_text`** | `text`, `elementId` (optional), `clearFirst` (bool), `deviceSerial` | Pastes exact text through the clipboard (replacing it); without `cmd clipboard` it types ASCII and rejects other text, and says which. |
-| **`android_clear_text`** | `elementId` (optional), `deviceSerial` | Clears all text in the focused field or target element by ID in a single shot. |
-| **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, etc.) | Presses Android hardware/navigation keys. |
-| **`android_dispatch_intent`** | `action`, `dataUri`, `package`, `component`, `extras` | Dispatches Android Intents, deep link URLs, and custom app schemes. |
-| **`android_get_logcat`** | `tag`, `level` (V–F), `limit` | Newest log lines, filtered by tag and minimum level. |
-| **`android_check_crash`** | `package` (optional), `limit` (default 50) | Targeted inspection of crash buffers, fatal runtime exceptions, and ANR traces. |
-| **`android_scan_media_file`** | `filePath` | Triggers MediaStore indexing broadcast (`MEDIA_SCANNER_SCAN_FILE`) for immediate media visibility. |
-| **`android_install_apk`** | `apkPath`, `reinstall`, `grantPermissions` | Sideloads an APK package onto the device. |
-| **`android_shell_command`** | `command`, `deviceSerial` | Runs raw ADB shell commands for advanced diagnostics. |
+Every tool also takes `deviceSerial` (required when several devices are connected). Points accept `x`/`y` (fractions when both are within 0.0–1.0, else pixels), `xRatio`/`yRatio`, or `xPixel`/`yPixel`.
 
-### 2. UI Semantic Inspection & Accessibility
+### 1. Touch, Keys & Text
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_get_semantic_tree`** | `deviceSerial` | Prunes invisible/empty layouts into a compact token-efficient digest (< 2KB / ~300 tokens) with sequential `[#ID]` tags. |
-| **`android_click_element_by_id`** | `id`, `deviceSerial` | Taps an element directly by its sequential `[#ID]` from the semantic tree in < 50ms without image vision. |
-| **`android_dump_hierarchy`** | `deviceSerial` | Dumps the complete active window UI accessibility XML (classes, IDs, text, bounds). |
-| **`android_find_element`** | `text`, `resourceId`, `contentDesc`, `deviceSerial` | Queries the UI tree and returns exact bounds and center tap coordinates. |
-| **`android_click_element`** | `text`, `resourceId`, `contentDesc`, `deviceSerial` | Locates an on-screen element by query and taps its center coordinates in one shot. |
+| **`android_tap`** | point, `taps` (1 or 2), `intervalMs`, `holdMs`, `verifyChange` | Tap, double tap (`taps: 2`), or long press (`holdMs`). |
+| **`android_swipe`** | `startX`…`endY` (or `*Ratio`/`*Pixel`), `style` (`fling`/`drag`), `direction`, `distance`, `speed`, `durationMs` | Swipe between two points; `style: "drag"` moves slowly (sliders, reordering); `direction` scrolls from the screen center without coordinates. |
+| **`android_multitouch_gesture`** | `gesture` (`pinch`/`rotate`), `scale`, `angleDegrees`, `centerX`, `centerY`, `radius`, `durationMs` | Two-finger pinch zoom or rotation. |
+| **`android_input_text`** | `text`, `method` (`paste`/`type`), `elementId`, `clearFirst` | `paste` (default) enters exact text, any language, through the clipboard; `type` sends ASCII key events and leaves the clipboard alone; empty `text` clears the field. |
+| **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, `VOLUME_*`, `MUTE`, `CAMERA`, `WAKEUP`, `SLEEP`, `MEDIA_*`, `NOTIFICATIONS`, `QUICK_SETTINGS`, `CLOSE_PANELS`) | Navigation and hardware keys, and opening or closing the status bar panels. |
+| **`android_batch_actions`** | `actions` (array of maps) | Runs a sequence of steps (tap, double_tap, type, key, swipe, scroll, fling, pinch, rotate, sleep) locally in one call. |
 
-### 3. Application Lifecycle & Package Governance
+### 2. Screen & UI
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_get_current_app`** | `deviceSerial` | Identifies the foreground package and Activity. If the lock screen or notification shade is in front, it still names the app and adds a note naming that window. |
-| **`android_launch_app`** | `package`, `deviceSerial` | Launches an installed application via default launcher category. |
-| **`android_stop_app`** | `package`, `deviceSerial` | Force terminates a running application by package name. |
-| **`android_clear_app_data`** | `package`, `deviceSerial` | Clears app cache and user data (resets app to fresh install state). |
-| **`android_list_packages`** | `thirdPartyOnly`, `query`, `deviceSerial` | Searches and lists installed applications on the device. |
+| **`android_take_screenshot`** | `x`/`y`/`width`/`height` or `*Ratio`, `format`, `quality` | Screenshot as PNG or JPEG, optionally cropped. |
+| **`android_get_ui_tree`** | `format` (`semantic`/`xml`), `compressed` | `semantic` (default): a compact list of visible elements with `[#ID]` tags; `xml`: the full accessibility XML. |
+| **`android_find_element`** | `text`, `resourceId`, `contentDesc` | Bounds and center of a matching element. |
+| **`android_click_element`** | `id`, or `text`/`resourceId`/`contentDesc` | Taps an element by its `[#ID]` from `android_get_ui_tree`, or by query. |
+| **`android_wait_for_condition`** | `condition`, `target`, `text`, `resourceId`, `contentDesc`, `timeoutMs`, `pollIntervalMs` | Waits until an element appears or goes, an activity resumes, or a log line matches. |
+| **`android_record_screen`** | `durationSec`, `localDestination` | Records an MP4 to the computer. |
+| **`android_set_orientation`** | `orientation` (0–3) | 0 portrait, 1 landscape, 2 reverse portrait, 3 reverse landscape. |
 
-### 4. Device Telemetry, Clipboard & File Transfers
+### 3. Apps & Processes
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_get_device_info`** | `deviceSerial` | Reports hardware model, manufacturer, Android OS, display resolution, and battery level. |
-| **`android_get_clipboard`** | `deviceSerial` | Reads the clipboard; needs `cmd clipboard` (missing on the Android 10 and 13 devices tested: returns an error). |
-| **`android_set_clipboard`** | `text`, `deviceSerial` | Sets the clipboard; needs `cmd clipboard` (see above). |
-| **`android_push_file`** | `localPath`, `remotePath`, `deviceSerial` | Uploads a file from Mac host to the Android filesystem. |
-| **`android_pull_file`** | `remotePath`, `localPath`, `deviceSerial` | Downloads a file or capture from Android device to Mac host. |
+| **`android_list_devices`** | *none* | Devices adb can reach (`adb devices -l`). |
+| **`android_get_current_app`** | *none* | Foreground package and activity; notes a lock screen or notification shade in front. |
+| **`android_list_apps`** | `running`, `thirdPartyOnly`, `query` | Installed packages, or running processes with PIDs (`running: true`). |
+| **`android_launch_app`** | `package` | Starts an app from its launcher entry. |
+| **`android_stop_app`** | `package` or `pid` | Force-stops an app; `pid` kills one process (adb-shell-owned unless rooted). |
+| **`android_clear_app_data`** | `package` | Resets the app to a fresh install state. |
+| **`android_install_apk`** | `apkPath`, `reinstall`, `grantPermissions` | Installs an APK from the computer. |
+| **`android_set_permission`** | `package`, `permission`, `grant` | Grants (`true`) or revokes (`false`) a runtime permission; revoking kills the app. |
+| **`android_dispatch_intent`** | `action`, `dataUri`, `package`, `component`, `extras` | Sends an intent or deep link. |
+| **`android_read_shared_prefs`** | `package`, `fileName` | SharedPreferences XML of a **debuggable** app (`run-as`) or on a rooted device. |
 
-### 5. Connectivity, Audio, Permissions & System Controls
+### 4. Diagnostics
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_toggle_wifi`** | `enable`, `deviceSerial` | Enables or disables the device Wi-Fi radio. |
-| **`android_toggle_airplane_mode`** | `enable`, `deviceSerial` | Enables or disables Airplane mode. |
-| **`android_grant_permission`** | `package`, `permission`, `deviceSerial` | Grants a runtime permission to an application (e.g. notifications, camera). |
-| **`android_revoke_permission`** | `package`, `permission`, `deviceSerial` | Revokes a runtime permission from an application. |
-| **`android_set_volume`** | `stream`, `volumeIndex`, `deviceSerial` | Adjusts audio volume level (Media, Ring, Alarm, Notification). |
-| **`android_wake_screen`** | `wake`, `deviceSerial` | Wakes the screen or puts the device to sleep. |
-| **`android_open_settings`** | `action`, `package`, `deviceSerial` | Opens specific Android system settings or App Info details page. |
+| **`android_get_logcat`** | `tag`, `level` (V–F), `crashesOnly`, `package`, `limit` | Newest log lines filtered by tag and level, or only crashes and ANRs (`crashesOnly: true`). |
+| **`android_get_device_stats`** | `kind` (`device`/`battery`/`network`/`cpu`/`memory`/`gfx`), `package` | Device info, battery, network, CPU, memory, or frame timings (`cpu`, `memory`, `gfx` take `package`). |
+| **`android_shell_command`** | `command` | Runs a raw `adb shell` command. |
 
-### 6. Performance Profiling, Media, Orientation & Processes
+### 5. System, Network & Files
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_get_cpu_usage`** | `package`, `deviceSerial` | Samples CPU consumption for a specific package or top system processes. |
-| **`android_get_memory_info`** | `package`, `deviceSerial` | Dumps detailed memory allocation (PSS, Dalvik, Native heap) for an app. |
-| **`android_get_battery_stats`** | `deviceSerial` | Retrieves battery health, temperature (°C), voltage, and charging source. |
-| **`android_get_gfx_info`** | `package`, `deviceSerial` | Queries Choreographer frame timings and jank percentage for an app. |
-| **`android_get_network_info`** | `deviceSerial` | Discovers local IP address, connected Wi-Fi SSID, and wireless link speed. |
-| **`android_record_screen`** | `durationSec`, `localDestination`, `deviceSerial` | Records an MP4 video of the screen and saves it to the Mac host. |
-| **`android_list_processes`** | `filter`, `deviceSerial` | Lists running Android processes with their PIDs and package names. |
-| **`android_kill_process`** | `package` or `pid`, `deviceSerial` | Force-stops an app by package; `pid` works only on processes the adb shell owns unless rooted. |
-| **`android_set_orientation`** | `orientation` (0..3), `deviceSerial` | Rotates screen: 0=Portrait, 1=Landscape, 2=Rev. Portrait, 3=Rev. Landscape. |
-| **`android_simulate_biometric`** | `success` (bool), `deviceSerial` | Fingerprint touch on **emulators only** (`adb emu finger touch`); physical devices return an error. |
-| **`android_wait_for_element`** | `text`, `resourceId`, `timeoutMs` | Polls UI until element appears to eliminate LLM polling round-trips. |
-| **`android_batch_actions`** | `actions` (array of maps) | Executes compound sequence of actions (tap, double_tap, type, key, swipe, scroll, fling, pinch, rotate, sleep) locally in one shot. Each action map's fields and defaults are documented in its schema. |
-| **`android_get_notifications`** | `filter`, `deviceSerial` | Lists notifications (package, title, text, key), including OTP previews. |
-| **`android_dismiss_notification`** | `key`, `hideMinutes`, `deviceSerial` | Hides one notification by snoozing it (Android 11+); it returns afterwards. Clearing all is not possible over adb. |
-| **`android_set_location`** | `latitude`, `longitude`, or `reset`, `deviceSerial` | Mock location for all apps until `reset: true` (Android 12+ with location on, or emulators). |
-| **`android_set_network_condition`** | `mode`, `deviceSerial` | Simulates network conditions (`offline`, `wifi_only`, `data_only`, `normal`). |
-| **`android_long_press`** | `x`, `y`, `durationMs` | Injects a long-press touch gesture with configurable duration. |
-| **`android_open_notification_panel`** | `expand`, `quickSettings` | Expands or collapses notification shade or Quick Settings. |
-| **`android_read_shared_prefs`** | `package`, `fileName` | Reads SharedPreferences XML of a **debuggable** app (`run-as`) or on a rooted device. |
-| **`android_press_button`** | `button` (`volume_up`, `camera`, etc.) | Triggers physical hardware buttons on the device. |
+| **`android_set_network`** | `mode` (`normal`, `offline`, `wifi_only`, `data_only`, `wifi_on`, `wifi_off`, `airplane_on`, `airplane_off`) | Network conditions and radio toggles; modes that drop Wi-Fi cut a Wi-Fi ADB connection. |
+| **`android_set_volume`** | `stream`, `volumeIndex` | Media, ring, alarm, or notification volume. |
+| **`android_open_settings`** | `action`, `package` | Opens a settings screen or an app's info page. |
+| **`android_clipboard`** | `text` (to set) | Reads the clipboard, or sets it when `text` is given; needs `cmd clipboard` (missing on the Android 10 and 13 devices tested). |
+| **`android_transfer_file`** | `direction` (`push`/`pull`/`scan`), `localPath`, `remotePath` | Copies a file to or from the device, or makes a device file visible to the media library (`scan`). |
+| **`android_get_notifications`** | `filter` | Notifications (package, title, text, key), including OTP previews. |
+| **`android_dismiss_notification`** | `key`, `hideMinutes` | Hides one notification by snoozing it (Android 11+); it returns afterwards. |
+| **`android_set_location`** | `latitude`, `longitude`, or `reset` | Mock location until `reset: true` (Android 12+ with location on, or emulators). |
+| **`android_simulate_biometric`** | `success` | Fingerprint touch on **emulators only**; physical devices return an error. |
+
+### Older Tool Names
+
+Before 2026-10-22 the server published 62 tools. The old names, such as `android_double_tap`, `android_set_text`, `android_get_semantic_tree`, `android_toggle_wifi`, or `android_check_crash`, are no longer listed but still work when called, with their old parameters, so saved prompts and scripts keep running. `McpToolRouter` (`lib/features/mcp/data/handlers/mcp_tool_router.dart`) maps each published tool to them.
 
 ---
 
@@ -282,9 +261,9 @@ Once configured, your AI assistant can execute autonomous mobile QA and engineer
 > **User Prompt:** *"Profile CPU utilization, memory allocations, and battery status for `com.example.app` during a 30-second run."*
 > 
 > **AI Autonomous Execution:**
-> 1. Invokes `android_get_cpu_usage(package="com.example.app")` ➔ Measures user and kernel thread CPU load.
-> 2. Invokes `android_get_memory_info(package="com.example.app")` ➔ Extracts PSS, Native Heap, and Dalvik Heap sizes.
-> 3. Invokes `android_get_battery_stats()` ➔ Reads battery temperature (°C) and voltage to detect overheating.
+> 1. Invokes `android_get_device_stats(kind="cpu", package="com.example.app")` ➔ Measures user and kernel thread CPU load.
+> 2. Invokes `android_get_device_stats(kind="memory", package="com.example.app")` ➔ Extracts PSS, Native Heap, and Dalvik Heap sizes.
+> 3. Invokes `android_get_device_stats(kind="battery")` ➔ Reads battery temperature (°C) and voltage to detect overheating.
 
 ### 🎬 Scenario 4: Bug Reproduction & MP4 Video Capture
 

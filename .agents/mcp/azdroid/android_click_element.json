@@ -1,12 +1,16 @@
 {
   "name": "android_click_element",
-  "description": "Finds an element by text, resourceId, or contentDesc and taps its center. Give at least one of the three.",
+  "description": "Taps an element: by id, the [#ID] from the latest android_get_ui_tree (most reliable), or by text (case-insensitive substring), resourceId, or contentDesc. Give id or at least one of the other three.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
         "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      },
+      "id": {
+        "type": "integer",
+        "description": "[#ID] from the latest android_get_ui_tree."
       },
       "text": {
         "type": "string",
@@ -22,6 +26,11 @@
       }
     },
     "anyOf": [
+      {
+        "required": [
+          "id"
+        ]
+      },
       {
         "required": [
           "text"

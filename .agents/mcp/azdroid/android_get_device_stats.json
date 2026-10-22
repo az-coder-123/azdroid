@@ -1,0 +1,37 @@
+{
+  "name": "android_get_device_stats",
+  "description": "Reads one kind of device data: device (model, Android version, screen, battery %), battery (level, temperature, health, charger), network (IP, Wi-Fi SSID, link speed), cpu (top processes or one package), memory (PSS and heaps of a package), gfx (frame and jank stats of a package).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "device",
+          "battery",
+          "network",
+          "cpu",
+          "memory",
+          "gfx"
+        ],
+        "description": "Which data to read."
+      },
+      "package": {
+        "type": "string",
+        "description": "Required for memory and gfx; optional for cpu."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    },
+    "required": [
+      "kind"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

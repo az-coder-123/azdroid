@@ -1,6 +1,6 @@
 {
   "name": "android_tap",
-  "description": "Taps one point on the screen. Prefer android_click_element_by_id or android_click_element when the element is in the semantic tree. Give the point as x/y, xRatio/yRatio, or xPixel/yPixel (units may be mixed per axis); one form is required.",
+  "description": "Taps one point: once (default), twice with taps: 2 (e.g. zoom or seek a video), or press and hold with holdMs (e.g. a context menu). Prefer android_click_element when the element is in the UI tree. Give the point as x/y, xRatio/yRatio, or xPixel/yPixel (units may be mixed per axis); one form is required.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -31,6 +31,22 @@
       "yPixel": {
         "type": "number",
         "description": "Physical pixels, even when 0-1 (wins over the raw value)."
+      },
+      "taps": {
+        "type": "integer",
+        "enum": [
+          1,
+          2
+        ],
+        "description": "1 (default) or 2 for a double tap."
+      },
+      "intervalMs": {
+        "type": "integer",
+        "description": "Double tap: gap between taps in ms (default 120)."
+      },
+      "holdMs": {
+        "type": "integer",
+        "description": "Press and hold this long in ms (long press)."
       },
       "verifyChange": {
         "type": "boolean",

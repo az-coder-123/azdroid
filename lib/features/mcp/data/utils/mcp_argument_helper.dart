@@ -15,6 +15,25 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     return val?.toString().trim();
   }
 
+  /// Text to enter on the device, exactly as given: unlike [getString] it
+  /// keeps leading and trailing spaces, so `"Hello "` then `"world"` types
+  /// two words and `" "` types a space.
+  String? getOptionalText(String key, {List<String> aliases = const []}) =>
+      _findRawValue(key, aliases)?.toString();
+
+  /// Like [getOptionalText], but throws [McpArgumentException] when missing
+  /// or empty.
+  String getText(String key, {List<String> aliases = const []}) {
+    final val = getOptionalText(key, aliases: aliases);
+    if (val == null || val.isEmpty) {
+      throw McpArgumentException(
+        "Missing required parameter '$key' "
+        "(accepted aliases: ${[key, ...aliases].join(', ')}).",
+      );
+    }
+    return val;
+  }
+
   /// Extracts a required String value, throwing [McpArgumentException] if missing or empty.
   String getRequiredString(String key, {List<String> aliases = const []}) {
     final val = getString(key, aliases: aliases);
@@ -32,9 +51,12 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     String key, {
     List<String> aliases = const [],
     bool defaultValue = false,
-  }) {
+  }) => getOptionalBool(key, aliases: aliases) ?? defaultValue;
+
+  /// A boolean flag, or `null` when it is absent or not recognizable.
+  bool? getOptionalBool(String key, {List<String> aliases = const []}) {
     final raw = getString(key, aliases: aliases);
-    if (raw == null) return defaultValue;
+    if (raw == null) return null;
     final lower = raw.toLowerCase();
     if (lower == 'true' ||
         lower == '1' ||
@@ -50,7 +72,7 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
         lower == 'off') {
       return false;
     }
-    return defaultValue;
+    return null;
   }
 
   /// Extracts an optional double value, returning null if missing or unparseable.

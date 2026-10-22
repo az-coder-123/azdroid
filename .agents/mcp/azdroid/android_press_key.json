@@ -1,6 +1,6 @@
 {
   "name": "android_press_key",
-  "description": "Presses an Android hardware or system navigation key (BACK, HOME, APP_SWITCH, ENTER, TAB, POWER, VOLUME_UP, VOLUME_DOWN). For media, camera, wake, or sleep controls prefer android_press_button.",
+  "description": "Presses a key or button: navigation (BACK, HOME, APP_SWITCH, ENTER, TAB), hardware (POWER, VOLUME_UP, VOLUME_DOWN, MUTE, CAMERA), screen power (WAKEUP, SLEEP), media (MEDIA_PLAY_PAUSE, MEDIA_NEXT, MEDIA_PREV), or status bar panels (NOTIFICATIONS, QUICK_SETTINGS, CLOSE_PANELS).",
   "parameters": {
     "type": "object",
     "properties": {
@@ -18,7 +18,17 @@
           "TAB",
           "POWER",
           "VOLUME_UP",
-          "VOLUME_DOWN"
+          "VOLUME_DOWN",
+          "MUTE",
+          "CAMERA",
+          "WAKEUP",
+          "SLEEP",
+          "MEDIA_PLAY_PAUSE",
+          "MEDIA_NEXT",
+          "MEDIA_PREV",
+          "NOTIFICATIONS",
+          "QUICK_SETTINGS",
+          "CLOSE_PANELS"
         ],
         "description": "Key name to press."
       }

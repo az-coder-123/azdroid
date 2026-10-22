@@ -143,20 +143,14 @@ class McpBasicToolExecutor {
             : McpToolResult.error('Failed to scroll $dir on $serial.');
 
       case 'android_type_text':
-        final text = arguments.getRequiredString(
-          'text',
-          aliases: ['input', 'value'],
-        );
+        final text = arguments.getText('text', aliases: ['input', 'value']);
         final ok = await _adb.typeText(serial, text);
         return ok
             ? McpToolResult.text('Injected text "$text" into $serial.')
             : McpToolResult.error('Failed to inject text.');
 
       case 'android_set_text':
-        final text = arguments.getRequiredString(
-          'text',
-          aliases: ['input', 'value'],
-        );
+        final text = arguments.getText('text', aliases: ['input', 'value']);
         final id = arguments.getOptionalInt('elementId');
         final clear = arguments.getBool('clearFirst', defaultValue: false);
         final entry = await _adb.setText(

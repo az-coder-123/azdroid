@@ -1,6 +1,6 @@
 {
-  "name": "android_set_network_condition",
-  "description": "Simulates network connectivity conditions (normal, offline, wifi_only, data_only) for offline mode testing. \"offline\" and \"data_only\" turn Wi-Fi off and drop a Wi-Fi ADB connection; only use them over USB, or confirm first.",
+  "name": "android_set_network",
+  "description": "Changes connectivity: normal, offline, wifi_only, data_only, wifi_on, wifi_off, airplane_on, airplane_off. offline, data_only, wifi_off, and airplane_on cut Wi-Fi and drop a Wi-Fi ADB connection, with no remote way back: use them over USB, or confirm first.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -10,9 +10,13 @@
           "normal",
           "offline",
           "wifi_only",
-          "data_only"
+          "data_only",
+          "wifi_on",
+          "wifi_off",
+          "airplane_on",
+          "airplane_off"
         ],
-        "description": "Target network mode."
+        "description": "Target connectivity."
       },
       "deviceSerial": {
         "type": "string",

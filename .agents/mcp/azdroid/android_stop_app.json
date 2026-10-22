@@ -1,6 +1,6 @@
 {
   "name": "android_stop_app",
-  "description": "Force terminates a running application by package name.",
+  "description": "Stops an app: with package, force-stops it (unsaved state is lost); with pid, sends `kill`, which works only on processes the adb shell owns unless the device is rooted. Give package or pid.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -10,12 +10,13 @@
       },
       "package": {
         "type": "string",
-        "description": "Package name to terminate."
+        "description": "Package name to force-stop."
+      },
+      "pid": {
+        "type": "integer",
+        "description": "Process ID to kill instead."
       }
-    },
-    "required": [
-      "package"
-    ]
+    }
   },
   "annotations": {
     "readOnlyHint": false,

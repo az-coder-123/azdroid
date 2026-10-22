@@ -53,9 +53,9 @@ flowchart TD
 | Phase | Step | Purpose | Primary Azdroid MCP Tools |
 | :---: | :--- | :--- | :--- |
 | **1** | **🎯 User Request** | Delegating task or bug reproduction prompt | Client Prompt Context |
-| **2** | **👀 Sensory Inspection** | Grounding UI structure with millimeter accuracy | `android_get_semantic_tree`, `android_take_screenshot` |
-| **3** | **👆 Touch & Action** | Injecting multi-touch, typing, and key events | `android_tap`, `android_type_text`, `android_swipe` |
-| **4** | **🚨 Error Interception** | Capturing stack traces, ANRs, and log buffers | `android_check_crash`, `android_get_logcat` |
+| **2** | **👀 Sensory Inspection** | Grounding UI structure with millimeter accuracy | `android_get_ui_tree`, `android_take_screenshot` |
+| **3** | **👆 Touch & Action** | Injecting multi-touch, typing, and key events | `android_tap`, `android_input_text`, `android_swipe` |
+| **4** | **🚨 Error Interception** | Capturing stack traces, ANRs, and log buffers | `android_get_logcat` (`crashesOnly`) |
 | **5** | **🛠️ Source Code Fix** | Editing source files and resolving root causes | IDE File Tools / Compiler |
 | **6** | **🔁 Re-verification** | Replaying user journey on physical device | `android_launch_app`, `android_batch_actions` |
 | **7** | **✅ Final Delivery** | Delivering verified outcome with evidence | Final Audit Report |
@@ -83,7 +83,7 @@ sequenceDiagram
         Device-->>MCP: Hardware state & foreground activity
         MCP-->>AI: Active device telemetry
 
-        AI->>MCP: android_get_semantic_tree & android_take_screenshot
+        AI->>MCP: android_get_ui_tree & android_take_screenshot
         MCP->>Device: Dump accessibility hierarchy & screen frame
         Device-->>MCP: UI node coordinates & visual frame
         MCP-->>AI: Semantic UI Tree (XML) & PNG screenshot
@@ -93,13 +93,13 @@ sequenceDiagram
             Desktop-->>User: Visual feedback of AI gestures & clicks in real time
         end
 
-        AI->>MCP: android_tap / android_type_text / android_swipe
+        AI->>MCP: android_tap / android_input_text / android_swipe
         MCP->>Device: Hardware input event injection
     end
 
     rect rgb(255, 245, 245)
         Note over AI,Device: Diagnostic Interception (Triage)
-        AI->>MCP: android_check_crash & android_get_logcat
+        AI->>MCP: android_get_logcat (crashesOnly, then by tag)
         Device-->>MCP: Crash stack trace & logcat buffer
         MCP-->>AI: Root cause evidence (NullPointer, ANR, 500 API)
     end
@@ -109,7 +109,7 @@ sequenceDiagram
         AI->>AI: Locates error in codebase, edits code, triggers build
         AI->>MCP: android_launch_app (Restarts updated application)
         AI->>MCP: android_batch_actions (Re-plays user flow)
-        AI->>MCP: android_get_semantic_tree (Verifies success dialog)
+        AI->>MCP: android_get_ui_tree (Verifies success dialog)
         MCP-->>AI: UI validated with zero crashes
     end
 
@@ -144,7 +144,7 @@ The AI agent formulates an execution plan and queries available hardware:
 
 ### Step 3: Sensory Grounding & Action Execution
 The AI inspects the UI hierarchy rather than guessing coordinates:
-- **Tool Call:** `android_get_semantic_tree`
+- **Tool Call:** `android_get_ui_tree`
 - **MCP Response:**
   ```json
   {
@@ -157,9 +157,9 @@ The AI inspects the UI hierarchy rather than guessing coordinates:
   ```
 - **Input Execution:**
   1. `android_tap(x: 540, y: 415)` ➔ Focuses `edt_old_password`.
-  2. `android_type_text(text: "123456")` ➔ Types existing password.
+  2. `android_input_text(text: "123456")` ➔ Types existing password.
   3. `android_tap(x: 540, y: 585)` ➔ Focuses `edt_new_password`.
-  4. `android_type_text(text: "NewPass@2026")` ➔ Types new password.
+  4. `android_input_text(text: "NewPass@2026")` ➔ Types new password.
   5. `android_tap(x: 540, y: 815)` ➔ Taps `btn_submit`.
 
 *(If the user has `Azdroid.app` open, they watch the phone display update smoothly at 60 FPS as the agent performs these actions).*
@@ -168,7 +168,7 @@ The AI inspects the UI hierarchy rather than guessing coordinates:
 
 ### Step 4: Diagnostic Interception & Stack Trace Analysis
 Immediately upon tapping Submit, the app exits to the home screen.
-- **Tool Call:** `android_check_crash(package_name: "com.example.myapp")`
+- **Tool Call:** `android_get_logcat(crashesOnly: true, package: "com.example.myapp")`
 - **MCP Response:**
   ```text
   FATAL EXCEPTION: main
@@ -195,8 +195,8 @@ val token = userSessionManager.getValidToken()
 The agent verifies its own fix without requiring human intervention:
 1. `android_launch_app(package_name: "com.example.myapp")` ➔ Relaunches app.
 2. `android_batch_actions(...)` ➔ Replays login and form filling in a single batch call.
-3. `android_get_semantic_tree` ➔ Confirms visual presence of `"Password successfully updated!"` dialog.
-4. `android_check_crash` ➔ Returns `"No recent crashes detected."`.
+3. `android_get_ui_tree` ➔ Confirms visual presence of `"Password successfully updated!"` dialog.
+4. `android_get_logcat(crashesOnly: true)` ➔ Returns `"No recent crashes detected."`.
 
 ---
 
@@ -213,11 +213,11 @@ The AI provides a concise, structured report to the user:
 
 | Functional Cluster | Key Tools | Core Operational Responsibility |
 |:---|:---|:---|
-| **Perception ("Eyes")** | `android_take_screenshot`<br>`android_get_semantic_tree`<br>`android_find_element` | Captures high-res visual frames and parses XML accessibility hierarchies for sub-millimeter coordinate precision. |
-| **Manipulation ("Hands")** | `android_tap`, `android_double_tap`<br>`android_swipe`, `android_drag`<br>`android_pinch_gesture`<br>`android_type_text`, `android_press_key` | Dispatches hardware-level touch gestures, multi-touch pinch-zoom, inertial scrolls, text inputs, and hardware keycodes. |
+| **Perception ("Eyes")** | `android_take_screenshot`<br>`android_get_ui_tree`<br>`android_find_element` | Captures high-res visual frames and parses XML accessibility hierarchies for sub-millimeter coordinate precision. |
+| **Manipulation ("Hands")** | `android_tap` (taps, holdMs)<br>`android_swipe` (style, direction)<br>`android_multitouch_gesture`<br>`android_input_text`, `android_press_key` | Dispatches hardware-level touch gestures, multi-touch pinch-zoom, inertial scrolls, text inputs, and hardware keycodes. |
 | **Lifecycle & Package** | `android_launch_app`<br>`android_install_apk`<br>`android_clear_app_data`<br>`android_stop_app` | Manages cold starts, package installation, cache clearing, and background suspension. |
-| **Diagnostics & Profiling** | `android_get_logcat`<br>`android_check_crash`<br>`android_get_cpu_usage`<br>`android_get_memory_info` | Intercepts system log buffers, captures crash dump tombstones, and profiles memory leaks or CPU jank. |
-| **System & Environment** | `android_toggle_wifi`<br>`android_set_location`<br>`android_grant_permission`<br>`android_simulate_biometric` | Simulates real-world testing environments (network toggling, mock GPS coordinates, biometric pass/fail). |
+| **Diagnostics & Profiling** | `android_get_logcat` (crashesOnly)<br>`android_get_device_stats` (cpu, memory, gfx) | Intercepts system log buffers, captures crash dump tombstones, and profiles memory leaks or CPU jank. |
+| **System & Environment** | `android_set_network`<br>`android_set_location`<br>`android_set_permission`<br>`android_simulate_biometric` | Simulates real-world testing environments (network toggling, mock GPS coordinates, biometric pass/fail). |
 
 ---
 

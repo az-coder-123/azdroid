@@ -55,10 +55,10 @@ const List<AppFeatureItem> showcaseDevToolsFeatures = [
   AppFeatureItem(
     id: 'mcp_ai_server',
     title: 'MCP AI Agent Server (Model Context Protocol)',
-    subtitle: '62 headless tools for Claude Desktop, Cursor, and Antigravity AI agents',
+    subtitle: '35 headless tools for Claude Desktop, Cursor, and Antigravity AI agents',
     category: FeatureCategory.devTools,
     icon: Icons.smart_toy_rounded,
-    badgeText: '62 Tools • AI Agent',
+    badgeText: '35 Tools • AI Agent',
     badgeColor: AppColors.accent,
     highlights: [
       'Pure Dart JSON-RPC 2.0 server communicating via stdio (bin/azdroid_mcp.dart).',

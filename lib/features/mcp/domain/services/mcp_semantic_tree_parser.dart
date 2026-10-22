@@ -185,7 +185,7 @@ class McpSemanticTreeParser {
       buffer.writeln(el.toDigestLine());
     }
     buffer.writeln(
-      '\nTip: Use android_click_element_by_id(id: N) to tap any element.',
+      '\nTip: Use android_click_element(id: N) to tap any element.',
     );
     return buffer.toString().trim();
   }

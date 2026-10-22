@@ -45,7 +45,7 @@ Legend: ✅ works · 🧪 implemented, not yet verified on this platform · ❌ 
 | Clipboard sync (text) | ✅ | 🧪 | |
 | Screenshot to clipboard (image) | ✅ | 🧪 | Windows copies images through PowerShell (`-STA`). |
 | Screen recording (MP4) | ✅ | 🧪 | Stopped with a remote `kill -2`, so the MP4 is finalized on both. |
-| MCP AI agent server | ✅ | ✅ | Release builds ship a precompiled `azdroid-mcp` (no Dart SDK needed); macOS verified end to end (with the 58-tool catalog of that time, real device; 62 tools now). Windows verified with `dart run bin/azdroid_mcp.dart`; the precompiled `.exe` is not yet built on Windows. |
+| MCP AI agent server | ✅ | ✅ | Release builds ship a precompiled `azdroid-mcp` (no Dart SDK needed); macOS verified end to end (with the 58-tool catalog of that time, real device; 35 tools now). Windows verified with `dart run bin/azdroid_mcp.dart`; the precompiled `.exe` is not yet built on Windows. |
 | MCP status panel | ✅ | 🧪 | macOS checked against a release build (executable answers, client files read, sessions counted). Windows uses `tasklist` and `%APPDATA%`; not run yet. [Details](features/mcp-status-panel.md). |
 | MCP live activity | ✅ | 🧪 | macOS verified with a release server session on a real device (file written, read, removed). [Details](features/mcp-activity-log.md). |
 | Audio forwarding | 🧪 | 🧪 | Raw PCM, Android 11+ ([details](features/audio-forwarding.md)). macOS: the app's player classes verified with `scripts/check_macos_native.sh` on an Android 16 emulator; not yet in the app with a real Android 11+ phone. Windows: WASAPI player written, not yet compiled. |

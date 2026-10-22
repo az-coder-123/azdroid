@@ -6,6 +6,7 @@ import 'package:desk_droid/features/mcp/data/handlers/mcp_gesture_tool_executor.
 import 'package:desk_droid/features/mcp/data/handlers/mcp_performance_media_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_screen_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_semantic_system_tool_executor.dart';
+import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_router.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
@@ -31,11 +32,15 @@ class McpToolExecutor {
 
   static const String _listDevicesTool = 'android_list_devices';
 
-  /// Whether [toolName] maps to a known executor route in this server.
-  ///
-  /// Mirrors the routing table used by [execute] so guard tests can verify
-  /// every published tool actually has an implementation.
+  /// Whether [toolName] (a published tool or an older operation name) can
+  /// run: every operation it routes to has a handler. Guard tests use this
+  /// to verify the published catalog.
   bool canHandle(String toolName) =>
+      (McpToolRouter.operationsByTool[toolName] ?? {toolName}).every(
+        _canHandleOperation,
+      );
+
+  bool _canHandleOperation(String toolName) =>
       toolName == _listDevicesTool ||
       _screen.canHandle(toolName) ||
       _gesture.canHandle(toolName) ||
@@ -93,9 +98,10 @@ class McpToolExecutor {
             aliases: ['serial', 'device', 'deviceId'],
           ),
         );
+        final operation = McpToolRouter.route(toolName, arguments);
         result = serial == null
             ? McpToolResult.error('No connected Android device found via ADB.')
-            : await _route(toolName, serial, arguments);
+            : await _route(operation.name, serial, operation.arguments);
       }
     } on McpArgumentException catch (e) {
       result = McpToolResult.error(e.message);

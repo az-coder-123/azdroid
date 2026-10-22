@@ -1,0 +1,39 @@
+{
+  "name": "android_transfer_file",
+  "description": "Copies a file: direction \"push\" (computer to device) or \"pull\" (device to computer), overwriting the destination without asking. direction \"scan\" indexes remotePath in MediaStore so media apps see a new file.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "direction": {
+        "type": "string",
+        "enum": [
+          "push",
+          "pull",
+          "scan"
+        ],
+        "description": "push, pull, or scan."
+      },
+      "localPath": {
+        "type": "string",
+        "description": "push/pull: absolute path on the computer."
+      },
+      "remotePath": {
+        "type": "string",
+        "description": "Absolute path on the device, e.g. /sdcard/Download/a.jpg."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    },
+    "required": [
+      "direction",
+      "remotePath"
+    ]
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": true
+  }
+}

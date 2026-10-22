@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
+import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_router.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_server_instructions.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_registry.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +17,9 @@ import 'package:flutter_test/flutter_test.dart';
 ///    `.agents/mcp/azdroid/` (name, description, and parameters must match
 ///    the registry definition) to prevent silent drift.
 /// 4. No orphan manifest files may exist without a registry tool.
+/// Upper bound for the published catalog (35 today).
+const int mcpPublishedToolLimit = 36;
+
 void main() {
   const manifestDir = '.agents/mcp/azdroid';
 
@@ -30,6 +34,20 @@ void main() {
       names.length,
       duplicates.length,
       reason: 'Duplicate tool names found in McpToolRegistry.',
+    );
+  });
+
+  test('the catalog stays under the client tool limit', () {
+    // Cursor has sent at most ~40 MCP tools across all servers; leave room
+    // for the user's other servers (docs/mcp-tool-safety.md).
+    expect(tools.length, lessThanOrEqualTo(mcpPublishedToolLimit));
+  });
+
+  test('every consolidated tool in the router is published', () {
+    final published = tools.map((t) => t.name).toSet();
+    expect(
+      McpToolRouter.operationsByTool.keys.toSet().difference(published),
+      isEmpty,
     );
   });
 
@@ -131,17 +149,13 @@ void main() {
       'android_clear_app_data',
       'android_dismiss_notification',
       'android_install_apk',
-      'android_kill_process',
       'android_shell_command',
       'android_stop_app',
       // Reviewed 2026-10-22: replay-safe, but they cut a Wi-Fi ADB link,
       // kill the app, or overwrite files (destructiveStateSetToolAnnotations).
-      'android_toggle_wifi',
-      'android_toggle_airplane_mode',
-      'android_set_network_condition',
-      'android_revoke_permission',
-      'android_push_file',
-      'android_pull_file',
+      'android_set_network',
+      'android_set_permission',
+      'android_transfer_file',
     };
 
     final flagged = {

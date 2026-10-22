@@ -70,64 +70,6 @@ class McpDeviceControlTools {
       },
     ),
     McpToolDefinition(
-      name: 'android_set_network_condition',
-      annotations: destructiveStateSetToolAnnotations,
-      description: 'Simulates network connectivity conditions (normal, offline, wifi_only, data_only) for offline mode testing. "offline" and "data_only" turn Wi-Fi off and drop a Wi-Fi ADB connection; only use them over USB, or confirm first.',
-      inputSchema: {
-        'type': 'object',
-        'properties': {
-          'mode': {
-            'type': 'string',
-            'enum': ['normal', 'offline', 'wifi_only', 'data_only'],
-            'description': 'Target network mode.',
-          },
-          'deviceSerial': mcpDeviceSerialProp,
-        },
-        'required': ['mode'],
-      },
-    ),
-    McpToolDefinition(
-      name: 'android_long_press',
-      annotations: inputToolAnnotations,
-      description: 'Presses and holds one point for durationMs (default 1000 ms), e.g. to open a context menu. Give the point as x/y, xRatio/yRatio, or xPixel/yPixel (units may be mixed per axis); one form is required.',
-      inputSchema: {
-        'type': 'object',
-        'properties': {
-          'x': mcpCoordProp,
-          'y': mcpCoordProp,
-          'xRatio': mcpCoordRatioProp,
-          'yRatio': mcpCoordRatioProp,
-          'xPixel': mcpCoordPixelProp,
-          'yPixel': mcpCoordPixelProp,
-          'durationMs': {
-            'type': 'integer',
-            'description': 'Press duration in milliseconds (default 1000).',
-          },
-          'deviceSerial': mcpDeviceSerialProp,
-        },
-      },
-    ),
-    McpToolDefinition(
-      name: 'android_open_notification_panel',
-      annotations: inputToolAnnotations,
-      description: 'Expands or collapses the Android notification shade or Quick Settings drawer.',
-      inputSchema: {
-        'type': 'object',
-        'properties': {
-          'expand': {
-            'type': 'boolean',
-            'description': 'True to expand, false to collapse.',
-          },
-          'quickSettings': {
-            'type': 'boolean',
-            'description':
-                'True to expand Quick Settings instead of notifications.',
-          },
-          'deviceSerial': mcpDeviceSerialProp,
-        },
-      },
-    ),
-    McpToolDefinition(
       name: 'android_read_shared_prefs',
       annotations: readOnlyToolAnnotations,
       description: 'Reads a SharedPreferences XML file of an app. Needs a debuggable build of the app (`run-as`) or a rooted device; release builds return an error.',
@@ -146,33 +88,6 @@ class McpDeviceControlTools {
           'deviceSerial': mcpDeviceSerialProp,
         },
         'required': ['package'],
-      },
-    ),
-    McpToolDefinition(
-      name: 'android_press_button',
-      annotations: inputToolAnnotations,
-      description: 'Triggers hardware physical buttons (volume_up, volume_down, camera, mute, wakeup, sleep, media_play_pause, media_next, media_prev). For navigation keys (BACK, HOME, APP_SWITCH) prefer android_press_key.',
-      inputSchema: {
-        'type': 'object',
-        'properties': {
-          'button': {
-            'type': 'string',
-            'enum': [
-              'volume_up',
-              'volume_down',
-              'camera',
-              'mute',
-              'wakeup',
-              'sleep',
-              'media_play_pause',
-              'media_next',
-              'media_prev',
-            ],
-            'description': 'Target hardware button.',
-          },
-          'deviceSerial': mcpDeviceSerialProp,
-        },
-        'required': ['button'],
       },
     ),
   ];

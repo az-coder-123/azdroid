@@ -1,0 +1,30 @@
+{
+  "name": "android_list_apps",
+  "description": "Lists installed packages (third-party only by default), or with running: true the running processes with their PIDs. query filters by name.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "running": {
+        "type": "boolean",
+        "description": "List running processes instead (default false)."
+      },
+      "thirdPartyOnly": {
+        "type": "boolean",
+        "description": "Packages only: skip system apps (default true)."
+      },
+      "query": {
+        "type": "string",
+        "description": "Name substring filter."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

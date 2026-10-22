@@ -1,6 +1,6 @@
 {
   "name": "android_swipe",
-  "description": "Quick flick from start to end (default 300 ms) that keeps scrolling with inertia. Use android_drag for sliders and precise moves, android_scroll for plain list scrolling. Give start and end as startX/startY and endX/endY, or their *Ratio / *Pixel forms.",
+  "description": "Moves one finger. With start and end: a quick flick that keeps scrolling with inertia (default 300 ms), or style \"drag\" for a slow, precise move (default 1000 ms) for sliders and reordering; give them as startX/startY and endX/endY or their *Ratio / *Pixel forms. With direction instead: scrolls content through the screen center (down reveals lower content) by distance at speed.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -56,9 +56,40 @@
         "type": "number",
         "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
+      "style": {
+        "type": "string",
+        "enum": [
+          "fling",
+          "drag"
+        ],
+        "description": "fling (default) or drag (slow, precise)."
+      },
+      "direction": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "left",
+          "right"
+        ],
+        "description": "Scroll content this way instead of a start/end path."
+      },
+      "distance": {
+        "type": "number",
+        "description": "Scroll: screen fraction 0.1-1.0 (default 0.6)."
+      },
+      "speed": {
+        "type": "string",
+        "enum": [
+          "fast",
+          "normal",
+          "slow"
+        ],
+        "description": "Scroll: fast flings, normal, slow drags."
+      },
       "durationMs": {
         "type": "integer",
-        "description": "Duration of the swipe in ms (default 300ms)."
+        "description": "Gesture duration in ms (overrides the defaults)."
       }
     }
   },

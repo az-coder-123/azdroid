@@ -1,6 +1,6 @@
 {
   "name": "android_get_logcat",
-  "description": "Returns the most recent logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F).",
+  "description": "Returns the newest logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F). With crashesOnly: true, returns crash traces and ANRs from the crash buffer instead, optionally for one package.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -23,6 +23,14 @@
           "F"
         ],
         "description": "Minimum level (default V: everything)."
+      },
+      "crashesOnly": {
+        "type": "boolean",
+        "description": "Crash buffer only: crashes and ANRs (default false)."
+      },
+      "package": {
+        "type": "string",
+        "description": "crashesOnly: only this app."
       },
       "limit": {
         "type": "integer",
