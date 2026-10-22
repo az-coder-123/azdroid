@@ -1,2 +1,2 @@
-e74d5cb9dcbb58e5e5ce2515cda186d0b9da71b257ca9052812a8c1e7da99b51  Azdroid-v1.4.0-macOS.zip
-e74d5cb9dcbb58e5e5ce2515cda186d0b9da71b257ca9052812a8c1e7da99b51  Azdroid-macOS-latest.zip
+d060a38cce01a299fd3299a77ac6331a3ee2d8deb232aaf48bed3eff8ee1b7e8  Azdroid-v1.4.1-macOS.zip
+d060a38cce01a299fd3299a77ac6331a3ee2d8deb232aaf48bed3eff8ee1b7e8  Azdroid-macOS-latest.zip
