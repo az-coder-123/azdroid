@@ -1,2 +1,2 @@
-0d277110769c7c886fc70b40fac327b55e680eca6f82b112f92f76df5fe6d869  Azdroid-v1.4.0-Windows-x64.zip
-0d277110769c7c886fc70b40fac327b55e680eca6f82b112f92f76df5fe6d869  Azdroid-Windows-x64-latest.zip
+e1a0b638a468a3eb0a36893e321cf0a6d331e683c4f468f2141c109767a7bd3d  Azdroid-v1.4.1-Windows-x64.zip
+e1a0b638a468a3eb0a36893e321cf0a6d331e683c4f468f2141c109767a7bd3d  Azdroid-Windows-x64-latest.zip
