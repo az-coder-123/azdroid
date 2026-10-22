@@ -26,6 +26,7 @@ Shortcuts use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows. Platform l
 | **14** | **Model Context Protocol (MCP) AI Agent Server** | `lib/features/mcp/` | Stdio CLI: bundled `azdroid-mcp` (release builds), or `./scripts/start_mcp_server.sh` / `dart run bin/azdroid_mcp.dart` (source) | ✅ | ✅ | [mcp-ai-agent-server.md](mcp-ai-agent-server.md) |
 | **15** | **MCP Server Status Panel** | `lib/features/mcp_status/` | Hub icon in the device list toolbar | ✅ | 🧪 | [mcp-status-panel.md](mcp-status-panel.md) |
 | **16** | **MCP Live Activity** | `lib/features/mcp_status/`, `lib/features/mcp/` | Status panel and mirroring banner | ✅ | 🧪 | [mcp-activity-log.md](mcp-activity-log.md) |
+| **17** | **In-App Update & Version Discovery** | `lib/features/updater/` | Auto background / Toolbar button | ✅ | ✅ | [in-app-updates.md](in-app-updates.md) |
 
 ---
 

@@ -25,12 +25,10 @@ void main() {
     mockRepo = MockDeviceLogRepository();
     streamController = StreamController<List<DeviceLogEntry>>.broadcast();
 
-    when(
-      () => mockRepo.streamLogs(testSerial),
-    ).thenAnswer((_) => streamController.stream);
-    when(
-      () => mockRepo.recordingStatus,
-    ).thenReturn(LogFileRecordingStatus.idle());
+    when(() => mockRepo.streamLogs(testSerial))
+        .thenAnswer((_) => streamController.stream);
+    when(() => mockRepo.recordingStatus)
+        .thenReturn(LogFileRecordingStatus.idle());
   });
 
   tearDown(() async {
@@ -107,7 +105,8 @@ void main() {
         level: LogLevel.info,
         tag: 'ActivityManager',
         message: 'Starting activity',
-        rawLine: '10-22 20:00:00.000 1001 1001 I ActivityManager: Starting activity',
+        rawLine:
+            '10-22 20:00:00.000 1001 1001 I ActivityManager: Starting activity',
       ),
     ]);
     await tester.pump();

@@ -10,6 +10,7 @@ import 'package:desk_droid/core/di/modules/menubar_di.dart';
 import 'package:desk_droid/core/di/modules/platform_di.dart';
 import 'package:desk_droid/core/di/modules/productivity_di.dart';
 import 'package:desk_droid/core/di/modules/streaming_di.dart';
+import 'package:desk_droid/core/di/modules/updater_di.dart';
 import 'package:get_it/get_it.dart';
 
 /// Global service locator instance.
@@ -30,4 +31,5 @@ Future<void> initDependencies() async {
   registerIntentDispatcherDependencies(sl);
   registerMenuBarDependencies(sl);
   registerMcpStatusDependencies(sl);
+  registerUpdaterDependencies(sl);
 }

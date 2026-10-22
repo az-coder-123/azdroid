@@ -11,6 +11,9 @@ import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_device_a
 import 'package:desk_droid/features/mcp_status/presentation/widgets/mcp_status_indicator.dart';
 import 'package:desk_droid/features/menubar/presentation/cubit/menu_bar_cubit.dart';
 import 'package:desk_droid/features/streaming/presentation/pages/mirroring_page.dart';
+import 'package:desk_droid/features/updater/presentation/cubit/updater_cubit.dart';
+import 'package:desk_droid/features/updater/presentation/widgets/update_badge_indicator.dart';
+import 'package:desk_droid/features/updater/presentation/widgets/update_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,6 +59,10 @@ class AzdroidApp extends StatelessWidget {
         ),
         // App-wide singleton owned by the service locator, so do not close it.
         BlocProvider<MenuBarCubit>.value(value: sl<MenuBarCubit>()),
+        // Background version checking with gentle ambient notification
+        BlocProvider<UpdaterCubit>(
+          create: (_) => sl<UpdaterCubit>()..checkForUpdates(),
+        ),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -63,7 +70,8 @@ class AzdroidApp extends StatelessWidget {
         theme: AppTheme.darkTheme,
         home: const DiscoveryPage(
           mirroringRouteBuilder: _mirroringRoute,
-          statusActions: [McpStatusIndicator()],
+          statusActions: [McpStatusIndicator(), UpdateBadgeIndicator()],
+          topBanner: UpdateBanner(),
         ),
       ),
     );
