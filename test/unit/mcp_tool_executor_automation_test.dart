@@ -3,6 +3,8 @@ import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/mcp_points.dart';
+
 class MockMcpAdbClient extends Mock implements McpAdbClient {}
 
 void main() {
@@ -159,8 +161,11 @@ void main() {
 
     test('android_long_press delegates to client longPress', () async {
       when(
-        () =>
-            mockAdb.longPress('192.168.1.100:5555', 0.5, 0.5, durationMs: 1500),
+        () => mockAdb.longPress(
+          '192.168.1.100:5555',
+          rawPoint(0.5, 0.5),
+          durationMs: 1500,
+        ),
       ).thenAnswer((_) async => true);
 
       final res = await executor.execute('android_long_press', {

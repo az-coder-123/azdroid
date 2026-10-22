@@ -1,7 +1,10 @@
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../helpers/mcp_points.dart';
 
 class MockMcpAdbClient extends Mock implements McpAdbClient {}
 
@@ -28,7 +31,7 @@ void main() {
     });
 
     test('android_tap executes tap via McpAdbClient', () async {
-      when(() => mockAdb.tap('192.168.1.100:5555', 0.5, 0.75))
+      when(() => mockAdb.tap('192.168.1.100:5555', rawPoint(0.5, 0.75)))
           .thenAnswer((_) async => true);
 
       final result = await executor.execute('android_tap', {
@@ -47,8 +50,9 @@ void main() {
     test(
       'android_tap accepts normalized xRatio and yRatio arguments',
       () async {
-        when(() => mockAdb.tap('192.168.1.100:5555', 0.25, 0.65))
-            .thenAnswer((_) async => true);
+        when(
+          () => mockAdb.tap('192.168.1.100:5555', McpPoint.ratio(0.25, 0.65)),
+        ).thenAnswer((_) async => true);
 
         final result = await executor.execute('android_tap', {
           'deviceSerial': '192.168.1.100:5555',
@@ -67,8 +71,9 @@ void main() {
     test(
       'android_tap accepts physical pixel xPixel and yPixel arguments',
       () async {
-        when(() => mockAdb.tap('192.168.1.100:5555', 540.0, 1170.0))
-            .thenAnswer((_) async => true);
+        when(
+          () => mockAdb.tap('192.168.1.100:5555', McpPoint.pixels(540, 1170)),
+        ).thenAnswer((_) async => true);
 
         final result = await executor.execute('android_tap', {
           'deviceSerial': '192.168.1.100:5555',
@@ -90,8 +95,7 @@ void main() {
         when(
           () => mockAdb.tapAndVerify(
             '192.168.1.100:5555',
-            0.5,
-            0.75,
+            rawPoint(0.5, 0.75),
             delayMs: any(named: 'delayMs'),
           ),
         ).thenAnswer((_) async => (true, true));
@@ -114,8 +118,7 @@ void main() {
         when(
           () => mockAdb.tapAndVerify(
             '192.168.1.100:5555',
-            0.1,
-            0.1,
+            rawPoint(0.1, 0.1),
             delayMs: any(named: 'delayMs'),
           ),
         ).thenAnswer((_) async => (true, false));
@@ -141,8 +144,7 @@ void main() {
         when(
           () => mockAdb.tapAndVerify(
             '192.168.1.100:5555',
-            0.1,
-            0.1,
+            rawPoint(0.1, 0.1),
             delayMs: any(named: 'delayMs'),
           ),
         ).thenAnswer((_) async => (false, false));
@@ -161,8 +163,11 @@ void main() {
 
     test('android_double_tap executes double tap via McpAdbClient', () async {
       when(
-        () =>
-            mockAdb.doubleTap('192.168.1.100:5555', 0.5, 0.75, intervalMs: 120),
+        () => mockAdb.doubleTap(
+          '192.168.1.100:5555',
+          rawPoint(0.5, 0.75),
+          intervalMs: 120,
+        ),
       ).thenAnswer((_) async => true);
 
       final result = await executor.execute('android_double_tap', {
@@ -222,8 +227,14 @@ void main() {
     });
 
     test('android_swipe executes swipe via McpAdbClient', () async {
-      when(() => mockAdb.swipe('192.168.1.100:5555', 0.5, 0.8, 0.5, 0.2, 300))
-          .thenAnswer((_) async => true);
+      when(
+        () => mockAdb.swipe(
+          '192.168.1.100:5555',
+          rawPoint(0.5, 0.8),
+          rawPoint(0.5, 0.2),
+          300,
+        ),
+      ).thenAnswer((_) async => true);
 
       final result = await executor.execute('android_swipe', {
         'deviceSerial': '192.168.1.100:5555',
@@ -244,8 +255,14 @@ void main() {
     test(
       'android_swipe accepts ratio arguments (startXRatio, endXRatio, etc.)',
       () async {
-        when(() => mockAdb.swipe('192.168.1.100:5555', 0.2, 0.3, 0.8, 0.9, 450))
-            .thenAnswer((_) async => true);
+        when(
+          () => mockAdb.swipe(
+            '192.168.1.100:5555',
+            McpPoint.ratio(0.2, 0.3),
+            McpPoint.ratio(0.8, 0.9),
+            450,
+          ),
+        ).thenAnswer((_) async => true);
 
         final result = await executor.execute('android_swipe', {
           'deviceSerial': '192.168.1.100:5555',
@@ -268,10 +285,8 @@ void main() {
       when(
         () => mockAdb.swipe(
           '192.168.1.100:5555',
-          100.0,
-          200.0,
-          100.0,
-          1200.0,
+          McpPoint.pixels(100, 200),
+          McpPoint.pixels(100, 1200),
           500,
         ),
       ).thenAnswer((_) async => true);
@@ -322,10 +337,8 @@ void main() {
       when(
         () => mockAdb.drag(
           '192.168.1.100:5555',
-          0.1,
-          0.5,
-          0.9,
-          0.5,
+          rawPoint(0.1, 0.5),
+          rawPoint(0.9, 0.5),
           durationMs: 1000,
         ),
       ).thenAnswer((_) async => true);

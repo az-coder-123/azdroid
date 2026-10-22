@@ -9,6 +9,9 @@ import 'package:desk_droid/features/control/data/datasources/scrcpy_control_data
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_ocr_fallback_ops.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point_arguments.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_scroll_path.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_semantic_element.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_foreground_app_parser.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_tree_parser.dart';
@@ -66,32 +69,28 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
       McpAdbInputOps.captureScreenshotBytes(this, serial);
   Future<Point<int>> getDisplaySize(String serial) =>
       McpAdbInputOps.getDisplaySize(this, serial);
-  Future<bool> tap(String serial, double x, double y) =>
-      McpAdbInputOps.tap(this, serial, x, y);
+  Future<bool> tap(String serial, McpPoint point) =>
+      McpAdbInputOps.tap(this, serial, point);
   Future<(bool ok, bool stateChanged)> tapAndVerify(
     String serial,
-    double x,
-    double y, {
+    McpPoint point, {
     int delayMs = 300,
-  }) => McpAdbInputOps.tapAndVerify(this, serial, x, y, delayMs: delayMs);
+  }) => McpAdbInputOps.tapAndVerify(this, serial, point, delayMs: delayMs);
   Future<bool> swipe(
     String serial,
-    double sx,
-    double sy,
-    double ex,
-    double ey,
+    McpPoint start,
+    McpPoint end,
     int durationMs,
-  ) => McpAdbInputOps.swipe(this, serial, sx, sy, ex, ey, durationMs);
+  ) => McpAdbInputOps.swipe(this, serial, start, end, durationMs);
   Future<bool> typeText(String serial, String text) =>
       McpAdbTextOps.typeText(this, serial, text);
   Future<bool> pressKey(String serial, int keyCode) =>
       McpAdbTextOps.pressKey(this, serial, keyCode);
   Future<bool> doubleTap(
     String serial,
-    double x,
-    double y, {
+    McpPoint point, {
     int intervalMs = 120,
-  }) => McpAdbInputOps.doubleTap(this, serial, x, y, intervalMs: intervalMs);
+  }) => McpAdbInputOps.doubleTap(this, serial, point, intervalMs: intervalMs);
   Future<bool> setText(
     String serial,
     String text, {
@@ -108,20 +107,10 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
       McpAdbTextOps.clearText(this, serial, elementId: elementId);
   Future<bool> drag(
     String serial,
-    double startX,
-    double startY,
-    double endX,
-    double endY, {
+    McpPoint start,
+    McpPoint end, {
     int durationMs = 1000,
-  }) => McpAdbInputOps.drag(
-    this,
-    serial,
-    startX,
-    startY,
-    endX,
-    endY,
-    durationMs: durationMs,
-  );
+  }) => McpAdbInputOps.drag(this, serial, start, end, durationMs: durationMs);
   Future<bool> pinchGesture(
     String serial, {
     required double scale,
@@ -157,10 +146,8 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     String direction = 'down',
     double distance = 0.6,
     String speed = 'normal',
-    double? startX,
-    double? startY,
-    double? endX,
-    double? endY,
+    McpPoint? start,
+    McpPoint? end,
     int? durationMs,
   }) => McpAdbInputOps.scroll(
     this,
@@ -168,10 +155,8 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     direction: direction,
     distance: distance,
     speed: speed,
-    startX: startX,
-    startY: startY,
-    endX: endX,
-    endY: endY,
+    start: start,
+    end: end,
     durationMs: durationMs,
   );
 

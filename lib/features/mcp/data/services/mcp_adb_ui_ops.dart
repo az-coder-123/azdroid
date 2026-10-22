@@ -104,8 +104,7 @@ class McpAdbUiOps {
 
     return await client.tap(
       serial,
-      target.centerX.toDouble(),
-      target.centerY.toDouble(),
+      McpPoint.pixels(target.centerX, target.centerY),
     );
   }
 
@@ -193,8 +192,9 @@ class McpAdbUiOps {
     if (element == null) return false;
 
     final center = element['centerPixels'] as Map<String, dynamic>;
-    final x = (center['x'] as int).toDouble();
-    final y = (center['y'] as int).toDouble();
-    return await client.tap(serial, x, y);
+    return await client.tap(
+      serial,
+      McpPoint.pixels(center['x'] as int, center['y'] as int),
+    );
   }
 }

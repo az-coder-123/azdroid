@@ -70,17 +70,9 @@ class McpAdbEnvironmentOps {
   static Future<bool> longPress(
     McpAdbClient client,
     String serial,
-    double x,
-    double y, {
+    McpPoint point, {
     int durationMs = 1000,
-  }) async {
-    var targetX = x;
-    var targetY = y;
-    if (x > 0.0 && x < 1.0 && y > 0.0 && y < 1.0) {
-      final size = await McpAdbInputOps.getDisplaySize(client, serial);
-      targetX = x * size.x;
-      targetY = y * size.y;
-    }
-    return client.swipe(serial, targetX, targetY, targetX, targetY, durationMs);
-  }
+  }) =>
+      // A swipe that does not move is a long press.
+      client.swipe(serial, point, point, durationMs);
 }

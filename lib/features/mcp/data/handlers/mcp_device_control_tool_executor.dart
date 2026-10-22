@@ -1,5 +1,6 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point_arguments.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for notifications, mock location, network conditioning,
@@ -110,16 +111,16 @@ class McpDeviceControlToolExecutor {
             : McpToolResult.error('Failed to set network condition.');
 
       case 'android_long_press':
-        final (x, y) = arguments.getPointPair();
+        final point = arguments.getPoint();
         final duration = arguments.getInt(
           'durationMs',
           aliases: ['duration', 'timeMs', 'delayMs'],
           defaultValue: 1000,
         );
-        final ok = await _adb.longPress(serial, x, y, durationMs: duration);
+        final ok = await _adb.longPress(serial, point, durationMs: duration);
         return ok
             ? McpToolResult.text(
-                'Long pressed ($x, $y) for ${duration}ms on $serial.',
+                'Long pressed $point for ${duration}ms on $serial.',
               )
             : McpToolResult.error('Failed to inject long press.');
 

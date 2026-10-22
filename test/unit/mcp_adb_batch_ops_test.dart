@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -8,6 +9,8 @@ class MockMcpAdbClient extends Mock implements McpAdbClient {}
 
 void main() {
   late MockMcpAdbClient mockAdb;
+
+  setUpAll(() => registerFallbackValue(McpPoint.pixels(0, 0)));
 
   setUp(() {
     mockAdb = MockMcpAdbClient();
@@ -45,7 +48,6 @@ void main() {
         () => mockAdb.doubleTap(
           'dev1',
           any(),
-          any(),
           intervalMs: any(named: 'intervalMs'),
         ),
       ).thenAnswer((_) async => true);
@@ -77,8 +79,13 @@ void main() {
       expect(results[2]['action'], equals('rotate'));
       expect(results[2]['success'], isTrue);
 
-      verify(() => mockAdb.doubleTap('dev1', 540.0, 1200.0, intervalMs: 100))
-          .called(1);
+      verify(
+        () => mockAdb.doubleTap(
+          'dev1',
+          McpPoint.pixels(540, 1200),
+          intervalMs: 100,
+        ),
+      ).called(1);
       verify(
         () => mockAdb.pinchGesture(
           'dev1',

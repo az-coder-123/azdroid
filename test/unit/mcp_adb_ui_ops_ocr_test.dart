@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_ocr_fallback_ops.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_ocr_element.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_ocr_engine.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -157,7 +158,7 @@ void main() {
             ),
           ],
         );
-        when(() => mockAdb.tap('device_1', 300.0, 450.0))
+        when(() => mockAdb.tap('device_1', McpPoint.pixels(300, 450)))
             .thenAnswer((_) async => true);
 
         final success = await McpAdbUiOps.clickElement(
@@ -167,7 +168,8 @@ void main() {
         );
 
         expect(success, isTrue);
-        verify(() => mockAdb.tap('device_1', 300.0, 450.0)).called(1);
+        verify(() => mockAdb.tap('device_1', McpPoint.pixels(300, 450)))
+            .called(1);
       },
     );
 

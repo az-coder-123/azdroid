@@ -1,5 +1,7 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
+import 'package:desk_droid/features/mcp/data/utils/mcp_point_arguments.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
 /// Handler for basic touch, swipe, pinch, keyevent, intent, and diagnostics tools.
@@ -33,17 +35,17 @@ class McpBasicToolExecutor {
   ) async {
     switch (toolName) {
       case 'android_tap':
-        final (x, y) = arguments.getPointPair();
+        final point = arguments.getPoint();
         final verify = arguments.getBool(
           'verifyChange',
           aliases: ['verify_change', 'verify'],
         );
 
         if (!verify) {
-          final ok = await _adb.tap(serial, x, y);
+          final ok = await _adb.tap(serial, point);
           return ok
-              ? McpToolResult.text('Tapped at coordinates ($x, $y) on $serial.')
-              : McpToolResult.error('Failed to tap at ($x, $y).');
+              ? McpToolResult.text('Tapped at coordinates $point on $serial.')
+              : McpToolResult.error('Failed to tap at $point.');
         }
 
         final delayMs = arguments.getInt(
@@ -53,54 +55,51 @@ class McpBasicToolExecutor {
         );
         final (ok, stateChanged) = await _adb.tapAndVerify(
           serial,
-          x,
-          y,
+          point,
           delayMs: delayMs,
         );
 
         if (!ok) {
-          return McpToolResult.error('Failed to tap at ($x, $y).');
+          return McpToolResult.error('Failed to tap at $point.');
         }
 
         if (stateChanged) {
           return McpToolResult.text(
-            'Tapped at coordinates ($x, $y) on $serial. State change verified (UI updated).',
+            'Tapped at coordinates $point on $serial. State change verified (UI updated).',
           );
         }
 
         return McpToolResult.text(
-          'Tapped at coordinates ($x, $y) on $serial.\n'
+          'Tapped at coordinates $point on $serial.\n'
           'Warning: Tap produced no detectable UI change. '
           'The target may be non-clickable, obscured, or out of active bounds.',
         );
 
       case 'android_double_tap':
-        final (x, y) = arguments.getPointPair();
+        final point = arguments.getPoint();
         final interval = arguments.getInt('intervalMs', defaultValue: 120);
-        final ok = await _adb.doubleTap(serial, x, y, intervalMs: interval);
+        final ok = await _adb.doubleTap(serial, point, intervalMs: interval);
         return ok
             ? McpToolResult.text(
-                'Double-tapped at coordinates ($x, $y) with ${interval}ms interval on $serial.',
+                'Double-tapped at coordinates $point with ${interval}ms interval on $serial.',
               )
-            : McpToolResult.error('Failed to double-tap at ($x, $y).');
+            : McpToolResult.error('Failed to double-tap at $point.');
 
       case 'android_swipe':
-        final (sx, sy, ex, ey) = _parseCoordinates(arguments);
+        final (start, end) = _parseCoordinates(arguments);
         final dur = arguments.getInt('durationMs', defaultValue: 300);
-        final ok = await _adb.swipe(serial, sx, sy, ex, ey, dur);
+        final ok = await _adb.swipe(serial, start, end, dur);
         return ok
-            ? McpToolResult.text(
-                'Swiped from ($sx, $sy) to ($ex, $ey) on $serial.',
-              )
+            ? McpToolResult.text('Swiped from $start to $end on $serial.')
             : McpToolResult.error('Failed to swipe.');
 
       case 'android_drag':
-        final (sx, sy, ex, ey) = _parseCoordinates(arguments);
+        final (start, end) = _parseCoordinates(arguments);
         final dur = arguments.getInt('durationMs', defaultValue: 1000);
-        final ok = await _adb.drag(serial, sx, sy, ex, ey, durationMs: dur);
+        final ok = await _adb.drag(serial, start, end, durationMs: dur);
         return ok
             ? McpToolResult.text(
-                'Dragged from ($sx, $sy) to ($ex, $ey) with duration ${dur}ms on $serial.',
+                'Dragged from $start to $end with duration ${dur}ms on $serial.',
               )
             : McpToolResult.error('Failed to drag.');
 
@@ -115,13 +114,13 @@ class McpBasicToolExecutor {
           'durationMs',
           aliases: ['duration'],
         );
-        final (sx, sy) = arguments.getOptionalPointPair(
+        final start = arguments.getOptionalPoint(
           xKey: 'startX',
           yKey: 'startY',
           xAliases: ['sx', 'x1'],
           yAliases: ['sy', 'y1'],
         );
-        final (ex, ey) = arguments.getOptionalPointPair(
+        final end = arguments.getOptionalPoint(
           xKey: 'endX',
           yKey: 'endY',
           xAliases: ['ex', 'x2'],
@@ -132,10 +131,8 @@ class McpBasicToolExecutor {
           direction: dir,
           distance: dist,
           speed: spd,
-          startX: sx,
-          startY: sy,
-          endX: ex,
-          endY: ey,
+          start: start,
+          end: end,
           durationMs: dur,
         );
         return ok
@@ -261,21 +258,21 @@ class McpBasicToolExecutor {
     }
   }
 
-  static (double, double, double, double) _parseCoordinates(
+  static (McpPoint, McpPoint) _parseCoordinates(
     Map<String, dynamic> arguments,
   ) {
-    final (sx, sy) = arguments.getPointPair(
+    final start = arguments.getPoint(
       xKey: 'startX',
       yKey: 'startY',
       xAliases: ['x1', 'fromX'],
       yAliases: ['y1', 'fromY'],
     );
-    final (ex, ey) = arguments.getPointPair(
+    final end = arguments.getPoint(
       xKey: 'endX',
       yKey: 'endY',
       xAliases: ['x2', 'toX'],
       yAliases: ['y2', 'toY'],
     );
-    return (sx, sy, ex, ey);
+    return (start, end);
   }
 }

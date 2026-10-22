@@ -87,14 +87,12 @@ mixin McpAdbAutomationDelegator {
 
   Future<bool> longPress(
     String serial,
-    double x,
-    double y, {
+    McpPoint point, {
     int durationMs = 1000,
   }) => McpAdbEnvironmentOps.longPress(
     _adbClient,
     serial,
-    x,
-    y,
+    point,
     durationMs: durationMs,
   );
 

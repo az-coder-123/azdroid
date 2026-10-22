@@ -213,10 +213,8 @@ void main() {
             direction: 'down',
             distance: 0.7,
             speed: 'fast',
-            startX: null,
-            startY: null,
-            endX: null,
-            endY: null,
+            start: null,
+            end: null,
             durationMs: null,
           ),
         ).thenAnswer((_) async => true);

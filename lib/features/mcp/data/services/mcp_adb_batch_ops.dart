@@ -63,7 +63,7 @@ class McpAdbBatchOps {
               results.add({'step': i, 'error': 'Missing coordinates'});
               continue;
             }
-            final ok = await client.tap(serial, x.toDouble(), y.toDouble());
+            final ok = await client.tap(serial, McpPoint.pixels(x, y));
             results.add({'step': i, 'action': 'tap', 'success': ok});
           case 'type':
             final text = (a['text'] ?? a['input'] ?? '').toString();
@@ -105,10 +105,8 @@ class McpAdbBatchOps {
                 300;
             final ok = await client.swipe(
               serial,
-              x1.toDouble(),
-              y1.toDouble(),
-              x2.toDouble(),
-              y2.toDouble(),
+              McpPoint.pixels(x1, y1),
+              McpPoint.pixels(x2, y2),
               dur,
             );
             results.add({'step': i, 'action': 'swipe', 'success': ok});
@@ -117,10 +115,8 @@ class McpAdbBatchOps {
                 McpAdbBatchCompiler.resolveScrollCoordinates(a, size);
             final ok = await client.swipe(
               serial,
-              sx.toDouble(),
-              sy.toDouble(),
-              ex.toDouble(),
-              ey.toDouble(),
+              McpPoint.pixels(sx, sy),
+              McpPoint.pixels(ex, ey),
               dur,
             );
             results.add({'step': i, 'action': type ?? 'scroll', 'success': ok});
@@ -149,8 +145,7 @@ class McpAdbBatchOps {
                 McpAdbBatchCompiler.parseInt(a['intervalMs']) ?? 120;
             final ok = await client.doubleTap(
               serial,
-              x.toDouble(),
-              y.toDouble(),
+              McpPoint.pixels(x, y),
               intervalMs: interval,
             );
             results.add({'step': i, 'action': 'double_tap', 'success': ok});

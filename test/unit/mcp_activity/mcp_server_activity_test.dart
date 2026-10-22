@@ -6,6 +6,8 @@ import 'package:desk_droid/features/mcp/data/transports/mcp_stdio_transport.dart
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../helpers/mcp_points.dart';
+
 class _MockAdb extends Mock implements McpAdbClient {}
 
 /// Records what the server reports, for assertions.
@@ -39,7 +41,7 @@ void main() {
   test('each tool call is reported with the device it resolved to', () async {
     final executor = McpToolExecutor(adbClient: adb, activity: sink);
     when(adb.getConnectedSerials).thenAnswer((_) async => ['R9']);
-    when(() => adb.tap('R9', 0.5, 0.5)).thenAnswer((_) async => true);
+    when(() => adb.tap('R9', rawPoint(0.5, 0.5))).thenAnswer((_) async => true);
     when(adb.listDevicesRaw).thenAnswer((_) async => 'R9 device');
 
     await executor.execute('android_tap', {'x': 0.5, 'y': 0.5});

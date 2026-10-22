@@ -80,57 +80,33 @@ class McpAdbBatchCompiler {
     return 'input swipe $sx $sy $ex $ey $dur';
   }
 
-  /// Resolves pixel start, end, and duration for scroll gestures.
+  /// Resolves pixel start, end, and duration for scroll gestures (the same
+  /// path and timing as `android_scroll`).
   static (int, int, int, int, int) resolveScrollCoordinates(
     Map<String, dynamic> a,
     Point<int> size,
   ) {
-    final dist = (parseNum(a['distance'] ?? a['dist'])?.toDouble() ?? 0.6)
-        .clamp(0.05, 0.95);
+    final distance = parseNum(a['distance'] ?? a['dist'])?.toDouble() ?? 0.6;
     final speed =
         (a['speed'] ??
                 a['velocity'] ??
                 (a['action'] == 'fling' ? 'fast' : 'normal'))
-            .toString()
-            .toLowerCase()
-            .trim();
-    final durOverride = parseInt(a['durationMs'] ?? a['duration']);
-    final dur =
-        durOverride ??
-        (speed == 'fast' || speed == 'fling'
-            ? 80
-            : (speed == 'slow' ? 600 : 250));
-
-    final dir = (a['direction'] ?? a['dir'] ?? 'down')
-        .toString()
-        .toLowerCase()
-        .trim();
-    double sx = 0.5, sy = 0.5, ex = 0.5, ey = 0.5;
-    switch (dir) {
-      case 'up':
-        sy = 0.5 - dist / 2;
-        ey = 0.5 + dist / 2;
-      case 'left':
-        sx = 0.5 - dist / 2;
-        ex = 0.5 + dist / 2;
-      case 'right':
-        sx = 0.5 + dist / 2;
-        ex = 0.5 - dist / 2;
-      case 'down':
-      default:
-        sy = 0.5 + dist / 2;
-        ey = 0.5 - dist / 2;
-    }
-    return (
-      (sx * size.x).round(),
-      (sy * size.y).round(),
-      (ex * size.x).round(),
-      (ey * size.y).round(),
-      dur,
+            .toString();
+    final dur = mcpScrollDurationMs(
+      speed,
+      parseInt(a['durationMs'] ?? a['duration']),
     );
+    final path = mcpScrollPath(
+      (a['direction'] ?? a['dir'] ?? 'down').toString(),
+      distance,
+    );
+    final (sx, sy) = path.start.toPixels(size.x, size.y);
+    final (ex, ey) = path.end.toPixels(size.x, size.y);
+    return (sx, sy, ex, ey, dur);
   }
 
-  /// Resolves pixel point from normalized ratio or absolute pixels.
+  /// Resolves a pixel point with the same rules as every other tool
+  /// ([McpPoint]); `(null, null)` when either axis is missing.
   static (int?, int?) resolvePoint(
     Map<String, dynamic> a,
     Point<int> size,
@@ -139,18 +115,13 @@ class McpAdbBatchCompiler {
     String? altX,
     String? altY,
   }) {
-    final xr = parseNum(a['${xKey}Ratio'] ?? a['${xKey}Percent']);
-    final yr = parseNum(a['${yKey}Ratio'] ?? a['${yKey}Percent']);
-    if (xr != null && yr != null) {
-      return ((xr * size.x).round(), (yr * size.y).round());
-    }
-    final rx = parseNum(a[xKey] ?? (altX != null ? a[altX] : null));
-    final ry = parseNum(a[yKey] ?? (altY != null ? a[altY] : null));
-    if (rx == null || ry == null) return (null, null);
-    if (rx > 0.0 && rx < 1.0 && ry > 0.0 && ry < 1.0) {
-      return ((rx * size.x).round(), ((ry * size.y).round()));
-    }
-    return (rx.round(), ry.round());
+    final point = a.getOptionalPoint(
+      xKey: xKey,
+      yKey: yKey,
+      xAliases: [?altX],
+      yAliases: [?altY],
+    );
+    return point == null ? (null, null) : point.toPixels(size.x, size.y);
   }
 
   static num? parseNum(dynamic v) =>
