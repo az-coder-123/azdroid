@@ -12,6 +12,10 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
           'type': 'string',
           'description': 'Target device serial or IP:port.',
         },
+        'compressed': {
+          'type': 'boolean',
+          'description': 'Whether to compress layout containers (default true). Set to false to dump full uncompressed Compose/Flutter trees.',
+        },
       },
     },
   ),

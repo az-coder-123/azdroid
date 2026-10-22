@@ -48,20 +48,29 @@ class McpSemanticTreeParser {
         final resourceId = (node.getAttribute('resource-id') ?? '').trim();
         final className = (node.getAttribute('class') ?? '').trim();
         final pkg = (node.getAttribute('package') ?? '').trim();
-        final clickable = node.getAttribute('clickable') == 'true';
+        final rawClickable = node.getAttribute('clickable') == 'true';
         final scrollable = node.getAttribute('scrollable') == 'true';
         final checkable = node.getAttribute('checkable') == 'true';
         final checked = node.getAttribute('checked') == 'true';
         final enabled = node.getAttribute('enabled') != 'false';
+
+        // Inherited clickability: In declarative frameworks like Jetpack Compose
+        // and Flutter, child text elements are often rendered with clickable="false"
+        // while their parent container (Tab, Button, Card, Row) holds the click listener.
+        final effectiveClickable =
+            rawClickable ||
+            ((text.isNotEmpty || contentDesc.isNotEmpty) &&
+                _hasClickableAncestor(node));
 
         if (!_isSemanticallyMeaningful(
           className: className,
           text: text,
           contentDesc: contentDesc,
           resourceId: resourceId,
-          clickable: clickable,
+          clickable: effectiveClickable,
           scrollable: scrollable,
           checkable: checkable,
+          hasMeaningfulDescendants: _hasMeaningfulDescendants(node),
         )) {
           continue;
         }
@@ -83,7 +92,7 @@ class McpSemanticTreeParser {
             className: className,
             package: pkg,
             contentDesc: contentDesc,
-            clickable: clickable,
+            clickable: effectiveClickable,
             scrollable: scrollable,
             checkable: checkable,
             checked: checked,
@@ -103,6 +112,30 @@ class McpSemanticTreeParser {
     }
   }
 
+  /// Traverses up the ancestor chain to determine if any containing node is clickable.
+  bool _hasClickableAncestor(XmlElement node) {
+    var parent = node.parentElement;
+    while (parent != null && parent.name.local == 'node') {
+      if (parent.getAttribute('clickable') == 'true') {
+        return true;
+      }
+      parent = parent.parentElement;
+    }
+    return false;
+  }
+
+  /// Checks if this node contains any descendant node with non-empty text or content description.
+  bool _hasMeaningfulDescendants(XmlElement node) {
+    for (final desc in node.findAllElements('node')) {
+      final t = (desc.getAttribute('text') ?? '').trim();
+      final d = (desc.getAttribute('content-desc') ?? '').trim();
+      if (t.isNotEmpty || d.isNotEmpty) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /// Determines whether a UI node carries semantic value for AI agents.
   bool _isSemanticallyMeaningful({
     required String className,
@@ -112,7 +145,17 @@ class McpSemanticTreeParser {
     required bool clickable,
     required bool scrollable,
     required bool checkable,
+    required bool hasMeaningfulDescendants,
   }) {
+    // If an element is an anonymous empty container (no text, no content-desc, no resourceId)
+    // and its children already contain meaningful text/content, prune this redundant wrapper
+    // so agents see the direct informative child nodes.
+    if (text.isEmpty && contentDesc.isEmpty && resourceId.isEmpty) {
+      if (hasMeaningfulDescendants) {
+        return false;
+      }
+    }
+
     if (clickable || scrollable || checkable) return true;
     if (text.isNotEmpty || contentDesc.isNotEmpty) return true;
 
@@ -122,7 +165,8 @@ class McpSemanticTreeParser {
         shortClass.contains('switch') ||
         shortClass.contains('checkbox') ||
         shortClass.contains('radio') ||
-        shortClass.contains('seekbar')) {
+        shortClass.contains('seekbar') ||
+        shortClass.contains('composeview')) {
       return true;
     }
 

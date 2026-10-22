@@ -105,6 +105,53 @@ void main() {
       final notFound = parser.findByQuery(elements, text: 'Bluetooth');
       expect(notFound, isNull);
     });
+
+    test('prunes anonymous containers and inherits clickability for Compose/Flutter', () {
+      const composeXml =
+          '''<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<hierarchy rotation="0">
+  <node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="com.openplayer" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" bounds="[0,0][1080,2340]">
+    <!-- Compose Tab: Anonymous clickable View with child TextView -->
+    <node index="0" text="" resource-id="" class="android.view.View" package="com.openplayer" checkable="false" checked="false" clickable="true" enabled="true" focusable="true" focused="false" scrollable="false" bounds="[0,180][360,280]">
+      <node index="0" text="Recent (25)" resource-id="" class="android.widget.TextView" package="com.openplayer" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" bounds="[50,200][310,260]" />
+    </node>
+    <!-- Standalone clickable element with no text and no children (e.g. FloatingActionButton/IconButton) -->
+    <node index="1" text="" resource-id="" class="android.widget.ImageButton" package="com.openplayer" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="true" focused="false" scrollable="false" bounds="[900,2000][1020,2120]" />
+  </node>
+</hierarchy>''';
+
+      final elements = parser.parse(
+        composeXml,
+        screenWidth: 1080,
+        screenHeight: 2340,
+      );
+
+      // Expected:
+      // 1. TextView "Recent (25)" with inherited clickable=true (anonymous View pruned)
+      // 2. ImageButton (kept because it has no children to provide content)
+      expect(elements.length, 2);
+
+      final tab = elements.first;
+      expect(tab.shortClass, 'TextView');
+      expect(tab.text, 'Recent (25)');
+      expect(
+        tab.clickable,
+        isTrue,
+        reason: 'Child should inherit clickability from Compose parent',
+      );
+      expect(tab.centerX, 180);
+      expect(tab.centerY, 230);
+
+      final iconBtn = elements.last;
+      expect(iconBtn.shortClass, 'ImageButton');
+      expect(iconBtn.clickable, isTrue);
+
+      final digest = parser.formatDigest(elements);
+      expect(
+        digest,
+        contains('[#1] TextView text:"Recent (25)" clickable:true'),
+      );
+    });
   });
 
   group('McpSemanticElement Model Tests', () {

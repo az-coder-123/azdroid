@@ -16,7 +16,12 @@ void main() {
 
   group('McpToolExecutor Semantic & System Ops Tests', () {
     test('android_dump_hierarchy returns accessibility tree XML', () async {
-      when(() => mockAdb.dumpHierarchy('192.168.1.100:5555')).thenAnswer(
+      when(
+        () => mockAdb.dumpHierarchy(
+          '192.168.1.100:5555',
+          compressed: any(named: 'compressed'),
+        ),
+      ).thenAnswer(
         (_) async => '<hierarchy><node text="Login" bounds="[10,20][100,50]"/></hierarchy>',
       );
 
@@ -28,6 +33,25 @@ void main() {
       expect(result.content.first.text, contains('<hierarchy>'));
       expect(result.content.first.text, contains('Login'));
     });
+
+    test(
+      'android_dump_hierarchy passes compressed flag to McpAdbClient',
+      () async {
+        when(
+          () => mockAdb.dumpHierarchy('192.168.1.100:5555', compressed: false),
+        ).thenAnswer(
+          (_) async => '<hierarchy uncompressed="true"><node text="Compose" bounds="[0,0][100,100]"/></hierarchy>',
+        );
+
+        final result = await executor.execute('android_dump_hierarchy', {
+          'deviceSerial': '192.168.1.100:5555',
+          'compressed': false,
+        });
+
+        expect(result.isError, isFalse);
+        expect(result.content.first.text, contains('uncompressed="true"'));
+      },
+    );
 
     test('android_get_semantic_tree returns pruned digest', () async {
       when(() => mockAdb.getSemanticTree('192.168.1.100:5555')).thenAnswer(

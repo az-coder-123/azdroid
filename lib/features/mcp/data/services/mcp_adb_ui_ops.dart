@@ -10,23 +10,19 @@ class McpAdbUiOps {
   /// Captures the active window UI hierarchy XML using uiautomator dump.
   static Future<String> dumpHierarchy(
     McpAdbClient client,
-    String serial,
-  ) async {
+    String serial, {
+    bool compressed = true,
+  }) async {
     const tmpXml = '/data/local/tmp/window_dump.xml';
 
-    // Attempt compressed dump first for efficiency.
-    var dumpRes = await client.run([
-      '-s',
-      serial,
-      'shell',
-      'uiautomator',
-      'dump',
-      '--compressed',
-      tmpXml,
-    ]);
+    final dumpArgs = compressed
+        ? ['-s', serial, 'shell', 'uiautomator', 'dump', '--compressed', tmpXml]
+        : ['-s', serial, 'shell', 'uiautomator', 'dump', tmpXml];
+
+    var dumpRes = await client.run(dumpArgs);
 
     // Fallback to standard dump if --compressed is not supported.
-    if (dumpRes.exitCode != 0) {
+    if (dumpRes.exitCode != 0 && compressed) {
       dumpRes = await client.run([
         '-s',
         serial,
@@ -53,15 +49,38 @@ class McpAdbUiOps {
     McpAdbClient client,
     String serial,
   ) async {
-    final xml = await dumpHierarchy(client, serial);
+    final xml = await dumpHierarchy(client, serial, compressed: true);
     if (xml.startsWith('Error:')) return xml;
 
     final size = await client.getDisplaySize(serial);
-    final elements = _parser.parse(
+    var elements = _parser.parse(
       xml,
       screenWidth: size.x,
       screenHeight: size.y,
     );
+
+    // Declarative fallback: if compressed hierarchy produces zero clickable or text
+    // elements (common in Jetpack Compose / Flutter on MIUI and Android 10+), retry with
+    // uncompressed dump to capture un-pruned canvas nodes.
+    if (elements.isEmpty ||
+        elements.every((e) => !e.clickable && e.text.isEmpty)) {
+      final uncompressedXml = await dumpHierarchy(
+        client,
+        serial,
+        compressed: false,
+      );
+      if (!uncompressedXml.startsWith('Error:')) {
+        final uncompressedElements = _parser.parse(
+          uncompressedXml,
+          screenWidth: size.x,
+          screenHeight: size.y,
+        );
+        if (uncompressedElements.isNotEmpty) {
+          elements = uncompressedElements;
+        }
+      }
+    }
+
     _cachedElements[serial] = elements;
 
     return _parser.formatDigest(elements);
@@ -98,7 +117,7 @@ class McpAdbUiOps {
     String? resourceId,
     String? contentDesc,
   }) async {
-    final xml = await dumpHierarchy(client, serial);
+    final xml = await dumpHierarchy(client, serial, compressed: true);
     if (xml.startsWith('Error:')) return null;
 
     final size = await client.getDisplaySize(serial);
@@ -109,12 +128,38 @@ class McpAdbUiOps {
     );
     _cachedElements[serial] = elements;
 
-    final match = _parser.findByQuery(
+    var match = _parser.findByQuery(
       elements,
       text: text,
       resourceId: resourceId,
       contentDesc: contentDesc,
     );
+
+    // Declarative fallback: If query found no match in compressed hierarchy,
+    // re-attempt search against uncompressed dump for Compose / Flutter elements.
+    if (match == null) {
+      final uncompressedXml = await dumpHierarchy(
+        client,
+        serial,
+        compressed: false,
+      );
+      if (!uncompressedXml.startsWith('Error:')) {
+        final uncompressedElements = _parser.parse(
+          uncompressedXml,
+          screenWidth: size.x,
+          screenHeight: size.y,
+        );
+        if (uncompressedElements.isNotEmpty) {
+          _cachedElements[serial] = uncompressedElements;
+          match = _parser.findByQuery(
+            uncompressedElements,
+            text: text,
+            resourceId: resourceId,
+            contentDesc: contentDesc,
+          );
+        }
+      }
+    }
 
     return match?.toMap();
   }

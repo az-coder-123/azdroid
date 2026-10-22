@@ -34,7 +34,8 @@ class McpSemanticSystemToolExecutor {
   ) async {
     switch (toolName) {
       case 'android_dump_hierarchy':
-        final xml = await _adb.dumpHierarchy(serial);
+        final compressed = arguments.getBool('compressed', defaultValue: true);
+        final xml = await _adb.dumpHierarchy(serial, compressed: compressed);
         return McpToolResult.text('UI Hierarchy for $serial:\n$xml');
 
       case 'android_get_semantic_tree':

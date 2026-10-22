@@ -6,8 +6,8 @@ mixin McpAdbSystemDelegator {
   McpAdbClient get _adbClient => this as McpAdbClient;
 
   // --- UI Inspection & Semantic Operations ---
-  Future<String> dumpHierarchy(String serial) =>
-      McpAdbUiOps.dumpHierarchy(_adbClient, serial);
+  Future<String> dumpHierarchy(String serial, {bool compressed = true}) =>
+      McpAdbUiOps.dumpHierarchy(_adbClient, serial, compressed: compressed);
 
   Future<String> getSemanticTree(String serial) =>
       McpAdbUiOps.getSemanticTree(_adbClient, serial);
