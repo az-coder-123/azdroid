@@ -161,6 +161,17 @@ class McpAdbUiOps {
       }
     }
 
+    // Stage 3 — OCR Fallback: If both compressed and uncompressed dumps failed,
+    // and a text query was provided, perform an OCR pass on the screen capture.
+    if (match == null && text != null && text.trim().isNotEmpty) {
+      final ocrMatch = await McpOcrFallbackOps.findElementViaOcr(
+        client,
+        serial,
+        text: text,
+      );
+      if (ocrMatch != null) return ocrMatch;
+    }
+
     return match?.toMap();
   }
 

@@ -8,6 +8,7 @@ import 'package:desk_droid/features/control/data/datasources/control_datasource.
 import 'package:desk_droid/features/control/data/datasources/scrcpy_control_datasource.dart';
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_ocr_fallback_ops.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_semantic_element.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_foreground_app_parser.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_semantic_tree_parser.dart';

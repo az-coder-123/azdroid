@@ -20,6 +20,8 @@ class HostToolchain {
     required this.bundledToolsDirectory,
     required this.arpCommand,
     required this.arpArguments,
+    this.tesseractExecutable = 'tesseract',
+    this.systemTesseractPaths = const [],
   });
 
   /// Builds the toolchain for [os], reading SDK overrides from [environment].
@@ -61,6 +63,22 @@ class HostToolchain {
       bundledToolsDirectory: paths.executableDirectory,
       arpCommand: os.isWindows ? 'arp' : '/usr/sbin/arp',
       arpArguments: os.isWindows ? const ['-a'] : const ['-an'],
+      tesseractExecutable: os.executableName('tesseract'),
+      systemTesseractPaths: switch (os) {
+        HostOs.macos => const [
+          '/opt/homebrew/bin/tesseract',
+          '/usr/local/bin/tesseract',
+          '/usr/bin/tesseract',
+        ],
+        HostOs.windows => const [
+          r'C:\Program Files\Tesseract-OCR\tesseract.exe',
+          r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
+        ],
+        HostOs.linux => const [
+          '/usr/bin/tesseract',
+          '/usr/local/bin/tesseract',
+        ],
+      },
     );
   }
 
@@ -133,4 +151,13 @@ class HostToolchain {
     for (final root in androidSdkRoots)
       pathContext.join(root, buildToolsFolder),
   ];
+
+  /// File name of the Tesseract executable.
+  final String tesseractExecutable;
+
+  /// OS package-manager install locations of Tesseract.
+  final List<String> systemTesseractPaths;
+
+  /// Absolute Tesseract candidates, in preference order.
+  List<String> get tesseractSearchPaths => [...systemTesseractPaths];
 }
