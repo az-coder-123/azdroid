@@ -10,20 +10,32 @@
       },
       "x": {
         "type": "number",
-        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or physical pixels)."
       },
       "y": {
         "type": "number",
-        "description": "Coordinate (normalized 0.0-1.0 or pixels)."
+        "description": "Coordinate (normalized 0.0-1.0 or physical pixels)."
+      },
+      "xRatio": {
+        "type": "number",
+        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+      },
+      "yRatio": {
+        "type": "number",
+        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+      },
+      "xPixel": {
+        "type": "number",
+        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+      },
+      "yPixel": {
+        "type": "number",
+        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
       },
       "intervalMs": {
         "type": "integer",
         "description": "Delay between taps in milliseconds (default 120ms)."
       }
-    },
-    "required": [
-      "x",
-      "y"
-    ]
+    }
   }
 }

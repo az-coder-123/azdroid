@@ -196,6 +196,77 @@ void main() {
       final (cx, cy) = rawMap.getPointPair();
       expect(cx, closeTo(540.0, 0.001));
       expect(cy, closeTo(960.0, 0.001));
+
+      // Explicit xPixel / yPixel
+      final pixelMap = <String, dynamic>{'xPixel': 320, 'yPixel': 640};
+      final (pixX, pixY) = pixelMap.getPointPair();
+      expect(pixX, closeTo(320.0, 0.001));
+      expect(pixY, closeTo(640.0, 0.001));
+
+      // Snake case x_pixel / y_pixel
+      final snakePixelMap = <String, dynamic>{'x_pixel': 1080, 'y_pixel': 2340};
+      final (spX, spY) = snakePixelMap.getPointPair();
+      expect(spX, closeTo(1080.0, 0.001));
+      expect(spY, closeTo(2340.0, 0.001));
+
+      // Precedence: xRatio takes precedence over raw x
+      final precedenceRatio = <String, dynamic>{
+        'x': 100,
+        'y': 200,
+        'xRatio': 0.5,
+        'yRatio': 0.8,
+      };
+      final (prX, prY) = precedenceRatio.getPointPair();
+      expect(prX, closeTo(0.5, 0.001));
+      expect(prY, closeTo(0.8, 0.001));
+
+      // Precedence: xPixel takes precedence over raw x
+      final precedencePixel = <String, dynamic>{
+        'x': 100,
+        'y': 200,
+        'xPixel': 555,
+        'yPixel': 777,
+      };
+      final (ppX, ppY) = precedencePixel.getPointPair();
+      expect(ppX, closeTo(555.0, 0.001));
+      expect(ppY, closeTo(777.0, 0.001));
+
+      // Custom keys: startXPixel / startYRatio
+      final customMap = <String, dynamic>{
+        'startXPixel': 100,
+        'startYPixel': 200,
+        'endXRatio': 0.5,
+        'endYRatio': 0.9,
+      };
+      final (sx, sy) = customMap.getPointPair(xKey: 'startX', yKey: 'startY');
+      final (ex, ey) = customMap.getPointPair(xKey: 'endX', yKey: 'endY');
+      expect(sx, closeTo(100.0, 0.001));
+      expect(sy, closeTo(200.0, 0.001));
+      expect(ex, closeTo(0.5, 0.001));
+      expect(ey, closeTo(0.9, 0.001));
+
+      // Missing parameter error
+      expect(
+        () => <String, dynamic>{'x': 100}.getPointPair(),
+        throwsA(isA<McpArgumentException>()),
+      );
+    });
+
+    test('getOptionalPointPair extracts coordinates or returns nulls', () {
+      final empty = <String, dynamic>{};
+      final (noneX, noneY) = empty.getOptionalPointPair();
+      expect(noneX, isNull);
+      expect(noneY, isNull);
+
+      final withRatio = <String, dynamic>{'xRatio': 0.3, 'yRatio': 0.7};
+      final (rx, ry) = withRatio.getOptionalPointPair();
+      expect(rx, closeTo(0.3, 0.001));
+      expect(ry, closeTo(0.7, 0.001));
+
+      final withPixel = <String, dynamic>{'xPixel': 400, 'yPixel': 800};
+      final (px, py) = withPixel.getOptionalPointPair();
+      expect(px, closeTo(400.0, 0.001));
+      expect(py, closeTo(800.0, 0.001));
     });
   });
 }

@@ -7,22 +7,35 @@ const _serialProp = {
 
 const _coordProp = {
   'type': 'number',
-  'description': 'Coordinate (normalized 0.0-1.0 or pixels).',
+  'description': 'Coordinate (normalized 0.0-1.0 or physical pixels).',
+};
+
+const _coordRatioProp = {
+  'type': 'number',
+  'description': 'Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y.',
+};
+
+const _coordPixelProp = {
+  'type': 'number',
+  'description': 'Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y.',
 };
 
 /// Catalog of touch gestures, text entry, and basic hardware input tools for MCP.
 final List<McpToolDefinition> mcpTouchInputTools = [
   const McpToolDefinition(
     name: 'android_tap',
-    description: 'Simulates a touch tap gesture at normalized coordinates (0.0 to 1.0) on the Android screen.',
+    description: 'Simulates a touch tap gesture at normalized coordinates (0.0 to 1.0) or physical pixels on the Android screen.',
     inputSchema: {
       'type': 'object',
       'properties': {
         'deviceSerial': _serialProp,
         'x': _coordProp,
         'y': _coordProp,
+        'xRatio': _coordRatioProp,
+        'yRatio': _coordRatioProp,
+        'xPixel': _coordPixelProp,
+        'yPixel': _coordPixelProp,
       },
-      'required': ['x', 'y'],
     },
   ),
   const McpToolDefinition(
@@ -34,12 +47,15 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         'deviceSerial': _serialProp,
         'x': _coordProp,
         'y': _coordProp,
+        'xRatio': _coordRatioProp,
+        'yRatio': _coordRatioProp,
+        'xPixel': _coordPixelProp,
+        'yPixel': _coordPixelProp,
         'intervalMs': {
           'type': 'integer',
           'description': 'Delay between taps in milliseconds (default 120ms).',
         },
       },
-      'required': ['x', 'y'],
     },
   ),
   const McpToolDefinition(
@@ -53,12 +69,19 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         'startY': _coordProp,
         'endX': _coordProp,
         'endY': _coordProp,
+        'startXRatio': _coordRatioProp,
+        'startYRatio': _coordRatioProp,
+        'endXRatio': _coordRatioProp,
+        'endYRatio': _coordRatioProp,
+        'startXPixel': _coordPixelProp,
+        'startYPixel': _coordPixelProp,
+        'endXPixel': _coordPixelProp,
+        'endYPixel': _coordPixelProp,
         'durationMs': {
           'type': 'integer',
           'description': 'Duration of the swipe in ms (default 300ms).',
         },
       },
-      'required': ['startX', 'startY', 'endX', 'endY'],
     },
   ),
   const McpToolDefinition(
@@ -72,12 +95,19 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         'startY': _coordProp,
         'endX': _coordProp,
         'endY': _coordProp,
+        'startXRatio': _coordRatioProp,
+        'startYRatio': _coordRatioProp,
+        'endXRatio': _coordRatioProp,
+        'endYRatio': _coordRatioProp,
+        'startXPixel': _coordPixelProp,
+        'startYPixel': _coordPixelProp,
+        'endXPixel': _coordPixelProp,
+        'endYPixel': _coordPixelProp,
         'durationMs': {
           'type': 'integer',
           'description': 'Drag duration in milliseconds (default 1000ms).',
         },
       },
-      'required': ['startX', 'startY', 'endX', 'endY'],
     },
   ),
   const McpToolDefinition(
@@ -182,6 +212,14 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         'startY': _coordProp,
         'endX': _coordProp,
         'endY': _coordProp,
+        'startXRatio': _coordRatioProp,
+        'startYRatio': _coordRatioProp,
+        'endXRatio': _coordRatioProp,
+        'endYRatio': _coordRatioProp,
+        'startXPixel': _coordPixelProp,
+        'startYPixel': _coordPixelProp,
+        'endXPixel': _coordPixelProp,
+        'endYPixel': _coordPixelProp,
         'durationMs': {
           'type': 'integer',
           'description': 'Optional explicit duration in milliseconds.',

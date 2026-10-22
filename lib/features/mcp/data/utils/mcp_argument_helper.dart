@@ -118,15 +118,38 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
   }) {
     final xRatio = getOptionalDouble(
       '${xKey}Ratio',
-      aliases: ['${xKey}Percent', 'ratio${xKey.toUpperCase()}'],
+      aliases: [
+        '${xKey}_ratio',
+        '${xKey}Percent',
+        '${xKey}_percent',
+        'ratio${xKey.toUpperCase()}',
+      ],
     );
     final yRatio = getOptionalDouble(
       '${yKey}Ratio',
-      aliases: ['${yKey}Percent', 'ratio${yKey.toUpperCase()}'],
+      aliases: [
+        '${yKey}_ratio',
+        '${yKey}Percent',
+        '${yKey}_percent',
+        'ratio${yKey.toUpperCase()}',
+      ],
     );
 
     if (xRatio != null && yRatio != null) {
       return (xRatio * displayWidth, yRatio * displayHeight);
+    }
+
+    final xPixel = getOptionalDouble(
+      '${xKey}Pixel',
+      aliases: ['${xKey}_pixel', '${xKey}Px', '${xKey}_px'],
+    );
+    final yPixel = getOptionalDouble(
+      '${yKey}Pixel',
+      aliases: ['${yKey}_pixel', '${yKey}Px', '${yKey}_px'],
+    );
+
+    if (xPixel != null && yPixel != null) {
+      return (xPixel, yPixel);
     }
 
     final rawX = getRequiredDouble(xKey, aliases: xAliases);
@@ -150,32 +173,92 @@ extension McpArgumentMapExtension on Map<String, dynamic> {
     return (rawX, rawY);
   }
 
-  /// Parses coordinate pair preserving normalized ratio if provided,
-  /// or returning raw coordinate values.
+  /// Parses coordinate pair with additive alias support:
+  /// 1. Explicit normalized ratios: '${xKey}Ratio', '${xKey}_ratio', '${xKey}Percent'
+  /// 2. Explicit physical pixels: '${xKey}Pixel', '${xKey}_pixel', '${xKey}Px'
+  /// 3. Standard raw values: [xKey], [xAliases], '${xKey}Coord'
+  ///
+  /// Throws [McpArgumentException] if either coordinate is missing.
   (double, double) getPointPair({
     String xKey = 'x',
     String yKey = 'y',
     List<String> xAliases = const [],
     List<String> yAliases = const [],
   }) {
-    final xr = getOptionalDouble(
-      '${xKey}Ratio',
-      aliases: ['${xKey}_ratio', '${xKey}Percent'],
+    final xVal =
+        getOptionalDouble(
+          '${xKey}Ratio',
+          aliases: ['${xKey}_ratio', '${xKey}Percent', '${xKey}_percent'],
+        ) ??
+        getOptionalDouble(
+          '${xKey}Pixel',
+          aliases: ['${xKey}_pixel', '${xKey}Px', '${xKey}_px'],
+        ) ??
+        getOptionalDouble(xKey, aliases: [...xAliases, '${xKey}Coord']);
+
+    final yVal =
+        getOptionalDouble(
+          '${yKey}Ratio',
+          aliases: ['${yKey}_ratio', '${yKey}Percent', '${yKey}_percent'],
+        ) ??
+        getOptionalDouble(
+          '${yKey}Pixel',
+          aliases: ['${yKey}_pixel', '${yKey}Px', '${yKey}_px'],
+        ) ??
+        getOptionalDouble(yKey, aliases: [...yAliases, '${yKey}Coord']);
+
+    if (xVal != null && yVal != null) {
+      return (xVal, yVal);
+    }
+
+    if (xVal == null) {
+      final allX = [
+        '${xKey}Ratio',
+        '${xKey}Pixel',
+        xKey,
+        ...xAliases,
+      ].join(', ');
+      throw McpArgumentException(
+        "Missing or invalid coordinate parameter for '$xKey' (accepted: $allX).",
+      );
+    }
+
+    final allY = ['${yKey}Ratio', '${yKey}Pixel', yKey, ...yAliases].join(', ');
+    throw McpArgumentException(
+      "Missing or invalid coordinate parameter for '$yKey' (accepted: $allY).",
     );
-    final yr = getOptionalDouble(
-      '${yKey}Ratio',
-      aliases: ['${yKey}_ratio', '${yKey}Percent'],
-    );
-    if (xr != null && yr != null) return (xr, yr);
-    final rawX = getRequiredDouble(
-      xKey,
-      aliases: [...xAliases, '${xKey}Ratio', '${xKey}Coord'],
-    );
-    final rawY = getRequiredDouble(
-      yKey,
-      aliases: [...yAliases, '${yKey}Ratio', '${yKey}Coord'],
-    );
-    return (rawX, rawY);
+  }
+
+  /// Parses an optional coordinate pair, returning (null, null) if neither coordinate is supplied.
+  (double?, double?) getOptionalPointPair({
+    String xKey = 'x',
+    String yKey = 'y',
+    List<String> xAliases = const [],
+    List<String> yAliases = const [],
+  }) {
+    final xVal =
+        getOptionalDouble(
+          '${xKey}Ratio',
+          aliases: ['${xKey}_ratio', '${xKey}Percent', '${xKey}_percent'],
+        ) ??
+        getOptionalDouble(
+          '${xKey}Pixel',
+          aliases: ['${xKey}_pixel', '${xKey}Px', '${xKey}_px'],
+        ) ??
+        getOptionalDouble(xKey, aliases: [...xAliases, '${xKey}Coord']);
+
+    final yVal =
+        getOptionalDouble(
+          '${yKey}Ratio',
+          aliases: ['${yKey}_ratio', '${yKey}Percent', '${yKey}_percent'],
+        ) ??
+        getOptionalDouble(
+          '${yKey}Pixel',
+          aliases: ['${yKey}_pixel', '${yKey}Px', '${yKey}_px'],
+        ) ??
+        getOptionalDouble(yKey, aliases: [...yAliases, '${yKey}Coord']);
+
+    return (xVal, yVal);
   }
 
   dynamic _findRawValue(String key, List<String> aliases) {

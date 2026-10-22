@@ -80,10 +80,18 @@ class McpBasicToolExecutor {
           'durationMs',
           aliases: ['duration'],
         );
-        final sx = arguments.getOptionalDouble('startX', aliases: ['sx', 'x1']);
-        final sy = arguments.getOptionalDouble('startY', aliases: ['sy', 'y1']);
-        final ex = arguments.getOptionalDouble('endX', aliases: ['ex', 'x2']);
-        final ey = arguments.getOptionalDouble('endY', aliases: ['ey', 'y2']);
+        final (sx, sy) = arguments.getOptionalPointPair(
+          xKey: 'startX',
+          yKey: 'startY',
+          xAliases: ['sx', 'x1'],
+          yAliases: ['sy', 'y1'],
+        );
+        final (ex, ey) = arguments.getOptionalPointPair(
+          xKey: 'endX',
+          yKey: 'endY',
+          xAliases: ['ex', 'x2'],
+          yAliases: ['ey', 'y2'],
+        );
         final ok = await _adb.scroll(
           serial,
           direction: dir,

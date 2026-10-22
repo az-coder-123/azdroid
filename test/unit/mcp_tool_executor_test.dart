@@ -64,6 +64,26 @@ void main() {
       },
     );
 
+    test(
+      'android_tap accepts physical pixel xPixel and yPixel arguments',
+      () async {
+        when(() => mockAdb.tap('192.168.1.100:5555', 540.0, 1170.0))
+            .thenAnswer((_) async => true);
+
+        final result = await executor.execute('android_tap', {
+          'deviceSerial': '192.168.1.100:5555',
+          'xPixel': 540,
+          'yPixel': 1170,
+        });
+
+        expect(result.isError, isFalse);
+        expect(
+          result.content.first.text,
+          contains('Tapped at coordinates (540.0, 1170.0)'),
+        );
+      },
+    );
+
     test('android_double_tap executes double tap via McpAdbClient', () async {
       when(
         () =>
@@ -143,6 +163,57 @@ void main() {
       expect(
         result.content.first.text,
         contains('Swiped from (0.5, 0.8) to (0.5, 0.2)'),
+      );
+    });
+
+    test(
+      'android_swipe accepts ratio arguments (startXRatio, endXRatio, etc.)',
+      () async {
+        when(() => mockAdb.swipe('192.168.1.100:5555', 0.2, 0.3, 0.8, 0.9, 450))
+            .thenAnswer((_) async => true);
+
+        final result = await executor.execute('android_swipe', {
+          'deviceSerial': '192.168.1.100:5555',
+          'startXRatio': 0.2,
+          'startYRatio': 0.3,
+          'endXRatio': 0.8,
+          'endYRatio': 0.9,
+          'durationMs': 450,
+        });
+
+        expect(result.isError, isFalse);
+        expect(
+          result.content.first.text,
+          contains('Swiped from (0.2, 0.3) to (0.8, 0.9)'),
+        );
+      },
+    );
+
+    test('android_swipe accepts physical pixel arguments (startXPixel, endXPixel, etc.)', () async {
+      when(
+        () => mockAdb.swipe(
+          '192.168.1.100:5555',
+          100.0,
+          200.0,
+          100.0,
+          1200.0,
+          500,
+        ),
+      ).thenAnswer((_) async => true);
+
+      final result = await executor.execute('android_swipe', {
+        'deviceSerial': '192.168.1.100:5555',
+        'startXPixel': 100,
+        'startYPixel': 200,
+        'endXPixel': 100,
+        'endYPixel': 1200,
+        'durationMs': 500,
+      });
+
+      expect(result.isError, isFalse);
+      expect(
+        result.content.first.text,
+        contains('Swiped from (100.0, 200.0) to (100.0, 1200.0)'),
       );
     });
 

@@ -86,7 +86,7 @@ class McpDeviceControlTools {
     ),
     McpToolDefinition(
       name: 'android_long_press',
-      description: 'Performs a long-press touch gesture at normalized coordinates (0.0 to 1.0) with configurable hold duration.',
+      description: 'Performs a long-press touch gesture at normalized coordinates (0.0 to 1.0) or physical pixels with configurable hold duration.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -100,6 +100,22 @@ class McpDeviceControlTools {
             'description':
                 'Vertical coordinate (pixels or normalized 0.0..1.0).',
           },
+          'xRatio': {
+            'type': 'number',
+            'description': 'Explicit normalized horizontal ratio from 0.0 to 1.0 (screen-relative). Takes precedence over x.',
+          },
+          'yRatio': {
+            'type': 'number',
+            'description': 'Explicit normalized vertical ratio from 0.0 to 1.0 (screen-relative). Takes precedence over y.',
+          },
+          'xPixel': {
+            'type': 'number',
+            'description': 'Explicit physical screen pixel X coordinate (integer or float). Takes precedence over x.',
+          },
+          'yPixel': {
+            'type': 'number',
+            'description': 'Explicit physical screen pixel Y coordinate (integer or float). Takes precedence over y.',
+          },
           'durationMs': {
             'type': 'integer',
             'description': 'Press duration in milliseconds (default 1000).',
@@ -109,7 +125,6 @@ class McpDeviceControlTools {
             'description': 'Target device serial.',
           },
         },
-        'required': ['x', 'y'],
       },
     ),
     McpToolDefinition(
