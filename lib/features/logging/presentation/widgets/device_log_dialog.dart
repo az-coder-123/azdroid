@@ -20,16 +20,15 @@ class DeviceLogDialog extends StatefulWidget {
   final String deviceSerial;
 
   /// Displays the [DeviceLogDialog].
-  static Future<void> show(BuildContext context, String deviceSerial) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) => BlocProvider<DeviceLogCubit>(
-        create: (_) => sl<DeviceLogCubit>()..startLogging(deviceSerial),
-        child: DeviceLogDialog(deviceSerial: deviceSerial),
-      ),
-    );
-  }
+  static Future<void> show(BuildContext context, String deviceSerial) =>
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => BlocProvider<DeviceLogCubit>(
+          create: (_) => sl<DeviceLogCubit>()..startLogging(deviceSerial),
+          child: DeviceLogDialog(deviceSerial: deviceSerial),
+        ),
+      );
 
   @override
   State<DeviceLogDialog> createState() => _DeviceLogDialogState();
@@ -62,102 +61,112 @@ class _DeviceLogDialogState extends State<DeviceLogDialog> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
-          child: BlocConsumer<DeviceLogCubit, DeviceLogState>(
-            listener: (context, state) {
-              if (state is DeviceLogStreaming &&
-                  state.feedbackMessage != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.feedbackMessage!),
-                    duration: FeedbackDurations.snackBar,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state is DeviceLogError) {
-                return _buildErrorState(context, state);
-              }
-
-              if (state is! DeviceLogStreaming) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.accent),
-                );
-              }
-
-              final cubit = context.read<DeviceLogCubit>();
-
-              return LogcatShortcutHandler(
-                searchFocusNode: _searchFocusNode,
-                hasSelectedEntry: state.selectedEntry != null,
-                onClearConsole: cubit.clearConsole,
-                onTogglePause: cubit.togglePause,
-                onScrollToBottom: () {
-                  if (!state.autoScroll) cubit.toggleAutoScroll();
-                },
-                onCloseDetail: () => cubit.selectEntry(null),
-                onCloseDialog: () => Navigator.of(context).pop(),
-                child: Column(
-                  children: [
-                    _buildHeader(context, state),
-                    LogFilterBar(
-                      filter: state.filter,
-                      tagCounts: state.tagCounts,
-                      pidCounts: state.pidCounts,
-                      pidPrimaryTags: state.pidPrimaryTags,
-                      searchFocusNode: _searchFocusNode,
-                    ),
-                    Expanded(
-                      child: LogConsoleTable(
-                        entries: state.filteredEntries,
-                        autoScroll: state.autoScroll,
-                        isPaused: state.isPaused,
-                        searchQuery: state.filter.textQuery,
-                        caseSensitive: state.filter.caseSensitive,
-                        isRegex: state.filter.isRegex,
-                        selectedEntry: state.selectedEntry,
-                        bookmarkedIds: state.bookmarkedIds,
-                        softWrap: state.softWrap,
-                        onToggleBookmark: (id) => cubit.toggleBookmark(id),
-                        onSelectEntry: (entry) => cubit.selectEntry(entry),
-                        onScrollToBottom: () {
-                          if (!state.autoScroll) cubit.toggleAutoScroll();
-                        },
-                      ),
-                    ),
-                    if (state.selectedEntry != null)
-                      LogDetailDrawer(
-                        entry: state.selectedEntry!,
-                        isBookmarked: state.bookmarkedIds.contains(
-                          state.selectedEntry!.id,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: BlocConsumer<DeviceLogCubit, DeviceLogState>(
+                  listener: (context, state) {
+                    if (state is DeviceLogStreaming &&
+                        state.feedbackMessage != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.feedbackMessage!),
+                          duration: FeedbackDurations.snackBar,
+                          behavior: SnackBarBehavior.floating,
                         ),
-                        onToggleBookmark: () =>
-                            cubit.toggleBookmark(state.selectedEntry!.id),
-                        onExcludeTag: () =>
-                            cubit.excludeTag(state.selectedEntry!.tag),
-                        onClose: () => cubit.selectEntry(null),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is DeviceLogError) {
+                      return _buildErrorState(context, state);
+                    }
+
+                    if (state is! DeviceLogStreaming) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.accent,
+                        ),
+                      );
+                    }
+
+                    final cubit = context.read<DeviceLogCubit>();
+
+                    return LogcatShortcutHandler(
+                      searchFocusNode: _searchFocusNode,
+                      hasSelectedEntry: state.selectedEntry != null,
+                      onClearConsole: cubit.clearConsole,
+                      onTogglePause: cubit.togglePause,
+                      onScrollToBottom: () {
+                        if (!state.autoScroll) cubit.toggleAutoScroll();
+                      },
+                      onCloseDetail: () => cubit.selectEntry(null),
+                      onCloseDialog: () =>
+                          Navigator.of(context, rootNavigator: true).pop(),
+                      child: Column(
+                        children: [
+                          LogFilterBar(
+                            filter: state.filter,
+                            tagCounts: state.tagCounts,
+                            pidCounts: state.pidCounts,
+                            pidPrimaryTags: state.pidPrimaryTags,
+                            searchFocusNode: _searchFocusNode,
+                          ),
+                          Expanded(
+                            child: LogConsoleTable(
+                              entries: state.filteredEntries,
+                              autoScroll: state.autoScroll,
+                              isPaused: state.isPaused,
+                              searchQuery: state.filter.textQuery,
+                              caseSensitive: state.filter.caseSensitive,
+                              isRegex: state.filter.isRegex,
+                              selectedEntry: state.selectedEntry,
+                              bookmarkedIds: state.bookmarkedIds,
+                              softWrap: state.softWrap,
+                              onToggleBookmark: cubit.toggleBookmark,
+                              onSelectEntry: cubit.selectEntry,
+                              onScrollToBottom: () {
+                                if (!state.autoScroll) cubit.toggleAutoScroll();
+                              },
+                            ),
+                          ),
+                          if (state.selectedEntry != null)
+                            LogDetailDrawer(
+                              entry: state.selectedEntry!,
+                              isBookmarked: state.bookmarkedIds.contains(
+                                state.selectedEntry!.id,
+                              ),
+                              onToggleBookmark: () =>
+                                  cubit.toggleBookmark(state.selectedEntry!.id),
+                              onExcludeTag: () =>
+                                  cubit.excludeTag(state.selectedEntry!.tag),
+                              onClose: () => cubit.selectEntry(null),
+                            ),
+                          LogActionFooter(
+                            totalEntries: state.allEntries.length,
+                            filteredEntries: state.filteredEntries.length,
+                            recordingStatus: state.recordingStatus,
+                            isPaused: state.isPaused,
+                            autoScroll: state.autoScroll,
+                            softWrap: state.softWrap,
+                            onExportSnapshot: () =>
+                                _handleExportSnapshot(context),
+                          ),
+                        ],
                       ),
-                    LogActionFooter(
-                      totalEntries: state.allEntries.length,
-                      filteredEntries: state.filteredEntries.length,
-                      recordingStatus: state.recordingStatus,
-                      isPaused: state.isPaused,
-                      autoScroll: state.autoScroll,
-                      softWrap: state.softWrap,
-                      onExportSnapshot: () => _handleExportSnapshot(context),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, DeviceLogStreaming state) {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 16, 12),
       decoration: const BoxDecoration(
@@ -188,13 +197,14 @@ class _DeviceLogDialogState extends State<DeviceLogDialog> {
           ),
           const Spacer(),
           IconButton(
+            key: const ValueKey('device_log_dialog_close_button'),
             icon: const Icon(
               Icons.close_rounded,
               size: 20,
               color: AppColors.textSecondary,
             ),
             tooltip: 'Close Console (Esc)',
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
           ),
         ],
       ),
