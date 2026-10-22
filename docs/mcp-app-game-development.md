@@ -69,6 +69,6 @@ Always finish with `reset: true`. A changed size also changes what Azdroid mirro
 
 - `android_launch_app(measure: true)` on a locked screen cannot show the app; it stops after 30 s and says so. Android may still open the app once the phone is unlocked.
 - Warm starts right after HOME sometimes report no `TotalTime` on Android 13; use cold starts to compare builds.
-- Single taps and swipes (`android_tap`, `android_swipe`) still use `adb shell input` (about 100–300 ms per command); use strokes when timing matters.
+- Taps, double taps, long presses, swipes, drags, and scrolls (`android_tap`, `android_swipe`, and `android_click_element`, which taps) also go through the session: measured 2026-10-22 at about 47 ms per tap on the Moto (USB; `adb shell input tap` took 90–100 ms) and 48 ms on the Redmi over Wi-Fi (`adb shell input` took 0.5–1.2 s). The first touch call starts the session (1.5 s over USB, 3.5 s over Wi-Fi). When the session cannot start, they use `adb shell input` and do not retry the session for a minute.
 - If the MCP process is killed (not closed), its `adb forward` to `scrcpy_<id>` stays until adb restarts; it is harmless.
 - Not verified yet: a real `android_run_instrumentation` run (neither test phone had a test APK; its parser is tested with sample output in the documented `am instrument -r` format), and dark mode on Android 10.

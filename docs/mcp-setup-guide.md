@@ -175,6 +175,8 @@ Smoke test in PowerShell, from the repository folder:
 Every tool also takes `deviceSerial` (required when several devices are connected). Points accept `x`/`y` (fractions when both are within 0.0–1.0, else pixels), `xRatio`/`yRatio`, or `xPixel`/`yPixel`.
 
 ### 1. Touch, Keys & Text
+
+Touch tools send their events through a control-only scrcpy session that the server starts on the first touch call (1–4 s) and stops after 2 idle minutes; each later tap takes about 50 ms. Without it they fall back to `adb shell input` (0.1–1 s per command). Details: [mcp-app-game-development.md](mcp-app-game-development.md#multi-finger-timed-input).
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_tap`** | point, `taps` (1 or 2), `intervalMs`, `holdMs`, `verifyChange` | Tap, double tap (`taps: 2`), or long press (`holdMs`). |

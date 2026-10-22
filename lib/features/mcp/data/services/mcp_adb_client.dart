@@ -9,6 +9,7 @@ import 'package:desk_droid/features/control/data/datasources/scrcpy_control_data
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_timeout.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_fast_touch.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_ocr_fallback_ops.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_shell_result.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_text_entry.dart';

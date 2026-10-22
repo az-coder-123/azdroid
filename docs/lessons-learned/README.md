@@ -94,6 +94,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **MCP Standalone scrcpy Touch** | MCP Server & Multi-Touch | The scrcpy branch needed the app's GetIt service, absent in `azdroid-mcp`; the server now runs its own control-only scrcpy session. | [mcp-standalone-scrcpy-touch.md](mcp-standalone-scrcpy-touch.md) |
 | **Display Size in Current Orientation** | MCP Tools & Coordinates | `wm size` is portrait and physical; use `cur=` of `dumpsys window displays` and cache it for seconds. | [display-size-current-orientation.md](display-size-current-orientation.md) |
 | **Open Handles Block Process Exit** | Dart CLI & Lifecycle | Sockets, processes, and timers keep a Dart CLI alive after `main`; close registries on shutdown. | [open-handles-block-process-exit.md](open-handles-block-process-exit.md) |
+| **Device-Reaching Statics in Tests** | Testing & MCP Touch | A static path to a device needs a seam switched off in `flutter_test_config.dart`; mocks throwing by accident is not a test. | [device-reaching-statics-in-tests.md](device-reaching-statics-in-tests.md) |
 
 ---
 

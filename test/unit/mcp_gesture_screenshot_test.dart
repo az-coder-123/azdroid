@@ -69,13 +69,12 @@ void main() {
     );
   });
 
-  // Without adb on the computer the scrcpy touch session cannot start, so
+  // The scrcpy touch session is off in tests (flutter_test_config.dart), so
   // these exercise the one-finger fallback. Centers reach it in pixels of a
   // 1000×2000 screen; the scrcpy path is in mcp_multitouch_test.dart.
   group('pinch and rotate fallback', () {
     const serial = '192.168.1.100:5555';
     setUp(() {
-      when(() => mockAdb.resolveAdb()).thenAnswer((_) async => null);
       when(() => mockAdb.getDisplaySize(serial))
           .thenAnswer((_) async => const Point(1000, 2000));
     });
@@ -101,7 +100,7 @@ void main() {
         res.content.first.text,
         startsWith('One-finger approximation of pinch (scale 1.8)'),
       );
-      expect(res.content.first.text, contains('adb was not found'));
+      expect(res.content.first.text, contains('scrcpy is off in tests'));
     });
 
     test('zoom-out pinch with a custom center and duration', () async {
