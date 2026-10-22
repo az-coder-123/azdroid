@@ -62,18 +62,37 @@ final List<McpToolDefinition> mcpMergedDeviceTools = [
         'screen, battery %), battery (level, temperature, health, charger), '
         'network (IP, Wi-Fi SSID, link speed), cpu (top processes or one '
         'package), memory (PSS and heaps of a package), gfx (frame and jank '
-        'stats of a package).',
+        'stats of a View/Compose app), fps (real frame rate of any window, '
+        'games included: samples durationMs, or with 0 reads recent frames), '
+        'thermal (throttling status and temperatures).',
     inputSchema: {
       'type': 'object',
       'properties': {
         'kind': {
           'type': 'string',
-          'enum': ['device', 'battery', 'network', 'cpu', 'memory', 'gfx'],
+          'enum': [
+            'device',
+            'battery',
+            'network',
+            'cpu',
+            'memory',
+            'gfx',
+            'fps',
+            'thermal',
+          ],
           'description': 'Which data to read.',
         },
         'package': {
           'type': 'string',
-          'description': 'Required for memory and gfx; optional for cpu.',
+          'description':
+              'Required for memory and gfx; optional for cpu and fps '
+              '(default: the foreground app).',
+        },
+        'durationMs': {
+          'type': 'integer',
+          'description':
+              'fps: how long to sample (default 2000); 0 reads the frames '
+              'already drawn, e.g. right after a swipe.',
         },
         'deviceSerial': mcpDeviceSerialProp,
       },

@@ -88,6 +88,9 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Input Select-All Unsupported** | MCP Tools & Android Input | `input keyevent --meta` does not exist (exit 0 anyway); use `keycombination` on Android 13+, else DEL per character. | [input-select-all-unsupported.md](input-select-all-unsupported.md) |
 | **Text Arguments Must Not Be Trimmed** | MCP Tools & Arguments | Trim identifiers, never content; a trimmed `" "` became "clear the field" after tools merged. | [text-argument-trimming.md](text-argument-trimming.md) |
 | **MCP Tool Count Limit** | MCP Server & AI Clients | Clients such as Cursor cap tools (~40); group by decision behind `McpToolRouter`, keep old names routable, guard the count in a test. | [mcp-tool-count-limit.md](mcp-tool-count-limit.md) |
+| **am start -W Hangs in system_server** | MCP Tools & Android Shell | Blocking `cmd` commands run in system_server; a device `timeout` cannot end them, so stop adb on the computer. | [am-start-wait-hangs-in-system-server.md](am-start-wait-hangs-in-system-server.md) |
+| **adb logcat Argument Quoting** | MCP Tools & Android Logs | `adb logcat` quotes each argument itself; quote for the device shell only with `adb shell`. | [adb-logcat-argument-quoting.md](adb-logcat-argument-quoting.md) |
+| **Device Probe Shell Pitfalls** | Verification Workflow (Process) | zsh does not split `$A`, `adb shell` eats loop stdin, background timing drifts; confirm surprises with a second measurement. | [device-probe-shell-pitfalls.md](device-probe-shell-pitfalls.md) |
 
 ---
 

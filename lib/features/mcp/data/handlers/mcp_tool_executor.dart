@@ -1,12 +1,14 @@
 import 'package:desk_droid/features/mcp/data/handlers/mcp_app_device_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_automation_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_basic_tool_executor.dart';
+import 'package:desk_droid/features/mcp/data/handlers/mcp_dev_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_device_control_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_gesture_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_performance_media_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_screen_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_semantic_system_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_router.dart';
+import 'package:desk_droid/features/mcp/data/handlers/mcp_vision_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
@@ -28,7 +30,9 @@ class McpToolExecutor {
       _automation = McpAutomationToolExecutor(adbClient ?? McpAdbClient()),
       _deviceControl = McpDeviceControlToolExecutor(
         adbClient ?? McpAdbClient(),
-      );
+      ),
+      _dev = McpDevToolExecutor(adbClient ?? McpAdbClient()),
+      _vision = McpVisionToolExecutor(adbClient ?? McpAdbClient());
 
   static const String _listDevicesTool = 'android_list_devices';
 
@@ -49,7 +53,9 @@ class McpToolExecutor {
       _semantic.canHandle(toolName) ||
       _perfMedia.canHandle(toolName) ||
       _automation.canHandle(toolName) ||
-      _deviceControl.canHandle(toolName);
+      _deviceControl.canHandle(toolName) ||
+      _dev.canHandle(toolName) ||
+      _vision.canHandle(toolName);
 
   final McpAdbClient _adb;
   final McpActivitySink _activity;
@@ -61,6 +67,8 @@ class McpToolExecutor {
   final McpPerformanceMediaToolExecutor _perfMedia;
   final McpAutomationToolExecutor _automation;
   final McpDeviceControlToolExecutor _deviceControl;
+  final McpDevToolExecutor _dev;
+  final McpVisionToolExecutor _vision;
 
   /// The serial to act on: the one given, or the only connected device.
   ///
@@ -154,6 +162,12 @@ class McpToolExecutor {
     }
     if (_deviceControl.canHandle(toolName)) {
       return _deviceControl.execute(toolName, serial, arguments);
+    }
+    if (_dev.canHandle(toolName)) {
+      return _dev.execute(toolName, serial, arguments);
+    }
+    if (_vision.canHandle(toolName)) {
+      return _vision.execute(toolName, serial, arguments);
     }
     return Future.value(McpToolResult.error('Unknown tool: $toolName'));
   }

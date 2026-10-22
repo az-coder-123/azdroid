@@ -157,6 +157,44 @@ void main() {
     expect(op('android_get_logcat'), 'android_get_logcat');
   });
 
+  test('development branches: app logs, launch timing, fps, screen waits', () {
+    expect(
+      op('android_get_logcat', {'package': 'a.b'}),
+      'android_get_app_logcat',
+    );
+    expect(
+      op('android_get_logcat', {'sinceSeconds': 30}),
+      'android_get_app_logcat',
+    );
+    expect(
+      op('android_get_logcat', {'package': 'a.b', 'crashesOnly': true}),
+      'android_check_crash',
+    );
+    expect(op('android_launch_app', {'package': 'a.b'}), 'android_launch_app');
+    expect(
+      op('android_launch_app', {'package': 'a.b', 'measure': true}),
+      'android_measure_app_start',
+    );
+    expect(
+      op('android_get_device_stats', {'kind': 'fps'}),
+      'android_get_frame_rate',
+    );
+    expect(
+      op('android_get_device_stats', {'kind': 'thermal'}),
+      'android_get_thermal',
+    );
+    for (final c in ['image_present', 'screen_changed']) {
+      expect(
+        op('android_wait_for_condition', {'condition': c}),
+        'android_wait_for_screen',
+      );
+    }
+    expect(
+      op('android_wait_for_condition', {'condition': 'element_present'}),
+      'android_wait_for_condition',
+    );
+  });
+
   test('older names and unchanged tools pass through untouched', () {
     for (final name in [
       'android_double_tap',

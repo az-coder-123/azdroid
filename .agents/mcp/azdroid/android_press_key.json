@@ -1,6 +1,6 @@
 {
   "name": "android_press_key",
-  "description": "Presses a key or button: navigation (BACK, HOME, APP_SWITCH, ENTER, TAB), hardware (POWER, VOLUME_UP, VOLUME_DOWN, MUTE, CAMERA), screen power (WAKEUP, SLEEP), media (MEDIA_PLAY_PAUSE, MEDIA_NEXT, MEDIA_PREV), or status bar panels (NOTIFICATIONS, QUICK_SETTINGS, CLOSE_PANELS).",
+  "description": "Presses a key or button: navigation (BACK, HOME, APP_SWITCH, ENTER, TAB), hardware (POWER, VOLUME_UP, VOLUME_DOWN, MUTE, CAMERA), screen power (WAKEUP, SLEEP), media (MEDIA_PLAY_PAUSE, MEDIA_NEXT, MEDIA_PREV), status bar panels (NOTIFICATIONS, QUICK_SETTINGS, CLOSE_PANELS), or game keys (DPAD_*, BUTTON_A/B/X/Y/L1/R1/START/SELECT, SPACE, ESCAPE).",
   "parameters": {
     "type": "object",
     "properties": {
@@ -28,7 +28,23 @@
           "MEDIA_PREV",
           "NOTIFICATIONS",
           "QUICK_SETTINGS",
-          "CLOSE_PANELS"
+          "CLOSE_PANELS",
+          "DPAD_UP",
+          "DPAD_DOWN",
+          "DPAD_LEFT",
+          "DPAD_RIGHT",
+          "DPAD_CENTER",
+          "SPACE",
+          "DEL",
+          "ESCAPE",
+          "BUTTON_A",
+          "BUTTON_B",
+          "BUTTON_X",
+          "BUTTON_Y",
+          "BUTTON_L1",
+          "BUTTON_R1",
+          "BUTTON_START",
+          "BUTTON_SELECT"
         ],
         "description": "Key name to press."
       }

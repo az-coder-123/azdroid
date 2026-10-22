@@ -19,7 +19,7 @@ class McpAppDeviceTools {
     McpToolDefinition(
       name: 'android_launch_app',
       annotations: inputToolAnnotations,
-      description: 'Launches an application by package name using the default launcher activity.',
+      description: 'Launches an application by package name using the default launcher activity. With measure: true, launches with `am start -W` and returns the time to first frame (cold start by default: force-stops the app first).',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -27,6 +27,16 @@ class McpAppDeviceTools {
           'package': {
             'type': 'string',
             'description': 'Package name to launch (e.g., com.example.app).',
+          },
+          'measure': {
+            'type': 'boolean',
+            'description': 'Report launch time (default false).',
+          },
+          'coldStart': {
+            'type': 'boolean',
+            'description':
+                'measure: force-stop first to include process start '
+                '(default true).',
           },
         },
         'required': ['package'],

@@ -197,6 +197,9 @@ The agent verifies its own fix without requiring human intervention:
 2. `android_batch_actions(...)` ➔ Replays login and form filling in a single batch call.
 3. `android_get_ui_tree` ➔ Confirms visual presence of `"Password successfully updated!"` dialog.
 4. `android_get_logcat(crashesOnly: true)` ➔ Returns `"No recent crashes detected."`.
+5. `android_run_instrumentation(package: "com.example.myapp")` ➔ Runs the app's instrumented tests when a test APK is installed.
+
+Games and other screens without a UI tree, launch timing, frame rate, and display settings: [mcp-app-game-development.md](mcp-app-game-development.md).
 
 ---
 
@@ -216,7 +219,8 @@ The AI provides a concise, structured report to the user:
 | **Perception ("Eyes")** | `android_take_screenshot`<br>`android_get_ui_tree`<br>`android_find_element` | Captures high-res visual frames and parses XML accessibility hierarchies for sub-millimeter coordinate precision. |
 | **Manipulation ("Hands")** | `android_tap` (taps, holdMs)<br>`android_swipe` (style, direction)<br>`android_multitouch_gesture`<br>`android_input_text`, `android_press_key` | Dispatches hardware-level touch gestures, multi-touch pinch-zoom, inertial scrolls, text inputs, and hardware keycodes. |
 | **Lifecycle & Package** | `android_launch_app`<br>`android_install_apk`<br>`android_clear_app_data`<br>`android_stop_app` | Manages cold starts, package installation, cache clearing, and background suspension. |
-| **Diagnostics & Profiling** | `android_get_logcat` (crashesOnly)<br>`android_get_device_stats` (cpu, memory, gfx) | Intercepts system log buffers, captures crash dump tombstones, and profiles memory leaks or CPU jank. |
+| **Diagnostics & Profiling** | `android_get_logcat` (package, sinceSeconds, crashesOnly)<br>`android_get_device_stats` (cpu, memory, fps, thermal)<br>`android_run_instrumentation` | Reads one app's recent logs and crashes, profiles memory, CPU, frame rate, and throttling, and runs the app's tests. |
+| **Games & Layouts** | `android_find_image`<br>`android_wait_for_condition` (image_present, screen_changed)<br>`android_set_display_config` | Finds pictures on screens without a UI tree and checks layouts in dark mode, large text, and other screen sizes. |
 | **System & Environment** | `android_set_network`<br>`android_set_location`<br>`android_set_permission`<br>`android_simulate_biometric` | Simulates real-world testing environments (network toggling, mock GPS coordinates, biometric pass/fail). |
 
 ---

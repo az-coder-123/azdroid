@@ -23,7 +23,19 @@ Default workflow:
 5. Wait, do not poll: android_wait_for_condition blocks on the computer until
    the state matches. Chain long sequences into one android_batch_actions.
 6. Verify and diagnose: android_take_screenshot (crop and JPEG quality save
-   tokens), android_get_logcat (crashesOnly for crash traces).
+   tokens), android_get_logcat (package and sinceSeconds for the app's own
+   recent logs, crashesOnly for crash traces).
+
+Building an app or game:
+- After a change: android_install_apk, android_launch_app (measure: true
+  for launch time), android_run_instrumentation for the app's tests.
+- Games and canvases have no UI tree: android_find_image locates a sprite
+  or a saved screen region, android_wait_for_condition image_present or
+  screen_changed waits on the picture.
+- Performance: android_get_device_stats kind "fps" (any window, games
+  included), "thermal" (throttling), "memory", "cpu".
+- Layout checks: android_set_display_config (dark mode, font scale,
+  density, size); call it with reset: true when done.
 
 Device support: a tool error that says a feature is unsupported on the
 device (clipboard, biometrics, mock location, notification snooze) is final

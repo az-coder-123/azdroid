@@ -37,6 +37,6 @@ When the user requests to deploy, release, build a release, or publish a version
 
 ## 🤖 3. Model Context Protocol (MCP) Server Integration
 
-Azdroid provides a built-in MCP server (`azdroid-mcp`, 35 tools) allowing Claude Desktop, Cursor, and other AI agents to autonomously inspect, control, profile, and test Android devices.
+Azdroid provides a built-in MCP server (`azdroid-mcp`, 38 tools) allowing Claude Desktop, Cursor, and other AI agents to autonomously inspect, control, profile, and test Android devices.
 - **Setup & Configuration:** [docs/mcp-setup-guide.md](docs/mcp-setup-guide.md)
 - **Autonomous Workflow & Closed-Loop QA:** [docs/mcp-agent-workflow.md](docs/mcp-agent-workflow.md)

@@ -17,8 +17,9 @@ import 'package:flutter_test/flutter_test.dart';
 ///    `.agents/mcp/azdroid/` (name, description, and parameters must match
 ///    the registry definition) to prevent silent drift.
 /// 4. No orphan manifest files may exist without a registry tool.
-/// Upper bound for the published catalog (35 today).
-const int mcpPublishedToolLimit = 36;
+/// Upper bound for the published catalog (38 today): Cursor's reported
+/// ~40-tool cap, minus room for other servers.
+const int mcpPublishedToolLimit = 38;
 
 void main() {
   const manifestDir = '.agents/mcp/azdroid';

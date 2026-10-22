@@ -8,6 +8,7 @@ import 'package:desk_droid/features/control/data/datasources/control_datasource.
 import 'package:desk_droid/features/control/data/datasources/scrcpy_control_datasource.dart';
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_adb_timeout.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_ocr_fallback_ops.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_shell_result.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_text_entry.dart';
@@ -25,6 +26,7 @@ part 'mcp_adb_automation_delegator.dart';
 part 'mcp_adb_automation_ops.dart';
 part 'mcp_adb_batch_compiler.dart';
 part 'mcp_adb_batch_ops.dart';
+part 'mcp_adb_cmd_delegator.dart';
 part 'mcp_adb_cmd_ops.dart';
 part 'mcp_adb_device_ops.dart';
 part 'mcp_adb_environment_ops.dart';
@@ -41,7 +43,8 @@ part 'mcp_adb_ui_ops.dart';
 
 /// Pure Dart ADB client for Azdroid MCP Server.
 /// Operates without UI or Flutter framework dependencies.
-class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
+class McpAdbClient
+    with McpAdbSystemDelegator, McpAdbAutomationDelegator, McpAdbCmdDelegator {
   McpAdbClient({String? explicitAdbPath}) : _cachedAdbPath = explicitAdbPath;
 
   String? _cachedAdbPath;
@@ -60,6 +63,19 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
       stdoutEncoding: adbOutputEncoding,
       stderrEncoding: adbOutputEncoding,
     );
+  }
+
+  /// Like [run], but stops adb after [timeout] (exit code 124); see
+  /// [McpAdbTimeout].
+  Future<ProcessResult> runWithTimeout(
+    List<String> args,
+    Duration timeout,
+  ) async {
+    final adb = await resolveAdb();
+    if (adb == null) {
+      throw const SocketException('ADB executable not found on host machine.');
+    }
+    return McpAdbTimeout.run(adb, args, timeout);
   }
 
   // --- Device Enumeration ---
@@ -162,54 +178,6 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     end: end,
     durationMs: durationMs,
   );
-
-  // --- Command & Diagnostic Operations ---
-  Future<String> dispatchIntent(
-    String serial,
-    String action, {
-    String? dataUri,
-    String? package,
-    String? component,
-    Map<String, dynamic>? extras,
-  }) => McpAdbCmdOps.dispatchIntent(
-    this,
-    serial,
-    action,
-    dataUri: dataUri,
-    package: package,
-    component: component,
-    extras: extras,
-  );
-  Future<String> getLogcat(
-    String serial, {
-    String? tag,
-    String? level,
-    int limit = 50,
-  }) => McpAdbCmdOps.getLogcat(
-    this,
-    serial,
-    tag: tag,
-    level: level,
-    limit: limit,
-  );
-  Future<String> checkCrash(String serial, {String? package, int limit = 50}) =>
-      McpAdbCmdOps.checkCrash(this, serial, package: package, limit: limit);
-  Future<bool> scanMediaFile(String serial, String filePath) =>
-      McpAdbCmdOps.scanMediaFile(this, serial, filePath);
-  Future<bool> installApk(
-    String serial,
-    String apkPath, {
-    bool reinstall = true,
-    bool grantPermissions = true,
-  }) => McpAdbCmdOps.installApk(
-    this,
-    serial,
-    apkPath,
-    reinstall: reinstall,
-    grantPermissions: grantPermissions,
-  );
-  Future<String> shell(String serial, String command) =>
-      McpAdbCmdOps.shell(this, serial, command);
 
   // --- App Lifecycle Operations ---
   Future<Map<String, String>?> getCurrentApp(String serial) =>

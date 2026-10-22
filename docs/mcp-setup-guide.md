@@ -82,7 +82,7 @@ Add `azdroid` to your `~/Library/Application Support/Claude/claude_desktop_confi
 ### 2. Cursor IDE & Windsurf Integration
 
 > [!WARNING]
-> Cursor has long sent at most about **40 MCP tools** across all servers to the model and dropped the rest (forum reports from 2025; not confirmed for current versions). Azdroid publishes 35, which leaves room for a few tools from other servers. If Cursor warns about the tool count, disable the tools you do not need under *Settings → MCP*.
+> Cursor has long sent at most about **40 MCP tools** across all servers to the model and dropped the rest (forum reports from 2025; not confirmed for current versions). Azdroid publishes 38, which leaves room for two tools from other servers. If Cursor warns about the tool count, disable the tools you do not need under *Settings → MCP*.
 
 Add to `.cursor/mcp.json` in your project root or user settings:
 
@@ -117,7 +117,7 @@ Verify proper functioning using any of the following 3 methods:
 
 - **Method 1: Terminal Pipe Test (CLI Smoke Test)**
   ```bash
-  # 1. Verify all 35 tools are registered:
+  # 1. Verify all 38 tools are registered:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
 
   # 2. Test live device discovery:
@@ -126,8 +126,8 @@ Verify proper functioning using any of the following 3 methods:
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is standard stdio behavior, not a freeze. Press `Ctrl+C` to exit.)*
 
 - **Method 2: Visual Indicator in Claude / Cursor**
-  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 35 tools enabled.
-  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (35 tools)`.
+  - **Claude Desktop:** Look for the 🔨 tool icon in the bottom-right corner of the chat input. Clicking it displays `azdroid` with 38 tools enabled.
+  - **Cursor IDE:** Open *Settings* > *Features* > *MCP Servers*. A green dot indicates `Connected (38 tools)`.
 
 - **Method 3: Direct Natural Language Prompt**
   Ask your AI: *"List all connected Android devices with Azdroid"* — the assistant will autonomously invoke `android_list_devices` and report your device serial.
@@ -157,7 +157,7 @@ Smoke test in PowerShell, from the repository folder:
 
 ---
 
-## 🛠️ Published MCP Tools (35 Tools)
+## 🛠️ Published MCP Tools (38 Tools)
 
 > **Single source of truth:** tool names, descriptions, input schemas, and
 > safety annotations are defined in `lib/features/mcp/domain/services/mcp_*_tools.dart`
@@ -181,7 +181,7 @@ Every tool also takes `deviceSerial` (required when several devices are connecte
 | **`android_swipe`** | `startX`…`endY` (or `*Ratio`/`*Pixel`), `style` (`fling`/`drag`), `direction`, `distance`, `speed`, `durationMs` | Swipe between two points; `style: "drag"` moves slowly (sliders, reordering); `direction` scrolls from the screen center without coordinates. |
 | **`android_multitouch_gesture`** | `gesture` (`pinch`/`rotate`), `scale`, `angleDegrees`, `centerX`, `centerY`, `radius`, `durationMs` | Two-finger pinch zoom or rotation. |
 | **`android_input_text`** | `text`, `method` (`paste`/`type`), `elementId`, `clearFirst` | `paste` (default) enters exact text, any language, through the clipboard; `type` sends ASCII key events and leaves the clipboard alone; empty `text` clears the field. |
-| **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, `VOLUME_*`, `MUTE`, `CAMERA`, `WAKEUP`, `SLEEP`, `MEDIA_*`, `NOTIFICATIONS`, `QUICK_SETTINGS`, `CLOSE_PANELS`) | Navigation and hardware keys, and opening or closing the status bar panels. |
+| **`android_press_key`** | `key` (`BACK`, `HOME`, `APP_SWITCH`, `ENTER`, `TAB`, `POWER`, `VOLUME_*`, `MUTE`, `CAMERA`, `WAKEUP`, `SLEEP`, `MEDIA_*`, `NOTIFICATIONS`, `QUICK_SETTINGS`, `CLOSE_PANELS`, `DPAD_*`, `BUTTON_A`/`B`/`X`/`Y`/`L1`/`R1`/`START`/`SELECT`, `SPACE`, `ESCAPE`) | Navigation, hardware, and game keys, and opening or closing the status bar panels. |
 | **`android_batch_actions`** | `actions` (array of maps) | Runs a sequence of steps (tap, double_tap, type, key, swipe, scroll, fling, pinch, rotate, sleep) locally in one call. |
 
 ### 2. Screen & UI
@@ -191,7 +191,7 @@ Every tool also takes `deviceSerial` (required when several devices are connecte
 | **`android_get_ui_tree`** | `format` (`semantic`/`xml`), `compressed` | `semantic` (default): a compact list of visible elements with `[#ID]` tags; `xml`: the full accessibility XML. |
 | **`android_find_element`** | `text`, `resourceId`, `contentDesc` | Bounds and center of a matching element. |
 | **`android_click_element`** | `id`, or `text`/`resourceId`/`contentDesc` | Taps an element by its `[#ID]` from `android_get_ui_tree`, or by query. |
-| **`android_wait_for_condition`** | `condition`, `target`, `text`, `resourceId`, `contentDesc`, `timeoutMs`, `pollIntervalMs` | Waits until an element appears or goes, an activity resumes, or a log line matches. |
+| **`android_wait_for_condition`** | `condition`, `target`, `text`, `resourceId`, `contentDesc`, `templatePath`/`templateName`, `threshold`, `minChange`, `timeoutMs`, `pollIntervalMs` | Waits until an element appears or goes, an activity resumes, a log line matches, a picture appears (`image_present`), or the screen changes (`screen_changed`, status bar ignored). |
 | **`android_record_screen`** | `durationSec`, `localDestination` | Records an MP4 to the computer. |
 | **`android_set_orientation`** | `orientation` (0–3) | 0 portrait, 1 landscape, 2 reverse portrait, 3 reverse landscape. |
 
@@ -201,7 +201,7 @@ Every tool also takes `deviceSerial` (required when several devices are connecte
 | **`android_list_devices`** | *none* | Devices adb can reach (`adb devices -l`). |
 | **`android_get_current_app`** | *none* | Foreground package and activity; notes a lock screen or notification shade in front. |
 | **`android_list_apps`** | `running`, `thirdPartyOnly`, `query` | Installed packages, or running processes with PIDs (`running: true`). |
-| **`android_launch_app`** | `package` | Starts an app from its launcher entry. |
+| **`android_launch_app`** | `package`, `measure`, `coldStart` | Starts an app from its launcher entry; `measure: true` returns the time to first frame (`am start -W`, cold by default, stops after 30 s on a locked screen). |
 | **`android_stop_app`** | `package` or `pid` | Force-stops an app; `pid` kills one process (adb-shell-owned unless rooted). |
 | **`android_clear_app_data`** | `package` | Resets the app to a fresh install state. |
 | **`android_install_apk`** | `apkPath`, `reinstall`, `grantPermissions` | Installs an APK from the computer. |
@@ -212,11 +212,21 @@ Every tool also takes `deviceSerial` (required when several devices are connecte
 ### 4. Diagnostics
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
-| **`android_get_logcat`** | `tag`, `level` (V–F), `crashesOnly`, `package`, `limit` | Newest log lines filtered by tag and level, or only crashes and ANRs (`crashesOnly: true`). |
-| **`android_get_device_stats`** | `kind` (`device`/`battery`/`network`/`cpu`/`memory`/`gfx`), `package` | Device info, battery, network, CPU, memory, or frame timings (`cpu`, `memory`, `gfx` take `package`). |
+| **`android_get_logcat`** | `tag`, `level` (V–F), `package`, `sinceSeconds`, `crashesOnly`, `limit` | Newest log lines filtered by tag, level, one running app (its process), and the last N seconds; or only crashes and ANRs (`crashesOnly: true`). |
+| **`android_get_device_stats`** | `kind` (`device`/`battery`/`network`/`cpu`/`memory`/`gfx`/`fps`/`thermal`), `package`, `durationMs` | Device info, battery, network, CPU, memory, View frame timings (`gfx`), real frame rate of any window including games (`fps`, from SurfaceFlinger), or throttling and temperatures (`thermal`). |
 | **`android_shell_command`** | `command` | Runs a raw `adb shell` command. |
 
-### 5. System, Network & Files
+### 5. App & Game Development
+
+Workflows: [mcp-app-game-development.md](mcp-app-game-development.md).
+
+| Tool Name | Parameters | Purpose |
+| :--- | :--- | :--- |
+| **`android_find_image`** | `templatePath` or `templateName`, `threshold`, `scale`; or `saveAs` with `x`/`y`/`width`/`height` (or `*Ratio`) | Finds a picture on screens without a UI tree (games, canvases) and returns its center for `android_tap`; `saveAs` keeps a screen region as a named template in server memory. |
+| **`android_run_instrumentation`** | `package`, `runner`, `testClass`, `timeoutSec` | Runs the app's on-device tests (`am instrument`: Espresso, UI Automator, Flutter `integration_test`) and lists failures with their stacks. |
+| **`android_set_display_config`** | `nightMode`, `fontScale`, `density`, `size`, `reset` | Dark mode, text size, density, and screen size for layout checks; `reset: true` restores defaults. |
+
+### 6. System, Network & Files
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_set_network`** | `mode` (`normal`, `offline`, `wifi_only`, `data_only`, `wifi_on`, `wifi_off`, `airplane_on`, `airplane_off`) | Network conditions and radio toggles; modes that drop Wi-Fi cut a Wi-Fi ADB connection. |

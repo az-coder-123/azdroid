@@ -42,8 +42,9 @@ class McpAdbCmdOps {
   /// Logcat priorities, lowest first (Verbose … Fatal).
   static const List<String> logcatLevels = ['V', 'D', 'I', 'W', 'E', 'F'];
 
-  /// The newest [limit] log lines, optionally only [tag] and only from
-  /// [level] up.
+  /// The newest [limit] log lines, optionally only [tag], only from [level]
+  /// up, only from process [pid] (`--pid`, Android 7+), and only since
+  /// [sinceEpochSeconds] on the device clock (`-t <seconds>.000`).
   ///
   /// `logcat -t N` keeps the last N lines of the whole buffer *before* the
   /// filter runs (a level E query with `-t 3` returned nothing on Android
@@ -54,24 +55,53 @@ class McpAdbCmdOps {
     String? tag,
     String? level,
     int limit = 50,
+    int? pid,
+    int? sinceEpochSeconds,
   }) async {
     final minLevel = logcatLevels.contains(level?.toUpperCase())
         ? level!.toUpperCase()
         : logcatLevels.first;
     final hasTag = tag != null && tag.isNotEmpty;
-    final filtered = hasTag || minLevel != logcatLevels.first;
+    final filtered =
+        hasTag ||
+        minLevel != logcatLevels.first ||
+        pid != null ||
+        sinceEpochSeconds != null;
     final res = await client.run([
       '-s',
       serial,
       'logcat',
       '-d',
       if (!filtered) ...['-t', '$limit'],
+      if (pid != null) '--pid=$pid',
+      // `adb logcat` quotes each argument for the device shell itself:
+      // extra quotes would reach logcat ("not in time format").
+      if (sinceEpochSeconds != null) ...['-t', '$sinceEpochSeconds.000'],
       // Filter spec "<tag>:<level>"; with a tag, every other tag is silenced.
       if (hasTag) ...['-s', '$tag:$minLevel'],
       if (!hasTag && filtered) '*:$minLevel',
     ]);
-    final lines = res.stdout.toString().trim().splitLines();
-    return lines.skip(max(0, lines.length - limit)).join('\n');
+    return _logEntries(res.stdout.toString(), limit);
+  }
+
+  /// The id of [package]'s running process, or `null` when it is not
+  /// running.
+  static Future<int?> pidOf(
+    McpAdbClient client,
+    String serial,
+    String package,
+  ) async {
+    final res = await client.run(['-s', serial, 'shell', 'pidof', package]);
+    return int.tryParse(res.stdout.toString().trim().split(' ').first);
+  }
+
+  /// The device clock in seconds since the epoch.
+  static Future<int?> deviceEpochSeconds(
+    McpAdbClient client,
+    String serial,
+  ) async {
+    final res = await client.run(['-s', serial, 'shell', 'date', '+%s']);
+    return int.tryParse(res.stdout.toString().trim());
   }
 
   /// Installs an APK file from host machine onto the target device.

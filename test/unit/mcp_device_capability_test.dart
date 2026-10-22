@@ -330,4 +330,21 @@ void main() {
       },
     );
   });
+
+  test('app logs: pid and time filters reach logcat unquoted', () async {
+    script({});
+    await McpAdbCmdOps.getLogcat(
+      adb,
+      serial,
+      pid: 2405,
+      sinceEpochSeconds: 1792668394,
+    );
+    // `adb logcat` quotes each argument itself; extra quotes made Android
+    // 10 reject the time ("not in time format").
+    expect(
+      commands.single,
+      containsAllInOrder(['--pid=2405', '-t', '1792668394.000']),
+    );
+    expect(commands.single, isNot(contains('-t 50')));
+  });
 }

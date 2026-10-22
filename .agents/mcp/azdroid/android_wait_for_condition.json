@@ -1,6 +1,6 @@
 {
   "name": "android_wait_for_condition",
-  "description": "Polls host-side conditions (element_present, element_gone, activity_resumed, logcat_match) with configurable intervals and timeouts, saving multi-turn LLM polling overhead.",
+  "description": "Waits on the computer until a condition holds, so the agent does not poll: element_present/element_gone (UI tree), activity_resumed, logcat_match (regex), image_present (a template image appears, for games; see android_find_image), screen_changed (the picture changes, e.g. after a tap in a game).",
   "parameters": {
     "type": "object",
     "properties": {
@@ -10,7 +10,9 @@
           "element_present",
           "element_gone",
           "activity_resumed",
-          "logcat_match"
+          "logcat_match",
+          "image_present",
+          "screen_changed"
         ],
         "description": "Target state condition to wait for."
       },
@@ -29,6 +31,22 @@
       "contentDesc": {
         "type": "string",
         "description": "Target content description for element_present/gone."
+      },
+      "templatePath": {
+        "type": "string",
+        "description": "image_present: template image file."
+      },
+      "templateName": {
+        "type": "string",
+        "description": "image_present: template saved by android_find_image."
+      },
+      "threshold": {
+        "type": "number",
+        "description": "image_present: minimum match score (default 0.8)."
+      },
+      "minChange": {
+        "type": "number",
+        "description": "screen_changed: fraction of the screen that must differ (default 0.01; the status bar is ignored)."
       },
       "timeoutMs": {
         "type": "integer",

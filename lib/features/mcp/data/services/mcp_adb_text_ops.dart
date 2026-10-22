@@ -185,10 +185,27 @@ class McpAdbTextOps {
     return res.exitCode == 0;
   }
 
-  /// Maps human-friendly key names to Android KeyEvent integers.
+  /// Maps key names (with or without `KEYCODE_`) to Android KeyEvent
+  /// codes; gamepad and D-pad keys drive games.
   static int resolveKeyCode(String key) {
-    return switch (key.toUpperCase().trim()) {
+    return switch (key.toUpperCase().trim().replaceFirst('KEYCODE_', '')) {
       'HOME' => 3,
+      'DPAD_UP' => 19,
+      'DPAD_DOWN' => 20,
+      'DPAD_LEFT' => 21,
+      'DPAD_RIGHT' => 22,
+      'DPAD_CENTER' => 23,
+      'SPACE' => 62,
+      'DEL' => 67,
+      'ESCAPE' => 111,
+      'BUTTON_A' => 96,
+      'BUTTON_B' => 97,
+      'BUTTON_X' => 99,
+      'BUTTON_Y' => 100,
+      'BUTTON_L1' => 102,
+      'BUTTON_R1' => 103,
+      'BUTTON_START' => 108,
+      'BUTTON_SELECT' => 109,
       'BACK' => 4,
       'VOLUME_UP' => 24,
       'VOLUME_DOWN' => 25,
@@ -199,8 +216,8 @@ class McpAdbTextOps {
       final other =>
         int.tryParse(other) ??
             (throw McpUnsupportedOnDeviceException(
-              'Unknown key "$key". Use BACK, HOME, APP_SWITCH, ENTER, TAB, '
-              'POWER, VOLUME_UP, VOLUME_DOWN, or a numeric Android key code.',
+              'Unknown key "$key". Use a listed name (BACK, HOME, DPAD_UP, '
+              'BUTTON_A, …) or a numeric Android key code.',
             )),
     };
   }

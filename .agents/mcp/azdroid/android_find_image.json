@@ -1,0 +1,70 @@
+{
+  "name": "android_find_image",
+  "description": "Finds a picture on the screen and returns its center for android_tap: for games and canvases, which have no UI tree. The template is an image file (templatePath, e.g. a sprite from the project) or a screen region saved earlier (templateName). To save one, pass saveAs with x, y, width, height (pixels) or xRatio, yRatio, widthRatio, heightRatio; it is kept in memory until the server stops. Sizes 0.5×–3× are tried when the template does not match at its own size; rotation is not.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "templatePath": {
+        "type": "string",
+        "description": "PNG or JPEG file on the computer."
+      },
+      "templateName": {
+        "type": "string",
+        "description": "A template saved with saveAs."
+      },
+      "threshold": {
+        "type": "number",
+        "description": "Minimum score, 0–1 (default 0.8). The best candidate is reported either way."
+      },
+      "scale": {
+        "type": "number",
+        "description": "Template size on screen relative to the file, if known (skips the size search)."
+      },
+      "saveAs": {
+        "type": "string",
+        "description": "Save a screen region as a template under this name."
+      },
+      "x": {
+        "type": "number",
+        "description": "saveAs: left, pixels."
+      },
+      "y": {
+        "type": "number",
+        "description": "saveAs: top, pixels."
+      },
+      "width": {
+        "type": "number",
+        "description": "saveAs: width, pixels."
+      },
+      "height": {
+        "type": "number",
+        "description": "saveAs: height, pixels."
+      },
+      "xRatio": {
+        "type": "number",
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
+      },
+      "yRatio": {
+        "type": "number",
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
+      },
+      "widthRatio": {
+        "type": "number",
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
+      },
+      "heightRatio": {
+        "type": "number",
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

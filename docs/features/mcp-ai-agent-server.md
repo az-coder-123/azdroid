@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-The **Azdroid Model Context Protocol (MCP) Server** turns Azdroid into an autonomous AI agent powerhouse. It exposes **35 tools** enabling frontier AI models (Claude 3.5 Sonnet, Claude 3.7 Sonnet, GPT-4o) and agentic IDEs (**Claude Desktop**, **Cursor**, **Antigravity**, **Windsurf**, **Cline**) to directly observe, inspect, test, profile, and control physical or virtual Android devices over Wi-Fi and USB with zero UI overhead.
+The **Azdroid Model Context Protocol (MCP) Server** turns Azdroid into an autonomous AI agent powerhouse. It exposes **38 tools** enabling frontier AI models (Claude 3.5 Sonnet, Claude 3.7 Sonnet, GPT-4o) and agentic IDEs (**Claude Desktop**, **Cursor**, **Antigravity**, **Windsurf**, **Cline**) to directly observe, inspect, test, profile, and control physical or virtual Android devices over Wi-Fi and USB with zero UI overhead.
 
 > [!TIP]
 > **Headless Execution (No GUI App Required):** The MCP server runs independently as a lightweight Dart CLI process via `stdio`. You **do not need to open `Azdroid.app`** for the AI to work. However, you can optionally run `Azdroid.app` concurrently to visually observe the agent interacting with your device in real time. Each server process records which tools it runs on which device (never the arguments) in an activity file that the app shows ([mcp-activity-log.md](mcp-activity-log.md)).
@@ -18,7 +18,7 @@ The **Azdroid Model Context Protocol (MCP) Server** turns Azdroid into an autono
 ```mermaid
 flowchart TD
     AI["🤖 AI Client / Agent\n(Claude Desktop / Cursor / Antigravity / Cline)"] -->|JSON-RPC 2.0 via stdio| Handler["McpProtocolHandler\n(Stdio Frame Parser & Router)"]
-    Handler --> Registry["McpToolRegistry\n(35 Tools Schema Definition)"]
+    Handler --> Registry["McpToolRegistry\n(38 Tools Schema Definition)"]
     Handler --> Executor["McpToolExecutor\n(McpToolRouter → operation)"]
 
     subgraph SubExecutors ["Modular Tool Executors (SRP)"]
@@ -37,17 +37,18 @@ flowchart TD
 
 ---
 
-## ⚡️ Key Capabilities Across 5 Clusters
+## ⚡️ Key Capabilities Across 6 Clusters
 
 | Cluster | Count | Tools |
 | :--- | :-: | :--- |
 | **1. Touch, Keys & Text** | 6 | `android_tap` (taps, holdMs), `android_swipe` (style, direction), `android_multitouch_gesture`, `android_input_text`, `android_press_key` (also panels and hardware buttons), `android_batch_actions` |
 | **2. Screen & UI** | 7 | `android_take_screenshot`, `android_get_ui_tree`, `android_find_element`, `android_click_element`, `android_wait_for_condition`, `android_record_screen`, `android_set_orientation` |
 | **3. Apps & Processes** | 10 | `android_list_devices`, `android_get_current_app`, `android_list_apps`, `android_launch_app`, `android_stop_app`, `android_clear_app_data`, `android_install_apk`, `android_set_permission`, `android_dispatch_intent`, `android_read_shared_prefs` |
-| **4. Diagnostics** | 3 | `android_get_logcat` (crashesOnly), `android_get_device_stats` (kind), `android_shell_command` |
-| **5. System, Network & Files** | 9 | `android_set_network`, `android_set_volume`, `android_open_settings`, `android_clipboard`, `android_transfer_file`, `android_get_notifications`, `android_dismiss_notification`, `android_set_location`, `android_simulate_biometric` |
+| **4. Diagnostics** | 3 | `android_get_logcat` (package, sinceSeconds, crashesOnly), `android_get_device_stats` (kind, incl. fps and thermal), `android_shell_command` |
+| **5. App & Game Development** | 3 | `android_find_image`, `android_run_instrumentation`, `android_set_display_config` ([guide](../mcp-app-game-development.md)) |
+| **6. System, Network & Files** | 9 | `android_set_network`, `android_set_volume`, `android_open_settings`, `android_clipboard`, `android_transfer_file`, `android_get_notifications`, `android_dismiss_notification`, `android_set_location`, `android_simulate_biometric` |
 
-Related operations share one tool, chosen by a parameter, so the catalog stays under the ~40-tool limit some clients apply (Cursor). `McpToolRouter` maps each call to the executor operation; the 62 names published before 2026-10-22 (for example `android_double_tap`, `android_toggle_wifi`) still work when called. Parameters: [mcp-setup-guide.md](../mcp-setup-guide.md#️-published-mcp-tools-35-tools).
+Related operations share one tool, chosen by a parameter, so the catalog stays under the ~40-tool limit some clients apply (Cursor). `McpToolRouter` maps each call to the executor operation; the 62 names published before 2026-10-22 (for example `android_double_tap`, `android_toggle_wifi`) still work when called. Parameters: [mcp-setup-guide.md](../mcp-setup-guide.md#️-published-mcp-tools-38-tools).
 
 ---
 
@@ -119,7 +120,7 @@ Add to `cline_mcp_settings.json`:
   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./scripts/start_mcp_server.sh
   ```
   *(Note: Running `./start_mcp_server.sh` directly without piped input waits for stdin. This is normal MCP behavior. Press `Ctrl+C` to exit.)*
-- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `azdroid` with 35 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
+- **Visual Status:** In Claude Desktop, click the 🔨 tool icon (shows `azdroid` with 38 tools enabled). In Cursor, verify green dot under *Settings > Features > MCP Servers*.
 
 ---
 

@@ -36,7 +36,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   const McpToolDefinition(
     name: 'android_get_logcat',
     annotations: readOnlyToolAnnotations,
-    description: 'Returns the newest logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F). With crashesOnly: true, returns crash traces and ANRs from the crash buffer instead, optionally for one package.',
+    description: 'Returns the newest logcat lines (limit, default 50), optionally only one tag, only from a minimum level up (V, D, I, W, E, F), only from one running app (package), and only from the last sinceSeconds. With crashesOnly: true, returns crash traces and ANRs from the crash buffer instead, optionally for one package (which may have died).',
     inputSchema: {
       'type': 'object',
       'properties': {
@@ -53,7 +53,14 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
         },
         'package': {
           'type': 'string',
-          'description': 'crashesOnly: only this app.',
+          'description':
+              'Only this app: its running process, or with crashesOnly its '
+              'crashes.',
+        },
+        'sinceSeconds': {
+          'type': 'integer',
+          'description':
+              'Only lines from the last N seconds, e.g. since a launch or tap.',
         },
         'limit': {
           'type': 'integer',

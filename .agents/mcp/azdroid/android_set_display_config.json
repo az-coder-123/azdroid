@@ -1,0 +1,43 @@
+{
+  "name": "android_set_display_config",
+  "description": "Changes how apps render, to check layouts without another phone: dark mode (nightMode), text size (fontScale), screen density (dpi) and size (WIDTHxHEIGHT). Settings stay until changed; reset: true restores light mode, font scale 1.0, and the physical density and size. Returns the settings now in effect.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "nightMode": {
+        "type": "string",
+        "enum": [
+          "yes",
+          "no",
+          "auto"
+        ],
+        "description": "Dark mode on, off, or by time of day."
+      },
+      "fontScale": {
+        "type": "number",
+        "description": "Text size multiplier, 0.5–3.0 (1.0 = default)."
+      },
+      "density": {
+        "type": "string",
+        "description": "Density in dpi, e.g. \"320\", or \"reset\"."
+      },
+      "size": {
+        "type": "string",
+        "description": "Screen size, e.g. \"1080x1920\", or \"reset\"."
+      },
+      "reset": {
+        "type": "boolean",
+        "description": "Restore defaults before applying the rest."
+      },
+      "deviceSerial": {
+        "type": "string",
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
+      }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": true
+  }
+}

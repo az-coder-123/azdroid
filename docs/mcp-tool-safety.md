@@ -26,6 +26,10 @@ Eight tools carry `destructiveHint: true`. The `initialize` instructions (`mcp_s
 
 Annotations belong to a tool, not to a parameter value, so a tool that covers several operations carries the hint of its riskiest one ([lessons-learned/mcp-tool-count-limit.md](lessons-learned/mcp-tool-count-limit.md)). Clients therefore ask before `android_set_network` with `mode: "normal"`, `android_transfer_file` with `direction: "scan"`, or `android_set_permission` with `grant: true`, which are harmless. `android_clipboard` is not read-only because it can set the clipboard, and `android_get_logcat`, `android_get_ui_tree`, `android_get_device_stats`, and `android_list_apps` stay read-only in every mode.
 
+### Development Tools
+
+`android_set_display_config` is not destructive but its changes persist (dark mode, font scale, density, size) until `reset: true`; a changed size also changes what Azdroid mirrors. `android_run_instrumentation` runs the app's own test code, which may change the app's data; it stops after `timeoutSec`. `android_find_image` is read-only: a template saved with `saveAs` stays in the server's memory only.
+
 ## 3. Coordinates
 
 Every touch tool (`android_tap` in all its forms, `android_swipe`, batch steps) reads points the same way, through `McpPoint` (`lib/features/mcp/data/utils/mcp_point.dart`):
