@@ -69,125 +69,77 @@ void main() {
     );
   });
 
-  group('android_pinch_gesture Tests', () {
-    test(
-      'executes zoom-in pinch gesture via McpAdbClient with scaleFactor alias',
-      () async {
-        when(
-          () => mockAdb.pinchGesture(
-            '192.168.1.100:5555',
-            scale: 1.8,
-            centerX: 0.5,
-            centerY: 0.5,
-            durationMs: 400,
-          ),
-        ).thenAnswer((_) async => true);
+  // Without adb on the computer the scrcpy touch session cannot start, so
+  // these exercise the one-finger fallback. Centers reach it in pixels of a
+  // 1000×2000 screen; the scrcpy path is in mcp_multitouch_test.dart.
+  group('pinch and rotate fallback', () {
+    const serial = '192.168.1.100:5555';
+    setUp(() {
+      when(() => mockAdb.resolveAdb()).thenAnswer((_) async => null);
+      when(() => mockAdb.getDisplaySize(serial))
+          .thenAnswer((_) async => const Point(1000, 2000));
+    });
 
-        final res = await executor.execute('android_pinch_gesture', {
-          'deviceSerial': '192.168.1.100:5555',
-          'scaleFactor': 1.8,
-        });
-
-        expect(res.isError, isFalse);
-        expect(
-          res.content.first.text,
-          contains('Injected pinch gesture (scale: 1.8'),
-        );
-      },
-    );
-
-    test('executes zoom-in pinch gesture via McpAdbClient', () async {
+    test('zoom-in pinch with the scaleFactor alias', () async {
       when(
         () => mockAdb.pinchGesture(
-          '192.168.1.100:5555',
-          scale: 2.0,
-          centerX: 0.5,
-          centerY: 0.5,
+          serial,
+          scale: 1.8,
+          centerX: 500,
+          centerY: 1000,
           durationMs: 400,
         ),
       ).thenAnswer((_) async => true);
 
       final res = await executor.execute('android_pinch_gesture', {
-        'deviceSerial': '192.168.1.100:5555',
-        'scale': 2.0,
+        'deviceSerial': serial,
+        'scaleFactor': 1.8,
       });
 
       expect(res.isError, isFalse);
       expect(
         res.content.first.text,
-        contains('Injected pinch gesture (scale: 2.0'),
+        startsWith('One-finger approximation of pinch (scale 1.8)'),
       );
+      expect(res.content.first.text, contains('adb was not found'));
     });
 
-    test(
-      'executes zoom-out pinch gesture with custom center coordinates',
-      () async {
-        when(
-          () => mockAdb.pinchGesture(
-            '192.168.1.100:5555',
-            scale: 0.5,
-            centerX: 0.3,
-            centerY: 0.7,
-            durationMs: 500,
-          ),
-        ).thenAnswer((_) async => true);
-
-        final res = await executor.execute('android_pinch_gesture', {
-          'deviceSerial': '192.168.1.100:5555',
-          'zoom': 0.5,
-          'center_x': 0.3,
-          'center_y': 0.7,
-          'durationMs': 500,
-        });
-
-        expect(res.isError, isFalse);
-        expect(
-          res.content.first.text,
-          contains('Injected pinch gesture (scale: 0.5, center: (0.3, 0.7))'),
-        );
-      },
-    );
-  });
-
-  group('android_rotate_gesture Tests', () {
-    test('executes clockwise rotation via McpAdbClient', () async {
+    test('zoom-out pinch with a custom center and duration', () async {
       when(
-        () => mockAdb.rotateGesture(
-          '192.168.1.100:5555',
-          angleDegrees: 90.0,
-          centerX: 0.5,
-          centerY: 0.5,
-          radius: 200.0,
-          durationMs: 400,
+        () => mockAdb.pinchGesture(
+          serial,
+          scale: 0.5,
+          centerX: 300,
+          centerY: 1400,
+          durationMs: 500,
         ),
       ).thenAnswer((_) async => true);
 
-      final res = await executor.execute('android_rotate_gesture', {
-        'deviceSerial': '192.168.1.100:5555',
-        'angleDegrees': 90.0,
+      final res = await executor.execute('android_pinch_gesture', {
+        'deviceSerial': serial,
+        'zoom': 0.5,
+        'center_x': 0.3,
+        'center_y': 0.7,
+        'durationMs': 500,
       });
 
-      expect(res.isError, isFalse);
-      expect(
-        res.content.first.text,
-        contains('Injected rotate gesture (90.0° around (0.5, 0.5))'),
-      );
+      expect(res.isError, isFalse, reason: res.content.first.text);
     });
 
-    test('executes counter-clockwise rotation with aliases and custom center/radius', () async {
+    test('rotation with aliases, custom center, and radius', () async {
       when(
         () => mockAdb.rotateGesture(
-          '192.168.1.100:5555',
+          serial,
           angleDegrees: -45.0,
-          centerX: 0.4,
-          centerY: 0.6,
+          centerX: 400,
+          centerY: 1200,
           radius: 150.0,
           durationMs: 600,
         ),
       ).thenAnswer((_) async => true);
 
       final res = await executor.execute('android_rotate_gesture', {
-        'deviceSerial': '192.168.1.100:5555',
+        'deviceSerial': serial,
         'angle': -45.0,
         'center_x': 0.4,
         'center_y': 0.6,
@@ -195,11 +147,28 @@ void main() {
         'duration': 600,
       });
 
-      expect(res.isError, isFalse);
-      expect(
-        res.content.first.text,
-        contains('Injected rotate gesture (-45.0° around (0.4, 0.6))'),
-      );
+      expect(res.isError, isFalse, reason: res.content.first.text);
+      expect(res.content.first.text, contains('rotation (-45.0°)'));
+    });
+
+    test('a failed fallback is an error', () async {
+      when(
+        () => mockAdb.rotateGesture(
+          serial,
+          angleDegrees: 90.0,
+          centerX: 500,
+          centerY: 1000,
+          radius: 200.0,
+          durationMs: 400,
+        ),
+      ).thenAnswer((_) async => false);
+
+      final res = await executor.execute('android_rotate_gesture', {
+        'deviceSerial': serial,
+        'angleDegrees': 90.0,
+      });
+
+      expect(res.isError, isTrue);
     });
   });
 

@@ -59,7 +59,11 @@ All coordinate-based tools (`android_tap`, `android_double_tap`, `android_swipe`
 - Automatic interpolation: `pixelX = (xRatio * screenWidth).round()`.
 - Screen dimension cache is invalidated on rotation or resolution changes.
 
+> ⚠️ **Correction (2026-10-22):** Nothing called `invalidateDisplaySize`, and the size came from `wm size` (portrait, physical), so screen fractions mapped wrongly in landscape. `getDisplaySize` now reads the current orientation's size (`cur=` of `dumpsys window displays`) and reuses it for 3 s only. See [display-size-current-orientation.md](display-size-current-orientation.md).
+
 ### B. Native Multi-Touch Pinch & Scrcpy Stream Injection
+
+> ⚠️ **Correction (2026-10-22):** The scrcpy branch never ran in the MCP server: it needed the app's `ControlDatasource` from GetIt, which the standalone `azdroid-mcp` process never registers, so every pinch used the one-finger fallback. The server now starts its own control-only scrcpy session (`McpScrcpyTouchSession`) for pinch, rotate, and timed multi-finger strokes; see [mcp-standalone-scrcpy-touch.md](mcp-standalone-scrcpy-touch.md).
 `android_pinch_gesture` supports `scale` (or `scaleFactor`), `centerX`, `centerY`, and `durationMs`:
 - **When Scrcpy is Active:** Stream injects true multi-touch events using `ControlDatasource.injectTouchStream()` with 2 simultaneous pointers (`p1` and `p2`), linearly interpolating touch separation over `steps = 8`.
 - **Pure ADB Fallback:** Automatically falls back to Android's universal 1-finger double-tap-and-drag zoom gesture (double tap + vertical swipe from center point), recognized natively by Google Maps, Chrome, and video players.

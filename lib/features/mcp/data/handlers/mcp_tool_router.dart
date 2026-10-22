@@ -83,7 +83,10 @@ class McpToolRouter {
         return switch (args.getRequiredString('gesture')) {
           'pinch' => to('android_pinch_gesture'),
           'rotate' => to('android_rotate_gesture'),
-          final other => _invalid('Unknown gesture "$other" (pinch, rotate).'),
+          'strokes' => to('android_touch_strokes'),
+          final other => _invalid(
+            'Unknown gesture "$other" (pinch, rotate, strokes).',
+          ),
         };
       case 'android_input_text':
         final text = args.getOptionalText('text') ?? '';

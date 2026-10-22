@@ -27,6 +27,19 @@ Games drawn with OpenGL, Vulkan, or an engine expose no accessibility nodes, so 
 
 Matching uses grayscale normalized cross-correlation, so it tolerates brightness and contrast changes but not rotation. When the template does not match at its own size, sizes 0.5×–3× are tried (pass `scale` when known). Measured 2026-10-22 on a Moto g play (720×1600): a saved region and a file crop were both found at the exact pixel position with score 1.000; synthetic tests find a 64 px template in about 0.2 s and a 2× scaled sprite in about 1 s.
 
+### Multi-Finger Timed Input
+
+`android_multitouch_gesture(gesture: "strokes", strokes: [...])` plays several fingers at once with millisecond timing. Each stroke is one finger: it touches down at its first point's `t` (ms from the start), moves through the points, and lifts at the last; a single point is a tap held `holdMs` (default 50). Example: hold a joystick while tapping a button.
+
+```json
+{"gesture": "strokes", "strokes": [
+  {"points": [{"x": 0.2, "y": 0.8, "t": 0}, {"x": 0.3, "y": 0.7, "t": 800}]},
+  {"points": [{"x": 0.85, "y": 0.8, "t": 300}], "holdMs": 80}
+]}
+```
+
+Limits: 10 fingers at once, 60 s per call. Events go through a control-only scrcpy server that the MCP process starts on first use (about 1–2 s) and stops after 2 idle minutes or when the client disconnects; it runs beside Azdroid's own mirroring. Measured 2026-10-22: Android showed both fingers down ("P: 2 / 2" in Pointer location) on a Moto g play (Android 13); events left on schedule within 4–6 ms on Android 13 and 10. Coordinates follow the current orientation, so screen fractions also work in landscape.
+
 Game keys: `android_press_key` accepts `DPAD_*`, `BUTTON_A`/`B`/`X`/`Y`/`L1`/`R1`/`START`/`SELECT`, `SPACE`, and `ESCAPE`.
 
 ## 3. Performance
@@ -56,5 +69,6 @@ Always finish with `reset: true`. A changed size also changes what Azdroid mirro
 
 - `android_launch_app(measure: true)` on a locked screen cannot show the app; it stops after 30 s and says so. Android may still open the app once the phone is unlocked.
 - Warm starts right after HOME sometimes report no `TotalTime` on Android 13; use cold starts to compare builds.
-- Touch timing still goes through `adb shell input` (about 100–300 ms per command), which is too slow for rhythm or multi-finger game input.
+- Single taps and swipes (`android_tap`, `android_swipe`) still use `adb shell input` (about 100–300 ms per command); use strokes when timing matters.
+- If the MCP process is killed (not closed), its `adb forward` to `scrcpy_<id>` stays until adb restarts; it is harmless.
 - Not verified yet: a real `android_run_instrumentation` run (neither test phone had a test APK; its parser is tested with sample output in the documented `am instrument -r` format), and dark mode on Android 10.

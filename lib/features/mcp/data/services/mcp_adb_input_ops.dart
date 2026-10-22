@@ -25,28 +25,44 @@ class McpAdbInputOps {
     return null;
   }
 
-  static final _sizeCache = <String, Point<int>>{};
+  static final _sizeCache = <String, (Point<int>, DateTime)>{};
 
-  /// Queries the display's physical resolution, caching the result per serial.
+  /// How long a display size is reused: long enough for a burst of calls,
+  /// short enough to follow a rotation.
+  static const Duration sizeCacheTtl = Duration(seconds: 3);
+
+  /// The display size in the current orientation, including a `wm size`
+  /// override: `cur=WxH` of `dumpsys window displays` (1600x720 in
+  /// landscape on a 720x1600 phone, Android 10 and 13). Falls back to the
+  /// physical size of `wm size`.
   static Future<Point<int>> getDisplaySize(
     McpAdbClient client,
     String serial, {
     bool forceRefresh = false,
   }) async {
-    if (!forceRefresh && _sizeCache.containsKey(serial)) {
-      return _sizeCache[serial]!;
+    final cached = _sizeCache[serial];
+    if (!forceRefresh &&
+        cached != null &&
+        DateTime.now().difference(cached.$2) < sizeCacheTtl) {
+      return cached.$1;
     }
-    final res = await client.run(['-s', serial, 'shell', 'wm', 'size']);
-    final out = res.stdout.toString();
-    final match = RegExp(r'Physical size:\s*(\d+)x(\d+)').firstMatch(out);
-    if (match != null) {
-      final w = int.parse(match.group(1)!);
-      final h = int.parse(match.group(2)!);
-      final size = Point(w, h);
-      _sizeCache[serial] = size;
-      return size;
+    final displays = await client.run([
+      '-s',
+      serial,
+      'shell',
+      'dumpsys window displays',
+    ]);
+    var match = RegExp(r'cur=(\d+)x(\d+)')
+        .firstMatch(displays.stdout.toString());
+    if (match == null) {
+      final res = await client.run(['-s', serial, 'shell', 'wm', 'size']);
+      match = RegExp(r'Physical size:\s*(\d+)x(\d+)')
+          .firstMatch(res.stdout.toString());
     }
-    return _sizeCache[serial] ?? const Point(1080, 2400);
+    if (match == null) return cached?.$1 ?? const Point(1080, 2400);
+    final size = Point(int.parse(match.group(1)!), int.parse(match.group(2)!));
+    _sizeCache[serial] = (size, DateTime.now());
+    return size;
   }
 
   /// Clears cached screen dimension for [serial] (e.g. after screen rotation).

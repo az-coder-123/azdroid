@@ -8,17 +8,55 @@ final List<McpToolDefinition> mcpGestureTools = [
     name: 'android_multitouch_gesture',
     annotations: inputToolAnnotations,
     description:
-        'Two-finger gesture around a center point: gesture "pinch" zooms by '
-        'scale (> 1 in, < 1 out); gesture "rotate" turns by angleDegrees '
-        '(positive = clockwise). centerX/centerY and radius are screen '
-        'fractions when within 0.0-1.0, otherwise pixels.',
+        'Real multi-finger touch (up to 10 fingers at once, millisecond '
+        'timing) for games and maps. gesture "strokes": each stroke is one '
+        'finger following its points [{x, y, t}] (t = ms from the start; '
+        'one point = a tap held holdMs), e.g. hold a joystick with one '
+        'finger while another taps a button. gesture "pinch" zooms by scale '
+        '(> 1 in, < 1 out); "rotate" turns by angleDegrees (> 0 clockwise). '
+        'Coordinates are screen fractions when within 0.0-1.0, otherwise '
+        'pixels of the current orientation. Uses a scrcpy control session '
+        '(started on first use, about 1-2 s); pinch and rotate fall back to '
+        'a one-finger approximation without it.',
     inputSchema: {
       'type': 'object',
       'properties': {
         'gesture': {
           'type': 'string',
-          'enum': ['pinch', 'rotate'],
+          'enum': ['strokes', 'pinch', 'rotate'],
           'description': 'Which gesture to perform.',
+        },
+        'strokes': {
+          'type': 'array',
+          'description':
+              'strokes: one entry per finger stroke, e.g. '
+              '[{"points":[{"x":0.2,"y":0.8,"t":0},{"x":0.3,"y":0.7,"t":800}]},'
+              '{"points":[{"x":0.85,"y":0.8,"t":300}],"holdMs":80}].',
+          'items': {
+            'type': 'object',
+            'properties': {
+              'points': {
+                'type': 'array',
+                'items': {
+                  'type': 'object',
+                  'properties': {
+                    'x': {'type': 'number'},
+                    'y': {'type': 'number'},
+                    't': {
+                      'type': 'integer',
+                      'description': 'ms from the gesture start.',
+                    },
+                  },
+                  'required': ['x', 'y'],
+                },
+              },
+              'holdMs': {
+                'type': 'integer',
+                'description': 'One-point stroke: press time (default 50).',
+              },
+            },
+            'required': ['points'],
+          },
         },
         'scale': {
           'type': 'number',

@@ -30,6 +30,10 @@ abstract class HostPaths {
   /// release build, resolved relative to the running executable.
   String flutterAssetPath(String assetKey);
 
+  /// Folder of the running Dart script when started from source (`dart run
+  /// bin/x.dart`): `bin/` of the checkout. `null` in compiled builds.
+  String? get scriptDirectory;
+
   /// Append-only diagnostic log file.
   ///
   /// POSIX hosts keep the historic `/tmp` location, next to the native
@@ -107,6 +111,14 @@ class SystemHostPaths implements HostPaths {
 
   @override
   String get executableDirectory => context.dirname(_executable);
+
+  @override
+  String? get scriptDirectory {
+    final script = Platform.script;
+    return script.scheme == 'file' && script.path.endsWith('.dart')
+        ? context.dirname(script.toFilePath())
+        : null;
+  }
 
   @override
   String flutterAssetPath(String assetKey) {

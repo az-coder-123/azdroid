@@ -4,6 +4,7 @@ import 'package:desk_droid/core/platform/host_paths.dart';
 import 'package:desk_droid/core/services/mcp_activity_paths.dart';
 import 'package:desk_droid/features/mcp/data/handlers/mcp_protocol_handler.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_scrcpy_touch_session.dart';
 import 'package:desk_droid/features/mcp/data/transports/mcp_stdio_transport.dart';
 
 /// Entrypoint for Azdroid Model Context Protocol (MCP) Server.
@@ -19,4 +20,6 @@ void main(List<String> args) async {
     handler: McpProtocolHandler(activity: activity),
   );
   await transport.run();
+  // The client closed stdin: stop the device sessions this process owns.
+  await McpScrcpyTouchSession.closeAll();
 }

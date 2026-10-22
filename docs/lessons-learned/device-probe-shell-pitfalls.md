@@ -11,6 +11,7 @@ While measuring device behavior for the development tools on 2026-10-22, several
 | Background `(sleep 9; am start …) &` started before an MCP `wait` call | Waits timed out; the action happened before the wait began |
 | Reading PNG bytes with Python `zlib` to compare brightness | Same mean for dark and light screens |
 | `fps` on the Settings home page, idle | 125 frames: looked like a bug |
+| Restoring `pointer_location` from a saved value | `settings put … null` fails: the setting was never set; `settings delete` restores the default |
 
 ## 2. Diagnostic Traces & Evidence
 
@@ -35,3 +36,4 @@ Corrected probes: a shell function `a(){ adb -s $D shell "$@" </dev/null; }`; st
 - [ ] Trigger device actions after a blocking call has started, not on a fixed schedule from the start.
 - [ ] Do not hand-decode image formats; look at the image or use a decoder.
 - [ ] Before reporting a device result as a bug or a fact, confirm it with a second, independent measurement.
+- [ ] When saving a setting to restore it, treat `null` as "not set" and restore with `settings delete`.

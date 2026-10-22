@@ -31,7 +31,9 @@ Building an app or game:
   for launch time), android_run_instrumentation for the app's tests.
 - Games and canvases have no UI tree: android_find_image locates a sprite
   or a saved screen region, android_wait_for_condition image_present or
-  screen_changed waits on the picture.
+  screen_changed waits on the picture. android_multitouch_gesture with
+  gesture "strokes" plays several fingers at once with ms timing (hold a
+  joystick while tapping).
 - Performance: android_get_device_stats kind "fps" (any window, games
   included), "thermal" (throttling), "memory", "cpu".
 - Layout checks: android_set_display_config (dark mode, font scale,

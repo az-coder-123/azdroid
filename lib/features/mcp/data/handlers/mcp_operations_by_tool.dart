@@ -7,6 +7,7 @@ const Map<String, Set<String>> mcpOperationsByTool = {
   'android_multitouch_gesture': {
     'android_pinch_gesture',
     'android_rotate_gesture',
+    'android_touch_strokes',
   },
   'android_input_text': {
     'android_set_text',

@@ -41,7 +41,7 @@ Every touch tool (`android_tap` in all its forms, `android_swipe`, batch steps) 
 | Raw `x` and `y` | Fractions when **both** are within 0.0–1.0, otherwise pixels |
 | Raw `x` next to `yPixel`/`yRatio` | Fraction when within 0.0–1.0, otherwise pixels |
 
-Units can be mixed per axis (`xRatio: 0.5, yPixel: 600`). The adb layer only sends pixels and queries the display size only when a fraction needs it. Background: [lessons-learned/coordinate-unit-resolved-once.md](lessons-learned/coordinate-unit-resolved-once.md).
+Units can be mixed per axis (`xRatio: 0.5, yPixel: 600`). Fractions use the screen size in the current orientation (`cur=` of `dumpsys window displays`, re-read after 3 s), so they stay right in landscape and after `android_set_display_config` changes the size. The adb layer only sends pixels and queries the display size only when a fraction needs it. Background: [lessons-learned/coordinate-unit-resolved-once.md](lessons-learned/coordinate-unit-resolved-once.md).
 
 ## 4. Text Entry
 
