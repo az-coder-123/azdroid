@@ -1,50 +1,28 @@
 {
   "name": "android_take_screenshot",
-  "description": "Captures a high-resolution screenshot with optional Region-of-Interest (ROI) cropping and JPEG/PNG compression to save up to 85% Vision tokens.",
+  "description": "Captures the screen as PNG or JPEG. Optionally crops it to save tokens: give x/y/width/height in pixels, or xRatio/yRatio/widthRatio/heightRatio as screen fractions (all four of one kind). Omit them for the full screen.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Device serial or IP:port (optional if only one device is connected)."
-      },
-      "crop": {
-        "type": "object",
-        "description": "Optional pixel or ratio bounding box: {\"x\": 0, \"y\": 0, \"width\": 500, \"height\": 500}.",
-        "properties": {
-          "x": {
-            "type": "number",
-            "description": "X coordinate or ratio."
-          },
-          "y": {
-            "type": "number",
-            "description": "Y coordinate or ratio."
-          },
-          "width": {
-            "type": "number",
-            "description": "Width or width ratio."
-          },
-          "height": {
-            "type": "number",
-            "description": "Height or height ratio."
-          }
-        }
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "x": {
         "type": "number",
-        "description": "Crop origin X (pixels or normalized 0.0..1.0)."
+        "description": "Crop left edge in pixels."
       },
       "y": {
         "type": "number",
-        "description": "Crop origin Y (pixels or normalized 0.0..1.0)."
+        "description": "Crop top edge in pixels."
       },
       "width": {
         "type": "number",
-        "description": "Crop width (pixels or normalized 0.0..1.0)."
+        "description": "Crop width in pixels."
       },
       "height": {
         "type": "number",
-        "description": "Crop height (pixels or normalized 0.0..1.0)."
+        "description": "Crop height in pixels."
       },
       "xRatio": {
         "type": "number",

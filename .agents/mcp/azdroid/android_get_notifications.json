@@ -1,6 +1,6 @@
 {
   "name": "android_get_notifications",
-  "description": "Extracts active system notifications and status bar alerts including 2FA SMS and OTP codes.",
+  "description": "Lists notifications in the status bar (package, title, text, and key), optionally filtered by a substring. Includes message previews such as OTP codes.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -10,7 +10,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     }
   },

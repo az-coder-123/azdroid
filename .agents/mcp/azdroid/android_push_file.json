@@ -6,7 +6,7 @@
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "localPath": {
         "type": "string",
@@ -14,7 +14,7 @@
       },
       "remotePath": {
         "type": "string",
-        "description": "Target absolute destination path on Android (default /sdcard/Download/)."
+        "description": "Absolute destination path on the device, e.g. /sdcard/Download/photo.jpg."
       }
     },
     "required": [

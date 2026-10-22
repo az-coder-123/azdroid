@@ -1,32 +1,32 @@
 {
   "name": "android_long_press",
-  "description": "Performs a long-press touch gesture at normalized coordinates (0.0 to 1.0) or physical pixels with configurable hold duration.",
+  "description": "Presses and holds one point for durationMs (default 1000 ms), e.g. to open a context menu. Give the point as x/y, xRatio/yRatio, or xPixel/yPixel (units may be mixed per axis); one form is required.",
   "parameters": {
     "type": "object",
     "properties": {
       "x": {
         "type": "number",
-        "description": "Horizontal coordinate (pixels or normalized 0.0..1.0)."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "y": {
         "type": "number",
-        "description": "Vertical coordinate (pixels or normalized 0.0..1.0)."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "xRatio": {
         "type": "number",
-        "description": "Explicit normalized horizontal ratio from 0.0 to 1.0 (screen-relative). Takes precedence over x."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "yRatio": {
         "type": "number",
-        "description": "Explicit normalized vertical ratio from 0.0 to 1.0 (screen-relative). Takes precedence over y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "xPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel X coordinate (integer or float). Takes precedence over x."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "yPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel Y coordinate (integer or float). Takes precedence over y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "durationMs": {
         "type": "integer",
@@ -34,7 +34,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     }
   },

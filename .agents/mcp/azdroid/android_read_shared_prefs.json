@@ -1,6 +1,6 @@
 {
   "name": "android_read_shared_prefs",
-  "description": "Reads SharedPreferences XML keys and values for deep application state inspection and QA validation.",
+  "description": "Reads a SharedPreferences XML file of an app. Needs a debuggable build of the app (`run-as`) or a rooted device; release builds return an error.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -14,7 +14,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     },
     "required": [

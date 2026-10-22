@@ -13,7 +13,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     },
     "required": [

@@ -1,16 +1,12 @@
 {
   "name": "android_pinch_gesture",
-  "description": "Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.",
+  "description": "Two-finger pinch around a center point: scale > 1 zooms in, < 1 zooms out. centerX/centerY are screen fractions when within 0.0-1.0, otherwise pixels.",
   "parameters": {
     "type": "object",
     "properties": {
       "scale": {
         "type": "number",
-        "description": "Scale factor (> 1.0 to zoom in, e.g. 1.5; < 1.0 to zoom out, e.g. 0.5). Alias: scaleFactor."
-      },
-      "scaleFactor": {
-        "type": "number",
-        "description": "Alias for scale (> 1.0 to zoom in, < 1.0 to zoom out)."
+        "description": "Scale factor (> 1.0 zooms in, e.g. 1.5; < 1.0 zooms out, e.g. 0.5)."
       },
       "centerX": {
         "type": "number",
@@ -26,7 +22,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     },
     "required": [

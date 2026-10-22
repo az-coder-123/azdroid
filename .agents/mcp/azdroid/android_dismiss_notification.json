@@ -1,33 +1,24 @@
 {
   "name": "android_dismiss_notification",
-  "description": "Dismisses a specific notification by key or clears all notifications from the status bar.",
+  "description": "Hides one notification by its key (from android_get_notifications) by snoozing it for hideMinutes (default 60); it reappears afterwards. Needs Android 11+ (`cmd notification snooze`). adb cannot remove or clear all notifications permanently.",
   "parameters": {
     "type": "object",
     "properties": {
       "key": {
         "type": "string",
-        "description": "Specific notification key."
+        "description": "Notification key from android_get_notifications."
       },
-      "clearAll": {
-        "type": "boolean",
-        "description": "Set true to clear all notifications."
+      "hideMinutes": {
+        "type": "integer",
+        "description": "How long to hide it, in minutes (default 60)."
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     },
-    "anyOf": [
-      {
-        "required": [
-          "key"
-        ]
-      },
-      {
-        "required": [
-          "clearAll"
-        ]
-      }
+    "required": [
+      "key"
     ]
   },
   "annotations": {

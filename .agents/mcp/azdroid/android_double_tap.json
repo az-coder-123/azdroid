@@ -1,36 +1,36 @@
 {
   "name": "android_double_tap",
-  "description": "Executes a rapid double-tap gesture within the native Android double-tap window (default 120ms) to seek video (+10s/-10s), zoom, or trigger secondary actions.",
+  "description": "Double-taps one point (two taps intervalMs apart, default 120 ms), e.g. to zoom or to seek a video. Give the point as x/y, xRatio/yRatio, or xPixel/yPixel (units may be mixed per axis); one form is required.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "x": {
         "type": "number",
-        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "y": {
         "type": "number",
-        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "xRatio": {
         "type": "number",
-        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "yRatio": {
         "type": "number",
-        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "xPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "yPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "intervalMs": {
         "type": "integer",

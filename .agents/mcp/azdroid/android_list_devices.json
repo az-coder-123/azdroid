@@ -1,6 +1,6 @@
 {
   "name": "android_list_devices",
-  "description": "Lists all connected and discovered Android devices via USB and Wi-Fi.",
+  "description": "Lists the devices adb can reach (`adb devices -l`): serial, state, and model. Call it first and pass a serial as deviceSerial; tools refuse to guess when several devices are connected.",
   "parameters": {
     "type": "object",
     "properties": {}

@@ -1,16 +1,28 @@
 {
   "name": "android_get_logcat",
-  "description": "Extracts real-time or recent logcat records from the device with optional tag and level filtering.",
+  "description": "Returns the most recent logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F).",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "tag": {
         "type": "string",
-        "description": "Filter by tag."
+        "description": "Only this log tag."
+      },
+      "level": {
+        "type": "string",
+        "enum": [
+          "V",
+          "D",
+          "I",
+          "W",
+          "E",
+          "F"
+        ],
+        "description": "Minimum level (default V: everything)."
       },
       "limit": {
         "type": "integer",

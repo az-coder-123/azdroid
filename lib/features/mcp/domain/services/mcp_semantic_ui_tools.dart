@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// MCP tool definitions for UI hierarchy semantic inspection and element interactions.
@@ -10,10 +11,7 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'compressed': {
           'type': 'boolean',
           'description': 'Whether to compress layout containers (default true). Set to false to dump full uncompressed Compose/Flutter trees.',
@@ -27,12 +25,7 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
     description: 'Inspects the active window accessibility UI tree, pruning invisible and empty layouts into a compact token-efficient digest with [#ID] tags.',
     inputSchema: {
       'type': 'object',
-      'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
-      },
+      'properties': {'deviceSerial': mcpDeviceSerialProp},
     },
   ),
   const McpToolDefinition(
@@ -42,10 +35,7 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'id': {
           'type': 'integer',
           'description': 'Sequential element ID (e.g. 1, 2, 5) from the semantic tree digest.',
@@ -57,14 +47,11 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
   const McpToolDefinition(
     name: 'android_find_element',
     annotations: readOnlyToolAnnotations,
-    description: 'Searches the UI hierarchy for an element by text, resource ID, or content description. Returns bounds and center tap coordinates.',
+    description: 'Finds an element by text (case-insensitive substring), resourceId, or contentDesc and returns its bounds and center. Give at least one of the three.',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'text': {
           'type': 'string',
           'description':
@@ -95,14 +82,11 @@ final List<McpToolDefinition> mcpSemanticUiTools = [
   const McpToolDefinition(
     name: 'android_click_element',
     annotations: inputToolAnnotations,
-    description: 'Finds an on-screen element by text, ID, or description and immediately taps its center coordinates.',
+    description: 'Finds an element by text, resourceId, or contentDesc and taps its center. Give at least one of the three.',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'text': {
           'type': 'string',
           'description': 'Visible text of the element to click.',

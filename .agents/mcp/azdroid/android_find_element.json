@@ -1,12 +1,12 @@
 {
   "name": "android_find_element",
-  "description": "Searches the UI hierarchy for an element by text, resource ID, or content description. Returns bounds and center tap coordinates.",
+  "description": "Finds an element by text (case-insensitive substring), resourceId, or contentDesc and returns its bounds and center. Give at least one of the three.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "text": {
         "type": "string",

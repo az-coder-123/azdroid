@@ -1,6 +1,6 @@
 {
   "name": "android_scroll",
-  "description": "Performs a directional scroll or inertial fling gesture (up, down, left, right) on scrollable views (RecyclerView, ScrollView, LazyColumn).",
+  "description": "Scrolls content in a direction (down reveals lower content) through the screen center, or along an explicit start/end path. speed: fast flings, normal scrolls, slow drags.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -29,51 +29,51 @@
       },
       "startX": {
         "type": "number",
-        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "startY": {
         "type": "number",
-        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "endX": {
         "type": "number",
-        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "endY": {
         "type": "number",
-        "description": "Coordinate. Raw pairs where both values are within 0.0-1.0 are interpreted as normalized screen ratios; otherwise as physical pixels. Use the *Ratio or *Pixel variants to pin the unit explicitly."
+        "description": "Screen fraction when both values of the pair are within 0.0-1.0, otherwise pixels."
       },
       "startXRatio": {
         "type": "number",
-        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "startYRatio": {
         "type": "number",
-        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "endXRatio": {
         "type": "number",
-        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "endYRatio": {
         "type": "number",
-        "description": "Explicit normalized coordinate ratio from 0.0 to 1.0 (screen-relative). Takes precedence over raw x/y."
+        "description": "Screen fraction 0.0-1.0 (wins over the raw value)."
       },
       "startXPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "startYPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "endXPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "endYPixel": {
         "type": "number",
-        "description": "Explicit physical screen pixel coordinate (integer or float). Takes precedence over raw x/y."
+        "description": "Physical pixels, even when 0-1 (wins over the raw value)."
       },
       "durationMs": {
         "type": "integer",
@@ -81,7 +81,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     }
   },

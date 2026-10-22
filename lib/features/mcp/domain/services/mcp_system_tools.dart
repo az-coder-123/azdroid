@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// MCP tool definitions for Android system controls, radios, audio, and permissions.
@@ -13,10 +14,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'enable': {
           'type': 'boolean',
           'description': 'True to enable Wi-Fi, false to disable.',
@@ -35,10 +33,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'enable': {
           'type': 'boolean',
           'description': 'True to enable Airplane mode, false to disable.',
@@ -55,10 +50,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'package': {
           'type': 'string',
           'description': 'Application package name (e.g., com.example.app).',
@@ -81,10 +73,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'package': {
           'type': 'string',
           'description': 'Application package name.',
@@ -104,10 +93,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'stream': {
           'type': 'integer',
           'description': 'Audio stream type (1=System, 2=Ring, 3=Music/Media, 4=Alarm, 5=Notification). Default 3.',
@@ -127,10 +113,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'wake': {
           'type': 'boolean',
           'description':
@@ -147,10 +130,7 @@ final List<McpToolDefinition> mcpSystemTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'action': {
           'type': 'string',
           'description': 'Settings action (e.g., android.settings.WIFI_SETTINGS, android.settings.BLUETOOTH_SETTINGS, android.settings.SETTINGS).',

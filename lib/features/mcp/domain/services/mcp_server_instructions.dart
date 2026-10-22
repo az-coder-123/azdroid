@@ -9,21 +9,27 @@ Azdroid controls Android devices over USB/Wi-Fi via ADB.
 
 Default workflow:
 1. Call android_list_devices first. Pass the serial as deviceSerial when
-   several devices are attached; with a single device it can be omitted.
+   several devices are attached (tools refuse to guess); with a single
+   device it can be omitted.
 2. Inspect before acting: android_get_semantic_tree returns a compact digest
    with [#ID] tags. Use android_dump_hierarchy only when raw XML is needed.
 3. Prefer semantic targeting: android_click_element_by_id with the [#ID] from
    the latest tree, or android_click_element / android_find_element matched by
    text, resourceId, or contentDesc. Fall back to android_tap with coordinates
    taken from the tree or a screenshot.
-4. Text entry: android_set_text pastes exact text in one step (IME-safe),
-   but it replaces the device clipboard; use android_type_text when the
-   clipboard must be kept or character-by-character IME input is required.
+4. Text entry: android_set_text pastes exact text (IME-safe) and replaces
+   the device clipboard; where adb cannot set the clipboard it types ASCII
+   and rejects other text, and the result says which. android_type_text
+   types ASCII only and keeps the clipboard.
 5. Wait, do not poll: android_wait_for_condition / android_wait_for_element
    block host-side until the state matches. Chain long sequences into a single
    android_batch_actions macro.
 6. Verify and diagnose: android_take_screenshot (use crop and jpeg quality to
    save tokens), android_check_crash and android_get_logcat for failures.
+
+Device support: a tool error that says a feature is unsupported on the
+device (clipboard, biometrics, mock location, notification snooze) is final
+for that device; do not retry it, report it or use another approach.
 
 Tool selection rules:
 - android_drag for precise sliders/seekbars, android_swipe for inertial

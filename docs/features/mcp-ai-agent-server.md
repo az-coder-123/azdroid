@@ -162,10 +162,10 @@ Add to `cline_mcp_settings.json`:
 
 ### 🔐 Scenario 5: Biometric Authentication Simulation
 
-> **User Prompt:** *"When on the bank login screen, simulate a successful biometric fingerprint verification."*
+> **User Prompt (emulator):** *"When on the bank login screen, simulate a successful biometric fingerprint verification."*
 > 
 > **AI Autonomous Execution:**
-> 1. Invokes `android_simulate_biometric(success=true)` ➔ Injects virtual fingerprint sensor match signal.
+> 1. Invokes `android_simulate_biometric(success=true)` ➔ Touches the emulator's fingerprint sensor with an enrolled finger (physical devices return an error).
 > 2. Invokes `android_get_current_app()` ➔ Confirms successful transition from lock screen to account dashboard.
 
 ---

@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of Smart Waiting, Condition Monitoring, and Macro Batching tools for Azdroid MCP.
@@ -9,7 +10,7 @@ class McpAutomationTools {
     McpToolDefinition(
       name: 'android_wait_for_element',
       annotations: readOnlyToolAnnotations,
-      description: 'Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips. Convenience shortcut for element appearance; use android_wait_for_condition for element_gone, activity_resumed, or logcat_match conditions.',
+      description: 'Waits on the computer until an element matching text, resourceId, or contentDesc appears (give at least one), instead of polling with repeated calls. Use android_wait_for_condition for element_gone, activity_resumed, or logcat_match.',
       inputSchema: {
         'type': 'object',
         'properties': {
@@ -30,10 +31,7 @@ class McpAutomationTools {
             'type': 'integer',
             'description': 'Polling interval in ms (default 500).',
           },
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial or IP:port.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
         },
       },
     ),
@@ -80,10 +78,7 @@ class McpAutomationTools {
             'type': 'integer',
             'description': 'Host polling interval in ms (default 300).',
           },
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial or IP:port.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
         },
         'required': ['condition'],
       },
@@ -113,10 +108,7 @@ class McpAutomationTools {
                 'sleep: durationMs (500) — {"action":"sleep","durationMs":800}.',
             'items': {'type': 'object'},
           },
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial or IP:port.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
         },
         'required': ['actions'],
       },

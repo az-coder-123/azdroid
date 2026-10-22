@@ -1,16 +1,12 @@
 {
   "name": "android_rotate_gesture",
-  "description": "Executes a two-finger rotation gesture (clockwise / counter-clockwise) by specified degrees around a center coordinate.",
+  "description": "Two-finger rotation by angleDegrees (positive = clockwise) around a center point. centerX/centerY and radius are screen fractions when within 0.0-1.0, otherwise pixels.",
   "parameters": {
     "type": "object",
     "properties": {
       "angleDegrees": {
         "type": "number",
-        "description": "Angle of rotation in degrees (> 0 clockwise, < 0 counter-clockwise). Aliases: angle, degrees, deg."
-      },
-      "angle": {
-        "type": "number",
-        "description": "Alias for angleDegrees."
+        "description": "Angle of rotation in degrees (> 0 clockwise, < 0 counter-clockwise)."
       },
       "centerX": {
         "type": "number",
@@ -30,7 +26,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     },
     "required": [

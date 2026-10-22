@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of advanced multi-touch gesture tools (pinch zoom, two-finger rotation).
@@ -6,18 +7,13 @@ final List<McpToolDefinition> mcpGestureTools = [
   const McpToolDefinition(
     name: 'android_pinch_gesture',
     annotations: inputToolAnnotations,
-    description: 'Executes a two-finger pinch gesture (zoom in / zoom out) centered at specified normalized or pixel coordinates.',
+    description: 'Two-finger pinch around a center point: scale > 1 zooms in, < 1 zooms out. centerX/centerY are screen fractions when within 0.0-1.0, otherwise pixels.',
     inputSchema: {
       'type': 'object',
       'properties': {
         'scale': {
           'type': 'number',
-          'description': 'Scale factor (> 1.0 to zoom in, e.g. 1.5; < 1.0 to zoom out, e.g. 0.5). Alias: scaleFactor.',
-        },
-        'scaleFactor': {
-          'type': 'number',
-          'description':
-              'Alias for scale (> 1.0 to zoom in, < 1.0 to zoom out).',
+          'description': 'Scale factor (> 1.0 zooms in, e.g. 1.5; < 1.0 zooms out, e.g. 0.5).',
         },
         'centerX': {
           'type': 'number',
@@ -31,10 +27,7 @@ final List<McpToolDefinition> mcpGestureTools = [
           'type': 'integer',
           'description': 'Gesture duration in milliseconds (default 400).',
         },
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
       },
       'required': ['scale'],
     },
@@ -42,15 +35,14 @@ final List<McpToolDefinition> mcpGestureTools = [
   const McpToolDefinition(
     name: 'android_rotate_gesture',
     annotations: inputToolAnnotations,
-    description: 'Executes a two-finger rotation gesture (clockwise / counter-clockwise) by specified degrees around a center coordinate.',
+    description: 'Two-finger rotation by angleDegrees (positive = clockwise) around a center point. centerX/centerY and radius are screen fractions when within 0.0-1.0, otherwise pixels.',
     inputSchema: {
       'type': 'object',
       'properties': {
         'angleDegrees': {
           'type': 'number',
-          'description': 'Angle of rotation in degrees (> 0 clockwise, < 0 counter-clockwise). Aliases: angle, degrees, deg.',
+          'description': 'Angle of rotation in degrees (> 0 clockwise, < 0 counter-clockwise).',
         },
-        'angle': {'type': 'number', 'description': 'Alias for angleDegrees.'},
         'centerX': {
           'type': 'number',
           'description': 'Horizontal center (0.0..1.0 or pixels, default 0.5).',
@@ -67,10 +59,7 @@ final List<McpToolDefinition> mcpGestureTools = [
           'type': 'integer',
           'description': 'Gesture duration in milliseconds (default 400).',
         },
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial or IP:port.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
       },
       'required': ['angleDegrees'],
     },

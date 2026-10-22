@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// MCP tool definitions for performance telemetry, screen recording, processes, and orientation.
@@ -10,10 +11,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'package': {
           'type': 'string',
           'description': 'Optional package name to filter CPU consumption for.',
@@ -28,10 +26,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'package': {
           'type': 'string',
           'description': 'Target package name (e.g., com.example.app).',
@@ -46,12 +41,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     description: 'Retrieves comprehensive battery metrics including level, temperature, voltage, health, and charging source.',
     inputSchema: {
       'type': 'object',
-      'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
-      },
+      'properties': {'deviceSerial': mcpDeviceSerialProp},
     },
   ),
   const McpToolDefinition(
@@ -61,10 +51,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'package': {'type': 'string', 'description': 'Target package name.'},
       },
       'required': ['package'],
@@ -76,25 +63,17 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     description: 'Discovers network parameters including local IP address, Wi-Fi SSID, and wireless link speed.',
     inputSchema: {
       'type': 'object',
-      'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
-      },
+      'properties': {'deviceSerial': mcpDeviceSerialProp},
     },
   ),
   const McpToolDefinition(
     name: 'android_record_screen',
     annotations: inputToolAnnotations,
-    description: 'Captures a screen video recording (MP4) for a specified duration and downloads it to the Mac host filesystem.',
+    description: 'Records the screen to MP4 for durationSec seconds (default 5, max 180) and saves it on the computer at localDestination.',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'durationSec': {
           'type': 'integer',
           'description':
@@ -102,7 +81,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
         },
         'localDestination': {
           'type': 'string',
-          'description': 'Absolute local destination file path on Mac (e.g. /tmp/recording.mp4).',
+          'description': 'Absolute destination path on the computer (e.g. /tmp/recording.mp4).',
         },
       },
       'required': ['localDestination'],
@@ -115,10 +94,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'filter': {
           'type': 'string',
           'description': 'Optional keyword to filter process names by.',
@@ -129,15 +105,11 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
   const McpToolDefinition(
     name: 'android_kill_process',
     annotations: destructiveToolAnnotations,
-    description:
-        'Terminates an active process by its numeric PID or package name.',
+    description: 'Stops an app or a process. With package, force-stops the app (like android_stop_app); with pid, sends `kill`, which works only on processes the adb shell owns unless the device is rooted. Give package or pid.',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'pid': {
           'type': 'integer',
           'description': 'Numeric process ID (PID) to kill.',
@@ -164,10 +136,7 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'orientation': {
           'type': 'integer',
           'enum': [0, 1, 2, 3],
@@ -180,14 +149,11 @@ final List<McpToolDefinition> mcpPerformanceMediaTools = [
   const McpToolDefinition(
     name: 'android_simulate_biometric',
     annotations: inputToolAnnotations,
-    description: 'Simulates biometric prompt authentication (fingerprint or face recognition) success or failure.',
+    description: 'Simulates a fingerprint touch (success: an enrolled finger; failure: an unknown one). Works only on Android emulators (`adb emu finger touch`); physical devices return an error.',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'success': {
           'type': 'boolean',
           'description': 'True to simulate authenticated biometric match, false for rejected match.',

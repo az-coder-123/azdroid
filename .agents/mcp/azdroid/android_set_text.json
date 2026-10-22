@@ -1,12 +1,12 @@
 {
   "name": "android_set_text",
-  "description": "Sets exact text into the focused field or target element by ID, bypassing IME predictive autocorrect and Vietnamese Telex alteration. Pastes through the device clipboard, so the clipboard content is replaced; use android_type_text to keep it.",
+  "description": "Sets exact text in the focused field, or in element elementId from the semantic tree. Pastes through the device clipboard (replacing it), so IMEs such as Telex cannot alter it. Where the clipboard cannot be set over adb (no `cmd clipboard`, as on the Android 10 and 13 devices tested), ASCII text is typed instead and other text fails with an error; the result says which happened.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "text": {
         "type": "string",

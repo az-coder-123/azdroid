@@ -1,6 +1,6 @@
 {
   "name": "android_wait_for_element",
-  "description": "Polls the UI hierarchy until an element matching text, resourceId, or contentDesc appears, avoiding unnecessary LLM round-trips. Convenience shortcut for element appearance; use android_wait_for_condition for element_gone, activity_resumed, or logcat_match conditions.",
+  "description": "Waits on the computer until an element matching text, resourceId, or contentDesc appears (give at least one), instead of polling with repeated calls. Use android_wait_for_condition for element_gone, activity_resumed, or logcat_match.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -26,7 +26,7 @@
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial or IP:port."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
     }
   },

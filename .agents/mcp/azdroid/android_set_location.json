@@ -1,30 +1,26 @@
 {
   "name": "android_set_location",
-  "description": "Sets mock GPS coordinates (latitude, longitude, altitude) for geo-fencing and maps QA testing.",
+  "description": "Replaces the device location for every app with latitude/longitude until called again with reset: true (which restores the real location). Emulators: any version. Devices: Android 12+ with location turned on; this tool does not change that setting. Fails with the reason otherwise. After reset, apps may see the last mock fix until the device gets a real one.",
   "parameters": {
     "type": "object",
     "properties": {
       "latitude": {
         "type": "number",
-        "description": "GPS latitude."
+        "description": "Latitude in degrees (required unless reset)."
       },
       "longitude": {
         "type": "number",
-        "description": "GPS longitude."
+        "description": "Longitude in degrees (required unless reset)."
       },
-      "altitude": {
-        "type": "number",
-        "description": "Optional altitude in meters."
+      "reset": {
+        "type": "boolean",
+        "description": "True to remove the mock location and restore the real one (latitude/longitude not needed)."
       },
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       }
-    },
-    "required": [
-      "latitude",
-      "longitude"
-    ]
+    }
   },
   "annotations": {
     "readOnlyHint": false,

@@ -37,4 +37,26 @@ Units can be mixed per axis (`xRatio: 0.5, yPixel: 600`). The adb layer only sen
 
 ## 4. Text Entry
 
-`android_set_text` pastes the exact text through the phone's clipboard (IME-safe), so it **replaces the clipboard**. It falls back to typing when the clipboard cannot be set or the paste key fails. Use `android_type_text` to keep the clipboard.
+| Tool | How | Limits |
+| :--- | :--- | :--- |
+| `android_set_text` | Pastes through the clipboard (replacing it), so IMEs such as Telex cannot alter the text | Without `cmd clipboard` it types ASCII instead and rejects other text; the result says `pasted` or `typed` |
+| `android_type_text` | Key events (`input text`); clipboard untouched | ASCII only: Android's `input text` crashes on other characters, so the tool returns an error |
+
+Both send the text to the device shell as one single-quoted word. Before 2026-10-22 it was unquoted: `it's` broke the command and `a; reboot` would have run `reboot`.
+
+## 5. Device Support
+
+`adb shell cmd <service>` exits with code 0 even when the service has no shell command, so the server treats the `No shell command implementation` output as a failure (`McpShellResult`) and returns the reason instead of a false success. Measured 2026-10-22:
+
+| Tool | Needs | Android 10 (Redmi 9) | Android 13 (Moto g play) |
+| :--- | :--- | :--- | :--- |
+| `get_clipboard`, `set_clipboard`, paste in `set_text` | `cmd clipboard` | ❌ error | ❌ error |
+| `simulate_biometric` | emulator (`adb emu finger touch`) | ❌ error | ❌ error |
+| `set_location` | `cmd location providers` (Android 12+), location on | ❌ error | ✅ gps, network, fused mocked; `reset` restores |
+| `dismiss_notification` | `cmd notification snooze` (Android 11+) | ❌ error | ✅ hidden, back after `hideMinutes` |
+
+Emulators were not measured (the test emulator did not boot on the Intel Mac used).
+
+## 6. Device Selection
+
+With several devices connected and no `deviceSerial`, every tool except `android_list_devices` returns an error listing the serials instead of using the first one.

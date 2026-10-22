@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of Intent dispatching, logcat inspection, APK installation, and shell execution tools.
@@ -10,10 +11,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'action': {
           'type': 'string',
           'description': 'Intent action (e.g., android.intent.action.VIEW).',
@@ -38,15 +36,17 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   const McpToolDefinition(
     name: 'android_get_logcat',
     annotations: readOnlyToolAnnotations,
-    description: 'Extracts real-time or recent logcat records from the device with optional tag and level filtering.',
+    description: 'Returns the most recent logcat lines (limit, default 50), optionally only one tag and only from a minimum level up (V, D, I, W, E, F).',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
+        'deviceSerial': mcpDeviceSerialProp,
+        'tag': {'type': 'string', 'description': 'Only this log tag.'},
+        'level': {
           'type': 'string',
-          'description': 'Target device serial.',
+          'enum': ['V', 'D', 'I', 'W', 'E', 'F'],
+          'description': 'Minimum level (default V: everything).',
         },
-        'tag': {'type': 'string', 'description': 'Filter by tag.'},
         'limit': {
           'type': 'integer',
           'description':
@@ -62,10 +62,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'package': {
           'type': 'string',
           'description':
@@ -86,10 +83,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'filePath': {
           'type': 'string',
           'description': 'Absolute path to the media file on device (e.g., /sdcard/Music/song.mp3).',
@@ -101,17 +95,14 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
   const McpToolDefinition(
     name: 'android_install_apk',
     annotations: destructiveToolAnnotations,
-    description: 'Sideloads an APK package onto the Android device.',
+    description: 'Installs an APK file from the computer onto the device.',
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'apkPath': {
           'type': 'string',
-          'description': 'Absolute path to APK on host Mac.',
+          'description': 'Absolute path of the APK on the computer.',
         },
         'reinstall': {
           'type': 'boolean',
@@ -132,10 +123,7 @@ final List<McpToolDefinition> mcpCmdDiagnosticTools = [
     inputSchema: {
       'type': 'object',
       'properties': {
-        'deviceSerial': {
-          'type': 'string',
-          'description': 'Target device serial.',
-        },
+        'deviceSerial': mcpDeviceSerialProp,
         'command': {'type': 'string', 'description': 'Shell command string.'},
       },
       'required': ['command'],

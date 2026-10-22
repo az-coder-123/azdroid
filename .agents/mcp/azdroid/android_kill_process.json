@@ -1,12 +1,12 @@
 {
   "name": "android_kill_process",
-  "description": "Terminates an active process by its numeric PID or package name.",
+  "description": "Stops an app or a process. With package, force-stops the app (like android_stop_app); with pid, sends `kill`, which works only on processes the adb shell owns unless the device is rooted. Give package or pid.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "pid": {
         "type": "integer",

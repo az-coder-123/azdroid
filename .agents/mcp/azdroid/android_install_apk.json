@@ -1,16 +1,16 @@
 {
   "name": "android_install_apk",
-  "description": "Sideloads an APK package onto the Android device.",
+  "description": "Installs an APK file from the computer onto the device.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "apkPath": {
         "type": "string",
-        "description": "Absolute path to APK on host Mac."
+        "description": "Absolute path of the APK on the computer."
       },
       "reinstall": {
         "type": "boolean",

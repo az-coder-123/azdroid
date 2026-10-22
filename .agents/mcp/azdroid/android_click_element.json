@@ -1,12 +1,12 @@
 {
   "name": "android_click_element",
-  "description": "Finds an on-screen element by text, ID, or description and immediately taps its center coordinates.",
+  "description": "Finds an element by text, resourceId, or contentDesc and taps its center. Give at least one of the three.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "text": {
         "type": "string",

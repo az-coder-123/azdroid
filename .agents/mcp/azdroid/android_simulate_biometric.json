@@ -1,12 +1,12 @@
 {
   "name": "android_simulate_biometric",
-  "description": "Simulates biometric prompt authentication (fingerprint or face recognition) success or failure.",
+  "description": "Simulates a fingerprint touch (success: an enrolled finger; failure: an unknown one). Works only on Android emulators (`adb emu finger touch`); physical devices return an error.",
   "parameters": {
     "type": "object",
     "properties": {
       "deviceSerial": {
         "type": "string",
-        "description": "Target device serial."
+        "description": "Device serial or IP:port from android_list_devices. Required when several devices are connected; may be omitted when only one is."
       },
       "success": {
         "type": "boolean",

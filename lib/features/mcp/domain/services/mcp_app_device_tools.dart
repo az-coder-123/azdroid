@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
+import 'package:desk_droid/features/mcp/domain/services/mcp_schema_fragments.dart';
 import 'package:desk_droid/features/mcp/domain/services/mcp_tool_annotations.dart';
 
 /// Catalog of app lifecycle, clipboard, device metrics, and file transfer tools for MCP.
@@ -12,12 +13,7 @@ class McpAppDeviceTools {
       description: 'Returns the package name and active Activity of the application currently focused on the screen.',
       inputSchema: {
         'type': 'object',
-        'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
-        },
+        'properties': {'deviceSerial': mcpDeviceSerialProp},
       },
     ),
     McpToolDefinition(
@@ -27,10 +23,7 @@ class McpAppDeviceTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'package': {
             'type': 'string',
             'description': 'Package name to launch (e.g., com.example.app).',
@@ -46,10 +39,7 @@ class McpAppDeviceTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'package': {
             'type': 'string',
             'description': 'Package name to terminate.',
@@ -65,10 +55,7 @@ class McpAppDeviceTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'package': {
             'type': 'string',
             'description': 'Package name to reset.',
@@ -84,10 +71,7 @@ class McpAppDeviceTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'thirdPartyOnly': {
             'type': 'boolean',
             'description': 'If true, only lists non-system third-party apps (default true).',
@@ -102,28 +86,20 @@ class McpAppDeviceTools {
     McpToolDefinition(
       name: 'android_get_clipboard',
       annotations: readOnlyToolAnnotations,
-      description: 'Retrieves the text currently stored in the Android system clipboard.',
+      description: 'Reads the device clipboard text. Needs the `cmd clipboard` shell command, which many devices lack (the Android 10 and 13 devices tested): then it returns an error saying so.',
       inputSchema: {
         'type': 'object',
-        'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
-        },
+        'properties': {'deviceSerial': mcpDeviceSerialProp},
       },
     ),
     McpToolDefinition(
       name: 'android_set_clipboard',
       annotations: stateSetToolAnnotations,
-      description: 'Sets text directly into the Android system clipboard.',
+      description: 'Replaces the device clipboard text. Needs the `cmd clipboard` shell command, which many devices lack (the Android 10 and 13 devices tested): then it returns an error saying so.',
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'text': {
             'type': 'string',
             'description': 'Text to copy into clipboard.',
@@ -138,12 +114,7 @@ class McpAppDeviceTools {
       description: 'Returns hardware model, Android OS version, API level, screen resolution, density, and battery percentage.',
       inputSchema: {
         'type': 'object',
-        'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
-        },
+        'properties': {'deviceSerial': mcpDeviceSerialProp},
       },
     ),
     McpToolDefinition(
@@ -153,17 +124,14 @@ class McpAppDeviceTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'localPath': {
             'type': 'string',
             'description': 'Absolute path of the file on the computer.',
           },
           'remotePath': {
             'type': 'string',
-            'description': 'Target absolute destination path on Android (default /sdcard/Download/).',
+            'description': 'Absolute destination path on the device, e.g. /sdcard/Download/photo.jpg.',
           },
         },
         'required': ['localPath', 'remotePath'],
@@ -176,17 +144,14 @@ class McpAppDeviceTools {
       inputSchema: {
         'type': 'object',
         'properties': {
-          'deviceSerial': {
-            'type': 'string',
-            'description': 'Target device serial.',
-          },
+          'deviceSerial': mcpDeviceSerialProp,
           'remotePath': {
             'type': 'string',
             'description': 'Absolute file path on Android.',
           },
           'localPath': {
             'type': 'string',
-            'description': 'Target absolute destination path on Mac host.',
+            'description': 'Absolute destination path on the computer.',
           },
         },
         'required': ['remotePath', 'localPath'],
