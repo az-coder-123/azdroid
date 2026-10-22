@@ -1,4 +1,5 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_text_entry.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_point_arguments.dart';
@@ -158,17 +159,26 @@ class McpBasicToolExecutor {
         );
         final id = arguments.getOptionalInt('elementId');
         final clear = arguments.getBool('clearFirst', defaultValue: false);
-        final ok = await _adb.setText(
+        final entry = await _adb.setText(
           serial,
           text,
           elementId: id,
           clearFirst: clear,
         );
-        return ok
-            ? McpToolResult.text(
-                'Set text "$text" on $serial (elementId: ${id ?? 'focused'}, clearFirst: $clear).',
-              )
-            : McpToolResult.error('Failed to set text "$text".');
+        final target = 'elementId: ${id ?? 'focused'}, clearFirst: $clear';
+        return switch (entry) {
+          McpTextEntry.pasted => McpToolResult.text(
+            'Set text "$text" on $serial by pasting ($target).',
+          ),
+          McpTextEntry.typed => McpToolResult.text(
+            'Typed text "$text" on $serial ($target). The clipboard is not '
+            'available on this device, so it was typed as key events; an '
+            'active IME such as Telex may have altered it.',
+          ),
+          McpTextEntry.failed => McpToolResult.error(
+            'Failed to set text "$text" ($target).',
+          ),
+        };
 
       case 'android_clear_text':
         final id = arguments.getOptionalInt('elementId');
@@ -204,7 +214,13 @@ class McpBasicToolExecutor {
       case 'android_get_logcat':
         final limit = arguments.getInt('limit', defaultValue: 50);
         final tag = arguments.getString('tag');
-        final logs = await _adb.getLogcat(serial, tag: tag, limit: limit);
+        final level = arguments.getString('level', aliases: ['priority']);
+        final logs = await _adb.getLogcat(
+          serial,
+          tag: tag,
+          level: level,
+          limit: limit,
+        );
         return McpToolResult.text('Logcat dump ($limit lines):\n$logs');
 
       case 'android_install_apk':

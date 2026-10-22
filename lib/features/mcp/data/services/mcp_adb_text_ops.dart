@@ -4,29 +4,52 @@ part of 'mcp_adb_client.dart';
 class McpAdbTextOps {
   const McpAdbTextOps._();
 
-  /// Types text with space escaping (character-by-character via IME).
+  /// Types [text] as key events (`adb shell input text`).
+  ///
+  /// `input text` only handles ASCII: other characters crash it (verified on
+  /// Android 10 and 13), so they are rejected with an explanation. The text
+  /// is single-quoted for the device shell, which `adb shell` runs it through:
+  /// unquoted, `it's` broke the command and `a; reboot` ran `reboot`.
   static Future<bool> typeText(
     McpAdbClient client,
     String serial,
     String text,
   ) async {
-    final escaped = text.replaceAll(' ', '%s');
+    if (!isAscii(text)) {
+      throw const McpUnsupportedOnDeviceException(
+        'android_type_text can only type ASCII characters: Android\'s '
+        '`input text` crashes on others (accents, CJK, emoji). Use '
+        'android_set_text, which pastes through the clipboard on devices '
+        'that support it.',
+      );
+    }
     final res = await client.run([
       '-s',
       serial,
       'shell',
       'input',
       'text',
-      escaped,
+      // `input text` reads %s as a space; the device shell gets one quoted word.
+      shellQuote(text.replaceAll(' ', '%s')),
     ]);
     return res.exitCode == 0;
   }
 
-  /// Injects exact text bypassing IME predictive engines and Telex autocorrect.
+  /// Whether every character of [text] is 7-bit ASCII.
+  static bool isAscii(String text) => text.codeUnits.every((c) => c < 0x80);
+
+  /// [value] as one single-quoted word for a POSIX shell.
+  static String shellQuote(String value) =>
+      "'${value.replaceAll("'", "'\\''")}'";
+
+  /// Sets exact text in the focused field (or element [elementId]).
   ///
-  /// Pastes through the device clipboard (which it replaces). Falls back to
-  /// [typeText] when the clipboard cannot be set or the paste key fails.
-  static Future<bool> setText(
+  /// Pastes through the device clipboard (which it replaces), so an IME such
+  /// as Telex cannot alter it. Where the clipboard cannot be set over adb
+  /// (no `cmd clipboard`, as on the Android 10 and 13 devices tested), ASCII
+  /// text is typed instead and other text fails with an explanation; the
+  /// result says which happened.
+  static Future<McpTextEntry> setText(
     McpAdbClient client,
     String serial,
     String text, {
@@ -35,7 +58,7 @@ class McpAdbTextOps {
   }) async {
     if (elementId != null) {
       final tapped = await client.clickElementById(serial, elementId);
-      if (!tapped) return false;
+      if (!tapped) return McpTextEntry.failed;
       await Future.delayed(const Duration(milliseconds: 200));
     }
 
@@ -44,12 +67,31 @@ class McpAdbTextOps {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    // Set Android system clipboard and paste as atomic block.
-    final copied = await client.setClipboard(serial, text);
-    if (!copied) {
-      return await typeText(client, serial, text);
+    if (await _paste(client, serial, text)) return McpTextEntry.pasted;
+    if (!isAscii(text)) {
+      throw const McpUnsupportedOnDeviceException(
+        'This device cannot set its clipboard over adb (no `cmd clipboard` '
+        'shell command), so non-ASCII text (accents, CJK, emoji) cannot be '
+        'entered. ASCII text still works.',
+      );
     }
+    return await typeText(client, serial, text)
+        ? McpTextEntry.typed
+        : McpTextEntry.failed;
+  }
 
+  /// Puts [text] on the clipboard and sends the paste key; `false` when the
+  /// clipboard is unavailable or the paste key fails.
+  static Future<bool> _paste(
+    McpAdbClient client,
+    String serial,
+    String text,
+  ) async {
+    try {
+      await McpAdbDeviceOps.setClipboard(client, serial, text);
+    } on McpUnsupportedOnDeviceException {
+      return false;
+    }
     await Future.delayed(const Duration(milliseconds: 100));
     final res = await client.run([
       '-s',
@@ -59,8 +101,7 @@ class McpAdbTextOps {
       'keyevent',
       '$_keycodePaste',
     ]);
-    if (res.exitCode == 0) return true;
-    return typeText(client, serial, text);
+    return res.exitCode == 0;
   }
 
   /// Android `KEYCODE_PASTE`.
@@ -113,7 +154,12 @@ class McpAdbTextOps {
       'TAB' => 61,
       'ENTER' => 66,
       'APP_SWITCH' => 187,
-      _ => int.tryParse(key) ?? 4,
+      final other =>
+        int.tryParse(other) ??
+            (throw McpUnsupportedOnDeviceException(
+              'Unknown key "$key". Use BACK, HOME, APP_SWITCH, ENTER, TAB, '
+              'POWER, VOLUME_UP, VOLUME_DOWN, or a numeric Android key code.',
+            )),
     };
   }
 }

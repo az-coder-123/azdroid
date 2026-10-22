@@ -39,19 +39,39 @@ class McpAdbCmdOps {
     return res.stdout.toString().trim();
   }
 
-  /// Dumps the recent logcat output.
+  /// Logcat priorities, lowest first (Verbose … Fatal).
+  static const List<String> logcatLevels = ['V', 'D', 'I', 'W', 'E', 'F'];
+
+  /// The newest [limit] log lines, optionally only [tag] and only from
+  /// [level] up.
+  ///
+  /// `logcat -t N` keeps the last N lines of the whole buffer *before* the
+  /// filter runs (a level E query with `-t 3` returned nothing on Android
+  /// 13), so filtered reads dump the filtered buffer and keep the tail here.
   static Future<String> getLogcat(
     McpAdbClient client,
     String serial, {
     String? tag,
+    String? level,
     int limit = 50,
   }) async {
-    final cmd = ['-s', serial, 'logcat', '-d', '-t', '$limit'];
-    if (tag != null && tag.isNotEmpty) {
-      cmd.addAll(['-s', '$tag:*']);
-    }
-    final res = await client.run(cmd);
-    return res.stdout.toString().trim();
+    final minLevel = logcatLevels.contains(level?.toUpperCase())
+        ? level!.toUpperCase()
+        : logcatLevels.first;
+    final hasTag = tag != null && tag.isNotEmpty;
+    final filtered = hasTag || minLevel != logcatLevels.first;
+    final res = await client.run([
+      '-s',
+      serial,
+      'logcat',
+      '-d',
+      if (!filtered) ...['-t', '$limit'],
+      // Filter spec "<tag>:<level>"; with a tag, every other tag is silenced.
+      if (hasTag) ...['-s', '$tag:$minLevel'],
+      if (!hasTag && filtered) '*:$minLevel',
+    ]);
+    final lines = res.stdout.toString().trim().splitLines();
+    return lines.skip(max(0, lines.length - limit)).join('\n');
   }
 
   /// Installs an APK file from host machine onto the target device.

@@ -8,6 +8,7 @@ import 'package:desk_droid/features/mcp/data/handlers/mcp_screen_tool_executor.d
 import 'package:desk_droid/features/mcp/data/handlers/mcp_semantic_system_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_activity_recorder.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
 import 'package:desk_droid/features/mcp/domain/entities/mcp_tool_definition.dart';
 
@@ -56,12 +57,22 @@ class McpToolExecutor {
   final McpAutomationToolExecutor _automation;
   final McpDeviceControlToolExecutor _deviceControl;
 
+  /// The serial to act on: the one given, or the only connected device.
+  ///
+  /// With several devices and no serial it refuses instead of picking one,
+  /// so an agent never acts on the wrong phone.
   Future<String?> _resolveDevice(String? providedSerial) async {
     if (providedSerial != null && providedSerial.trim().isNotEmpty) {
       return providedSerial.trim();
     }
     final serials = await _adb.getConnectedSerials();
-    return serials.isNotEmpty ? serials.first : null;
+    if (serials.length > 1) {
+      throw McpArgumentException(
+        'Several devices are connected (${serials.join(', ')}); pass '
+        'deviceSerial to choose one (see android_list_devices).',
+      );
+    }
+    return serials.firstOrNull;
   }
 
   /// Dispatches and executes an MCP tool call by name.
@@ -86,6 +97,10 @@ class McpToolExecutor {
             ? McpToolResult.error('No connected Android device found via ADB.')
             : await _route(toolName, serial, arguments);
       }
+    } on McpArgumentException catch (e) {
+      result = McpToolResult.error(e.message);
+    } on McpUnsupportedOnDeviceException catch (e) {
+      result = McpToolResult.error(e.message);
     } catch (e) {
       result = McpToolResult.error('Tool execution exception: $e');
     }

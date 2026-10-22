@@ -132,33 +132,38 @@ class McpAdbMediaProcOps {
     return res.exitCode == 0;
   }
 
-  /// Simulates biometric authentication (fingerprint / face prompt) on compatible Android systems.
+  /// Touches the emulator's fingerprint sensor with an enrolled finger
+  /// ([success]) or an unknown one.
+  ///
+  /// Only emulators can fake biometrics over adb (`adb emu finger touch`);
+  /// real devices have no shell command for it (`cmd fingerprint` and
+  /// `cmd biometric` are missing on the Android 10 and 13 devices tested).
   static Future<bool> simulateBiometric(
     McpAdbClient client,
     String serial, {
     bool success = true,
   }) async {
+    if (!isEmulator(serial)) {
+      throw const McpUnsupportedOnDeviceException(
+        'Biometric simulation works only on Android emulators (adb emu '
+        'finger touch). Physical devices have no adb command for it.',
+      );
+    }
     final res = await client.run([
       '-s',
       serial,
-      'shell',
-      'cmd',
-      'fingerprint',
-      success ? 'finger' : 'swipe',
-      '1',
+      'emu',
+      'finger',
+      'touch',
+      success ? _enrolledFingerId : _unknownFingerId,
     ]);
-    if (res.exitCode == 0) return true;
-
-    // Fallback: locksettings / auth simulation
-    final fallbackRes = await client.run([
-      '-s',
-      serial,
-      'shell',
-      'cmd',
-      'biometric',
-      'fake-auth',
-      success ? '1' : '0',
-    ]);
-    return fallbackRes.exitCode == 0;
+    return res.exitCode == 0;
   }
+
+  /// Finger id enrolled first in emulator Settings, and one never enrolled.
+  static const String _enrolledFingerId = '1';
+  static const String _unknownFingerId = '9';
+
+  /// Serials of local emulators (`emulator-5554`), which accept `adb emu`.
+  static bool isEmulator(String serial) => serial.startsWith('emulator-');
 }

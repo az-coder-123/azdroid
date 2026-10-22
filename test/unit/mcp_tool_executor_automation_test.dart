@@ -1,5 +1,6 @@
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -103,23 +104,32 @@ void main() {
     );
 
     test(
-      'android_dismiss_notification handles clear all or key dismissal',
+      'android_dismiss_notification snoozes one key; clear all is refused',
       () async {
+        const key = '0|com.example|2|tag|10202';
         when(
-          () => mockAdb.dismissNotification(
+          () => mockAdb.snoozeNotification(
             '192.168.1.100:5555',
-            key: null,
-            clearAll: true,
+            key: key,
+            hideFor: const Duration(minutes: 60),
           ),
         ).thenAnswer((_) async => true);
 
         final res = await executor.execute('android_dismiss_notification', {
           'deviceSerial': '192.168.1.100:5555',
+          'key': key,
+        });
+        expect(res.isError, isFalse);
+        expect(res.content.first.text, contains('Hid notification $key'));
+
+        // It used to send `service call statusbar 1`, which only opens the
+        // shade, and report "Cleared all notifications".
+        final all = await executor.execute('android_dismiss_notification', {
+          'deviceSerial': '192.168.1.100:5555',
           'clearAll': true,
         });
-
-        expect(res.isError, isFalse);
-        expect(res.content.first.text, contains('Cleared all notifications'));
+        expect(all.isError, isTrue);
+        expect(all.content.first.text, contains('not possible over adb'));
       },
     );
 
@@ -129,19 +139,49 @@ void main() {
           '192.168.1.100:5555',
           latitude: 10.7769,
           longitude: 106.7009,
-          altitude: null,
         ),
-      ).thenAnswer((_) async => true);
+      ).thenAnswer((_) async {});
+      when(() => mockAdb.resetLocation('192.168.1.100:5555'))
+          .thenAnswer((_) async {});
 
       final res = await executor.execute('android_set_location', {
         'deviceSerial': '192.168.1.100:5555',
         'latitude': 10.7769,
         'longitude': 106.7009,
       });
-
       expect(res.isError, isFalse);
       expect(res.content.first.text, contains('Mock location set'));
+
+      final reset = await executor.execute('android_set_location', {
+        'deviceSerial': '192.168.1.100:5555',
+        'reset': true,
+      });
+      expect(reset.content.first.text, contains('real location'));
+      verify(() => mockAdb.resetLocation('192.168.1.100:5555')).called(1);
     });
+
+    test(
+      'an unsupported feature returns its reason, not a generic error',
+      () async {
+        when(
+          () => mockAdb.setLocation(
+            '192.168.1.100:5555',
+            latitude: 1,
+            longitude: 2,
+          ),
+        ).thenThrow(
+          const McpUnsupportedOnDeviceException('needs Android 12 or later'),
+        );
+
+        final res = await executor.execute('android_set_location', {
+          'deviceSerial': '192.168.1.100:5555',
+          'latitude': 1,
+          'longitude': 2,
+        });
+        expect(res.isError, isTrue);
+        expect(res.content.first.text, 'needs Android 12 or later');
+      },
+    );
 
     test('android_set_network_condition sets network mode', () async {
       when(() => mockAdb.setNetworkCondition('192.168.1.100:5555', 'offline'))

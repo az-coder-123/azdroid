@@ -23,6 +23,9 @@ class McpDeviceControlToolExecutor {
     }.contains(toolName);
   }
 
+  /// How long android_dismiss_notification hides a notification by default.
+  static const int _defaultHideMinutes = 60;
+
   Future<McpToolResult> execute(
     String toolName,
     String serial,
@@ -56,49 +59,59 @@ class McpDeviceControlToolExecutor {
           'Active Notifications on $serial (${notifs.length}):\n',
         );
         for (final n in notifs) {
-          buf.writeln('• [${n['package']}] ${n['title']}: ${n['text']}');
+          buf.writeln(
+            '• [${n['package']}] ${n['title']}: ${n['text']}\n'
+            '  key: ${n['key']}',
+          );
         }
         return McpToolResult.text(buf.toString().trim());
 
       case 'android_dismiss_notification':
-        final key = arguments.getString(
+        if (arguments.getBool('clearAll', aliases: ['all'])) {
+          return McpToolResult.error(
+            'Clearing all notifications is not possible over adb. Hide them '
+            'one by one with the key from android_get_notifications.',
+          );
+        }
+        final key = arguments.getRequiredString(
           'key',
           aliases: ['id', 'notificationKey'],
         );
-        final clearAll = arguments.getBool(
-          'clearAll',
-          aliases: ['all'],
-          defaultValue: false,
+        final minutes = arguments.getInt(
+          'hideMinutes',
+          aliases: ['minutes'],
+          defaultValue: _defaultHideMinutes,
         );
-        final ok = await _adb.dismissNotification(
+        final ok = await _adb.snoozeNotification(
           serial,
           key: key,
-          clearAll: clearAll,
+          hideFor: Duration(minutes: minutes),
         );
         return ok
             ? McpToolResult.text(
-                clearAll
-                    ? 'Cleared all notifications.'
-                    : 'Dismissed notification: $key',
+                'Hid notification $key for $minutes minutes (snoozed; it '
+                'comes back afterwards).',
               )
-            : McpToolResult.error('Failed to dismiss notification.');
+            : McpToolResult.error('Failed to hide notification $key.');
 
       case 'android_set_location':
+        if (arguments.getBool('reset', aliases: ['clear', 'restore'])) {
+          await _adb.resetLocation(serial);
+          return McpToolResult.text(
+            'Mock location removed on $serial; it reports its real location '
+            'again.',
+          );
+        }
         final lat = arguments.getRequiredDouble('latitude', aliases: ['lat']);
         final lng = arguments.getRequiredDouble(
           'longitude',
           aliases: ['lng', 'lon'],
         );
-        final alt = arguments.getOptionalDouble('altitude', aliases: ['alt']);
-        final ok = await _adb.setLocation(
-          serial,
-          latitude: lat,
-          longitude: lng,
-          altitude: alt,
+        await _adb.setLocation(serial, latitude: lat, longitude: lng);
+        return McpToolResult.text(
+          'Mock location set on $serial: ($lat, $lng). It applies to every '
+          'app until android_set_location is called with reset: true.',
         );
-        return ok
-            ? McpToolResult.text('Mock location set on $serial: ($lat, $lng)')
-            : McpToolResult.error('Failed to set mock location.');
 
       case 'android_set_network_condition':
         final mode = arguments.getRequiredString(

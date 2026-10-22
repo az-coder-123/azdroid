@@ -58,29 +58,30 @@ mixin McpAdbAutomationDelegator {
     filter: filter,
   );
 
-  Future<bool> dismissNotification(
+  Future<bool> snoozeNotification(
     String serial, {
-    String? key,
-    bool clearAll = false,
-  }) => McpAdbNotificationButtonOps.dismissNotification(
+    required String key,
+    required Duration hideFor,
+  }) => McpAdbNotificationButtonOps.snoozeNotification(
     _adbClient,
     serial,
     key: key,
-    clearAll: clearAll,
+    hideFor: hideFor,
   );
 
-  Future<bool> setLocation(
+  Future<void> setLocation(
     String serial, {
     required double latitude,
     required double longitude,
-    double? altitude,
   }) => McpAdbEnvironmentOps.setLocation(
     _adbClient,
     serial,
     latitude: latitude,
     longitude: longitude,
-    altitude: altitude,
   );
+
+  Future<void> resetLocation(String serial) =>
+      McpAdbEnvironmentOps.resetLocation(_adbClient, serial);
 
   Future<bool> setNetworkCondition(String serial, String mode) =>
       McpAdbEnvironmentOps.setNetworkCondition(_adbClient, serial, mode);

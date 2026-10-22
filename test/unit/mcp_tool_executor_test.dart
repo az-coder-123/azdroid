@@ -1,5 +1,6 @@
 import 'package:desk_droid/features/mcp/data/handlers/mcp_tool_executor.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_text_entry.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -194,7 +195,7 @@ void main() {
           elementId: 5,
           clearFirst: true,
         ),
-      ).thenAnswer((_) async => true);
+      ).thenAnswer((_) async => McpTextEntry.pasted);
 
       final result = await executor.execute('android_set_text', {
         'deviceSerial': '192.168.1.100:5555',

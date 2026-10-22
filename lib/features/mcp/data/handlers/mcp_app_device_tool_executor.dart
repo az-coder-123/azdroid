@@ -97,7 +97,11 @@ class McpAppDeviceToolExecutor {
 
       case 'android_get_clipboard':
         final content = await _adb.getClipboard(serial);
-        return McpToolResult.text('Android Clipboard Content:\n$content');
+        return McpToolResult.text(
+          content.isEmpty
+              ? 'The Android clipboard on $serial is empty.'
+              : 'Android Clipboard Content:\n$content',
+        );
 
       case 'android_set_clipboard':
         final text = arguments.getRequiredString(

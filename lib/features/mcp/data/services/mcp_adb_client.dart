@@ -9,6 +9,9 @@ import 'package:desk_droid/features/control/data/datasources/scrcpy_control_data
 import 'package:desk_droid/features/control/domain/entities/frame_size.dart';
 import 'package:desk_droid/features/control/domain/entities/touch_stream.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_ocr_fallback_ops.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_shell_result.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_text_entry.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_point_arguments.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_scroll_path.dart';
@@ -91,7 +94,7 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     McpPoint point, {
     int intervalMs = 120,
   }) => McpAdbInputOps.doubleTap(this, serial, point, intervalMs: intervalMs);
-  Future<bool> setText(
+  Future<McpTextEntry> setText(
     String serial,
     String text, {
     int? elementId,
@@ -177,8 +180,18 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
     component: component,
     extras: extras,
   );
-  Future<String> getLogcat(String serial, {String? tag, int limit = 50}) =>
-      McpAdbCmdOps.getLogcat(this, serial, tag: tag, limit: limit);
+  Future<String> getLogcat(
+    String serial, {
+    String? tag,
+    String? level,
+    int limit = 50,
+  }) => McpAdbCmdOps.getLogcat(
+    this,
+    serial,
+    tag: tag,
+    level: level,
+    limit: limit,
+  );
   Future<String> checkCrash(String serial, {String? package, int limit = 50}) =>
       McpAdbCmdOps.checkCrash(this, serial, package: package, limit: limit);
   Future<bool> scanMediaFile(String serial, String filePath) =>
@@ -221,7 +234,7 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
   // --- Telemetry, Clipboard & File Transfers ---
   Future<Map<String, dynamic>> getDeviceInfo(String serial) =>
       McpAdbDeviceOps.getDeviceInfo(this, serial);
-  Future<String?> getClipboard(String serial) =>
+  Future<String> getClipboard(String serial) =>
       McpAdbDeviceOps.getClipboard(this, serial);
   Future<bool> setClipboard(String serial, String text) =>
       McpAdbDeviceOps.setClipboard(this, serial, text);

@@ -71,7 +71,15 @@ class McpAdbDeviceOps {
     };
   }
 
-  /// Retrieves the current text stored in the Android system clipboard.
+  static const String _noClipboardShell =
+      'This device has no `cmd clipboard` shell command (Android 10 and 13 '
+      'devices tested have none), so the clipboard cannot be read or set over '
+      'adb.';
+
+  /// The text in the Android system clipboard.
+  ///
+  /// Throws [McpUnsupportedOnDeviceException] when the device has no
+  /// `cmd clipboard` (it still exits 0 there, see [McpShellResult]).
   static Future<String> getClipboard(McpAdbClient client, String serial) async {
     final res = await client.run([
       '-s',
@@ -81,13 +89,17 @@ class McpAdbDeviceOps {
       'clipboard',
       'get',
     ]);
-    if (res.exitCode == 0 && res.stdout.toString().trim().isNotEmpty) {
-      return res.stdout.toString().trim();
+    if (res.isMissingCommand) {
+      throw const McpUnsupportedOnDeviceException(_noClipboardShell);
     }
-    return 'Clipboard is empty or not accessible via cmd clipboard.';
+    final text = res.stdout.toString().trim();
+    return res.exitCode == 0 && text.isNotEmpty ? text : '';
   }
 
-  /// Sets text in the Android system clipboard.
+  /// Sets [text] as the Android system clipboard.
+  ///
+  /// Throws [McpUnsupportedOnDeviceException] when the device has no
+  /// `cmd clipboard`.
   static Future<bool> setClipboard(
     McpAdbClient client,
     String serial,
@@ -100,8 +112,11 @@ class McpAdbDeviceOps {
       'cmd',
       'clipboard',
       'set',
-      text,
+      McpAdbTextOps.shellQuote(text),
     ]);
+    if (res.isMissingCommand) {
+      throw const McpUnsupportedOnDeviceException(_noClipboardShell);
+    }
     return res.exitCode == 0;
   }
 

@@ -81,6 +81,9 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **MCP Agent Automation Optimizations** | MCP Server & AI Agent Touch | Eliminate token exhaustion via ROI cropping, overcome ADB single-touch with Scrcpy pinch, and handle diverse displays via ratio coordinates. | [mcp-agent-automation-optimizations.md](mcp-agent-automation-optimizations.md) |
 | **MCP Standalone CLI Logger Decoupling** | MCP Server & Core Logging | Decouple `AppLogger` from `package:flutter/foundation.dart` to allow standalone Dart CLI execution and protect JSON-RPC stdio framing. | [mcp-standalone-dart-logger-decoupling.md](mcp-standalone-dart-logger-decoupling.md) |
 | **Coordinate Unit Resolved Once** | MCP Tools & Input | Carry each coordinate's unit in a type (`McpPoint`) and resolve it in one place; five separate guesses mis-tapped pixel and mixed-unit points. | [coordinate-unit-resolved-once.md](coordinate-unit-resolved-once.md) |
+| **adb Shell False Success** | MCP Tools & Android Shell | `adb shell cmd` exits 0 when the command is missing; check output, measure on devices, feed real output to tests. | [adb-shell-false-success.md](adb-shell-false-success.md) |
+| **adb Shell Argument Quoting** | Security & Android Shell | `adb shell` joins arguments for the device `sh`; single-quote any agent-supplied value. | [adb-shell-argument-quoting.md](adb-shell-argument-quoting.md) |
+| **Dart Extension Shadowed Names** | Dart Language | Inside an extension, top-level names (`dart:io` `stdout`) win over members; qualify with `this.`. | [dart-extension-shadowed-names.md](dart-extension-shadowed-names.md) |
 
 ---
 
