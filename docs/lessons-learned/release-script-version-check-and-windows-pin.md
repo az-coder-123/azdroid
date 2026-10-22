@@ -23,6 +23,7 @@ The test imports `package:flutter_test`, which needs the Flutter engine; `dart t
 
 - `scripts/deploy.sh` runs the check with `flutter test`.
 - Step 4 rewrites any `releases/latest/download/Azdroid-v<x>-Windows-x64.zip` to `releases/download/v<x>/…` (the tag in the file name has the asset) and stops if a Windows `latest` link remains.
+- The pre-flight check uses `gh auth status --active`: plain `gh auth status` exits 1 when any stored account (here an inactive second account) has an expired token, even though the active one can publish.
 - Release notes for v1.4.0 were written by hand before the run (the script keeps an existing notes file), instead of the commit-title draft.
 
 ## 5. Prevention & Reusability Checklist

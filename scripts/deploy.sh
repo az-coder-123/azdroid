@@ -145,7 +145,9 @@ fi
 log_ok "Git working directory is clean"
 
 if [[ "$NO_PUSH" == false ]]; then
-  if ! gh auth status &>/dev/null; then
+  # --active: an expired token of another, inactive account makes plain
+  # `gh auth status` fail although publishing works.
+  if ! gh auth status --active &>/dev/null; then
     log_err "GitHub CLI (gh) is not authenticated. Run 'gh auth login' first."
     exit 1
   fi
