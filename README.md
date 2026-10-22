@@ -1,4 +1,4 @@
-# ?????? Azdroid ??? High-Performance Android Screen Mirroring & Workstation for macOS & Windows
+# ⚡️ Azdroid — High-Performance Android Screen Mirroring & Workstation for macOS & Windows
 
 <p align="center">
   <b>Next-gen Android screen mirroring, desktop control, and Model Context Protocol (MCP) server for macOS and Windows over Wi-Fi & USB. Built with Flutter Desktop & scrcpy.</b>
@@ -16,13 +16,13 @@
 <p align="center">
   <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v1.4.0-macOS.zip"><img src="https://img.shields.io/badge/Download_for_macOS-v1.4.0_(Universal)-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download Azdroid for macOS"></a>
   &nbsp;
-  <a href="https://github.com/az-coder-123/azdroid/releases/latest/download/Azdroid-v1.4.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.4.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
+  <a href="https://github.com/az-coder-123/azdroid/releases/download/v1.3.0/Azdroid-v1.3.0-Windows-x64.zip"><img src="https://img.shields.io/badge/Download_for_Windows-v1.3.0_(x64_Preview)-0078D4?style=for-the-badge" alt="Download Azdroid for Windows (Preview)"></a>
   &nbsp;
   <a href="https://github.com/az-coder-123/azdroid/releases/latest"><img src="https://img.shields.io/badge/Latest_Release_%26_Notes-gray?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release & Notes"></a>
   <br>
-  <sub>macOS: Universal Binary (31 MB) ??? Apple Silicon (M1/M2/M3/M4) & Intel Core ??? macOS 12.0+</sub>
+  <sub>macOS: Universal Binary (31 MB) • Apple Silicon (M1/M2/M3/M4) & Intel Core • macOS 12.0+</sub>
   <br>
-  <sub>Windows (Preview): portable ZIP (25 MB) ??? Windows 10/11 x64 ??? <a href="docs/platform-support.md">what works on each platform</a></sub>
+  <sub>Windows (Preview): portable ZIP (25 MB) • Windows 10/11 x64 • <a href="docs/platform-support.md">what works on each platform</a></sub>
 </p>
 
 <p align="center">
@@ -31,18 +31,18 @@
 
 ---
 
-## ???? Why Azdroid?
+## 🚀 Why Azdroid?
 
 Azdroid turns your Mac or Windows PC into the ultimate Android command center. Whether you are an Android developer debugging apps, a content creator recording mobile gameplay, or a power user seeking desktop control over your phone, Azdroid delivers:
 
-- ?????? **Low-Latency Native Decoding:** Hardware H.264 encoding on the phone, decoded natively on the desktop (Apple VideoToolbox on macOS, Media Foundation on Windows) at up to 60 FPS, at the phone's own resolution.
-- ???? **Dual Connection (Wi-Fi & USB):** Subnet ARP auto-discovery, mDNS wireless debugging, 1-click USB-to-Wi-Fi switch, or instant plug-and-play USB cable mode.
-- ???? **Screen-Off Streaming:** Keep the physical phone screen dark while you keep mirroring and controlling it, for privacy and less battery drain from the display.
-- ???? **100% Private & P2P:** Zero cloud servers, zero analytics, and zero telemetry. All video, audio, and inputs remain strictly inside your local network.
+- ⚡️ **Low-Latency Native Decoding:** Hardware H.264 encoding on the phone, decoded natively on the desktop (Apple VideoToolbox on macOS, Media Foundation on Windows) at up to 60 FPS, at the phone's own resolution.
+- 📶 **Dual Connection (Wi-Fi & USB):** Subnet ARP auto-discovery, mDNS wireless debugging, 1-click USB-to-Wi-Fi switch, or instant plug-and-play USB cable mode.
+- 🔋 **Screen-Off Streaming:** Keep the physical phone screen dark while you keep mirroring and controlling it, for privacy and less battery drain from the display.
+- 🔒 **100% Private & P2P:** Zero cloud servers, zero analytics, and zero telemetry. All video, audio, and inputs remain strictly inside your local network.
 
 ---
 
-## ???? Visual Showcase
+## 📸 Visual Showcase
 
 ### 1. Subnet Discovery & Built-in Feature Catalog
 <table>
@@ -117,11 +117,11 @@ Azdroid turns your Mac or Windows PC into the ultimate Android command center. W
 
 ---
 
-## ???? Autonomous AI Agent Architecture & Workflow (MCP Server)
+## 🤖 Autonomous AI Agent Architecture & Workflow (MCP Server)
 
 > Connect **Claude Desktop**, **Cursor**, **Antigravity**, and **Cline** directly to your physical or emulated Android devices with zero UI overhead. For detailed step-by-step triage, see the [Autonomous Workflow Guide](docs/mcp-agent-workflow.md) and [AI Agent Setup Guide](docs/mcp-setup-guide.md).
 
-### ?????? Executive Overview
+### ⚡️ Executive Overview
 
 The **Azdroid MCP Server** (`azdroid-mcp`) transforms your connected Android devices (physical hardware or emulators over Wi-Fi and USB) into an autonomous testing and automation environment for AI assistants (e.g., **Claude Desktop**, **Cursor**, **Antigravity**, **Cline**).
 
@@ -130,24 +130,24 @@ Operating over standard I/O (`stdio`) via JSON-RPC 2.0, the server provides **62
 ```mermaid
 flowchart TD
     subgraph P1 ["Phase 1: Task Intake"]
-        A["???? 1. User Request\nHigh-level goal or bug report"]
+        A["🎯 1. User Request\nHigh-level goal or bug report"]
     end
 
     subgraph P2 ["Phase 2: Perception & Action (Observe & Act)"]
-        B["???? 2. Sensory Inspection\nXML Semantic Tree & Screenshot"]
-        C["???? 3. Touch & Input\nHardware taps, typing & gestures"]
+        B["👀 2. Sensory Inspection\nXML Semantic Tree & Screenshot"]
+        C["👆 3. Touch & Input\nHardware taps, typing & gestures"]
         B --> C
     end
 
     subgraph P3 ["Phase 3: Triage & Rectification (Diagnose & Repair)"]
-        D["???? 4. Error Interception\nCrash dump & logcat traces"]
-        E["??????? 5. Source Code Fix\nRoot cause repair in IDE"]
+        D["🚨 4. Error Interception\nCrash dump & logcat traces"]
+        E["🛠️ 5. Source Code Fix\nRoot cause repair in IDE"]
         D --> E
     end
 
     subgraph P4 ["Phase 4: Closed-Loop Assurance (Verify & Deliver)"]
-        F["???? 6. Automated Re-verification\nCold restart & replay macro"]
-        G["??? 7. Final Delivery\nAudited report with proof"]
+        F["🔁 6. Automated Re-verification\nCold restart & replay macro"]
+        G["✅ 7. Final Delivery\nAudited report with proof"]
         F --> G
     end
 
@@ -169,26 +169,26 @@ flowchart TD
 
 | Phase | Step | Purpose | Primary Azdroid MCP Tools |
 | :---: | :--- | :--- | :--- |
-| **1** | **???? User Request** | Delegating task or bug reproduction prompt | Client Prompt Context |
-| **2** | **???? Sensory Inspection** | Grounding UI structure with millimeter accuracy | `android_get_ui_tree`, `android_take_screenshot` |
-| **3** | **???? Touch & Action** | Injecting multi-touch, typing, and key events | `android_tap`, `android_input_text`, `android_swipe` |
-| **4** | **???? Error Interception** | Capturing stack traces, ANRs, and log buffers | `android_get_logcat` (`crashesOnly`) |
-| **5** | **??????? Source Code Fix** | Editing source files and resolving root causes | IDE File Tools / Compiler |
-| **6** | **???? Re-verification** | Replaying user journey on physical device | `android_launch_app`, `android_batch_actions` |
-| **7** | **??? Final Delivery** | Delivering verified outcome with evidence | Final Audit Report |
+| **1** | **🎯 User Request** | Delegating task or bug reproduction prompt | Client Prompt Context |
+| **2** | **👀 Sensory Inspection** | Grounding UI structure with millimeter accuracy | `android_get_ui_tree`, `android_take_screenshot` |
+| **3** | **👆 Touch & Action** | Injecting multi-touch, typing, and key events | `android_tap`, `android_input_text`, `android_swipe` |
+| **4** | **🚨 Error Interception** | Capturing stack traces, ANRs, and log buffers | `android_get_logcat` (`crashesOnly`) |
+| **5** | **🛠️ Source Code Fix** | Editing source files and resolving root causes | IDE File Tools / Compiler |
+| **6** | **🔁 Re-verification** | Replaying user journey on physical device | `android_launch_app`, `android_batch_actions` |
+| **7** | **✅ Final Delivery** | Delivering verified outcome with evidence | Final Audit Report |
 
 ---
 
-### ??????? High-Level Interaction Architecture
+### 🏛️ High-Level Interaction Architecture
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as ???? Engineer / QA
-    participant AI as ???? AI Assistant (Claude / Cursor / Antigravity)
-    participant MCP as ?????? Azdroid MCP Server (azdroid-mcp)
-    participant Device as ???? Android Device (Wi-Fi / USB)
-    participant Desktop as ??????? Azdroid Desktop Viewport (macOS / Windows)
+    actor User as 👤 Engineer / QA
+    participant AI as 🤖 AI Assistant (Claude / Cursor / Antigravity)
+    participant MCP as ⚡️ Azdroid MCP Server (azdroid-mcp)
+    participant Device as 📱 Android Device (Wi-Fi / USB)
+    participant Desktop as 🖥️ Azdroid Desktop Viewport (macOS / Windows)
 
     User->>AI: 1. Dispatches high-level task / bug report
     Note over AI: 2. Formulates multi-step execution plan
@@ -235,7 +235,7 @@ sequenceDiagram
 
 ---
 
-## ?????? Complete Feature Catalog
+## ⚡️ Complete Feature Catalog
 
 Azdroid includes **14 built-in modules** (plus a planned menu bar companion):
 
@@ -251,7 +251,7 @@ Azdroid includes **14 built-in modules** (plus a planned menu bar companion):
 | **08** | **APK Sideload & Package Manager** | AAPT2 package inspection, install flags (`-r`, `-g`, `-t`), launch & uninstall | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> | [Guide](docs/features/apk-sideload-manager.md) |
 | **09** | **Two-Way File Explorer** | Two-way file manager, quick folders (Downloads, DCIM, Docs) & download to the computer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> | [Guide](docs/features/file-transfer-explorer.md) |
 | **10** | **Viewport Drag & Drop Push** | Drag any file or APK onto the mirroring window for instant push or sideload | Drag-and-drop | [Guide](docs/features/file-transfer-explorer.md) |
-| **11** | **Bidirectional Clipboard Sync** | Desktop clipboard ??? Android clipboard every 2 s, with loop prevention | Auto, or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> / <kbd>V</kbd> | [Guide](docs/features/clipboard-sync.md) |
+| **11** | **Bidirectional Clipboard Sync** | Desktop clipboard ⇄ Android clipboard every 2 s, with loop prevention | Auto, or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> / <kbd>V</kbd> | [Guide](docs/features/clipboard-sync.md) |
 | **12** | **Hardware MP4 Screen Recording** | H.264 MP4 (8 Mbps, up to 3 minutes) encoded on the phone, 3 s countdown HUD, live timer | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | [Guide](docs/features/hardware-screen-recording.md) |
 | **13** | **Lossless Screenshots & Area Crop** | Full PNG capture or interactive 8-handle marquee crop, to the clipboard, your Downloads folder, or both | <kbd>Cmd</kbd>+<kbd>S</kbd> / <kbd>Shift</kbd>+<kbd>S</kbd> | [Guide](docs/features/screenshots-area-crop.md) |
 | **14** | **Model Context Protocol (MCP) AI Agent Server** | Headless stdio MCP server exposing 38 tools for Claude Desktop, Cursor & Antigravity; the toolbar hub icon shows its setup, connected AI sessions, and live tool calls; the mirror shows when an AI controls the device | Stdio CLI / Hub icon | [Guide](docs/mcp-setup-guide.md) |
@@ -261,7 +261,7 @@ Azdroid includes **14 built-in modules** (plus a planned menu bar companion):
 
 ---
 
-## ?????? Essential Keyboard Shortcuts
+## ⌨️ Essential Keyboard Shortcuts
 
 Use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows (for example <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>). Tooltips in the app always show the keys of the running platform.
 
@@ -280,25 +280,25 @@ Use <kbd>Cmd</kbd> on macOS and <kbd>Ctrl</kbd> on Windows (for example <kbd>Ctr
 
 ---
 
-## ??????? Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
-    subgraph AndroidDevice ["???? Android Device"]
+    subgraph AndroidDevice ["📱 Android Device"]
         A1["SurfaceControl / Display Capture"] --> A2["MediaCodec (H.264 hardware)"]
         A2 --> A3["scrcpy-server (Shell-level daemon)"]
         A4["InputManager (Touch / Key Injection)"] <--- A3
     end
 
-    subgraph Transport ["???? Local Wi-Fi (LAN) / ???? USB Cable"]
+    subgraph Transport ["📶 Local Wi-Fi (LAN) / 🔌 USB Cable"]
         V_STREAM["TCP Video Stream (Raw NAL Units)"]
         A_STREAM["TCP Audio Stream (Raw PCM, Android 11+)"]
         C_SOCKET["TCP Control Socket (scrcpy Control Messages)"]
     end
 
-    subgraph DesktopApp ["???? macOS / Windows (Azdroid App - Flutter)"]
+    subgraph DesktopApp ["💻 macOS / Windows (Azdroid App - Flutter)"]
         M1["Flutter UI"] --> M2["Mouse & Keyboard Event Listener"]
-        M3["Native Video Decoder (VideoToolbox / Media Foundation) ??? Texture"] --> M1
+        M3["Native Video Decoder (VideoToolbox / Media Foundation) → Texture"] --> M1
     end
 
     A3 === V_STREAM ===> M3
@@ -308,7 +308,7 @@ flowchart LR
 
 ---
 
-## ??????? Quick Start & Installation
+## 🛠️ Quick Start & Installation
 
 ### Prerequisites
 
@@ -321,7 +321,7 @@ flowchart LR
 ### Install a release
 
 - **macOS:** unzip `Azdroid-v1.4.0-macOS.zip`, move **Azdroid.app** to `/Applications`. Unsigned build: run `xattr -cr /Applications/Azdroid.app` once if Gatekeeper blocks it.
-- **Windows:** unzip `Azdroid-v1.4.0-Windows-x64.zip` (ADB included) and run `Azdroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info ??? Run anyway**.
+- **Windows:** unzip `Azdroid-v1.3.0-Windows-x64.zip` (ADB included) and run `Azdroid\desk_droid.exe` (no installer). Unsigned build: on the SmartScreen prompt choose **More info → Run anyway**.
 
 ### Run from source
 
@@ -339,51 +339,51 @@ flutter run -d windows   # Windows (needs Visual Studio 2022 with "Desktop devel
 ### Build a release package
 
 ```bash
-./scripts/build_release.sh                                            # macOS ??? RELEASE/Azdroid-v<version>-macOS.zip
-powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1     # Windows ??? RELEASE\Azdroid-v<version>-Windows-x64.zip
+./scripts/build_release.sh                                            # macOS → RELEASE/Azdroid-v<version>-macOS.zip
+powershell -ExecutionPolicy Bypass -File scripts\build_release.ps1     # Windows → RELEASE\Azdroid-v<version>-Windows-x64.zip
 ```
 
 Full setup, ADB drivers, and packaging options: [Installation & Building](docs/installation.md). Publishing a release: [Release Guide](docs/release-guide.md).
 
 ---
 
-## ???? Documentation Hub
+## 📚 Documentation Hub
 
 | Guide | Scope |
 | :--- | :--- |
-| [???? Installation & Building](docs/installation.md) | Install on macOS or Windows, set up ADB, run from source, and package a release |
-| [???? Release Guide](docs/release-guide.md) | Step-by-step release procedure: version, notes, build, package, upload, README links |
-| [??????? Platform Support](docs/platform-support.md) | What works on macOS and Windows, and where the platforms differ |
-| [???? User Guide](docs/user-guide.md) | Getting started, first-time setup, and device permissions |
-| [???? Pairing Guide](docs/pairing-guide.md) | Wireless pairing instructions for Android 11+ and USB fallback |
-| [?????? Shortcuts & Gestures](docs/shortcuts.md) | Complete mouse gestures and keyboard shortcuts (<kbd>Cmd</kbd> on macOS, <kbd>Ctrl</kbd> on Windows) |
-| [?????? Features Catalog](docs/features/README.md) | Modular in-depth documentation across all 16 built-in features |
-| [??????? Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
-| [???? Dependency Boundaries](docs/dependency-boundaries.md) | Allowed imports between features, shared kernel, and composition root |
-| [???? Platform Abstraction](docs/platform-abstraction.md) | Where macOS/Windows differences live, and how to add a new one |
-| [??????? Native Video Contract](docs/native-video-contract.md) | MethodChannel, scrcpy wire format, and rules shared by the Swift and C++ plugins |
-| [???? Bundled Platform-Tools](docs/bundled-platform-tools.md) | How adb ships inside the app, how it is found, and how to upgrade it |
-| [???? scrcpy Upgrade Assessment](docs/scrcpy-upgrade-assessment.md) | Why v2.1 must be upgraded, protocol compatibility by version, and the recommended path |
-| [???? Windows Port Plan](docs/windows-port-plan.md) | Phases, status, and risks of the Windows port |
-| [??????? Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
-| [???? Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
-| [???? AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (38 tools; [Workflow Guide](docs/mcp-agent-workflow.md); [App & Game Development](docs/mcp-app-game-development.md)) |
-| [??????? MCP Tool Safety](docs/mcp-tool-safety.md) | Which MCP tools need confirmation, how coordinates and text are read, and the protocol revision |
+| [💿 Installation & Building](docs/installation.md) | Install on macOS or Windows, set up ADB, run from source, and package a release |
+| [🚀 Release Guide](docs/release-guide.md) | Step-by-step release procedure: version, notes, build, package, upload, README links |
+| [🖥️ Platform Support](docs/platform-support.md) | What works on macOS and Windows, and where the platforms differ |
+| [📖 User Guide](docs/user-guide.md) | Getting started, first-time setup, and device permissions |
+| [📶 Pairing Guide](docs/pairing-guide.md) | Wireless pairing instructions for Android 11+ and USB fallback |
+| [⌨️ Shortcuts & Gestures](docs/shortcuts.md) | Complete mouse gestures and keyboard shortcuts (<kbd>Cmd</kbd> on macOS, <kbd>Ctrl</kbd> on Windows) |
+| [⚡️ Features Catalog](docs/features/README.md) | Modular in-depth documentation across all 16 built-in features |
+| [🏛️ Architecture](docs/architecture.md) | Clean Architecture blueprint, BLoC state model, and socket protocols |
+| [🧭 Dependency Boundaries](docs/dependency-boundaries.md) | Allowed imports between features, shared kernel, and composition root |
+| [🧩 Platform Abstraction](docs/platform-abstraction.md) | Where macOS/Windows differences live, and how to add a new one |
+| [🎞️ Native Video Contract](docs/native-video-contract.md) | MethodChannel, scrcpy wire format, and rules shared by the Swift and C++ plugins |
+| [📦 Bundled Platform-Tools](docs/bundled-platform-tools.md) | How adb ships inside the app, how it is found, and how to upgrade it |
+| [🧮 scrcpy Upgrade Assessment](docs/scrcpy-upgrade-assessment.md) | Why v2.1 must be upgraded, protocol compatibility by version, and the recommended path |
+| [🪟 Windows Port Plan](docs/windows-port-plan.md) | Phases, status, and risks of the Windows port |
+| [🛠️ Troubleshooting](docs/troubleshooting.md) | Solutions for Xiaomi/MIUI input permissions, firewalls, and ADB errors |
+| [💡 Lessons Learned](docs/lessons-learned/README.md) | Engineering post-mortems, root cause analyses, and edge-case solutions |
+| [🤖 AI Agent & MCP Guide](docs/mcp-setup-guide.md) | Connect Claude Desktop, Cursor, and Antigravity to automate Android devices (38 tools; [Workflow Guide](docs/mcp-agent-workflow.md); [App & Game Development](docs/mcp-app-game-development.md)) |
+| [🛡️ MCP Tool Safety](docs/mcp-tool-safety.md) | Which MCP tools need confirmation, how coordinates and text are read, and the protocol revision |
 
 ---
 
-## ??????? Search Keywords & Tags
+## 🏷️ Search Keywords & Tags
 
-`android-screen-mirroring` ?? `scrcpy-macos-gui` ?? `scrcpy-windows-gui` ?? `wireless-adb` ?? `screen-mirror-mac` ?? `screen-mirror-windows` ?? `flutter-desktop` ?? `apple-silicon` ?? `android-logcat-gui` ?? `apk-installer-mac` ?? `deep-link-tester` ?? `android-file-transfer-mac` ?? `low-latency-streaming` ?? `open-source`
+`android-screen-mirroring` · `scrcpy-macos-gui` · `scrcpy-windows-gui` · `wireless-adb` · `screen-mirror-mac` · `screen-mirror-windows` · `flutter-desktop` · `apple-silicon` · `android-logcat-gui` · `apk-installer-mac` · `deep-link-tester` · `android-file-transfer-mac` · `low-latency-streaming` · `open-source`
 
 ---
 
-## ???? Community, Contributing & License
+## 🤝 Community, Contributing & License
 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>???? Contributing</h3>
+      <h3>🤝 Contributing</h3>
       <p>Contributions, feature requests, and bug reports are warmly welcome! Azdroid thrives on community feedback.</p>
       <p>
         <a href="https://github.com/az-coder-123/azdroid/issues"><img src="https://img.shields.io/badge/Issues-Report%20Bug-red?style=flat-square&logo=github" alt="Report Bug"></a>
@@ -397,7 +397,7 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
       </ul>
     </td>
     <td width="50%" valign="top">
-      <h3>???? License & Freedom</h3>
+      <h3>📄 License & Freedom</h3>
       <p>Azdroid is 100% free, open-source, and privacy-respecting software released under the <b>MIT License</b>.</p>
       <p>
         <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License"></a>
@@ -412,4 +412,3 @@ Full setup, ADB drivers, and packaging options: [Installation & Building](docs/i
 <p align="center">
   Developed and maintained by <b><a href="https://github.com/az-coder-123">az-coder-123</a></b>
 </p>
-
