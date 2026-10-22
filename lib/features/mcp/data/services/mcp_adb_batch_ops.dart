@@ -18,8 +18,11 @@ class McpAdbBatchOps {
       if (cmd != null) commands[i] = cmd;
     }
 
-    // When all actions are shell commands, execute them in a single compound ADB shell call
-    if (commands.length == actions.length) {
+    // With the scrcpy session, each step is injected directly (taps in about
+    // 50 ms, real two-finger pinch). Without it, steps that compile to shell
+    // commands run as one compound adb script, saving a round trip each.
+    final fast = await McpFastInput.isAvailable(client, serial);
+    if (!fast && commands.length == actions.length) {
       final parts = <String>[];
       for (var i = 0; i < actions.length; i++) {
         final cmd = commands[i]!;
@@ -43,7 +46,7 @@ class McpAdbBatchOps {
       return results;
     }
 
-    // Fallback: step-by-step execution for mixed or uncompiled commands
+    // Step by step: with the session, or for steps that do not compile
     final results = <Map<String, dynamic>>[];
     for (var i = 0; i < actions.length; i++) {
       final a = actions[i];
@@ -168,13 +171,24 @@ class McpAdbBatchOps {
                   a['durationMs'] ?? a['duration'],
                 ) ??
                 400;
-            final ok = await client.pinchGesture(
-              serial,
-              scale: scale,
-              centerX: cx != null ? cx / size.x : 0.5,
-              centerY: cy != null ? cy / size.y : 0.5,
-              durationMs: dur,
-            );
+            final center = (cx ?? size.x ~/ 2, cy ?? size.y ~/ 2);
+            final ok =
+                await McpFastInput.play(
+                  client,
+                  serial,
+                  McpGestureStrokes.pinch(
+                    center: center,
+                    scale: scale,
+                    durationMs: dur,
+                  ),
+                ) ||
+                await client.pinchGesture(
+                  serial,
+                  scale: scale,
+                  centerX: center.$1 / size.x,
+                  centerY: center.$2 / size.y,
+                  durationMs: dur,
+                );
             results.add({'step': i, 'action': 'pinch', 'success': ok});
           case 'rotate':
             final angle =
@@ -199,14 +213,26 @@ class McpAdbBatchOps {
                   a['durationMs'] ?? a['duration'],
                 ) ??
                 400;
-            final ok = await client.rotateGesture(
-              serial,
-              angleDegrees: angle,
-              centerX: cx != null ? cx / size.x : 0.5,
-              centerY: cy != null ? cy / size.y : 0.5,
-              radius: r,
-              durationMs: dur,
-            );
+            final center = (cx ?? size.x ~/ 2, cy ?? size.y ~/ 2);
+            final ok =
+                await McpFastInput.play(
+                  client,
+                  serial,
+                  McpGestureStrokes.rotate(
+                    center: center,
+                    angleDegrees: angle,
+                    radius: r <= 1 ? r * size.x : r,
+                    durationMs: dur,
+                  ),
+                ) ||
+                await client.rotateGesture(
+                  serial,
+                  angleDegrees: angle,
+                  centerX: center.$1 / size.x,
+                  centerY: center.$2 / size.y,
+                  radius: r,
+                  durationMs: dur,
+                );
             results.add({'step': i, 'action': 'rotate', 'success': ok});
           default:
             results.add({'step': i, 'error': 'Unknown action: $type'});

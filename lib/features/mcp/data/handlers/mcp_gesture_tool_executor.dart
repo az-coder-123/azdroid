@@ -1,5 +1,5 @@
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
-import 'package:desk_droid/features/mcp/data/services/mcp_fast_touch.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_fast_input.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_touch_player.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_argument_helper.dart';
@@ -20,7 +20,7 @@ class McpGestureToolExecutor {
     this._adb, {
     Future<McpTouchSink> Function(String)? openSession,
   }) : _openSession =
-           openSession ?? ((serial) => McpFastTouch.opener(_adb, serial));
+           openSession ?? ((serial) => McpFastInput.opener(_adb, serial));
 
   final McpAdbClient _adb;
   final Future<McpTouchSink> Function(String serial) _openSession;
@@ -155,12 +155,15 @@ class McpGestureToolExecutor {
   ) async {
     final events = McpTouchTimeline.compile(strokes, width, height);
     final sink = await _openSession(serial);
-    return McpTouchPlayer.play(
+    await McpFastInput.beforeInput(serial);
+    final played = await McpTouchPlayer.play(
       events,
       width: width,
       height: height,
       send: sink.send,
       flush: sink.flush,
     );
+    McpFastInput.afterInput(serial);
+    return played;
   }
 }

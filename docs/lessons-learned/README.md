@@ -95,6 +95,7 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **Display Size in Current Orientation** | MCP Tools & Coordinates | `wm size` is portrait and physical; use `cur=` of `dumpsys window displays` and cache it for seconds. | [display-size-current-orientation.md](display-size-current-orientation.md) |
 | **Open Handles Block Process Exit** | Dart CLI & Lifecycle | Sockets, processes, and timers keep a Dart CLI alive after `main`; close registries on shutdown. | [open-handles-block-process-exit.md](open-handles-block-process-exit.md) |
 | **Device-Reaching Statics in Tests** | Testing & MCP Touch | A static path to a device needs a seam switched off in `flutter_test_config.dart`; mocks throwing by accident is not a test. | [device-reaching-statics-in-tests.md](device-reaching-statics-in-tests.md) |
+| **Fast Input: Key Overtakes Click** | MCP Input & Timing | A key sent 0 ms after a navigating tap is lost; adb's 100 ms start-up hid it. Keep 120 ms between separate inputs. | [fast-input-key-overtakes-click.md](fast-input-key-overtakes-click.md) |
 
 ---
 

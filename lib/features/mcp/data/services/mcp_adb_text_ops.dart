@@ -168,12 +168,14 @@ class McpAdbTextOps {
     return text.replaceAll(RegExp('&[a-z]+;|&#[0-9]+;'), '_').length;
   }
 
-  /// Sends hardware keyevent by keycode.
+  /// Presses key [keyCode]: through the scrcpy session when it runs
+  /// ([McpFastInput]), otherwise `input keyevent`.
   static Future<bool> pressKey(
     McpAdbClient client,
     String serial,
     int keyCode,
   ) async {
+    if (await McpFastInput.pressKey(client, serial, keyCode)) return true;
     final res = await client.run([
       '-s',
       serial,

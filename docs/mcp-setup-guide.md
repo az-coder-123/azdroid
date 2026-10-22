@@ -176,7 +176,7 @@ Every tool also takes `deviceSerial` (required when several devices are connecte
 
 ### 1. Touch, Keys & Text
 
-Touch tools send their events through a control-only scrcpy session that the server starts on the first touch call (1–4 s) and stops after 2 idle minutes; each later tap takes about 50 ms. Without it they fall back to `adb shell input` (0.1–1 s per command). Details: [mcp-app-game-development.md](mcp-app-game-development.md#multi-finger-timed-input).
+Touch and key tools (`android_tap`, `android_swipe`, `android_click_element`, `android_press_key`, and the steps of `android_batch_actions`) send their events through a control-only scrcpy session that the server starts on the first touch call (1–4 s) and stops after 2 idle minutes; each later tap or key takes about 50 ms, with at least 120 ms between separate inputs so a key never overtakes the screen a tap just opened. Without the session they fall back to `adb shell input` (0.1–1 s per command), and a batch runs as one compound adb script. Details: [mcp-app-game-development.md](mcp-app-game-development.md#multi-finger-timed-input).
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | **`android_tap`** | point, `taps` (1 or 2), `intervalMs`, `holdMs`, `verifyChange` | Tap, double tap (`taps: 2`), or long press (`holdMs`). |

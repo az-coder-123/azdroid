@@ -81,14 +81,14 @@ class McpAdbInputOps {
   }
 
   /// Injects a touch tap gesture at [point]: through the scrcpy touch
-  /// session when it runs ([McpFastTouch]), otherwise `input tap`.
+  /// session when it runs ([McpFastInput]), otherwise `input tap`.
   static Future<bool> tap(
     McpAdbClient client,
     String serial,
     McpPoint point,
   ) async {
     final (x, y) = await toPixels(client, serial, point);
-    if (await McpFastTouch.play(client, serial, [McpFastTouch.tap(x, y)])) {
+    if (await McpFastInput.play(client, serial, [McpFastInput.tap(x, y)])) {
       return true;
     }
     final res = await client.run([
@@ -146,10 +146,10 @@ class McpAdbInputOps {
     int intervalMs = 120,
   }) async {
     final (x, y) = await toPixels(client, serial, point);
-    final hold = min(McpFastTouch.tapHoldMs, intervalMs ~/ 2);
-    if (await McpFastTouch.play(client, serial, [
-      McpFastTouch.tap(x, y, holdMs: hold),
-      McpFastTouch.tap(x, y, atMs: intervalMs, holdMs: hold),
+    final hold = min(McpFastInput.tapHoldMs, intervalMs ~/ 2);
+    if (await McpFastInput.play(client, serial, [
+      McpFastInput.tap(x, y, holdMs: hold),
+      McpFastInput.tap(x, y, atMs: intervalMs, holdMs: hold),
     ])) {
       return true;
     }
@@ -170,8 +170,8 @@ class McpAdbInputOps {
   ) async {
     final (startX, startY) = await toPixels(client, serial, start);
     final (endX, endY) = await toPixels(client, serial, end);
-    if (await McpFastTouch.play(client, serial, [
-      McpFastTouch.swipe((startX, startY), (endX, endY), durationMs),
+    if (await McpFastInput.play(client, serial, [
+      McpFastInput.swipe((startX, startY), (endX, endY), durationMs),
     ])) {
       return true;
     }

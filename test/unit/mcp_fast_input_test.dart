@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:desk_droid/features/mcp/data/services/mcp_adb_client.dart';
-import 'package:desk_droid/features/mcp/data/services/mcp_fast_touch.dart';
+import 'package:desk_droid/features/mcp/data/services/mcp_fast_input.dart';
 import 'package:desk_droid/features/mcp/data/services/mcp_unsupported_exception.dart';
 import 'package:desk_droid/features/mcp/data/utils/mcp_point.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +11,7 @@ import 'package:mocktail/mocktail.dart';
 class _MockAdb extends Mock implements McpAdbClient {}
 
 void main() {
+  setUpAll(() => registerFallbackValue(McpPoint.pixels(0, 0)));
   const serial = 'M13';
   late _MockAdb adb;
   late List<String> commands;
@@ -32,8 +33,8 @@ void main() {
     commands = [];
     writes = [];
     opens = 0;
-    McpFastTouch.reset();
-    McpFastTouch.opener = (_, _) async {
+    McpFastInput.reset();
+    McpFastInput.opener = (_, _) async {
       opens++;
       return (send: writes.add, flush: () async {});
     };
@@ -79,7 +80,7 @@ void main() {
   });
 
   test('without a session: adb, and no retry for a minute', () async {
-    McpFastTouch.opener = (_, _) async {
+    McpFastInput.opener = (_, _) async {
       opens++;
       throw const McpUnsupportedOnDeviceException('no jar');
     };
@@ -87,5 +88,65 @@ void main() {
     await McpAdbInputOps.tap(adb, serial, McpPoint.pixels(1, 2));
     expect(commands.where((c) => c.endsWith('input tap 1 2')), hasLength(2));
     expect(opens, 1);
+  });
+
+  test('a key is a scrcpy key down and up, not input keyevent', () async {
+    expect(await McpAdbTextOps.pressKey(adb, serial, 4), isTrue);
+    final bytes = writes.expand((w) => w).toList();
+    // Two 14-byte INJECT_KEYCODE messages: type 0, action down then up.
+    expect(bytes, hasLength(28));
+    expect([bytes[0], bytes[1], bytes[14], bytes[15]], [0, 0, 0, 1]);
+    expect(ByteData.sublistView(Uint8List.fromList(bytes)).getInt32(2), 4);
+    expect(commands.where((c) => c.contains('keyevent')), isEmpty);
+  });
+
+  test(
+    'a batch with the session injects each step, pinch with two fingers',
+    () async {
+      when(() => adb.tap(serial, any())).thenAnswer(
+        (i) => McpAdbInputOps.tap(
+          adb,
+          serial,
+          i.positionalArguments[1] as McpPoint,
+        ),
+      );
+      final results = await McpAdbBatchOps.batchActions(adb, serial, [
+        {'action': 'tap', 'x': 0.5, 'y': 0.5},
+        {'action': 'pinch', 'scale': 2},
+      ]);
+      expect(
+        results.every((r) => r['success'] == true),
+        isTrue,
+        reason: '$results',
+      );
+      expect(commands.where((c) => c.contains('input')), isEmpty);
+      // Pinch: two pointer ids down at once.
+      final downs = touches().where((t) => t.$1 == 0).map((t) => t.$2).toSet();
+      expect(downs, containsAll([0, 1]));
+    },
+  );
+
+  test('a batch without the session stays one compound adb script', () async {
+    McpFastInput.opener = (_, _) async =>
+        throw const McpUnsupportedOnDeviceException('no jar');
+    await McpAdbBatchOps.batchActions(adb, serial, [
+      {'action': 'tap', 'x': 10, 'y': 10},
+      {'action': 'key', 'keyCode': 4},
+    ]);
+    final input = commands.where((c) => c.contains('input')).toList();
+    expect(input, hasLength(1));
+    expect(input.single, contains('input tap 10 10'));
+    expect(input.single, contains('input keyevent 4'));
+  });
+
+  test('a key right after a tap waits for the minimum gap', () async {
+    final watch = Stopwatch()..start();
+    await McpAdbInputOps.tap(adb, serial, McpPoint.pixels(1, 1));
+    final afterTap = watch.elapsedMilliseconds;
+    await McpAdbTextOps.pressKey(adb, serial, 4);
+    expect(
+      watch.elapsedMilliseconds - afterTap,
+      greaterThanOrEqualTo(McpFastInput.minGap.inMilliseconds - 5),
+    );
   });
 }
