@@ -101,7 +101,7 @@ Add to `.cursor/mcp.json` in your project root or user settings:
 
 Two configuration scopes are supported:
 
-**Global (all workspaces)** — open the Cline panel → MCP icon → *Configure MCP Servers*, then add to `cline_mcp_settings.json`:
+**Global (all workspaces)** — open the Cline panel → MCP icon → *Configure MCP Servers*, then add to `cline_mcp_settings.json`. Depending on the Cline version, this file lives at `~/.cline/data/settings/cline_mcp_settings.json` (current builds) or in the extension's globalStorage folder (legacy builds); the *Configure MCP Servers* action always opens the active one:
 
 ```json
 {
