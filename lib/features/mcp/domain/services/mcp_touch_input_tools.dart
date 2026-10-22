@@ -35,6 +35,14 @@ final List<McpToolDefinition> mcpTouchInputTools = [
         'yRatio': _coordRatioProp,
         'xPixel': _coordPixelProp,
         'yPixel': _coordPixelProp,
+        'verifyChange': {
+          'type': 'boolean',
+          'description': 'Optional. If true, inspects UI hierarchy before and after tap (~300ms window) to verify whether the gesture caused a detectable UI state change.',
+        },
+        'verifyDelayMs': {
+          'type': 'integer',
+          'description': 'Optional wait duration in milliseconds before capturing post-tap hierarchy (default 300ms for animation settlement).',
+        },
       },
     },
   ),

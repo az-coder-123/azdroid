@@ -67,6 +67,12 @@ class McpAdbClient with McpAdbSystemDelegator, McpAdbAutomationDelegator {
       McpAdbInputOps.getDisplaySize(this, serial);
   Future<bool> tap(String serial, double x, double y) =>
       McpAdbInputOps.tap(this, serial, x, y);
+  Future<(bool ok, bool stateChanged)> tapAndVerify(
+    String serial,
+    double x,
+    double y, {
+    int delayMs = 300,
+  }) => McpAdbInputOps.tapAndVerify(this, serial, x, y, delayMs: delayMs);
   Future<bool> swipe(
     String serial,
     double sx,

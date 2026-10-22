@@ -84,6 +84,81 @@ void main() {
       },
     );
 
+    test(
+      'android_tap with verifyChange: true reports verified state change',
+      () async {
+        when(
+          () => mockAdb.tapAndVerify(
+            '192.168.1.100:5555',
+            0.5,
+            0.75,
+            delayMs: any(named: 'delayMs'),
+          ),
+        ).thenAnswer((_) async => (true, true));
+
+        final result = await executor.execute('android_tap', {
+          'deviceSerial': '192.168.1.100:5555',
+          'x': 0.5,
+          'y': 0.75,
+          'verifyChange': true,
+        });
+
+        expect(result.isError, isFalse);
+        expect(result.content.first.text, contains('State change verified'));
+      },
+    );
+
+    test(
+      'android_tap with verifyChange: true warns when UI remained unchanged',
+      () async {
+        when(
+          () => mockAdb.tapAndVerify(
+            '192.168.1.100:5555',
+            0.1,
+            0.1,
+            delayMs: any(named: 'delayMs'),
+          ),
+        ).thenAnswer((_) async => (true, false));
+
+        final result = await executor.execute('android_tap', {
+          'deviceSerial': '192.168.1.100:5555',
+          'x': 0.1,
+          'y': 0.1,
+          'verifyChange': true,
+        });
+
+        expect(result.isError, isFalse);
+        expect(
+          result.content.first.text,
+          contains('Warning: Tap produced no detectable UI change'),
+        );
+      },
+    );
+
+    test(
+      'android_tap with verifyChange: true returns error on tap failure',
+      () async {
+        when(
+          () => mockAdb.tapAndVerify(
+            '192.168.1.100:5555',
+            0.1,
+            0.1,
+            delayMs: any(named: 'delayMs'),
+          ),
+        ).thenAnswer((_) async => (false, false));
+
+        final result = await executor.execute('android_tap', {
+          'deviceSerial': '192.168.1.100:5555',
+          'x': 0.1,
+          'y': 0.1,
+          'verifyChange': true,
+        });
+
+        expect(result.isError, isTrue);
+        expect(result.content.first.text, contains('Failed to tap'));
+      },
+    );
+
     test('android_double_tap executes double tap via McpAdbClient', () async {
       when(
         () =>

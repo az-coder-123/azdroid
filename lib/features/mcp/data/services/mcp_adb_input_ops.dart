@@ -78,6 +78,42 @@ class McpAdbInputOps {
     return res.exitCode == 0;
   }
 
+  /// Injects a touch tap gesture, then verifies whether the UI state changed.
+  /// Captures hierarchy before and after tap with a configurable [delayMs] window.
+  static Future<(bool ok, bool stateChanged)> tapAndVerify(
+    McpAdbClient client,
+    String serial,
+    double x,
+    double y, {
+    int delayMs = 300,
+  }) async {
+    final beforeXml = await McpAdbUiOps.dumpHierarchy(
+      client,
+      serial,
+      compressed: true,
+    );
+
+    final ok = await tap(client, serial, x, y);
+    if (!ok) return (false, false);
+
+    if (delayMs > 0) {
+      await Future.delayed(Duration(milliseconds: delayMs));
+    }
+
+    final afterXml = await McpAdbUiOps.dumpHierarchy(
+      client,
+      serial,
+      compressed: true,
+    );
+
+    if (beforeXml.startsWith('Error:') || afterXml.startsWith('Error:')) {
+      return (true, false);
+    }
+
+    final stateChanged = beforeXml.trim() != afterXml.trim();
+    return (true, stateChanged);
+  }
+
   /// Injects a rapid double-tap gesture within the threshold (default 120ms).
   static Future<bool> doubleTap(
     McpAdbClient client,

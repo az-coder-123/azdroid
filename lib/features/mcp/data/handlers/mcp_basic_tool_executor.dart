@@ -34,10 +34,45 @@ class McpBasicToolExecutor {
     switch (toolName) {
       case 'android_tap':
         final (x, y) = arguments.getPointPair();
-        final ok = await _adb.tap(serial, x, y);
-        return ok
-            ? McpToolResult.text('Tapped at coordinates ($x, $y) on $serial.')
-            : McpToolResult.error('Failed to tap at ($x, $y).');
+        final verify = arguments.getBool(
+          'verifyChange',
+          aliases: ['verify_change', 'verify'],
+        );
+
+        if (!verify) {
+          final ok = await _adb.tap(serial, x, y);
+          return ok
+              ? McpToolResult.text('Tapped at coordinates ($x, $y) on $serial.')
+              : McpToolResult.error('Failed to tap at ($x, $y).');
+        }
+
+        final delayMs = arguments.getInt(
+          'verifyDelayMs',
+          aliases: ['delayMs', 'waitMs'],
+          defaultValue: 300,
+        );
+        final (ok, stateChanged) = await _adb.tapAndVerify(
+          serial,
+          x,
+          y,
+          delayMs: delayMs,
+        );
+
+        if (!ok) {
+          return McpToolResult.error('Failed to tap at ($x, $y).');
+        }
+
+        if (stateChanged) {
+          return McpToolResult.text(
+            'Tapped at coordinates ($x, $y) on $serial. State change verified (UI updated).',
+          );
+        }
+
+        return McpToolResult.text(
+          'Tapped at coordinates ($x, $y) on $serial.\n'
+          'Warning: Tap produced no detectable UI change. '
+          'The target may be non-clickable, obscured, or out of active bounds.',
+        );
 
       case 'android_double_tap':
         final (x, y) = arguments.getPointPair();
