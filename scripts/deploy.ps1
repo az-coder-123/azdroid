@@ -151,10 +151,10 @@ function Update-ReleaseReadme {
   )
 
   if ($macRow) {
-    $lines += "| **[\`$($macRow.Zip)\`]($($macRow.Zip))** | macOS 12.0+ (Apple Silicon & Intel) | $($macRow.Version) | \`$($macRow.Size)\` | \`$($macRow.Sha)\` |"
+    $lines += ('| **[`{0}`]({0})** | macOS 12.0+ (Apple Silicon & Intel) | {1} | `{2}` | `{3}` |' -f $macRow.Zip, $macRow.Version, $macRow.Size, $macRow.Sha)
   }
   if ($winRow) {
-    $lines += "| **[\`$($winRow.Zip)\`]($($winRow.Zip))** | Windows 10/11 x64 (Preview) | $($winRow.Version) | \`$($winRow.Size)\` | \`$($winRow.Sha)\` |"
+    $lines += ('| **[`{0}`]({0})** | Windows 10/11 x64 (Preview) | {1} | `{2}` | `{3}` |' -f $winRow.Zip, $winRow.Version, $winRow.Size, $winRow.Sha)
   }
 
   $lines += @(
@@ -368,15 +368,26 @@ try {
   if (-not $DryRun) {
     Write-Step 'Step 8: Uploading Windows Assets to GitHub Release'
 
+    $releaseNotesFile = Join-Path $RootDir "docs\releases\v$($version.Name).md"
     & gh release view $tag *> $null
     if ($LASTEXITCODE -eq 0) {
       Write-Info "Uploading $zipName to existing release $tag..."
       Invoke-Checked 'gh' @('release', 'upload', $tag, $zipPath, $latestZipPath, $checksumPath, '--clobber')
       Write-Ok "Assets uploaded to GitHub Release $tag"
+      if (Test-Path $releaseNotesFile) {
+        Write-Info "Synchronizing GitHub Release $tag notes with $releaseNotesFile..."
+        Invoke-Checked 'gh' @('release', 'edit', $tag, '--notes-file', $releaseNotesFile, '--title', "Azdroid $tag")
+        Write-Ok "GitHub Release $tag notes updated"
+      }
     } else {
       Write-Info "Creating GitHub Release $tag with Windows assets..."
-      Invoke-Checked 'gh' @('release', 'create', $tag, $zipPath, $latestZipPath, $checksumPath,
-        '--title', "Azdroid $tag", '--notes', "Azdroid $tag (Windows 10/11 x64 release).")
+      $createArgs = @('release', 'create', $tag, $zipPath, $latestZipPath, $checksumPath, '--title', "Azdroid $tag")
+      if (Test-Path $releaseNotesFile) {
+        $createArgs += @('--notes-file', $releaseNotesFile)
+      } else {
+        $createArgs += @('--notes', "Azdroid $tag (Windows 10/11 x64 release).")
+      }
+      Invoke-Checked 'gh' $createArgs
       Write-Ok "Created GitHub Release $tag with Windows assets"
     }
   } else {
@@ -389,7 +400,12 @@ try {
   if (-not $DryRun -and -not $NoPush) {
     Write-Step 'Step 9: Committing & Pushing Documentation Updates'
 
-    Invoke-Checked 'git' @('add', $ReadmePath, $ReleaseReadmePath, $checksumPath)
+    $releaseNotesFile = Join-Path $RootDir "docs\releases\v$($version.Name).md"
+    $platformDocPath = Join-Path $RootDir 'docs\platform-support.md'
+    $gitAddArgs = @('add', '-A', $ReleaseDir, $ReadmePath)
+    if (Test-Path $releaseNotesFile) { $gitAddArgs += $releaseNotesFile }
+    if (Test-Path $platformDocPath) { $gitAddArgs += $platformDocPath }
+    Invoke-Checked 'git' $gitAddArgs
     & git commit -m "chore(release): attach Windows v$($version.Name) package and update download links"
     if ($LASTEXITCODE -eq 0) {
       Write-Ok "Created commit 'chore(release): attach Windows v$($version.Name) package and update download links'"

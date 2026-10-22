@@ -5,9 +5,8 @@
 ## Packages
 
 | Package | Platform | Version | Size | SHA-256 |
-| :--- | :--- | :--- | :--- | :--- |
-| **[\$(@{Zip=Azdroid-v1.4.1-macOS.zip; Version=v1.4.1; Size=31M; Sha=d060a38cce01a299fd3299a77ac6331a3ee2d8deb232aaf48bed3eff8ee1b7e8}.Zip)\](Azdroid-v1.4.1-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.4.1 | \$(@{Zip=Azdroid-v1.4.1-macOS.zip; Version=v1.4.1; Size=31M; Sha=d060a38cce01a299fd3299a77ac6331a3ee2d8deb232aaf48bed3eff8ee1b7e8}.Size)\ | \$(@{Zip=Azdroid-v1.4.1-macOS.zip; Version=v1.4.1; Size=31M; Sha=d060a38cce01a299fd3299a77ac6331a3ee2d8deb232aaf48bed3eff8ee1b7e8}.Sha)\ |
-| **[\$(@{Zip=Azdroid-v1.4.1-Windows-x64.zip; Version=v1.4.1; Size=25M; Sha=e1a0b638a468a3eb0a36893e321cf0a6d331e683c4f468f2141c109767a7bd3d}.Zip)\](Azdroid-v1.4.1-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.4.1 | \$(@{Zip=Azdroid-v1.4.1-Windows-x64.zip; Version=v1.4.1; Size=25M; Sha=e1a0b638a468a3eb0a36893e321cf0a6d331e683c4f468f2141c109767a7bd3d}.Size)\ | \$(@{Zip=Azdroid-v1.4.1-Windows-x64.zip; Version=v1.4.1; Size=25M; Sha=e1a0b638a468a3eb0a36893e321cf0a6d331e683c4f468f2141c109767a7bd3d}.Sha)\ |
+| **[`Azdroid-v1.4.1-macOS.zip`](Azdroid-v1.4.1-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.4.1 | `31M` | `d060a38cce01a299fd3299a77ac6331a3ee2d8deb232aaf48bed3eff8ee1b7e8` |
+| **[`Azdroid-v1.4.1-Windows-x64.zip`](Azdroid-v1.4.1-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.4.1 | `25M` | `e1a0b638a468a3eb0a36893e321cf0a6d331e683c4f468f2141c109767a7bd3d` |
 
 Each `*-latest.zip` file is a copy of the newest package for its platform.
 
