@@ -197,7 +197,8 @@ sed -i '' -E "s/static const String appVersion = '[^']*';/static const String ap
 log_ok "Updated lib/core/constants/app_constants.dart: appVersion = '${NEW_VERSION}'"
 
 # Verify version test
-dart test test/unit/app_version_test.dart >/dev/null 2>&1 || {
+# flutter test: the test imports flutter_test, which `dart test` cannot load.
+flutter test test/unit/app_version_test.dart >/dev/null 2>&1 || {
   log_err "Version alignment test failed!"
   exit 1
 }
@@ -267,6 +268,15 @@ sed -i '' -E "s/Download_for_macOS-v[0-9.]+_\(Universal\)/Download_for_macOS-v${
 # Update Install section command in README.md
 sed -i '' -E "s/Azdroid-v[0-9.]+-macOS\.zip/Azdroid-v${NEW_VERSION}-macOS.zip/g" "$README_FILE"
 log_ok "Updated README.md macOS download badge and installation commands to v${NEW_VERSION}"
+
+# Anti-404: this release has no Windows asset, so a Windows link to
+# /releases/latest/download/ would break. Pin it to the tag in its file name.
+sed -i '' -E "s|releases/latest/download/Azdroid-v([0-9.]+)-Windows-x64\.zip|releases/download/v\1/Azdroid-v\1-Windows-x64.zip|g" "$README_FILE"
+if grep -q "releases/latest/download/[^)\"]*Windows" "$README_FILE"; then
+  log_err "README.md still links Windows to /releases/latest/download/ (would 404)."
+  exit 1
+fi
+log_ok "Windows download link pinned to the release that has the Windows asset"
 
 # Update docs/platform-support.md date and version
 sed -i '' -E "s/Status date: \*\*[0-9-]+\*\* \(Azdroid v[0-9.]+ on macOS/Status date: \*\*${TODAY}\*\* (Azdroid v${NEW_VERSION} on macOS/" "$PLATFORM_FILE"
