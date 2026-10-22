@@ -252,4 +252,82 @@ void main() {
     expect(commands[1].sublist(4), ['-s', 'MyApp:E']);
     expect(commands[2], ['-s', serial, 'logcat', '-d', '-t', '7']);
   });
+
+  group('crash check', () {
+    test('buffer headers alone are not a crash', () async {
+      script({
+        '-b crash': _ok('--------- beginning of crash\n'),
+        'AndroidRuntime:E': _ok(
+          '--------- beginning of system\n--------- beginning of main\n',
+        ),
+      });
+      final report = await McpAdbCmdOps.checkCrash(adb, serial);
+      expect(report, startsWith('No crashes'));
+    });
+
+    test('a crash buffer entry after the header is reported', () async {
+      script({
+        '-b crash': _ok(
+          '--------- beginning of crash\n'
+          'E AndroidRuntime: FATAL EXCEPTION: main\n'
+          'E AndroidRuntime: Process: com.example.app, PID: 42\n',
+        ),
+      });
+      final report = await McpAdbCmdOps.checkCrash(
+        adb,
+        serial,
+        package: 'com.example.app',
+      );
+      expect(report, startsWith('Crash detected in crash buffer'));
+      expect(report, isNot(contains('beginning of')));
+    });
+
+    test('filters AndroidRuntime before taking the tail', () async {
+      script({});
+      await McpAdbCmdOps.checkCrash(adb, serial);
+      final main = commands.firstWhere((c) => c.contains('AndroidRuntime:E'));
+      expect(main, isNot(contains('-t')));
+    });
+  });
+
+  group('clear text', () {
+    test(
+      'selects all with keycombination, then deletes (Android 13+)',
+      () async {
+        script({});
+        expect(await McpAdbTextOps.clearText(adb, serial), isTrue);
+        expect(commands.map((c) => c.skip(3).join(' ')), [
+          'input keycombination 113 29',
+          'input keyevent 67',
+        ]);
+      },
+    );
+
+    test('without keycombination, deletes the focused text length', () async {
+      script({
+        'keycombination': _ok('Usage: input [<source>] <command> [<arg>...]'),
+      });
+      when(() => adb.dumpHierarchy(serial)).thenAnswer(
+        (_) async =>
+            '<hierarchy><node text="Tìm kiếm" focused="false" />'
+            '<node index="0" text="wifi x" focused="true" /></hierarchy>',
+      );
+      expect(await McpAdbTextOps.clearText(adb, serial), isTrue);
+      expect(
+        commands.last.skip(3).join(' '),
+        'input keyevent 123 ${List.filled(6, '67').join(' ')}',
+      );
+    });
+
+    test(
+      'without keycombination or a focused field, reports failure',
+      () async {
+        script({'keycombination': _ok('Usage: input …')});
+        when(
+          () => adb.dumpHierarchy(serial),
+        ).thenAnswer((_) async => '<hierarchy><node text="a" /></hierarchy>');
+        expect(await McpAdbTextOps.clearText(adb, serial), isFalse);
+      },
+    );
+  });
 }

@@ -84,6 +84,8 @@ Whenever an intricate bug, OS-level anomaly, or non-obvious platform behavior is
 | **adb Shell False Success** | MCP Tools & Android Shell | `adb shell cmd` exits 0 when the command is missing; check output, measure on devices, feed real output to tests. | [adb-shell-false-success.md](adb-shell-false-success.md) |
 | **adb Shell Argument Quoting** | Security & Android Shell | `adb shell` joins arguments for the device `sh`; single-quote any agent-supplied value. | [adb-shell-argument-quoting.md](adb-shell-argument-quoting.md) |
 | **Dart Extension Shadowed Names** | Dart Language | Inside an extension, top-level names (`dart:io` `stdout`) win over members; qualify with `this.`. | [dart-extension-shadowed-names.md](dart-extension-shadowed-names.md) |
+| **logcat Buffer Header Lines** | MCP Tools & Android Logs | `--------- beginning of` lines are framing; drop them before deciding a crash exists, and filter before `-t`. | [logcat-buffer-header-lines.md](logcat-buffer-header-lines.md) |
+| **Input Select-All Unsupported** | MCP Tools & Android Input | `input keyevent --meta` does not exist (exit 0 anyway); use `keycombination` on Android 13+, else DEL per character. | [input-select-all-unsupported.md](input-select-all-unsupported.md) |
 
 ---
 

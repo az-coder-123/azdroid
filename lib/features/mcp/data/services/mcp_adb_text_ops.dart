@@ -119,11 +119,53 @@ class McpAdbTextOps {
       await Future.delayed(const Duration(milliseconds: 200));
     }
 
-    // Move to end, Select All (Ctrl+A), and Delete (DEL) in a single shell invocation.
-    const cmd =
-        'input keyevent 123 && input keyevent --meta 4096 29 && input keyevent 67';
-    final res = await client.run(['-s', serial, 'shell', cmd]);
-    return res.exitCode == 0;
+    // Select all (Ctrl+A) and delete. `input keycombination` exists on
+    // Android 13+; Android 10 prints its usage instead. `input keyevent
+    // --meta` is not supported on either, so it never selected anything.
+    final selectAll = await client.run([
+      '-s',
+      serial,
+      'shell',
+      'input',
+      'keycombination',
+      '113',
+      '29',
+    ]);
+    if (selectAll.succeeded && !'${selectAll.stdout}'.contains('Usage:')) {
+      return (await client.run([
+        '-s',
+        serial,
+        'shell',
+        'input',
+        'keyevent',
+        '67',
+      ])).succeeded;
+    }
+
+    // Older Android: move to the end and delete the focused field's text,
+    // one DEL per character (read from the UI tree; a hint counts too, and
+    // extra DELs on an empty field do nothing).
+    final length = focusedTextLength(await client.dumpHierarchy(serial));
+    if (length == null) return false;
+    final res = await client.run([
+      '-s',
+      serial,
+      'shell',
+      'input',
+      'keyevent',
+      '123',
+      ...List.filled(length, '67'),
+    ]);
+    return res.succeeded;
+  }
+
+  /// Length of the focused node's `text` in a uiautomator dump, or `null`
+  /// when no node is focused.
+  static int? focusedTextLength(String xml) {
+    final node = RegExp(r'<node [^>]*focused="true"[^>]*>').firstMatch(xml);
+    if (node == null) return null;
+    final text = RegExp(r' text="([^"]*)"').firstMatch(node[0]!)?[1] ?? '';
+    return text.replaceAll(RegExp('&[a-z]+;|&#[0-9]+;'), '_').length;
   }
 
   /// Sends hardware keyevent by keycode.

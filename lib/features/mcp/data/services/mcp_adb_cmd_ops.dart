@@ -107,7 +107,7 @@ class McpAdbCmdOps {
     String? package,
     int limit = 50,
   }) async {
-    // 1. Query dedicated crash buffer (-b crash)
+    // 1. The dedicated crash buffer (-b crash).
     final crashBufferRes = await client.run([
       '-s',
       serial,
@@ -115,34 +115,24 @@ class McpAdbCmdOps {
       '-b',
       'crash',
       '-d',
-      '-t',
-      '$limit',
     ]);
-    final crashOutput = crashBufferRes.stdout.toString().trim();
-
-    if (crashOutput.isNotEmpty &&
-        !crashOutput.contains('--------- beginning of') &&
-        (package == null ||
-            crashOutput.toLowerCase().contains(package.toLowerCase()))) {
+    final crashOutput = _logEntries(crashBufferRes.stdout.toString(), limit);
+    if (crashOutput.isNotEmpty && _mentions(crashOutput, package)) {
       return 'Crash detected in crash buffer:\n$crashOutput';
     }
 
-    // 2. Query main logcat for FATAL EXCEPTION or AndroidRuntime errors
+    // 2. AndroidRuntime errors (FATAL EXCEPTION) in the main buffer. Filter
+    // before taking the tail: `-t` counts lines before the filter applies.
     final mainLogRes = await client.run([
       '-s',
       serial,
       'logcat',
       '-d',
-      '-t',
-      '${limit * 2}',
       '-s',
       'AndroidRuntime:E',
     ]);
-    final mainLog = mainLogRes.stdout.toString().trim();
-
-    if (mainLog.isNotEmpty &&
-        (package == null ||
-            mainLog.toLowerCase().contains(package.toLowerCase()))) {
+    final mainLog = _logEntries(mainLogRes.stdout.toString(), limit * 2);
+    if (mainLog.isNotEmpty && _mentions(mainLog, package)) {
       return 'Fatal exception detected in AndroidRuntime:\n$mainLog';
     }
 
@@ -165,6 +155,19 @@ class McpAdbCmdOps {
 
     return 'No crashes or fatal exceptions detected${package != null ? ' for $package' : ''}.';
   }
+
+  /// The last [limit] log lines without logcat's `--------- beginning of`
+  /// buffer headers, which logcat prints even when no entry matched.
+  static String _logEntries(String output, int limit) {
+    final lines = output
+        .splitLines()
+        .where((l) => l.trim().isNotEmpty && !l.startsWith('---------'))
+        .toList();
+    return lines.skip(max(0, lines.length - limit)).join('\n');
+  }
+
+  static bool _mentions(String log, String? package) =>
+      package == null || log.toLowerCase().contains(package.toLowerCase());
 
   /// Triggers MediaStore to index a newly pushed or modified media file immediately.
   static Future<bool> scanMediaFile(
