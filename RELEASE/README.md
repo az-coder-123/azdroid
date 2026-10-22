@@ -6,8 +6,8 @@
 
 | Package | Platform | Version | Size | SHA-256 |
 | :--- | :--- | :--- | :--- | :--- |
-| **[`Azdroid-v1.4.0-macOS.zip`](Azdroid-v1.4.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.4.0 | `31M` | `e74d5cb9dcbb58e5e5ce2515cda186d0b9da71b257ca9052812a8c1e7da99b51` |
-| **[`Azdroid-v1.3.0-Windows-x64.zip`](Azdroid-v1.3.0-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.3.0 | `24M` | `868b7faa99c53c35e35610a87048abfdc793f20865706646fe7fa8b99d22f1ba` |
+| **[\$(@{Zip=Azdroid-v1.4.0-macOS.zip; Version=v1.4.0; Size=31M; Sha=e74d5cb9dcbb58e5e5ce2515cda186d0b9da71b257ca9052812a8c1e7da99b51}.Zip)\](Azdroid-v1.4.0-macOS.zip)** | macOS 12.0+ (Apple Silicon & Intel) | v1.4.0 | \$(@{Zip=Azdroid-v1.4.0-macOS.zip; Version=v1.4.0; Size=31M; Sha=e74d5cb9dcbb58e5e5ce2515cda186d0b9da71b257ca9052812a8c1e7da99b51}.Size)\ | \$(@{Zip=Azdroid-v1.4.0-macOS.zip; Version=v1.4.0; Size=31M; Sha=e74d5cb9dcbb58e5e5ce2515cda186d0b9da71b257ca9052812a8c1e7da99b51}.Sha)\ |
+| **[\$(@{Zip=Azdroid-v1.4.0-Windows-x64.zip; Version=v1.4.0; Size=25M; Sha=0d277110769c7c886fc70b40fac327b55e680eca6f82b112f92f76df5fe6d869}.Zip)\](Azdroid-v1.4.0-Windows-x64.zip)** | Windows 10/11 x64 (Preview) | v1.4.0 | \$(@{Zip=Azdroid-v1.4.0-Windows-x64.zip; Version=v1.4.0; Size=25M; Sha=0d277110769c7c886fc70b40fac327b55e680eca6f82b112f92f76df5fe6d869}.Size)\ | \$(@{Zip=Azdroid-v1.4.0-Windows-x64.zip; Version=v1.4.0; Size=25M; Sha=0d277110769c7c886fc70b40fac327b55e680eca6f82b112f92f76df5fe6d869}.Sha)\ |
 
 Each `*-latest.zip` file is a copy of the newest package for its platform.
 
@@ -34,3 +34,4 @@ ADB and scrcpy-server are bundled. An ADB you install yourself takes precedence 
 shasum -a 256 -c SHA256SUMS.txt          # macOS package
 shasum -a 256 -c SHA256SUMS-windows.txt  # Windows package
 ```
+
